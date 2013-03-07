@@ -1,0 +1,247 @@
+<%-
+	local ntm = require "luci.model.xdsl".init()
+	luci.dispatcher.build_url("admin/status/berstart")
+-%>
+
+<%+header%>
+
+<script language="javascript">
+function berTest() {
+   var opts;
+
+   opts = 'menubar=no,resizable=no,scrollbars=yes,titlebar=yes,toolbar=no,width=420,height=300';
+
+   window.open('berstart', 'xDSLBerTest', opts);
+}
+</script>
+
+<meta http-equiv="refresh" content="15">
+
+<div class="cbi-map" id="cbi-network">
+	<h2><a id="content" name="content"><%:xDSL Statistics%></a></h2>
+	<div align="right" class="cbi-map-descr"><%:%>
+		<input type='button' style="width:100px" onClick="berTest()" title="<%:Start xDSL BER Test%>" value="BER Test">
+		<input type="button" style="width:100px" onclick="if (confirm('<%:Really reset the xDSL statistics? The reset cannot be undone.%>')) location.href='<%=luci.dispatcher.build_url("admin/network/xdsl_reset")%>'" title="<%:Reset xDSL Statistics%>" value="<%:Reset%>" />
+	</div>
+
+	<fieldset class="cbi-section" id="cbi-table-table">
+		<legend>Basic</legend>
+		<div class="cbi-section-node">
+			<table class="cbi-section-table">
+				<tr class="cbi-section-table-titles">
+					<th class="cbi-section-table-cell"><%:Mode%></th>
+					<th class="cbi-section-table-cell"><%:Traffic Type%></th>
+					<th class="cbi-section-table-cell"><%:Status%></th>
+					<th class="cbi-section-table-cell"><%:Link Power State%></th>
+				</tr>
+
+						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+							<td class="cbi-value-field"><%=ntm:dslmode()%></td>
+							<td class="cbi-value-field"><%=ntm:dsltraffic()%></td>
+							<td class="cbi-value-field"><%=ntm:dslstatus()%></td>
+							<td class="cbi-value-field"><%=ntm:dsllps()%></td>
+						</tr>
+			</table>
+		</div>
+	</fieldset>
+	<br />
+
+	<fieldset class="cbi-section" id="cbi-table-table">
+		<legend>Advanced</legend>
+
+		<div class="cbi-section-node">
+			<table class="cbi-section-table">
+				<tr class="cbi-section-table-titles">
+					<th class="cbi-section-table-cell"><%:%></th>
+					<th class="cbi-section-table-cell"><%:Downstream%></th>
+					<th class="cbi-section-table-cell"><%:Upstream%></th>
+
+				</tr>
+
+						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+							<td class="cbi-value-field"><%="Line Coding(Trellis)"%></td>
+							<td class="cbi-value-field"><%=ntm:dsltrellis(0)%></td>
+							<td class="cbi-value-field"><%=ntm:dsltrellis(1)%></td>
+						</tr>
+
+						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+							<td class="cbi-value-field"><%="SNR Margin (dB)"%></td>
+							<td class="cbi-value-field"><%=ntm:dslsnr(0)%></td>
+							<td class="cbi-value-field"><%=ntm:dslsnr(1)%></td>
+						</tr>
+
+						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+							<td class="cbi-value-field"><%="Attenuation (dB)"%></td>
+							<td class="cbi-value-field"><%=ntm:dslatten(0)%></td>
+							<td class="cbi-value-field"><%=ntm:dslatten(1)%></td>
+						</tr>
+
+						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+							<td class="cbi-value-field"><%="Output Power (dBm)"%></td>
+							<td class="cbi-value-field"><%=ntm:dslopwr(0)%></td>
+							<td class="cbi-value-field"><%=ntm:dslopwr(1)%></td>
+						</tr>
+
+						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+							<td class="cbi-value-field"><%="Attainable Rate (Kbps)"%></td>
+							<td class="cbi-value-field"><%=ntm:dslarate(0)%></td>
+							<td class="cbi-value-field"><%=ntm:dslarate(1)%></td>
+						</tr>
+
+						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+							<td class="cbi-value-field"><%="Rate (Kbps)"%></td>
+							<td class="cbi-value-field"><%=ntm:dslrate(0)%></td>
+							<td class="cbi-value-field"><%=ntm:dslrate(1)%></td>
+						</tr>
+
+						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+							<td class="cbi-value-field"><%="MSGc (# of bytes in overhead channel message)"%></td>
+							<td class="cbi-value-field"><%=ntm:dslmsgc(0)%></td>
+							<td class="cbi-value-field"><%=ntm:dslmsgc(1)%></td>
+						</tr>
+
+						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+							<td class="cbi-value-field"><%="B (# of bytes in Mux Data Frame)"%></td>
+							<td class="cbi-value-field"><%=ntm:dslB(0)%></td>
+							<td class="cbi-value-field"><%=ntm:dslB(1)%></td>
+						</tr>
+
+						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+							<td class="cbi-value-field"><%="M (# of Mux Data Frames in FEC Data Frame)"%></td>
+							<td class="cbi-value-field"><%=ntm:dslM(0)%></td>
+							<td class="cbi-value-field"><%=ntm:dslM(1)%></td>
+						</tr>
+
+						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+							<td class="cbi-value-field"><%="T (Mux Data Frames over sync bytes)"%></td>
+							<td class="cbi-value-field"><%=ntm:dslT(0)%></td>
+							<td class="cbi-value-field"><%=ntm:dslT(1)%></td>
+						</tr>
+
+						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+							<td class="cbi-value-field"><%="R (# of check bytes in FEC Data Frame)"%></td>
+							<td class="cbi-value-field"><%=ntm:dslR(0)%></td>
+							<td class="cbi-value-field"><%=ntm:dslR(1)%></td>
+						</tr>
+
+						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+							<td class="cbi-value-field"><%="S (ratio of FEC over PMD Data Frame length)"%></td>
+							<td class="cbi-value-field"><%=ntm:dslS(0)%></td>
+							<td class="cbi-value-field"><%=ntm:dslS(1)%></td>
+						</tr>
+
+						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+							<td class="cbi-value-field"><%="L (# of bits in PMD Data Frame)"%></td>
+							<td class="cbi-value-field"><%=ntm:dslL(0)%></td>
+							<td class="cbi-value-field"><%=ntm:dslL(1)%></td>
+						</tr>
+
+						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+							<td class="cbi-value-field"><%="D (interleaver depth)"%></td>
+							<td class="cbi-value-field"><%=ntm:dslD(0)%></td>
+							<td class="cbi-value-field"><%=ntm:dslD(1)%></td>
+						</tr>
+
+						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+							<td class="cbi-value-field"><%="Delay (msec)"%></td>
+							<td class="cbi-value-field"><%=ntm:dsldelay(0)%></td>
+							<td class="cbi-value-field"><%=ntm:dsldelay(1)%></td>
+						</tr>
+
+						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+							<td class="cbi-value-field"><%="INP (DMT symbol)"%></td>
+							<td class="cbi-value-field"><%=ntm:dslinp(0)%></td>
+							<td class="cbi-value-field"><%=ntm:dslinp(1)%></td>
+						</tr>
+
+						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+							<td class="cbi-value-field"><%="Super Frames"%></td>
+							<td class="cbi-value-field"><%=ntm:dslsprframe(0)%></td>
+							<td class="cbi-value-field"><%=ntm:dslsprframe(1)%></td>
+						</tr>
+
+						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+							<td class="cbi-value-field"><%="Super Frame Errors"%></td>
+							<td class="cbi-value-field"><%=ntm:dslsprframerr(0)%></td>
+							<td class="cbi-value-field"><%=ntm:dslsprframerr(1)%></td>
+						</tr>
+
+						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+							<td class="cbi-value-field"><%="RS Words"%></td>
+							<td class="cbi-value-field"><%=ntm:dslrsw(0)%></td>
+							<td class="cbi-value-field"><%=ntm:dslrsw(1)%></td>
+						</tr>
+
+						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+							<td class="cbi-value-field"><%="RS Correctable Errors"%></td>
+							<td class="cbi-value-field"><%=ntm:dslrsce(0)%></td>
+							<td class="cbi-value-field"><%=ntm:dslrsce(1)%></td>
+						</tr>
+
+						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+							<td class="cbi-value-field"><%="RS Uncorrectable Errors"%></td>
+							<td class="cbi-value-field"><%=ntm:dslrsue(0)%></td>
+							<td class="cbi-value-field"><%=ntm:dslrsue(1)%></td>
+						</tr>
+
+						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+							<td class="cbi-value-field"><%="HEC Errors"%></td>
+							<td class="cbi-value-field"><%=ntm:dslhec(0)%></td>
+							<td class="cbi-value-field"><%=ntm:dslhec(1)%></td>
+						</tr>
+
+						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+							<td class="cbi-value-field"><%="OCD Errors"%></td>
+							<td class="cbi-value-field"><%=ntm:dslocd(0)%></td>
+							<td class="cbi-value-field"><%=ntm:dslocd(1)%></td>
+						</tr>
+
+						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+							<td class="cbi-value-field"><%="LCD Errors"%></td>
+							<td class="cbi-value-field"><%=ntm:dsllcd(0)%></td>
+							<td class="cbi-value-field"><%=ntm:dsllcd(1)%></td>
+						</tr>
+
+						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+							<td class="cbi-value-field"><%="Total Cells"%></td>
+							<td class="cbi-value-field"><%=ntm:dsltcells(0)%></td>
+							<td class="cbi-value-field"><%=ntm:dsltcells(1)%></td>
+						</tr>
+
+						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+							<td class="cbi-value-field"><%="Data Cells"%></td>
+							<td class="cbi-value-field"><%=ntm:dsldcells(0)%></td>
+							<td class="cbi-value-field"><%=ntm:dsldcells(1)%></td>
+						</tr>
+
+						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+							<td class="cbi-value-field"><%="Bit Errors"%></td>
+							<td class="cbi-value-field"><%=ntm:dslberrs(0)%></td>
+							<td class="cbi-value-field"><%=ntm:dslberrs(1)%></td>
+						</tr>
+
+						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+							<td class="cbi-value-field"><%="Total ES"%></td>
+							<td class="cbi-value-field"><%=ntm:dsltes(0)%></td>
+							<td class="cbi-value-field"><%=ntm:dsltes(1)%></td>
+						</tr>
+
+						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+							<td class="cbi-value-field"><%="Total SES"%></td>
+							<td class="cbi-value-field"><%=ntm:dsltses(0)%></td>
+							<td class="cbi-value-field"><%=ntm:dsltses(1)%></td>
+						</tr>
+
+						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+							<td class="cbi-value-field"><%="Total UAS"%></td>
+							<td class="cbi-value-field"><%=ntm:dsltuas(0)%></td>
+							<td class="cbi-value-field"><%=ntm:dsltuas(1)%></td>
+						</tr>
+
+			</table>
+		</div>
+	</fieldset>
+	<br />
+</div>
+
+<%+footer%>

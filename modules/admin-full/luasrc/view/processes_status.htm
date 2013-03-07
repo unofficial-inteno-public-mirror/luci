@@ -1,0 +1,11 @@
+<fieldset class="cbi-section">
+	<% if luci.http.formvalue("advanced") == "1" then %>
+		<p>This list gives an overview over currently running system processes and their status.</p><br/>
+		<input type="radio" name="view_type" value="basic" onclick=location.href="<%=REQUEST_URI%>?advanced=0"> Basic &nbsp;&nbsp;&nbsp;&nbsp;
+		<input type="radio" name="view_type" value="advanced" checked onclick=location.href="<%=REQUEST_URI%>?advanced=1"> Advanced (Experienced Users)
+	<% else %>
+		<p>This page gives the number of running processes and CPU usage. For detailed information and management options switch to advanced view.</p><br/>
+		<input type="radio" name="view_type" value="basic" checked onclick=location.href="<%=REQUEST_URI%>?advanced=0"> Basic &nbsp;&nbsp;&nbsp;&nbsp;
+		<input type="radio" name="view_type" value="advanced" onclick=location.href="<%=REQUEST_URI%>?advanced=1"> Advanced (Experienced Users)
+	<% end %>
+</fieldset>

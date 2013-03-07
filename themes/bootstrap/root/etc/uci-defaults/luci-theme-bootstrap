@@ -1,0 +1,6 @@
+#!/bin/sh
+uci batch <<-EOF
+	set luci.themes.Inteno=/luci-static/bootstrap
+	commit luci
+EOF
+exit 0

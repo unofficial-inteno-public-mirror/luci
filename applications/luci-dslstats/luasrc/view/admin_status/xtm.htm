@@ -1,0 +1,51 @@
+<%-
+	local ntm = require "luci.model.xdsl".init()
+-%>
+
+<%+header%>
+
+<meta http-equiv="refresh" content="10">
+
+<div class="cbi-map" id="cbi-network">
+	<h2><a id="content" name="content"><%:xTM Statistics%></a></h2>
+	<div align="right" class="cbi-map-descr"><%:%>
+		<input type="button" style="width:100px" onclick="if (confirm('<%:Really reset the xTM statistics? The reset cannot be undone.%>')) location.href='<%=luci.dispatcher.build_url("admin/network/xtm_reset")%>'" title="<%:Reset xTM Statistics%>" value="<%:Reset%>" />
+	</div>
+
+	<fieldset class="cbi-section" id="cbi-table-table">
+		<legend>Interface Statistics</legend>
+		<div class="cbi-section-node">
+			<table class="cbi-section-table">
+				<tr class="cbi-section-table-titles">
+					<th class="cbi-section-table-cell"><%:In Octets%></th>
+					<th class="cbi-section-table-cell"><%:Out Octets%></th>
+					<th class="cbi-section-table-cell"><%:In Packets%></th>
+					<th class="cbi-section-table-cell"><%:Out Packets%></th>
+					<th class="cbi-section-table-cell"><%:In OAM Cells%></th>
+					<th class="cbi-section-table-cell"><%:Out OAM Cells%></th>
+					<th class="cbi-section-table-cell"><%:In ASM Cells%></th>
+					<th class="cbi-section-table-cell"><%:Out ASM Cells%></th>
+					<th class="cbi-section-table-cell"><%:In Packet Errors%></th>
+					<th class="cbi-section-table-cell"><%:In Cell Errors%></th>
+				</tr>
+
+
+						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+							<td class="cbi-value-field"><%=ntm:tminoct()%></td>
+							<td class="cbi-value-field"><%=ntm:tmoutoct()%></td>
+							<td class="cbi-value-field"><%=ntm:tminpac()%></td>
+							<td class="cbi-value-field"><%=ntm:tmoutpac()%></td>
+							<td class="cbi-value-field"><%=ntm:tminoam()%></td>
+							<td class="cbi-value-field"><%=ntm:tmoutoam()%></td>
+							<td class="cbi-value-field"><%=ntm:tminasm()%></td>
+							<td class="cbi-value-field"><%=ntm:tmoutasm()%></td>
+							<td class="cbi-value-field"><%=ntm:tminpackerr()%></td>
+							<td class="cbi-value-field"><%=ntm:tmincellerr()%></td>
+						</tr>
+			</table>
+		</div>
+	</fieldset>
+	<br />
+</div>
+
+<%+footer%>

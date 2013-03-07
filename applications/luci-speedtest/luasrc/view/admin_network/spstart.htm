@@ -1,0 +1,65 @@
+<%-
+	local utl = require "luci.util"
+	local ntm = require "luci.model.bwtest".init()
+	ntm:initialize_tptest()
+-%>
+<%+header%>
+
+<script type="text/javascript">
+
+function sptStart() {
+	var mode, midx, sidx, server, loc;
+
+   	with ( document.forms[0] ) {
+      		midx = spType.selectedIndex;
+      		mode = spType.options[midx].value;
+      		sidx = tsrv.selectedIndex;
+      		server = tsrv.options[sidx].value;
+   	}
+
+	if (server == 0) {
+		alert("Please choose a server");
+		return "";	
+	}
+
+	loc = "<%=luci.dispatcher.build_url('admin/network/bwidth_spstart/')%>" +server.concat(":").concat(mode);
+
+	document.getElementById('message').innerHTML = "<img src='<%=resource%>/icons/loading.gif' style='vertical-align:middle'/>&nbsp;<b>Please wait! You will be redirected to the results page once the test is completed.</b>"
+
+	return loc;
+}
+
+</script>
+
+<body bgcolor="#F8F8FF">
+<form>
+<b><h2>Bandwidth Speed Test</h2></b><br>
+<p align="justify">Speed Test determines the bandwidth of the Internet connection.&nbsp;<br>
+To start a new test, select Test Server & Mode and click &quot;Start&quot;.<br><br>
+<p id='message' >
+ 
+<table border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td width="120">Test Server:  </td>
+    <td><select name='tsrv' size=1>
+      <option value=0 selected>--Select--
+<%for _s in utl.execi("cat /var/tptestservers") do%>
+      <option value=<%=_s%>><%=_s%>
+<%end%>
+    </select></td>
+  </tr>
+
+  <tr>
+    <td width="120">Test Mode:  </td>
+    <td><select name='spType' size=1>
+      <option value=1 selected>Download & Upload 
+      <option value=2>Download Only
+      <option value=3>Upload Only
+    </select></td>
+  </tr>
+
+</table>
+<p align="center"><input type='button' onClick=location.href=sptStart() value=" Start ">
+</form>
+</body>
+<%+footer%>

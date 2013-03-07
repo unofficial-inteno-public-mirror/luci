@@ -1,0 +1,23 @@
+#!/bin/sh /etc/rc.common
+# Copyright (C) 2010-2012 OpenWrt.org
+
+START=99
+STOP=10
+MCPD_BIN="/usr/sbin/mcpd"
+
+start() {
+	local igmp_snooping_enable
+	local igmp_snooping_interfaces
+	grep igmp /etc/config/mcpd | awk '{ print $2 $3}' | sed -e "s/[\'\"]/ /g" | tr "_" "-" >/var/mcpd.conf
+	config_load mcpd
+	config_get igmp_snooping_enable mcpd igmp_snooping_enable
+	config_get igmp_snooping_interfaces mcpd igmp_snooping_interfaces 
+	/usr/sbin/brctl enableportsnooping "$igmp_snooping_interfaces" "$igmp_snooping_enable"
+	 start-stop-daemon -S -x $MCPD_BIN -p /var/run/mcpd.pid -m -b 
+
+}
+
+stop() {
+	start-stop-daemon -K -q -n ${MCPD_BIN##*/} -p /var/run/mcpd.pid -s TERM
+	rm -f /var/run/mcpd.pid
+}

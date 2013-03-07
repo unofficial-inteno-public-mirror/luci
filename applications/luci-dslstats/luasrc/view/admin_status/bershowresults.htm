@@ -1,0 +1,78 @@
+<%-
+	local ntm = require "luci.model.xdsl".init()
+-%>
+
+<script language="javascript">
+
+function bertClose() {
+   window.close();
+}
+
+</script>
+
+<%
+	if (ntm:bertstatus() == "RUNNING") then
+%>
+		<meta http-equiv="refresh" content="2" >
+<%
+	else
+%>
+		<meta http-equiv="refresh" content="20" >
+<%
+	end 
+%>
+<body bgcolor="#F8F8FF">
+<div class="cbi-map" id="cbi-network">
+	<div align="right" class="cbi-map-descr"><%:%>
+	</div>
+
+	<fieldset class="cbi-section" id="cbi-table-table">
+		<legend><strong>BER Test Results</strong></legend>
+		<div class="cbi-section-node">
+			<table class="cbi-section-table">
+				<tr class="cbi-section-table-titles">
+					<th class="cbi-section-table-cell"><%:%></th>
+					<th class="cbi-section-table-cell"><%:%></th>
+				</tr>
+
+						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+							<td class="cbi-value-field"><%="Status"%></td>
+							<td class="cbi-value-field"><%=ntm:bertstatus()%></td>
+						</tr>
+
+						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+							<td class="cbi-value-field"><%="Total Time"%></td>
+							<td class="cbi-value-field"><%=ntm:berttotal()%></td>
+						</tr>
+
+						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+							<td class="cbi-value-field"><%="Elapsed Time"%></td>
+							<td class="cbi-value-field"><%=ntm:bertelapsed()%></td>
+						</tr>
+
+						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+							<td class="cbi-value-field"><%="Bits Tested"%></td>
+							<td class="cbi-value-field"><%=ntm:berttested()%></td>
+						</tr>
+
+						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+							<td class="cbi-value-field"><%="Error Bits"%></td>
+							<td class="cbi-value-field"><%=ntm:berterror()%></td>
+						</tr>
+
+			</table>
+		</div>
+	</fieldset>
+	<%
+		if (ntm:bertstatus() == "RUNNING") then
+	%>
+			<p align="center"><input type='button' onClick="location.href='<%=luci.dispatcher.build_url("admin/network/xdsl_berstop")%>'" value='Stop'>
+	<%
+		else
+	%>
+			<p align="center"><input type='button' onClick='bertClose()' value='Close'>
+	<%
+		end 
+	%>
+</div>
+</body>

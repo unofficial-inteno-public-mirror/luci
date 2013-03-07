@@ -1,0 +1,48 @@
+<%-
+	local ntm = require "luci.model.bwtest".init()
+-%>
+<%+header%>
+<body bgcolor="#F8F8FF">
+<div class="cbi-map" id="cbi-network">
+	<div align="right" class="cbi-map-descr"><%:%>
+	</div>
+
+	<fieldset class="cbi-section" id="cbi-table-table">
+		<legend><strong>Speed Test Results</strong></legend> <br>
+		<div class="cbi-section-node">
+			<table class="cbi-section-table">
+
+				<% if (ntm:sptbytes() ~= 0) then %>
+					<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+						<td class="cbi-value-field"><%="Start Time"%></td>
+						<td class="cbi-value-field"><%=ntm:sptstarttime()%></td>
+					</tr>
+
+					<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+						<td class="cbi-value-field"><%="End Time"%></td>
+						<td class="cbi-value-field"><%=ntm:sptendtime()%></td>
+					</tr>
+
+					<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+						<td class="cbi-value-field"><%="Download Speed"%></td>
+						<td class="cbi-value-field"><%=ntm:sptdwnresults()%></td>
+					</tr>
+
+					<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+						<td class="cbi-value-field"><%="Upload Speed"%></td>
+						<td class="cbi-value-field"><%=ntm:sptupresults()%></td>
+					</tr>
+				<% elseif (ntm:theinterface() == "NONE") then %>
+					<br><p><font size="3">No Internet connection!<br>Please ensure that you are connected to the Internet.</font></p>
+				<% else %>	
+					<br><p><font size="3">Speed Test has failed.<br>Please choose another server or try again later.</font></p>
+				<% end %>
+			</table>
+		</div>
+	</fieldset>
+
+	<p align="center"><input type='button' onClick='location.href="<%=luci.dispatcher.build_url('admin/network/spstart')%>"' value='Restart'>
+
+</div>
+</body>
+<%+footer%>

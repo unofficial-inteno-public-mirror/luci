@@ -1,0 +1,34 @@
+#!/bin/sh
+
+uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@layer2_interface[-1]
+	add ucitrack layer2_interface
+	set ucitrack.@layer2_interface[-1].init=layer2_interface
+	commit ucitrack
+EOF
+uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@layer2_interface_adsl[-1]
+	add ucitrack layer2_interface_adsl
+	set ucitrack.@layer2_interface_adsl[-1].init=layer2_interface_adsl
+	commit ucitrack
+EOF
+uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@layer2_interface_vdsl[-1]
+	add ucitrack layer2_interface_vdsl
+	set ucitrack.@layer2_interface_vdsl[-1].init=layer2_interface_vdsl
+	commit ucitrack
+EOF
+uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@layer2_interface_vlan[-1]
+	add ucitrack layer2_interface_vlan
+	set ucitrack.@layer2_interface_vlan[-1].init=layer2_interface_vlan
+	commit ucitrack
+EOF
+uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@layer2_interface_ethernet[-1]
+	add ucitrack layer2_interface_ethernet
+	set ucitrack.@layer2_interface_ethernet[-1].init=layer2_interface_ethernet
+	commit ucitrack
+EOF
+rm -f /tmp/luci-indexcache
+exit 0
