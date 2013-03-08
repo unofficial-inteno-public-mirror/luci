@@ -4,23 +4,31 @@ local sys = require "luci.sys"
 local uci = require "luci.model.uci"
 local utl = require "luci.util"
 local nfs = require "nixio.fs"
+local bus = require "ubus"
 
 module "luci.model.ports"
+
+local _ubus, _ubusdevcache
 
 _uci_real  = cursor or _uci_real or uci.cursor()
 
 function init(cursor)
+	_ubus         = bus.connect()
+	_ubusdevcache = { }
 	return _M
 end
 
-function status_eth(self, port)
-	local eth = tonumber(sys.exec("cat /sys/class/net/%s/carrier" %port))
-	if eth == 1 then
-		return "up"
-	elseif eth == 0 then
-		return "down"
-	else
-		return "none"
+function status_eth(self, port, field)
+	if not _ubusdevcache[port] then
+		_ubusdevcache[port] = _ubus:call("network.device", "status",
+		                                        { name = port })
+	end
+	if _ubusdevcache[port] and field then
+		if _ubusdevcache[port][field] then
+			return "up"
+		else
+			return "down"
+		end
 	end
 end
 

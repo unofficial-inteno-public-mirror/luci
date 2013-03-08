@@ -75,13 +75,13 @@ $Id: index.htm 7022 2011-05-04 21:04:31Z jow $
 		end
 
 		rv.port = {
-			eth0	= prt:status_eth("eth0"),
-			eth1	= prt:status_eth("eth1"),
-			eth2	= prt:status_eth("eth2"),
-			eth3	= prt:status_eth("eth3"),
-			eth4	= prt:status_eth("eth4"),
-			eth5	= prt:status_eth("eth5"),
-			dsl 	= prt:status_dsl(),
+			eth0	= prt:status_eth("eth0", "link") or prt:status_eth("eth0", "up"),
+			eth1	= prt:status_eth("eth1", "link") or prt:status_eth("eth1", "up"),
+			eth2	= prt:status_eth("eth2", "link") or prt:status_eth("eth2", "up"),
+			eth3	= prt:status_eth("eth3", "link") or prt:status_eth("eth3", "up"),
+			eth4	= prt:status_eth("eth4", "link") or prt:status_eth("eth4", "up"),
+			eth5	= prt:status_eth("eth5", "link") or prt:status_eth("eth5", "up"),
+			dsl	= prt:status_dsl(),
 			usb     = prt:status_usb()
 		}
 
