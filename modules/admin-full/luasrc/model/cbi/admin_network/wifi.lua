@@ -118,7 +118,7 @@ s:tab("general", translate("General Setup"))
 s:tab("macfilter", translate("MAC-Filter"))
 s:tab("advanced", translate("Advanced Settings"))
 s:tab("antenna", translate("Antenna Selection"))
-s:tab("bridge", translate("Wireless Bridge"))
+--s:tab("bridge", translate("Wireless Bridge"))
 
 --[[
 back = s:option(DummyValue, "_overview", translate("Overview"))
@@ -574,12 +574,12 @@ if hwtype == "broadcom" then
 	wa:value("1", "Enable")
 	wa:value("0", "Disable")
 
-	wdsmode = s:taboption("bridge", ListValue, "wdsmode", translate("WDS Mode"), "Selecting Automatic WDS mode will dynamically grant WDS membership to anyone")
-	wdsmode:value("0", translate("Manual"))
-	wdsmode:value("1", translate("Automatic"))
-	wdslist = s:taboption("bridge", DynamicList, "wdslist", translate("WDS Connection List"))
-	wdslist:depends({wdsmode="0"})
-	wdstimo = s:taboption("bridge", Value, "wdstimo", translate("WDS Link Detection Timeout"), "min")
+	--wdsmode = s:taboption("bridge", ListValue, "wdsmode", translate("WDS Mode"), "Selecting Automatic WDS mode will dynamically grant WDS membership to anyone")
+	--wdsmode:value("0", translate("Manual"))
+	--wdsmode:value("1", translate("Automatic"))
+	--wdslist = s:taboption("bridge", DynamicList, "wdslist", translate("WDS Connection List"))
+	--wdslist:depends({wdsmode="0"})
+	--wdstimo = s:taboption("bridge", Value, "wdstimo", translate("WDS Link Detection Timeout"), "min")
 end
 
 
