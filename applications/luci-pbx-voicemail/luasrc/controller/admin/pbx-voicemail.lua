@@ -17,8 +17,8 @@
     along with luci-pbx-voicemail.  If not, see <http://www.gnu.org/licenses/>.
 ]]--
 
-module("luci.controller.pbx-voicemail", package.seeall)
+module("luci.controller.admin.pbx-voicemail", package.seeall)
 
 function index()
-        entry({"admin", "services", "pbx", "pbx-voicemail"}, cbi("pbx-voicemail"), "Voicemail", 5)
+        entry({"admin", "services", "pbx", "pbx-voicemail"}, cbi("pbx/pbx-voicemail"), "Voicemail", 5)
 end
