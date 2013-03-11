@@ -180,7 +180,7 @@ You may obtain a copy of the License at
 				for( var i = 0; i < st.length; i++ )
 				{
 					var iw = st[i];
-					var is_assoc = (iw.bssid && iw.bssid != '00:00:00:00:00:00' && iw.channel);
+					var is_assoc = (iw.bssid && iw.bssid.search("00:00:00:00:00:00") == "-1" && iw.channel);
 					var p = iw.quality;
 					var q = is_assoc ? p : -1;
 
