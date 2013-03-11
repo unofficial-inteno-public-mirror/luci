@@ -89,7 +89,7 @@
 
 	   opts = 'menubar=no,resizable=no,scrollbars=yes,titlebar=yes,toolbar=no,width=420,height=300';
 
-	   window.open('berstart', 'xDSLBerTest', opts);
+	   window.open('<%=luci.dispatcher.build_url("admin/status/berstart")%>', 'xDSLBerTest', opts);
 	}
 
 	var iwxhr = new XHR();

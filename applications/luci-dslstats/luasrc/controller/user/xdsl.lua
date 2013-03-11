@@ -7,13 +7,13 @@ function index()
                 
         local page
 
-        page = node("user", "status", "xtm")
-        page.target = template("admin_status/xtm")
-        page.title  = _("xTM Statistics")
-
-        page = node("user", "status", "xdsl")
+        page = node("user", "status", "dslstats")
         page.target = template("admin_status/xdsl")
-        page.title  = _("xDSL Statistics")
+        page.title  = _("DSL Stats")
+	page.subindex = true
+
+	entry({"user", "status", "dslstats", "xdsl"}, template("admin_status/xdsl"), "xDSL Statistics", 1)
+	entry({"user", "status", "dslstats", "xtm"}, template("admin_status/xtm"), "xTM Statistics", 2)
 
         page = node("user", "status", "berstart")
         page.target = template("admin_status/berstart")
@@ -43,7 +43,7 @@ function xtm_reset() -- Call Reset xTM Statistics function
 	
 	local net = netmd:reset_tm()
 	if net then
-		luci.http.redirect(luci.dispatcher.build_url("user/status/xtm"))
+		luci.http.redirect(luci.dispatcher.build_url("user/status/dslstats/xtm"))
 		return
 	end
 end
@@ -53,7 +53,7 @@ function xdsl_reset() -- Call Reset xDSL Statistics function
 		
 	local net = netmd:reset_dsl()
 	if net then
-		luci.http.redirect(luci.dispatcher.build_url("user/status/xdsl"))
+		luci.http.redirect(luci.dispatcher.build_url("user/status/dslstats/xdsl"))
 		return
 	end
 end
