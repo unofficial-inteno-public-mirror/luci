@@ -401,7 +401,7 @@ $Id: index.htm 7022 2011-05-04 21:04:31Z jow $
 						for (var nidx = 0; nidx < dev.networks.length; nidx++)
 						{
 							var net = dev.networks[nidx];
-							var is_assoc = (net.bssid != '00:00:00:00:00:00' && net.channel);
+							var is_assoc = (net.bssid.search("00:00:00:00:00:00") == "-1" && net.channel);
 
 							var icon;
 
