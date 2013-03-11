@@ -75,7 +75,7 @@ function index()
 			page.leaf = true
 			page.subindex = true
 
-			if page.inreq then
+			--if page.inreq then
 				local wdev
 				entry({"admin", "network", "wireless", "wireless"}, alias("admin", "network", "wireless"), "Wireless", 1)
 				local net = require "luci.model.network".init(uci)
@@ -89,7 +89,7 @@ function index()
 						)
 					end
 				end
-			end
+			--end
 		end
 
 
@@ -112,7 +112,7 @@ function index()
 		page.leaf   = true
 		page.subindex = true
 
-		if page.inreq then
+		--if page.inreq then
 			entry({"admin", "network", "network", "network"}, true, "Interfaces", 1)
 			uci:foreach("network", "interface",
 				function (section)
@@ -122,7 +122,7 @@ function index()
 						true, ifc:upper())
 					end
 				end)
-		end
+		--end
 
 
 		if nixio.fs.access("/etc/config/dhcp") then

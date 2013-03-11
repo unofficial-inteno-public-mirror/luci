@@ -1,10 +1,64 @@
 <%-
 	local ntm = require "luci.model.xdsl".init()
+
+	if luci.http.formvalue("status") == "1" then
+
+		local rv = {}
+
+		rv.tm = {
+			inoct	= ntm:tminoct(),
+			outoct	= ntm:tmoutoct(),
+			inpac	= ntm:tminpac(),
+			outpac	= ntm:tmoutpac(),
+			inoam	= ntm:tminoam(),
+			outoam	= ntm:tmoutoam(),
+			inasm	= ntm:tminasm(),
+			outasm	= ntm:tmoutasm(),
+			inperr	= ntm:tminpackerr(),
+			incerr	= ntm:tmincellerr()
+		}
+
+		luci.http.prepare_content("application/json")
+		luci.http.write_json(rv)
+
+		return
+	end
 -%>
 
 <%+header%>
 
-<meta http-equiv="refresh" content="10">
+<script type="text/javascript" src="<%=resource%>/cbi.js"></script>
+<script type="text/javascript">//<![CDATA[
+
+	var iwxhr = new XHR();
+
+	var update_status = function() {
+		iwxhr.get('<%=REQUEST_URI%>', { status: 1 },
+			function(x, info)
+			{
+				var xtm = info.tm;
+
+				if (xtm)
+				{
+					document.getElementById('tminoct').innerHTML = xtm.inoct;
+					document.getElementById('tmoutoct').innerHTML = xtm.outoct;
+					document.getElementById('tminpac').innerHTML = xtm.inpac;
+					document.getElementById('tmoutpac').innerHTML = xtm.outpac;
+					document.getElementById('tminoam').innerHTML = xtm.inoam;
+					document.getElementById('tmoutoam').innerHTML = xtm.outoam;
+					document.getElementById('tminasm').innerHTML = xtm.inasm;
+					document.getElementById('tmoutasm').innerHTML = xtm.outasm;
+					document.getElementById('tminperr').innerHTML = xtm.inperr;
+					document.getElementById('tmincerr').innerHTML = xtm.incerr;
+				}
+			}
+		)
+		window.setTimeout(update_status, 5000);
+	};
+
+	update_status();
+
+//]]></script>
 
 <div class="cbi-map" id="cbi-network">
 	<h2><a id="content" name="content"><%:xTM Statistics%></a></h2>
@@ -29,19 +83,18 @@
 					<th class="cbi-section-table-cell"><%:In Cell Errors%></th>
 				</tr>
 
-
-						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
-							<td class="cbi-value-field"><%=ntm:tminoct()%></td>
-							<td class="cbi-value-field"><%=ntm:tmoutoct()%></td>
-							<td class="cbi-value-field"><%=ntm:tminpac()%></td>
-							<td class="cbi-value-field"><%=ntm:tmoutpac()%></td>
-							<td class="cbi-value-field"><%=ntm:tminoam()%></td>
-							<td class="cbi-value-field"><%=ntm:tmoutoam()%></td>
-							<td class="cbi-value-field"><%=ntm:tminasm()%></td>
-							<td class="cbi-value-field"><%=ntm:tmoutasm()%></td>
-							<td class="cbi-value-field"><%=ntm:tminpackerr()%></td>
-							<td class="cbi-value-field"><%=ntm:tmincellerr()%></td>
-						</tr>
+				<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+					<td id="tminoct" class="cbi-value-field"></td>
+					<td id="tmoutoct" class="cbi-value-field"></td>
+					<td id="tminpac" class="cbi-value-field"></td>
+					<td id="tmoutpac" class="cbi-value-field"></td>
+					<td id="tminoam" class="cbi-value-field"></td>
+					<td id="tmoutoam" class="cbi-value-field"></td>
+					<td id="tminasm" class="cbi-value-field"></td>
+					<td id="tmoutasm" class="cbi-value-field"></td>
+					<td id="tminperr" class="cbi-value-field"></td>
+					<td id="tmincerr" class="cbi-value-field"></td>
+				</tr>
 			</table>
 		</div>
 	</fieldset>
