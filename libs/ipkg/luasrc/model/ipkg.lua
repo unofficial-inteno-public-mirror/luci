@@ -22,7 +22,7 @@ local pairs = pairs
 local error = error
 local table = table
 
-local ipkg = "opkg --force-removal-of-dependent-packages --force-overwrite --nocase"
+local ipkg = "opkg --force-removal-of-dependent-packages --force-overwrite"
 local icfg = "/etc/opkg.conf"
 
 --- LuCI OPKG call abstraction library
@@ -158,7 +158,7 @@ end
 -- List helper
 function _list(action, pat, cb)
 	local fd = io.popen(ipkg .. " " .. action ..
-		(pat and (" '%s'" % pat:gsub("'", "")) or ""))
+		(pat and (" '%s'" % pat:gsub("'", "")) or "")) -- .. " | grep -vE '^ '")
 
 	if fd then
 		local name, version, desc
@@ -166,18 +166,20 @@ function _list(action, pat, cb)
 			local line = fd:read("*l")
 			if not line then break end
 
-			name, version, desc = line:match("^(.-) %- (.-) %- (.+)")
+			if line:sub(1,1) ~= " " then
+				name, version, desc = line:match("^(.-) %- (.-) %- (.+)")
 
-			if not name then
-				name, version = line:match("^(.-) %- (.+)")
-				desc = ""
+				if not name then
+					name, version = line:match("^(.-) %- (.+)")
+					desc = ""
+				end
+
+				cb(name, version, desc)
+
+				name    = nil
+				version = nil
+				desc    = nil
 			end
-
-			cb(name, version, desc)
-
-			name    = nil
-			version = nil
-			desc    = nil
 		end
 
 		fd:close()
