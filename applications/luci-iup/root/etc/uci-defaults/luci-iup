@@ -7,6 +7,11 @@ uci -q batch <<-EOF >/dev/null
 	set ucitrack.@provisioning[-1].init=iup
 	commit ucitrack
 EOF
-
+uci -q batch <<-EOF >/dev/null
+ 	delete ucitrack.@cwmp[-1]
+ 	add ucitrack cwmp
+	set ucitrack.@cwmp[-1].init=cwmpd
+ 	commit ucitrack
+EOF
 rm -f /tmp/luci-indexcache
 exit 0
