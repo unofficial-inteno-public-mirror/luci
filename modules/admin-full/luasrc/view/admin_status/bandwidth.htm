@@ -290,7 +290,7 @@ $Id: bandwidth.htm 9014 2012-08-14 13:08:18Z jow $
                         <li class="cbi-tab<%= dev == curdev and "" or "-disabled" %>"><a href="<%=pcdata(dev)%>"><%=pcdata(prt:port_type(dev))%></a></li>
                 <% elseif dev:match("wl%d") then %>
                         <li class="cbi-tab<%= dev == curdev and "" or "-disabled" %>"><a href="<%=pcdata(dev)%>"><%=pcdata(luci.sys.exec("wlctl -i %s ssid | cut -d' ' -f 3" %dev):gsub('"', ''))%></a></li>
-                <% elseif not dev:match("^eth%d") then%>
+                <% elseif dev:match("br-") or dev:match("ppp") then%>
                         <li class="cbi-tab<%= dev == curdev and "" or "-disabled" %>"><a href="<%=pcdata(dev)%>"><%=pcdata(dev:upper())%></a></li>
                 <% end %>
         <% end %>

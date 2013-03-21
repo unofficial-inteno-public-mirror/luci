@@ -38,7 +38,7 @@ module "luci.model.network"
 
 
 IFACE_PATTERNS_VIRTUAL  = { }
-IFACE_PATTERNS_IGNORE   = { "^wmaster%d", "^wifi%d", "^hwsim%d", "^imq%d", "^ifb%d", "^mon%.wlan%d", "^sit%d", "^gre%d", "^lo$","sar$","swc$","bcmsw$","dsl%d","^atm%d$","^ptm%d$"}
+IFACE_PATTERNS_IGNORE   = { "^wmaster%d", "^wifi%d", "^hwsim%d", "^imq%d", "^ifb%d", "^mon%.wlan%d", "^sit%d", "^gre%d", "^lo$","sar$","swc$","bcmsw$","dsl%d","^atm%d$","^ptm%d$","^radiotap%d$","^vap%d$"}
 IFACE_PATTERNS_WIRELESS = { "^wlan%d", "^wl%d", "^ath%d", "^%w+%.network%d" }
 
 
