@@ -26,7 +26,7 @@ function startspt(self, opts) -- Start speed test
 	sys.exec("echo %q > /var/tptesturl" %url)
 	sys.exec("echo %s | awk -F':' '{print$3}' > /var/tptestmode" %opts:sub(1))
 	if theinterface() == "WAN" then
-		return sptrun(100, 100, url)
+		return sptrun(100, 10, url)
 	elseif theinterface() == "VDSL" then
 		return sptrun(50, 50, url)
 	elseif theinterface() == "ADSL" then
