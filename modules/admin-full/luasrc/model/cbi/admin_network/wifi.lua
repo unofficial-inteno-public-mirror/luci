@@ -820,6 +820,39 @@ end
 -------------------- Broadcom Interface ----------------------
 
 if hwtype == "broadcom" then
+
+	if fs.access("/sbin/myfid") then
+		anyfi_srv = s:taboption("general", Flag, "anyfi_enabled", translate("Anyfi.net remote access"),
+		                         translate("Allow remote access to this Wi-Fi network."))
+		anyfi_srv:depends({mode="ap", encryption="psk"})
+		anyfi_srv:depends({mode="ap", encryption="psk2"})
+		anyfi_srv:depends({mode="ap", encryption="pskmixedpsk2"})
+		anyfi_srv.rmempty = false
+		anyfi_srv.default = "0"
+
+		function anyfi_srv.write(self, section, value)
+			if value == "1"  then
+				wdev:set("anyfi_enabled", "1")
+			else
+				local dev_anyfi_enabled = "0"
+				local old_enabled = wdev:get("anyfi_enabled")
+				for _, net in ipairs(wdev:get_wifinets()) do
+			    	      if net:name() == wnet:name() then
+			       	          if value == "1" then
+			       	  	      dev_anyfi_enabled = "1"
+					  end
+				      elseif net:get("anyfi_enabled") == "1" then
+				         dev_anyfi_enabled = "1"
+				      end
+				end
+				if dev_anyfi_enabled ~= old_enabled then
+					wdev:set("anyfi_enabled", dev_anyfi_enabled)
+				end
+			end
+			self.map:set(section, "anyfi_enabled", value)
+		end
+	end
+
 	mode:value("wds", translate("WDS"))
 	mode:value("monitor", translate("Monitor"))
 
