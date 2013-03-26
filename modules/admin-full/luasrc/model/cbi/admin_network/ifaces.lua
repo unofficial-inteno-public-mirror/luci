@@ -24,7 +24,7 @@ arg[1] = arg[1] or ""
 local has_dnsmasq  = fs.access("/etc/config/dhcp")
 local has_firewall = fs.access("/etc/config/firewall")
 
-m = Map("network", translate("Interfaces") .. " - " .. arg[1]:upper(), translate("On this page you can configure the network interfaces. You can bridge several interfaces by ticking the \"bridge interfaces\" field."))
+m = Map("network", translate("Interfaces") .. " - " .. arg[1]:upper(), translate("On this page you can configure the network interfaces."))
 m:chain("wireless")
 
 if has_firewall then
@@ -229,22 +229,83 @@ auto.default = (net:proto() == "none") and auto.disabled or auto.enabled
 
 
 if not net:is_virtual() then
-	br = s:taboption("physical", Flag, "type", translate("Bridge interfaces"), translate("creates a bridge over specified interface(s)"))
-	br.enabled = "bridge"
-	br.rmempty = true
-	br:depends("proto", "static")
-	br:depends("proto", "dhcp")
-	br:depends("proto", "none")
+	--br = s:taboption("physical", Flag, "type", translate("Bridge interfaces"), translate("creates a bridge over specified interface(s)"))
+	--br.enabled = "bridge"
+	--br.rmempty = true
+	--br:depends("proto", "static")
+	--br:depends("proto", "dhcp")
+	--br:depends("proto", "none")
 
 	--stp = s:taboption("physical", Flag, "stp", translate("Enable <abbr title=\"Spanning Tree Protocol\">STP</abbr>"),
 	--	translate("Enables the Spanning Tree Protocol on this bridge"))
 	--stp:depends("type", "bridge")
 	--stp.rmempty = true
+
+	ityp = s:taboption("physical", ListValue, "type", translate("Set as"))
+	ityp:value("", "standalone interface")
+	ityp:value("bridge", "bridge over multiple interfaces")
+	ityp:value("alias", "bridge alias")
+	ityp.rmempty = true
+	ityp:depends("proto", "static")
+	ityp:depends("proto", "dhcp")
+	ityp:depends("proto", "none")
+end
+
+if not net:is_floating() then
+	ifname_alias = s:taboption("physical", Value, "ifname_alias")
+	ifname_alias.title = translate("Bridge")
+	ifname_alias.template = "cbi/network_bridgelist"
+	ifname_alias.widget = "radio"
+	ifname_alias.nobridges = false
+	ifname_alias.rmempty = false
+	ifname_alias.network = arg[1]
+	ifname_alias:depends("type", "alias")
+
+	function ifname_alias.cfgvalue(self, s)
+		-- let the template figure out the related ifaces through the network model
+		return nil
+	end
+
+	function ifname_alias.write(self, s, val)
+		local i
+		local new_ifs = { }
+		local old_ifs = { }
+
+		for _, i in ipairs(net:get_interfaces() or { net:get_interface() }) do
+			old_ifs[#old_ifs+1] = i:name()
+		end
+
+		for i in ut.imatch(val) do
+			new_ifs[#new_ifs+1] = i
+
+			-- if this is not a bridge, only assign first interface
+			if self.option == "ifname_alias" then
+				break
+			end
+		end
+
+		table.sort(old_ifs)
+		table.sort(new_ifs)
+
+		for i = 1, math.max(#old_ifs, #new_ifs) do
+			if old_ifs[i] ~= new_ifs[i] then
+				backup_ifnames()
+				for i = 1, #old_ifs do
+					net:del_interface(old_ifs[i])
+				end
+				for i = 1, #new_ifs do
+					net:add_interface(new_ifs[i])
+				end
+				break
+			end
+		end
+	end
 end
 
 
 if not net:is_floating() then
-	ifname_single = s:taboption("physical", Value, "ifname_single", translate("Interface"))
+	ifname_single = s:taboption("physical", Value, "ifname_single")
+	ifname_single.title = translate("Interface")
 	ifname_single.template = "cbi/network_ifacelist"
 	ifname_single.widget = "radio"
 	ifname_single.nobridges = true
@@ -295,7 +356,7 @@ end
 
 
 if not net:is_virtual() then
-	ifname_multi = s:taboption("physical", Value, "ifname_multi", translate("Interface"))
+	ifname_multi = s:taboption("physical", Value, "ifname_multi", translate("Interfaces"))
 	ifname_multi.template = "cbi/network_ifacelist"
 	ifname_multi.nobridges = true
 	ifname_multi.rmempty = false
@@ -349,7 +410,7 @@ function p.validate(self, value, section)
 		if not net:is_floating() and net:is_empty() then
 			local ifn = ((br and (br:formvalue(section) == "bridge"))
 				and ifname_multi:formvalue(section)
-			     or ifname_single:formvalue(section))
+			     or ifname_single:formvalue(section) or ifname_alias:formvalue(section))
 
 			for ifn in ut.imatch(ifn) do
 				return value
@@ -388,63 +449,6 @@ for _, field in ipairs(s.children) do
 	end
 end
 
-
---
--- Display IP Aliases
---
-
-if not net:is_floating() then
-	s2 = m:section(TypedSection, "alias", translate("IP-Aliases"))
-	s2.addremove = true
-
-	s2:depends("interface", arg[1])
-	s2.defaults.interface = arg[1]
-
-	s2:tab("general", translate("General Setup"))
-	s2.defaults.proto = "static"
-
-	ip = s2:taboption("general", Value, "ipaddr", translate("<abbr title=\"Internet Protocol Version 4\">IPv4</abbr>-Address"))
-	ip.optional = true
-	ip.datatype = "ip4addr"
-
-	nm = s2:taboption("general", Value, "netmask", translate("<abbr title=\"Internet Protocol Version 4\">IPv4</abbr>-Netmask"))
-	nm.optional = true
-	nm.datatype = "ip4addr"
-	nm:value("255.255.255.0")
-	nm:value("255.255.0.0")
-	nm:value("255.0.0.0")
-
-	gw = s2:taboption("general", Value, "gateway", translate("<abbr title=\"Internet Protocol Version 4\">IPv4</abbr>-Gateway"))
-	gw.optional = true
-	gw.datatype = "ip4addr"
-
-	if has_ipv6 then
-		s2:tab("ipv6", translate("IPv6 Setup"))
-
-		ip6 = s2:taboption("ipv6", Value, "ip6addr", translate("<abbr title=\"Internet Protocol Version 6\">IPv6</abbr>-Address"), translate("<abbr title=\"Classless Inter-Domain Routing\">CIDR</abbr>-Notation: address/prefix"))
-		ip6.optional = true
-		ip6.datatype = "ip6addr"
-
-		gw6 = s2:taboption("ipv6", Value, "ip6gw", translate("<abbr title=\"Internet Protocol Version 6\">IPv6</abbr>-Gateway"))
-		gw6.optional = true
-		gw6.datatype = "ip6addr"
-	end
-
-	s2:tab("advanced", translate("Advanced Settings"))
-
-	bcast = s2:taboption("advanced", Value, "bcast", translate("<abbr title=\"Internet Protocol Version 4\">IPv4</abbr>-Broadcast"))
-	bcast.optional = true
-	bcast.datatype = "ip4addr"
-
-	dns = s2:taboption("advanced", Value, "dns", translate("<abbr title=\"Domain Name System\">DNS</abbr>-Server"))
-	dns.optional = true
-	dns.datatype = "ip4addr"
-end
-
-
---
--- Display DNS settings if dnsmasq is available
---
 
 if has_dnsmasq and net:proto() == "static" then
 	m2 = Map("dhcp", "", "")

@@ -33,7 +33,10 @@ newnet.datatype = "uciname"
 
 newproto = m:field(ListValue, "_netproto", translate("Protocol of the new interface"))
 
-netbridge = m:field(Flag, "_bridge", translate("Create a bridge over multiple interfaces"))
+netbridge = m:field(ListValue, "_bridge", translate("Set as"))
+netbridge:value("", "standalone interface")
+netbridge:value("1", "bridge over multiple interfaces")
+netbridge:value("2", "bridge alias")
 
 
 sifname = m:field(Value, "_ifname", translate("Cover the following interface"))
@@ -50,6 +53,12 @@ mifname.template  = "cbi/network_ifacelist"
 mifname.nobridges = true
 
 
+aifname = m:field(Value, "_aifname", translate("Cover the following bridge"))
+
+aifname.widget = "radio"
+aifname.template  = "cbi/network_bridgelist"
+aifname.nobridges = false
+
 local _, p
 for _, p in ipairs(nw:get_protocols()) do
 	if p:is_installed() then
@@ -58,6 +67,7 @@ for _, p in ipairs(nw:get_protocols()) do
 		if not p:is_floating() then
 			sifname:depends({ _bridge = "",  _netproto = p:proto()})
 			mifname:depends({ _bridge = "1", _netproto = p:proto()})
+			aifname:depends({ _bridge = "2", _netproto = p:proto()})
 		end
 	end
 end
@@ -73,7 +83,7 @@ function newproto.validate(self, value, section)
 	local proto = nw:get_protocol(value)
 	if proto and not proto:is_floating() then
 		local br = (netbridge:formvalue(section) == "1")
-		local ifn = br and mifname:formvalue(section) or sifname:formvalue(section)
+		local ifn = br and mifname:formvalue(section) or sifname:formvalue(section) or aifname:formvalue(section)
 		for ifn in utl.imatch(ifn) do
 			return value
 		end
@@ -90,7 +100,7 @@ function newproto.write(self, section, value)
 		if net then
 			local ifn
 			for ifn in utl.imatch(
-				br and mifname:formvalue(section) or sifname:formvalue(section)
+				br and mifname:formvalue(section) or sifname:formvalue(section) or aifname:formvalue(section)
 			) do
 				net:add_interface(ifn)
 			end
