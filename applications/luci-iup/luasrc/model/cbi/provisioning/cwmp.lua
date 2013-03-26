@@ -1,5 +1,5 @@
 local net = require "luci.model.network".init()
-m = Map("cwmp",translate("tr-069"))
+m = Map("cwmp",translate("TR-069"))
 
 
 local bit = require "bit"
@@ -15,7 +15,7 @@ n = s:option(Value, "passwd",translate("ACS Password") )
 n = s:option(Flag, "periodic_inform_enable",translate("Periodic Inform Enable") )
 n.enabled="true"
 n.disabled = "false"
-n = s:option(Flag, "dhcp_discovery",translate("Dhcp Discovery"), translate("Use option 43 to find URL of ACS"))
+n = s:option(Flag, "dhcp_discovery",translate("DHCP Discovery"), translate("Use option 43 to find URL of ACS"))
 n.enable="enable"
 n.disabled = "disable"
 n = s:option(Value, "url",translate("URL") )
@@ -26,7 +26,7 @@ s = m:section(NamedSection, "cpe",  translate("Configure CPE specifc settings"),
 s.addremove = false
 s.anonymous = false
 
-iface = s:option(ListValue, "interface", translate("Waninterfaces"))
+iface = s:option(ListValue, "interface", translate("WAN Interfaces"))
 local ifcs = net:get_layer2interfaces()
 		if ifcs then
 			local _, ifn

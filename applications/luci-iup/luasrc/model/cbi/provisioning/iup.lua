@@ -1,21 +1,21 @@
 
-m = Map("provisioning", translate("IUP Provisioning"), translate("Setup Your IUP provisioning parameters")) 
+m = Map("provisioning", translate("IUP Provisioning"), translate("Setup your IUP provisioning parameters"))
 
 s = m:section(TypedSection, "general", "General") -- Configure atm interface
 enapoll = s:option(Flag, "enabled", translate("Enabled"))
 enapoll.enabled = "on"
 enapoll.disabled = "off"
-mintime = s:option(Value, "starttime", translate("Update interval Start time (24 hour format ex 02)"))
+mintime = s:option(Value, "starttime", translate("Update interval start time (24 hour format ex 02)"))
 
 function mintime:validate(value)
 	return value:match("[0-9]+")
 end
 
-timelist = s:option(ListValue, "interval", translate("update weekly or daily"))
+timelist = s:option(ListValue, "interval", translate("Update weekly or daily"))
 timelist:value("weekly", translate("Weekly"))
 timelist:value("daily", translate("Daily"))
 
-s2 = m:section(NamedSection,"configserver","server",translate ("Main Provisioning Server"), translate("If Added will override Dhcp Discover Provisioning"))
+s2 = m:section(NamedSection,"configserver","server",translate ("Main Provisioning Server"), translate("If added will override DHCP Discover Provisioning"))
 
 s2.addremove = true
 --s2.template = "cbi/tblsection"
@@ -29,7 +29,7 @@ url = s2:option(Value, "url", translate("URL"))
 --function url:validate(value)
 --	return value:match("([fh][t][tp]?[ps]://[.]+)")
 --end
-s4 = m:section(NamedSection,"iup","server",translate ("Dhcp Discover Provisioning Server"))
+s4 = m:section(NamedSection,"iup","server",translate ("DHCP Discover Provisioning Server"))
 
 --s2.addremove = true
 --s2.template = "cbi/tblsection"
