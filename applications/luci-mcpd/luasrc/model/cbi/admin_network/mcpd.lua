@@ -4,11 +4,11 @@ m = Map("mcpd",translate("IGMP Proxy"))
 
 local bit = require "bit"
 
-s = m:section(TypedSection, "mcpd",  translate("Configure Igmp proxy specific parameters"))
+s = m:section(TypedSection, "mcpd",  translate("Configure IGMP proxy specific parameters"))
 s.addremove = false
 s.anonymous = true
 
-iface = s:option(ListValue, "igmp_proxy_interfaces", translate("Wan igmp proxy interfaces"))
+iface = s:option(ListValue, "igmp_proxy_interfaces", translate("WAN IGMP proxy interfaces"))
 local ifcs = net:get_layer2interfaces()
 		if ifcs then
 			local _, ifn
@@ -29,8 +29,8 @@ n = s:option(Value, "igmp_query_response_interval",translate("Query response int
 n = s:option(Value, "igmp_last_member_query_interval",translate("Last member query interval "))
 n = s:option(Value, "igmp_robustness_value",translate("Robustness value") )
 
-n = s:option(Flag, "igmp_lan_to_lan_multicast",translate("Lan to lan multicast"),
-("Check box to enable Lan to lan multicast"))
+n = s:option(Flag, "igmp_lan_to_lan_multicast",translate("LAN to LAN multicast"),
+("Check box to enable LAN to LAN multicast"))
 n.enabled="1"                                                                                
 n.disabled="0"
 

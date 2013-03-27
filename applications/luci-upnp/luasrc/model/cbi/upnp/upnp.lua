@@ -13,6 +13,8 @@ You may obtain a copy of the License at
 $Id: upnp.lua 9570 2012-12-25 02:45:42Z jow $
 ]]--
 
+local uci = require("luci.model.uci").cursor()
+
 m = Map("upnpd", luci.util.pcdata(translate("Universal Plug & Play")),
 	translate("UPnP allows clients in the local network to automatically configure the router."))
 
@@ -58,6 +60,17 @@ s:taboption("general", Value, "upload", translate("Uplink"),
 port = s:taboption("general", Value, "port", translate("Port"))
 port.datatype = "port"
 port.default  = 5000
+
+extif = s:taboption("general", ListValue, "external_iface", translate("External Interface"))
+intif = s:taboption("general", ListValue, "internal_iface", translate("Internal Interface"))
+uci:foreach("network", "interface",
+	function (section)
+		local ifc = section[".name"]
+		if ifc ~= "loopback" then
+			extif:value(ifc)
+			intif:value(ifc)
+		end
+	end)
 
 
 s:taboption("advanced", Flag, "system_uptime", translate("Report system instead of daemon uptime")).default = "1"
