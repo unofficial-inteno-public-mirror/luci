@@ -5,7 +5,7 @@ eth = Map("layer2_interface_ethernet",
 	translate("Configure your Ethernet WAN connection"))
 
 
-s = eth:section(NamedSection, "Wan","ethernet_interface",  translate("Ethernet WAN Inteface"), translate("Decide what ethernet port should be used for WAN services"))
+s = eth:section(NamedSection, "Wan","ethernet_interface",  translate("Ethernet WAN Interface"), translate("Decide what ethernet port should be used for WAN services"))
 s.addremove = true
 
 s:option(DummyValue, "_ptm", translate("Device")).value = function(self, section)
