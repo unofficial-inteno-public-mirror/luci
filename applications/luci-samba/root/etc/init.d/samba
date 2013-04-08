@@ -85,13 +85,13 @@ start() {
 	config_foreach useradd sambausers
 	config_foreach smb_header samba
 	config_foreach smb_add_share sambashare
-	service_start smbd -D
-	service_start nmbd -D
+	service_start /bin/smbd -D
+	service_start /bin/nmbd -D
 }
 
 stop() {
-	service_stop smbd
-	service_stop nmbd
+	service_stop /bin/smbd
+	service_stop /bin/nmbd
 	purgepasswd
 	purgesmbpasswd
 }
