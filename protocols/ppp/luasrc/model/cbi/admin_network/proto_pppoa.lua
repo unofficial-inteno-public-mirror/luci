@@ -17,24 +17,24 @@ local ipv6, defaultroute, metric, peerdns, dns,
       keepalive_failure, keepalive_interval, demand, mtu
 
 
-encaps = section:taboption("general", ListValue, "encaps", translate("PPPoA Encapsulation"))
-encaps:value("vc", "VC-Mux")
-encaps:value("llc", "LLC")
+--encaps = section:taboption("general", ListValue, "encaps", translate("PPPoA Encapsulation"))
+--encaps:value("vc", "VC-Mux")
+--encaps:value("llc", "LLC")
 
 
-atmdev = section:taboption("general", Value, "atmdev", translate("ATM device number"))
-atmdev.default  = "0"
-atmdev.datatype = "uinteger"
+--atmdev = section:taboption("general", Value, "atmdev", translate("ATM device number"))
+--atmdev.default  = "0"
+--atmdev.datatype = "uinteger"
 
 
-vci = section:taboption("general", Value, "vci", translate("ATM Virtual Channel Identifier (VCI)"))
-vci.default  = "35"
-vci.datatype = "uinteger"
+--vci = section:taboption("general", Value, "vci", translate("ATM Virtual Channel Identifier (VCI)"))
+--vci.default  = "35"
+--vci.datatype = "uinteger"
 
 
-vpi = section:taboption("general", Value, "vpi", translate("ATM Virtual Path Identifier (VPI)"))
-vpi.default  = "8"
-vpi.datatype = "uinteger"
+--vpi = section:taboption("general", Value, "vpi", translate("ATM Virtual Path Identifier (VPI)"))
+--vpi.default  = "8"
+--vpi.datatype = "uinteger"
 
 
 username = section:taboption("general", Value, "username", translate("PAP/CHAP username"))

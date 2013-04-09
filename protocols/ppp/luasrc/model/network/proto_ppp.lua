@@ -77,7 +77,7 @@ for _, p in ipairs({"ppp", "pptp", "pppoe", "pppoa", "3g", "l2tp"}) do
 	end
 
 	function proto.is_floating(self)
-		return (p ~= "pppoe")
+		return (p ~= "pppoe") and (p ~= "pppoa")
 	end
 
 	function proto.is_virtual(self)
