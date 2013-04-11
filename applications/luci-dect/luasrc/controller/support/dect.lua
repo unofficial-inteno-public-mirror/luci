@@ -34,8 +34,6 @@ function dect_status()
 
 	if nixio.fs.access("/var/dectisregistering") then
 		run = 1
-	elseif nixio.fs.access("/var/dectisregistered") then
-		run = 2
 	end
 
 	local status = {

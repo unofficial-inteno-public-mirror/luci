@@ -23,13 +23,9 @@
 				{
 					tb.innerHTML = "<em><%:Registering%></em>&nbsp;&nbsp;<img src='<%=resource%>/icons/loading.gif' style='vertical-align:middle'/>";
 				}
-				else if (st.running == 2)
-				{		
-					tb.innerHTML = "<em><%:Registered%></em>&nbsp;&nbsp;<img src='<%=resource%>/icons/check.png' style='vertical-align:middle'/>";
-				}
 				else
 				{
-					tb.innerHTML = "<em><%:Not Registered%></em>&nbsp;&nbsp;<img src='<%=resource%>/icons/cross.png' style='vertical-align:middle'/>";
+					tb.innerHTML = "<em></em>";
 				}
 			}
 		}
@@ -39,7 +35,7 @@
 
 <fieldset class="cbi-section">
 	<legend><b>DECT</b></legend>
-	<p id="dect_status" align="right"></p></br>
+	<p id="dect_status" align="right"><em></em></p></br>
 	<p align="center"><input type='button' onClick='location.href=start_reg()' value='Register DECT' id='strBtn'></br>
 	<p align="center"><input type='button' onClick='location.href=default_reg()' value='Restore Default' id='resBtn'>
 </fieldset>
