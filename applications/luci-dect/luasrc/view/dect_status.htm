@@ -1,0 +1,46 @@
+<%+header%>
+<script type="text/javascript">
+	function start_reg()
+	{
+		var loc = "<%=luci.dispatcher.build_url("admin/services/reg_start")%>";
+		return loc;
+	}
+	function default_reg()
+	{
+		var loc = "<%=luci.dispatcher.build_url("admin/services/reg_def")%>";
+		return loc;
+	}
+</script>
+
+<script type="text/javascript">//<![CDATA[
+	XHR.poll(1, '<%=luci.dispatcher.build_url("admin/services/dect_status")%>', null,
+		function(x, st)
+		{
+			var tb = document.getElementById('dect_status');
+			if (st && tb)
+			{
+				if (st.running == 1)
+				{
+					tb.innerHTML = "<em><%:Registering%></em>&nbsp;&nbsp;<img src='<%=resource%>/icons/loading.gif' style='vertical-align:middle'/>";
+				}
+				else if (st.running == 2)
+				{		
+					tb.innerHTML = "<em><%:Registered%></em>&nbsp;&nbsp;<img src='<%=resource%>/icons/check.png' style='vertical-align:middle'/>";
+				}
+				else
+				{
+					tb.innerHTML = "<em><%:Not Registered%></em>&nbsp;&nbsp;<img src='<%=resource%>/icons/cross.png' style='vertical-align:middle'/>";
+				}
+			}
+		}
+	);
+//]]></script>
+
+
+<fieldset class="cbi-section">
+	<legend><b>DECT</b></legend>
+	<p id="dect_status" align="right"></p></br>
+	<p align="center"><input type='button' onClick='location.href=start_reg()' value='Register DECT' id='strBtn'></br>
+	<p align="center"><input type='button' onClick='location.href=default_reg()' value='Restore Default' id='resBtn'>
+</fieldset>
+<%+footer%>
