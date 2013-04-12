@@ -1,0 +1,44 @@
+#!/bin/sh
+
+local hexfile="$1"
+local decfile="$2"
+local lined=""
+local cnt=0
+[ -f $decfile ] && rm -f $decfile
+
+while read line
+do
+	lcnt=$((cnt+1))
+        for i in $line; do
+                cnt=$((cnt+1))
+		case $i in
+			0x*)
+			if [[ "$cnt" -eq 7 || "$cnt" -eq 9 || "$cnt" -eq 11 ]]; then
+				i=$(printf '%d.%d.%d.%d\n' `echo ${i:2:8} | sed -r 's/(..)/0x\1 /g'`)
+			else
+				if [ "$i" = "0xffffffff" ]; then
+					i="-1"
+				else
+					i=$(printf '%d' $i)
+				fi
+			fi
+			;;
+		esac
+		case $line in
+			*snooping*)
+				printf "%s" "$i" > /var/newigmpsnpi
+			;;
+			*)
+				printf "%-16s %s" "$i" > /var/newigmpsnpi
+			;;
+		esac
+		printf "%s\t" "$(cat /var/newigmpsnpi)" > /var/newigmpsnpi
+		printf "%s%s" "$(cat /var/newigmpsnpline 2>/dev/null)" "$(cat /var/newigmpsnpi)" > /var/newigmpsnpline
+		rm /var/newigmpsnpi
+        done
+        cnt=0
+        printf "%s\n" "$(cat /var/newigmpsnpline)" >> $decfile
+        rm /var/newigmpsnpline
+done < $hexfile
+
+
