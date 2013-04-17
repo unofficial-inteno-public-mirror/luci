@@ -37,6 +37,7 @@ netbridge = m:field(ListValue, "_bridge", translate("Set as"))
 netbridge:value("", "standalone interface")
 netbridge:value("1", "bridge over multiple interfaces")
 netbridge:value("2", "bridge alias")
+netbridge:value("3", "multi WAN")
 
 
 sifname = m:field(Value, "_ifname", translate("Cover the following interface"))
@@ -59,6 +60,12 @@ aifname.widget = "radio"
 aifname.template  = "cbi/network_bridgelist"
 aifname.nobridges = false
 
+mwifname = m:field(Value, "_mwifnames", translate("Cover the following interfaces"))
+
+mwifname.widget = "checkbox"
+mwifname.template  = "cbi/network_wanifacelist"
+mwifname.nobridges = true
+
 local _, p
 for _, p in ipairs(nw:get_protocols()) do
 	if p:is_installed() then
@@ -68,6 +75,7 @@ for _, p in ipairs(nw:get_protocols()) do
 			sifname:depends({ _bridge = "",  _netproto = p:proto()})
 			mifname:depends({ _bridge = "1", _netproto = p:proto()})
 			aifname:depends({ _bridge = "2", _netproto = p:proto()})
+			mwifname:depends({ _bridge = "3", _netproto = p:proto()})
 		end
 	end
 end
@@ -83,7 +91,7 @@ function newproto.validate(self, value, section)
 	local proto = nw:get_protocol(value)
 	if proto and not proto:is_floating() then
 		local br = (netbridge:formvalue(section) == "1")
-		local ifn = br and mifname:formvalue(section) or sifname:formvalue(section) or aifname:formvalue(section)
+		local ifn = br and mifname:formvalue(section) or sifname:formvalue(section) or aifname:formvalue(section) or mwifname:formvalue(section)
 		for ifn in utl.imatch(ifn) do
 			return value
 		end
@@ -95,12 +103,12 @@ end
 function newproto.write(self, section, value)
 	local name = newnet:formvalue(section)
 	if name and #name > 0 then
-		local br = (netbridge:formvalue(section) == "1") and "bridge" or nil
+		local br = (netbridge:formvalue(section) == "1") and "bridge" or "multiwan" or nil
 		local net = nw:add_network(name, { proto = value, type = br })
 		if net then
 			local ifn
 			for ifn in utl.imatch(
-				br and mifname:formvalue(section) or sifname:formvalue(section) or aifname:formvalue(section)
+				br and mifname:formvalue(section) or sifname:formvalue(section) or aifname:formvalue(section) or mwifname:formvalue(section)
 			) do
 				net:add_interface(ifn)
 			end

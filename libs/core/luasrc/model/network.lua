@@ -981,6 +981,10 @@ function protocol.is_bridge(self)
 	return (not self:is_virtual() and self:type() == "bridge")
 end
 
+function protocol.is_multiwan(self)
+	return (self:type() == "multiwan")
+end
+
 function protocol.opkg_package(self)
 	return nil
 end
@@ -1056,6 +1060,8 @@ function protocol.get_interface(self)
 	elseif self:is_bridge() then
 		_bridge["br-" .. self.sid] = true
 		return interface("br-" .. self.sid, self)
+	elseif self:is_multiwan() then
+		return interface(self:_ubus("device") or " ")
 	else
 		local ifn = nil
 		local num = { }
@@ -1083,7 +1089,7 @@ function protocol.get_interface(self)
 end
 
 function protocol.get_interfaces(self)
-	if self:is_bridge() or (self:is_virtual() and not self:is_floating()) then
+	if self:is_bridge() or self:is_multiwan() or (self:is_virtual() and not self:is_floating()) then
 		local ifaces = { }
 
 		local ifn
@@ -1129,6 +1135,8 @@ function protocol.contains_interface(self, ifname)
 	elseif self:is_virtual() and self:proto() .. "-" .. self.sid == ifname then
 		return true
 	elseif self:is_bridge() and "br-" .. self.sid == ifname then
+		return true
+	elseif self:is_multiwan() then
 		return true
 	else
 		local ifn

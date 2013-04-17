@@ -240,19 +240,20 @@ if not net:is_virtual() then
 	--br:depends("proto", "dhcp")
 	--br:depends("proto", "none")
 
+	br = s:taboption("physical", ListValue, "type", translate("Set as"))
+	br:value("", "standalone interface")
+	br:value("bridge", "bridge over multiple interfaces")
+	br:value("alias", "bridge alias")
+	br:value("multiwan", "multi WAN")
+	br.rmempty = true
+	br:depends("proto", "static")
+	br:depends("proto", "dhcp")
+	br:depends("proto", "none")
+
 	--stp = s:taboption("physical", Flag, "stp", translate("Enable <abbr title=\"Spanning Tree Protocol\">STP</abbr>"),
 	--	translate("Enables the Spanning Tree Protocol on this bridge"))
 	--stp:depends("type", "bridge")
 	--stp.rmempty = true
-
-	ityp = s:taboption("physical", ListValue, "type", translate("Set as"))
-	ityp:value("", "standalone interface")
-	ityp:value("bridge", "bridge over multiple interfaces")
-	ityp:value("alias", "bridge alias")
-	ityp.rmempty = true
-	ityp:depends("proto", "static")
-	ityp:depends("proto", "dhcp")
-	ityp:depends("proto", "none")
 end
 
 if not net:is_floating() then
@@ -372,6 +373,19 @@ if not net:is_virtual() then
 end
 
 
+if not net:is_virtual() then
+	ifname_multiwan = s:taboption("physical", Value, "ifname_multiwan", translate("Interfaces"))
+	ifname_multiwan.template = "cbi/network_wanifacelist"
+	ifname_multiwan.nobridges = true
+	ifname_multiwan.rmempty = false
+	ifname_multiwan.network = arg[1]
+	ifname_multiwan.widget = "checkbox"
+	ifname_multiwan:depends("type", "multiwan")
+	ifname_multiwan.cfgvalue = ifname_single.cfgvalue
+	ifname_multiwan.write = ifname_single.write
+end
+
+
 if has_firewall then
 	fwzone = s:taboption("firewall", Value, "_fwzone",
 		translate("Create / Assign firewall-zone"),
@@ -414,7 +428,7 @@ function p.validate(self, value, section)
 		if not net:is_floating() and net:is_empty() then
 			local ifn = ((br and (br:formvalue(section) == "bridge"))
 				and ifname_multi:formvalue(section)
-			     or ifname_single:formvalue(section) or ifname_alias:formvalue(section))
+			     or ifname_single:formvalue(section) or ifname_alias:formvalue(section) or ifname_multiwan:formvalue(section))
 
 			for ifn in ut.imatch(ifn) do
 				return value
