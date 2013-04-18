@@ -15,23 +15,6 @@ $Id: flashops.htm 7798 2011-10-26 23:43:04Z jow $
 
 <%+header%>
 
-<script language="javascript">
-function urlUpgrade()
-{
-	var keep, url, loc;
-
-	keep = document.getElementById("keep").checked;
-	url = document.getElementById("url").value.split('/').join(' ');
-
-	if (keep)
-		loc = "<%=luci.dispatcher.build_url('admin/system/flashops/')%>" +url+ "?image=1;keep=1";
-	else
-		loc = "<%=luci.dispatcher.build_url('admin/system/flashops/')%>" +url+ "?image=1";
-
-	return loc;
-}
-</script>
-
 <h2><a id="content" name="content"><%:Flash operations%></a></h2>
 
 <ul class="cbi-tabmenu">
@@ -92,14 +75,9 @@ function urlUpgrade()
 					<div class="cbi-value cbi-value-last<% if image_invalid then %> cbi-value-error<% end %>">
 						<label class="cbi-value-title" for="image"><%:Image%>:</label>
 						<div class="cbi-value-field">
-							<input type="file" name="image" id="image" />
-							<input type="submit" class="cbi-button cbi-input-apply" value="<%:Flash Image File%>" />
-						</div>
-						<br>
-						<label class="cbi-value-title" for="image"><%:URL%>:</label>
-						<div class="cbi-value-field">
-							<input type="url" name="url" size="29" id="url" placeholder="Enter image URL" />
-							<input type="button" onclick="location.href=urlUpgrade()" value="<%:  Flash Image URL  %>" />
+							<input type="file" name="image" id="image" /> <%:or%>
+							<input type="url" name="url" id="url" placeholder="Enter image URL" />
+							<input type="submit" class="cbi-button cbi-input-apply" value="<%:Flash image...%>" />
 						</div>
 					</div>
 				</div>

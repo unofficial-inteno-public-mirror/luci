@@ -29,7 +29,7 @@ function index()
 		entry({"admin", "system", "leds"}, cbi("admin_system/leds"), _("<abbr title=\"Light Emitting Diode\">LED</abbr> Configuration"), 60)
 	end
 
-	entry({"admin", "system", "flashops"}, call("action_flashops"), _("Backup / Flash Firmware"), 70).leaf=true
+	entry({"admin", "system", "flashops"}, call("action_flashops"), _("Backup / Flash Firmware"), 70)
 	entry({"admin", "system", "flashops", "backupfiles"}, form("admin_system/backupfiles"))
 
 	entry({"admin", "system", "reboot"}, call("action_reboot"), _("Reboot"), 90)
@@ -50,7 +50,7 @@ function action_clock_status()
 	luci.http.write_json({ timestring = os.date("%c") })
 end
 
-function action_flashops(url)
+function action_flashops()
 	local sys = require "luci.sys"
 	local fs  = require "luci.fs"
 
@@ -60,12 +60,6 @@ function action_flashops(url)
 	local restore_cmd = "tar -xzC/ >/dev/null 2>&1"
 	local backup_cmd  = "sysupgrade --create-backup - 2>/dev/null"
 	local image_tmp   = "/tmp/firmware.img"
-	local url_addr
-
-	if url and url:match("http") then
-		url_addr = url:gsub(" ","/")
-		luci.sys.exec("wget -O %s %s" %{image_tmp, url_addr})
-	end
 
 	local function image_supported()
 		-- XXX: yay...
@@ -151,6 +145,16 @@ function action_flashops(url)
 			luci.sys.reboot()
 		end
 	elseif luci.http.formvalue("image") or luci.http.formvalue("step") then
+
+		--
+		-- Download image if URL given
+		--
+		local url = luci.http.formvalue("url")
+
+		if url and url:match("http") then
+			luci.sys.exec("wget -O %s %s" %{image_tmp, url})
+		end
+
 		--
 		-- Initiate firmware flash
 		--
