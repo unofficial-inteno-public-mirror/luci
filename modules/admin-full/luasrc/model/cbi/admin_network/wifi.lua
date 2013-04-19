@@ -873,9 +873,11 @@ if hwtype == "broadcom" then
 	mf:value("0", translate("Disable"))
 	mf:value("2", translate("Allow listed only"))
 	mf:value("1", translate("Allow all except listed"))
+
 	ml = s:taboption("macfilter", DynamicList, "maclist", translate("MAC-List"))
 	ml:depends({macfilter="2"})
 	ml:depends({macfilter="1"})
+	nt.mac_hints(function(mac, name) ml:value(mac, "%s (%s)" %{ mac, name }) end)
 
 	bssid:depends({mode="wds"})
 	bssid:depends({mode="adhoc"})
