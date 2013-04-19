@@ -1136,7 +1136,7 @@ function protocol.contains_interface(self, ifname)
 		return true
 	elseif self:is_bridge() and "br-" .. self.sid == ifname then
 		return true
-	elseif self:is_multiwan() then
+	elseif self:is_multiwan() and self:_ubus("device") == ifname then
 		return true
 	else
 		local ifn
