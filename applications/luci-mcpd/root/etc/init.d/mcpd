@@ -1,5 +1,6 @@
 #!/bin/sh /etc/rc.common
 # Copyright (C) 2010-2012 OpenWrt.org
+include /lib/network
 
 START=99
 STOP=10
@@ -8,10 +9,20 @@ MCPD_BIN="/usr/sbin/mcpd"
 start() {
 	local igmp_snooping_enable
 	local igmp_snooping_interfaces
-	grep igmp /etc/config/mcpd | awk '{ print $2 $3}' | sed -e "s/[\'\"]/ /g" | tr "_" "-" >/var/mcpd.conf
+	local igmp_proxy_interfaces
+	local device
+       
+
 	config_load mcpd
 	config_get igmp_snooping_enable mcpd igmp_snooping_enable
-	config_get igmp_snooping_interfaces mcpd igmp_snooping_interfaces 
+	config_get igmp_snooping_interfaces mcpd igmp_snooping_interfaces
+	config_get igmp_proxy_interfaces mcpd igmp_proxy_interfaces
+	
+        json_load "$(ifstatus $igmp_proxy_interfaces)"
+	json_get_var device device
+	grep igmp /etc/config/mcpd | awk '{ print $2 $3}' | sed -e "s/[\'\"]/ /g" | tr "_" "-" >/var/mcpd.conf
+	sed  -i "s/igmp-proxy-interfaces.*/igmp-proxy-interfaces $device/"  /tmp/mcpd.conf
+	 
 	/usr/sbin/brctl enableportsnooping "$igmp_snooping_interfaces" "$igmp_snooping_enable"
 	 start-stop-daemon -S -x $MCPD_BIN -p /var/run/mcpd.pid -m -b 
 

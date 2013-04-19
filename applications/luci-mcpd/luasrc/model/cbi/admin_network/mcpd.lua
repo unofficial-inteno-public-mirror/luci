@@ -3,20 +3,19 @@ m = Map("mcpd",translate("IGMP Proxy"))
 
 
 local bit = require "bit"
-
+local uci = require("luci.model.uci").cursor()
 s = m:section(TypedSection, "mcpd",  translate("Configure IGMP proxy specific parameters"))
 s.addremove = false
 s.anonymous = true
 
 iface = s:option(ListValue, "igmp_proxy_interfaces", translate("WAN IGMP proxy interfaces"))
-local ifcs = net:get_layer2interfaces()
-		if ifcs then
-			local _, ifn
-		
-			for _, ifn in ipairs(ifcs) do
-				iface:value(ifn:name(), translate(ifn:layer2name()))
-			end
-		end	
+uci:foreach("network", "interface",
+	function (section)
+		local ifc = section[".name"]
+		if ifc ~= "loopback" then
+			iface:value(ifc)
+		end
+	end)
 
 n = s:option(ListValue, "igmp_default_version", translate("Default version"),
 ("Choose default version from list"))
