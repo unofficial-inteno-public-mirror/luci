@@ -13,15 +13,18 @@ do
                 cnt=$((cnt+1))
 		case $i in
 			0x*)
-			if [[ "$cnt" -eq 7 || "$cnt" -eq 9 || "$cnt" -eq 11 ]]; then
-				i=$(printf '%d.%d.%d.%d\n' `echo ${i:2:8} | sed -r 's/(..)/0x\1 /g'`)
-			else
-				if [ "$i" = "0xffffffff" ]; then
-					i="-1"
-				else
-					i=$(printf '%d' $i)
-				fi
-			fi
+				case $cnt in
+					7|9|11)
+						i=$(printf '%d.%d.%d.%d\n' `echo ${i:2:8} | sed -r 's/(..)/0x\1 /g'`)
+					;;
+					*)
+						if [ "$i" = "0xffffffff" ]; then
+							i="-1"
+						else
+							i=$(printf '%d' $i)
+						fi
+					;;
+				esac
 			;;
 		esac
 		case $line in
@@ -29,7 +32,17 @@ do
 				printf "%s" "$i" > /var/newigmpsnpi
 			;;
 			*)
-				printf "%-16s %s" "$i" > /var/newigmpsnpi
+				case $cnt in
+					5|6)
+						[ $(expr length "$i") -gt 7 ] && printf "%-20s %s" "$i" > /var/newigmpsnpi || printf "%-8s %s" "$i" > /var/newigmpsnpi
+					;;
+					7|9|11)
+						printf "%-20s %s" "$i" > /var/newigmpsnpi
+					;;
+		                        *)
+		                                printf "%-8s %s" "$i" > /var/newigmpsnpi
+		                        ;;
+				esac
 			;;
 		esac
 		printf "%s\t" "$(cat /var/newigmpsnpi)" > /var/newigmpsnpi
@@ -40,5 +53,4 @@ do
         printf "%s\n" "$(cat /var/newigmpsnpline)" >> $decfile
         rm /var/newigmpsnpline
 done < $hexfile
-
 
