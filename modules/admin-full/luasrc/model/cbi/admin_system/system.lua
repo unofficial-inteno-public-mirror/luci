@@ -33,6 +33,7 @@ s.addremove = false
 s:tab("general",  translate("General Settings"))
 s:tab("logging",  translate("Logging"))
 s:tab("language", translate("Language and Style"))
+s:tab("connection", translate("Connection Test"))
 
 
 --
@@ -146,6 +147,22 @@ end
 
 function o.write(self, section, value)
 	m.uci:set("luci", "main", "mediaurlbase", value)
+end
+
+
+--
+-- Connection Status
+--
+
+local has_videoled = (tonumber(luci.sys.exec("ledctl | egrep -w -i -c 'TV|Video'")) >= 1)
+
+int_test = s:taboption("connection", Value, "internet_test_addr", translate("Internet"), translate("to test Internet connection"))
+int_test.rmempty = true
+int_test.placeholder = "Enter an URL or IP address"
+if has_videoled then
+	iptv_test = s:taboption("connection", Value, "iptv_test_addr", translate("IPTV"), translate("to test IPTV connection"))
+	iptv_test.rmempty = true
+	iptv_test.placeholder = "Enter an URL or IP address"
 end
 
 
