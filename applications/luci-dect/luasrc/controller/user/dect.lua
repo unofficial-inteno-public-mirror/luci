@@ -22,7 +22,7 @@ function reg_start()
 end
 
 function reg_def()
-	luci.sys.exec("cp /etc/dect/nvs_default /etc/dect/nvs")
+	luci.sys.exec("rm -f /etc/dect/nvs")
 	luci.http.redirect(luci.dispatcher.build_url("user/services/dect"))
 	return
 end
