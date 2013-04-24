@@ -189,6 +189,10 @@ end
 m.on_init = set_status
 m.on_after_save = set_status
 
+if net:proto() == "static" then
+	islan = s:taboption("general", Flag, "is_lan", translate("LAN"), translate("Assign this interface as LAN"))
+	islan.rmempty = true
+end
 
 p = s:taboption("general", ListValue, "proto", translate("Protocol"))
 p.default = net:proto()
