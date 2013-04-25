@@ -91,7 +91,9 @@ function newproto.validate(self, value, section)
 	local proto = nw:get_protocol(value)
 	if proto and not proto:is_floating() then
 		local br = (netbridge:formvalue(section) == "1")
-		local ifn = br and mifname:formvalue(section) or sifname:formvalue(section) or aifname:formvalue(section) or mwifname:formvalue(section)
+		local al = (netbridge:formvalue(section) == "2")
+		local mw = (netbridge:formvalue(section) == "3")
+		local ifn = (br and mifname:formvalue(section)) or (al and aifname:formvalue(section)) or (mw and mwifname:formvalue(section)) or sifname:formvalue(section)
 		for ifn in utl.imatch(ifn) do
 			return value
 		end
@@ -103,12 +105,14 @@ end
 function newproto.write(self, section, value)
 	local name = newnet:formvalue(section)
 	if name and #name > 0 then
-		local br = (netbridge:formvalue(section) == "1") and "bridge" or "multiwan" or nil
-		local net = nw:add_network(name, { proto = value, type = br })
+		local br = (netbridge:formvalue(section) == "1") and "bridge"
+		local al = (netbridge:formvalue(section) == "2") and "alias"
+		local mw = (netbridge:formvalue(section) == "3") and "multiwan"
+		local net = nw:add_network(name, { proto = value, type = br or al or mw or nil})
 		if net then
 			local ifn
 			for ifn in utl.imatch(
-				br and mifname:formvalue(section) or sifname:formvalue(section) or aifname:formvalue(section) or mwifname:formvalue(section)
+				(br and mifname:formvalue(section)) or (al and aifname:formvalue(section)) or (mw and mwifname:formvalue(section)) or sifname:formvalue(section)
 			) do
 				net:add_interface(ifn)
 			end
