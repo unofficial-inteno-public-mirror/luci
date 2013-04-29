@@ -156,13 +156,13 @@ end
 
 local has_videoled = (tonumber(luci.sys.exec("ledctl | egrep -w -i -c 'TV|Video'")) >= 1)
 
-int_test = s:taboption("connection", Value, "internet_test_addr", translate("Internet"), translate("to test Internet connection"))
+int_test = s:taboption("connection", Value, "netping_addr", translate("Internet"), translate("for Internet connection test"))
 int_test.rmempty = true
-int_test.placeholder = "Enter an URL or IP address"
+int_test.placeholder = "Enter an address to ping"
 if has_videoled then
-	iptv_test = s:taboption("connection", Value, "iptv_test_addr", translate("IPTV"), translate("to test IPTV connection"))
+	iptv_test = s:taboption("connection", Value, "tvping_addr", translate("IPTV"), translate("for IPTV connection test"))
 	iptv_test.rmempty = true
-	iptv_test.placeholder = "Enter an URL or IP address"
+	iptv_test.placeholder = "Enter an address to ping"
 end
 
 
