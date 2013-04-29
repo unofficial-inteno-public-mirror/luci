@@ -20,6 +20,7 @@ require("luci.fs")
 require("luci.config")
 
 local m, s, o
+local guser = "%s" %luci.dispatcher.context.path[1]
 local has_ntpd = luci.fs.access("/usr/sbin/ntpd")
 
 m = Map("system", translate("System"), translate("Here you can configure the basic aspects of your device like its hostname or the timezone."))
@@ -31,9 +32,11 @@ s.anonymous = true
 s.addremove = false
 
 s:tab("general",  translate("General Settings"))
+if guser ~= "user" then
 s:tab("logging",  translate("Logging"))
-s:tab("language", translate("Language and Style"))
 s:tab("connection", translate("Connection Test"))
+end
+s:tab("language", translate("Language and Style"))
 
 
 --
@@ -73,41 +76,57 @@ function o.write(self, section, value)
 	luci.fs.writefile("/etc/TZ", timezone .. "\n")
 end
 
+if guser ~= "user" then
+	--
+	-- Logging
+	--
 
---
--- Logging
---
+	o = s:taboption("logging", Value, "log_size", translate("System log buffer size"), "kiB")
+	o.optional    = true
+	o.placeholder = 16
+	o.datatype    = "uinteger"
 
-o = s:taboption("logging", Value, "log_size", translate("System log buffer size"), "kiB")
-o.optional    = true
-o.placeholder = 16
-o.datatype    = "uinteger"
+	o = s:taboption("logging", Value, "log_ip", translate("External system log server"))
+	o.optional    = true
+	o.placeholder = "0.0.0.0"
+	o.datatype    = "ip4addr"
 
-o = s:taboption("logging", Value, "log_ip", translate("External system log server"))
-o.optional    = true
-o.placeholder = "0.0.0.0"
-o.datatype    = "ip4addr"
+	o = s:taboption("logging", Value, "log_port", translate("External system log server port"))
+	o.optional    = true
+	o.placeholder = 514
+	o.datatype    = "port"
 
-o = s:taboption("logging", Value, "log_port", translate("External system log server port"))
-o.optional    = true
-o.placeholder = 514
-o.datatype    = "port"
+	o = s:taboption("logging", ListValue, "conloglevel", translate("Log output level"))
+	o:value(8, translate("Debug"))
+	o:value(7, translate("Info"))
+	o:value(6, translate("Notice"))
+	o:value(5, translate("Warning"))
+	o:value(4, translate("Error"))
+	o:value(3, translate("Critical"))
+	o:value(2, translate("Alert"))
+	o:value(1, translate("Emergency"))
 
-o = s:taboption("logging", ListValue, "conloglevel", translate("Log output level"))
-o:value(8, translate("Debug"))
-o:value(7, translate("Info"))
-o:value(6, translate("Notice"))
-o:value(5, translate("Warning"))
-o:value(4, translate("Error"))
-o:value(3, translate("Critical"))
-o:value(2, translate("Alert"))
-o:value(1, translate("Emergency"))
+	o = s:taboption("logging", ListValue, "cronloglevel", translate("Cron Log Level"))
+	o.default = 8
+	o:value(5, translate("Debug"))
+	o:value(8, translate("Normal"))
+	o:value(9, translate("Warning"))
 
-o = s:taboption("logging", ListValue, "cronloglevel", translate("Cron Log Level"))
-o.default = 8
-o:value(5, translate("Debug"))
-o:value(8, translate("Normal"))
-o:value(9, translate("Warning"))
+	--
+	-- Connection Status
+	--
+
+	local has_videoled = (tonumber(luci.sys.exec("ledctl | egrep -w -i -c 'TV|Video'")) >= 1)
+
+	int_test = s:taboption("connection", Value, "netping_addr", translate("Internet"), translate("for Internet connection test"))
+	int_test.rmempty = true
+	int_test.placeholder = "Enter an address to ping"
+	if has_videoled then
+		iptv_test = s:taboption("connection", Value, "tvping_addr", translate("IPTV"), translate("for IPTV connection test"))
+		iptv_test.rmempty = true
+		iptv_test.placeholder = "Enter an address to ping"
+	end
+end
 
 
 --
@@ -147,22 +166,6 @@ end
 
 function o.write(self, section, value)
 	m.uci:set("luci", "main", "mediaurlbase", value)
-end
-
-
---
--- Connection Status
---
-
-local has_videoled = (tonumber(luci.sys.exec("ledctl | egrep -w -i -c 'TV|Video'")) >= 1)
-
-int_test = s:taboption("connection", Value, "netping_addr", translate("Internet"), translate("for Internet connection test"))
-int_test.rmempty = true
-int_test.placeholder = "Enter an address to ping"
-if has_videoled then
-	iptv_test = s:taboption("connection", Value, "tvping_addr", translate("IPTV"), translate("for IPTV connection test"))
-	iptv_test.rmempty = true
-	iptv_test.placeholder = "Enter an address to ping"
 end
 
 
