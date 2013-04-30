@@ -32,10 +32,8 @@ s.anonymous = true
 s.addremove = false
 
 s:tab("general",  translate("General Settings"))
-if guser ~= "user" then
 s:tab("logging",  translate("Logging"))
 s:tab("connection", translate("Connection Test"))
-end
 s:tab("language", translate("Language and Style"))
 
 

@@ -73,6 +73,31 @@ function index()
 			--end
 		end
 
+		page = entry({"support", "network", "iface_status"}, call("iface_status"), nil)
+		page.leaf = true
+
+		page = entry({"support", "network", "iface_reconnect"}, call("iface_reconnect"), nil)
+		page.leaf = true
+
+		page = entry({"support", "network", "iface_shutdown"}, call("iface_shutdown"), nil)
+		page.leaf = true
+
+		page = entry({"support", "network", "network"}, arcombine(cbi("admin_network/network"), cbi("admin_network/ifaces")), _("Interfaces"), 10)
+		page.leaf   = true
+		page.subindex = true
+
+		--if page.inreq then
+			entry({"support", "network", "network", "network"}, true, "Interfaces", 1)
+			uci:foreach("network", "interface",
+				function (section)
+					local ifc = section[".name"]
+					if ifc ~= "loopback" and section.is_lan == "1" then
+						entry({"support", "network", "network", ifc},
+						true, ifc:upper())
+					end
+				end)
+		--end
+
 		if nixio.fs.access("/etc/config/dhcp") then
 			page = node("support", "network", "dhcp")
 			page.target = cbi("admin_network/dhcp")
@@ -185,6 +210,112 @@ function wifi_delete(network)
 	end
 
 	luci.http.redirect(luci.dispatcher.build_url("admin/network/wireless"))
+end
+
+function iface_status(ifaces)
+	local netm = require "luci.model.network".init()
+	local rv   = { }
+
+	local iface
+	for iface in ifaces:gmatch("[%w%.%-_]+") do
+		local net = netm:get_network(iface)
+		local device = net and net:get_interface()
+		if device then
+			local data = {
+				id         = iface,
+				proto      = net:proto(),
+				uptime     = net:uptime(),
+				gwaddr     = net:gwaddr(),
+				dnsaddrs   = net:dnsaddrs(),
+				name       = device:shortname(),
+				type       = device:type(),
+				ifname     = device:name(),
+				macaddr    = device:mac(),
+				is_up      = device:is_up(),
+				rx_bytes   = device:rx_bytes(),
+				tx_bytes   = device:tx_bytes(),
+				rx_packets = device:rx_packets(),
+				tx_packets = device:tx_packets(),
+
+				ipaddrs    = { },
+				ip6addrs   = { },
+				subdevices = { }
+			}
+
+			local _, a
+			for _, a in ipairs(device:ipaddrs()) do
+				data.ipaddrs[#data.ipaddrs+1] = {
+					addr      = a:host():string(),
+					netmask   = a:mask():string(),
+					prefix    = a:prefix()
+				}
+			end
+			for _, a in ipairs(device:ip6addrs()) do
+				if not a:is6linklocal() then
+					data.ip6addrs[#data.ip6addrs+1] = {
+						addr      = a:host():string(),
+						netmask   = a:mask():string(),
+						prefix    = a:prefix()
+					}
+				end
+			end
+
+			for _, device in ipairs(net:get_interfaces() or {}) do
+				data.subdevices[#data.subdevices+1] = {
+					name       = device:shortname(),
+					type       = device:type(),
+					ifname     = device:name(),
+					macaddr    = device:mac(),
+					macaddr    = device:mac(),
+					is_up      = device:is_up(),
+					rx_bytes   = device:rx_bytes(),
+					tx_bytes   = device:tx_bytes(),
+					rx_packets = device:rx_packets(),
+					tx_packets = device:tx_packets(),
+				}
+			end
+
+			rv[#rv+1] = data
+		else
+			rv[#rv+1] = {
+				id   = iface,
+				name = iface,
+				type = "ethernet"
+			}
+		end
+	end
+
+	if #rv > 0 then
+		luci.http.prepare_content("application/json")
+		luci.http.write_json(rv)
+		return
+	end
+
+	luci.http.status(404, "No such device")
+end
+
+function iface_reconnect(iface)
+	local netmd = require "luci.model.network".init()
+	local net = netmd:get_network(iface)
+	if net then
+		luci.sys.call("env -i /sbin/ifup %q >/dev/null 2>/dev/null" % iface)
+		luci.http.status(200, "Reconnected")
+		return
+	end
+
+	luci.http.status(404, "No such interface")
+end
+
+function iface_shutdown(iface)
+	local netmd = require "luci.model.network".init()
+	local net = netmd:get_network(iface)
+	if net then
+		luci.sys.call("env -i /sbin/ifdown %q >/dev/null 2>/dev/null" % iface)
+		luci.http.status(200, "Shutdown")
+		return
+	end
+
+	luci.http.status(404, "No such interface")
 end
 
 function wifi_status(devs)

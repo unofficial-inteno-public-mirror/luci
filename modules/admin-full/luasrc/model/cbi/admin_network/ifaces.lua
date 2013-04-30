@@ -21,6 +21,7 @@ local fw = require "luci.model.firewall"
 
 arg[1] = arg[1] or ""
 
+local guser = "%s" %luci.dispatcher.context.path[1]
 local has_dnsmasq  = fs.access("/etc/config/dhcp")
 local has_firewall = fs.access("/etc/config/firewall")
 
@@ -194,61 +195,63 @@ if net:proto() == "static" then
 	islan.rmempty = true
 end
 
-p = s:taboption("general", ListValue, "proto", translate("Protocol"))
-p.default = net:proto()
+
+if guser == "admin" then
+	p = s:taboption("general", ListValue, "proto", translate("Protocol"))
+	p.default = net:proto()
+
+	if not net:is_installed() then
+		p_install = s:taboption("general", Button, "_install")
+		p_install.title      = translate("Protocol support is not installed")
+		p_install.inputtitle = translate("Install package %q" % net:opkg_package())
+		p_install.inputstyle = "apply"
+		p_install:depends("proto", net:proto())
+
+		function p_install.write()
+			return luci.http.redirect(
+				luci.dispatcher.build_url("admin/system/packages") ..
+				"?submit=1&install=%s" % net:opkg_package()
+			)
+		end
+	end
 
 
-if not net:is_installed() then
-	p_install = s:taboption("general", Button, "_install")
-	p_install.title      = translate("Protocol support is not installed")
-	p_install.inputtitle = translate("Install package %q" % net:opkg_package())
-	p_install.inputstyle = "apply"
-	p_install:depends("proto", net:proto())
+	p_switch = s:taboption("general", Button, "_switch")
+	p_switch.title      = translate("Really switch protocol?")
+	p_switch.inputtitle = translate("Switch protocol")
+	p_switch.inputstyle = "apply"
 
-	function p_install.write()
-		return luci.http.redirect(
-			luci.dispatcher.build_url("admin/system/packages") ..
-			"?submit=1&install=%s" % net:opkg_package()
-		)
+	local _, pr
+	for _, pr in ipairs(nw:get_protocols()) do
+		p:value(pr:proto(), pr:get_i18n())
+		if pr:proto() ~= net:proto() then
+			p_switch:depends("proto", pr:proto())
+		end
 	end
 end
 
 
-p_switch = s:taboption("general", Button, "_switch")
-p_switch.title      = translate("Really switch protocol?")
-p_switch.inputtitle = translate("Switch protocol")
-p_switch.inputstyle = "apply"
-
-local _, pr
-for _, pr in ipairs(nw:get_protocols()) do
-	p:value(pr:proto(), pr:get_i18n())
-	if pr:proto() ~= net:proto() then
-		p_switch:depends("proto", pr:proto())
-	end
+if guser == "admin" then
+	auto = s:taboption("advanced", Flag, "auto", translate("Bring up on boot"))
+	auto.default = (net:proto() == "none") and auto.disabled or auto.enabled
 end
-
-
-auto = s:taboption("advanced", Flag, "auto", translate("Bring up on boot"))
-auto.default = (net:proto() == "none") and auto.disabled or auto.enabled
 
 
 if not net:is_virtual() then
-	--br = s:taboption("physical", Flag, "type", translate("Bridge interfaces"), translate("creates a bridge over specified interface(s)"))
-	--br.enabled = "bridge"
-	--br.rmempty = true
-	--br:depends("proto", "static")
-	--br:depends("proto", "dhcp")
-	--br:depends("proto", "none")
-
 	br = s:taboption("physical", ListValue, "type", translate("Set as"))
 	br:value("", "standalone interface")
 	br:value("bridge", "bridge over multiple interfaces")
 	br:value("alias", "bridge alias")
-	br:value("multiwan", "multi WAN")
+	if guser == "admin" then
+		br:value("multiwan", "multi WAN")
+	end
 	br.rmempty = true
-	br:depends("proto", "static")
-	br:depends("proto", "dhcp")
-	br:depends("proto", "none")
+
+	if guser == "admin" then
+		br:depends("proto", "static")
+		br:depends("proto", "dhcp")
+		br:depends("proto", "none")
+	end
 
 	--stp = s:taboption("physical", Flag, "stp", translate("Enable <abbr title=\"Spanning Tree Protocol\">STP</abbr>"),
 	--	translate("Enables the Spanning Tree Protocol on this bridge"))
@@ -420,23 +423,24 @@ if has_firewall then
 	end
 end
 
+if guser == "admin" then
+	function p.write() end
+	function p.remove() end
+	function p.validate(self, value, section)
+		if value == net:proto() then
+			if not net:is_floating() and net:is_empty() then
+				local ifn = ((br and (br:formvalue(section) == "bridge"))
+					and ifname_multi:formvalue(section)
+				     or ifname_single:formvalue(section) or ifname_alias:formvalue(section) or ifname_multiwan:formvalue(section))
 
-function p.write() end
-function p.remove() end
-function p.validate(self, value, section)
-	if value == net:proto() then
-		if not net:is_floating() and net:is_empty() then
-			local ifn = ((br and (br:formvalue(section) == "bridge"))
-				and ifname_multi:formvalue(section)
-			     or ifname_single:formvalue(section) or ifname_alias:formvalue(section) or ifname_multiwan:formvalue(section))
-
-			for ifn in ut.imatch(ifn) do
-				return value
+				for ifn in ut.imatch(ifn) do
+					return value
+				end
+				return nil, translate("The selected protocol needs a device assigned")
 			end
-			return nil, translate("The selected protocol needs a device assigned")
 		end
+		return value
 	end
-	return value
 end
 
 
@@ -452,21 +456,21 @@ else
 	setfenv(form, getfenv(1))(m, s, net)
 end
 
-
-local _, field
-for _, field in ipairs(s.children) do
-	if field ~= st and field ~= p and field ~= p_install and field ~= p_switch then
-		if next(field.deps) then
-			local _, dep
-			for _, dep in ipairs(field.deps) do
-				dep.deps.proto = net:proto()
+if guser == "admin" then
+	local _, field
+	for _, field in ipairs(s.children) do
+		if field ~= st and field ~= p and field ~= p_install and field ~= p_switch then
+			if next(field.deps) then
+				local _, dep
+				for _, dep in ipairs(field.deps) do
+					dep.deps.proto = net:proto()
+				end
+			else
+				field:depends("proto", net:proto())
 			end
-		else
-			field:depends("proto", net:proto())
 		end
 	end
 end
-
 
 if has_dnsmasq and net:proto() == "static" then
 	m2 = Map("dhcp", "", "")
