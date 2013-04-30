@@ -84,6 +84,11 @@ end
 
 s:option(Value, "users", translate("Allowed users")).rmempty = true
 
+go = s:option(Flag, "guest_ok", translate("Allow guests"))
+go.rmempty = false
+go.enabled = "yes"
+go.disabled = "no"
+
 ro = s:option(Flag, "read_only", translate("Read-only"))
 ro.rmempty = false
 ro.enabled = "yes"
