@@ -100,7 +100,10 @@ You may obtain a copy of the License at
 
 						if (ifc.subdevices && ifc.subdevices.length)
 						{
-							stat += ' <strong>(';
+							if (ifc.type == "bridge")
+								stat += ' <strong>(';
+							else
+								stat += ' <strong>[';
 
 							for (var j = 0; j < ifc.subdevices.length; j++)
 							{
@@ -112,9 +115,13 @@ You may obtain a copy of the License at
 										sif.is_up ? '' : '_disabled',
 										sif.name
 								);
+
 							}
 
-							stat += ')</strong>';
+							if (ifc.type == "bridge")
+								stat += ')</strong>';
+							else
+								stat += ']</strong>';
 						}
 
 						stat += String.format(
