@@ -19,8 +19,8 @@
 				var s = document.getElementById('<%=self.option%>-iw-signal');
 				if (s)
 					s.innerHTML = String.format(
-						'<img src="%s" title="" /><br />' +
-						'<small></small>', icon
+						'<img src="<%=resource%>/icons/wqr_%s.png" title="" /><br />' +
+						'<small></small>', iw.ssid
 					);
 
 				var d = document.getElementById('<%=self.option%>-iw-description');
