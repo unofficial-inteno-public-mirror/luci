@@ -1,16 +1,4 @@
 <%+header%>
-<script type="text/javascript">
-	function start_reg()
-	{
-		var loc = "<%=luci.dispatcher.build_url("admin/services/reg_start")%>";
-		return loc;
-	}
-	function default_reg()
-	{
-		var loc = "<%=luci.dispatcher.build_url("admin/services/reg_def")%>";
-		return loc;
-	}
-</script>
 
 <script type="text/javascript">//<![CDATA[
 	XHR.poll(1, '<%=luci.dispatcher.build_url("admin/services/dect_status")%>', null,
@@ -19,24 +7,100 @@
 			var tb = document.getElementById('dect_status');
 			if (st && tb)
 			{
-				if (st.running == 1)
-				{
-					tb.innerHTML = "<em><%:Registering%></em>&nbsp;&nbsp;<img src='<%=resource%>/icons/loading.gif' style='vertical-align:middle'/>";
-				}
-				else
-				{
-					tb.innerHTML = "<em></em>";
-				}
+
+		tb.innerHTML = st.reg_state;
+
+
 			}
-		}
+
+		var h1 = document.getElementById('hset1');
+			if (st && h1)
+			{
+
+		h1.innerHTML = st.hset1;
+
+}
+}
 	);
 //]]></script>
 
 
+<script type="text/javascript">
+
+  function activate_reg()
+  {
+  var xmlhttp;
+  if (window.XMLHttpRequest)
+  {// code for IE7+, Firefox, Chrome, Opera, Safari
+  xmlhttp=new XMLHttpRequest();
+  }
+  else
+  {// code for IE6, IE5
+  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  xmlhttp.onreadystatechange=function()
+  {
+  if (xmlhttp.readyState==4 && xmlhttp.status==200)
+  {
+  document.getElementById("localtime").innerHTML=xmlhttp.responseText;
+  }
+  }
+  xmlhttp.open("GET","<%=luci.dispatcher.build_url("admin/services/reg_start")%>",true);
+  xmlhttp.send();
+  }
+
+
+
+</script>
+
+
+
+
+</head>
+
+
+
+
+<body>
+
+
+
+
 <fieldset class="cbi-section">
-	<legend><b>DECT</b></legend>
-	<p id="dect_status" align="right"><em></em></p></br>
-	<p align="center"><input type='button' onClick='location.href=start_reg()' value='Register DECT' id='strBtn'></br>
-	<p align="center"><input type='button' onClick='location.href=default_reg()' value='Restore Default' id='resBtn'>
+	<legend><b>Registration</b></legend>
+	<table class="cbi-section-table" id="dect_status_table">
+	  <tr>
+	    <td class="cbi-section-table-cell">Registration mode</td>
+	    <td class="cbi-section-table-cell" id="dect_status">Collecting data...</td>
+	    <td class="cbi-section-table-cell"><input type='button' onClick="activate_reg()" value='Register DECT' id='strBtn'></td>
+	  </tr>
+	</table>
+
+	<!-- <p><input type='button' onClick="activate_reg()" value='Register DECT' id='strBtn'> -->
+	<!--   <div id="dect_status">Collecting data...</div> -->
+</br>
+</p>
+
 </fieldset>
+
+<fieldset class="cbi-section">
+	<legend>Dect Status</legend>
+	<table class="cbi-section-table" id="dect_status_table">
+	  <tr class="cbi-section-table-titles">
+	    <th class="cbi-section-table-cell">Handset</th>
+	    <th class="cbi-section-table-cell">Registered</th>
+	    <th class="cbi-section-table-cell">RFPI</th>
+	    <th class="cbi-section-table-cell">Present</th>
+	    <th class="cbi-section-table-cell">Ping</th>
+	    <th class="cbi-section-table-cell">Delete</th>
+	  </tr>
+	  <tr class="cbi-section-table-row">
+	    <td colspan="6" id="hset1"><em><br />Collecting data...</em></td>
+	  </tr>
+	</table>
+</fieldset>
+
+
+</body>
+
 <%+footer%>

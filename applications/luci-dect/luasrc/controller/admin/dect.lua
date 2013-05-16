@@ -11,35 +11,21 @@ function index()
 	page.dependent = true
 
 	page = entry({"admin", "services", "reg_start"}, call("reg_start"))
-	page = entry({"admin", "services", "reg_def"}, call("reg_def"))
 	page = entry({"admin", "services", "dect_status"}, call("dect_status"))
 end
 
 function reg_start()
-	luci.sys.exec("/sbin/dectreg > /dev/null &")
-	luci.http.redirect(luci.dispatcher.build_url("admin/services/dect"))
-	return
+	luci.sys.exec("/usr/bin/dect -r > /dev/null &")
 end
 
-function reg_def()
-	luci.sys.exec("rm -f /etc/dect/nvs")
-	luci.http.redirect(luci.dispatcher.build_url("admin/services/dect"))
-	return
-end
 
 function dect_status()
-	local sys  = require "luci.sys"
-	local uci  = require "luci.model.uci".cursor()
-	local run = 0
 
-	if nixio.fs.access("/var/dectisregistering") then
-		run = 1
-	end
-
-	local status = {
-		running = run
+	local rv = {
+		reg_state = luci.sys.exec("/usr/bin/dect -s | grep reg_state | awk '{ print $2 }'"),
+		hset1 = luci.sys.exec("/usr/bin/dect -s | grep 'hset: 1'"),
 	}
 
 	luci.http.prepare_content("application/json")
-	luci.http.write_json(status)
+	luci.http.write_json(rv)
 end
