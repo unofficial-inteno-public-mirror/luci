@@ -335,6 +335,56 @@ local function _nethints(what, callback)
 	end
 end
 
+local function _notaroute(ip)
+	local line
+	local ret = true
+	for line in luci.util.execi("route -n") do
+		if line:match(ip) then
+			ret = false
+			break
+		end
+	end
+	return ret
+end
+
+local function _clients(what, callback)
+	local _, k, e, mac, ip, name
+	local hosts = { }
+
+	local function _add(i, ...)
+		local k = select(i, ...)
+		if k then
+			if not hosts[k] then hosts[k] = { } end
+			hosts[k][1] = select(1, ...) or hosts[k][1]
+			hosts[k][2] = select(2, ...) or hosts[k][2]
+			hosts[k][3] = select(3, ...) or hosts[k][3]
+			hosts[k][4] = select(4, ...) or hosts[k][4]
+		end
+	end
+
+	if fs.access("/proc/net/arp") then
+		for e in io.lines("/proc/net/arp") do
+			ip, mac = e:match("^([%d%.]+)%s+%S+%s+%S+%s+([a-fA-F0-9:]+)%s+")
+			if ip and mac and _notaroute(ip) then
+				_add(what, mac:upper(), ip, nil, nil)
+			end
+		end
+	end
+
+	if fs.access("/var/dhcp.leases") then
+		for e in io.lines("/var/dhcp.leases") do
+			mac, ip, name = e:match("^%d+ (%S+) (%S+) (%S+)")
+			if mac and ip then
+				_add(what, mac:upper(), ip, nil, name ~= "*" and name)
+			end
+		end
+	end
+
+	for _, e in luci.util.kspairs(hosts) do
+		callback(e[1], e[2], e[3], e[4])
+	end
+end
+
 --- Returns a two-dimensional table of mac address hints.
 -- @return  Table of table containing known hosts from various sources.
 --          Each entry contains the values in the following order:
@@ -374,6 +424,30 @@ function net.ipv4_hints(callback)
 	else
 		local rv = { }
 		_nethints(2, function(mac, v4, v6, name)
+			name = name or nixio.getnameinfo(v4, nil, 100) or mac
+			if name and name ~= v4 then
+				rv[#rv+1] = { v4, name }
+			end
+		end)
+		return rv
+	end
+end
+
+--- Returns a two-dimensional table of IPv4 address hints.
+-- @return  Table of table containing internal hosts.
+--          Each entry contains the values in the following order:
+--          [ "ip", "name" ]
+function net.ipv4_clients(callback)
+	if callback then
+		_clients(2, function(mac, v4, v6, name)
+			name = name or nixio.getnameinfo(v4, nil, 100) or mac
+			if name and name ~= v4 then
+				callback(v4, name)
+			end
+		end)
+	else
+		local rv = { }
+		_clients(2, function(mac, v4, v6, name)
 			name = name or nixio.getnameinfo(v4, nil, 100) or mac
 			if name and name ~= v4 then
 				rv[#rv+1] = { v4, name }

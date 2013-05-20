@@ -148,7 +148,7 @@ o = s:option(Value, "dest_ip", translate("Internal IP address"),
 		internal host"))
 o.datatype = "ip4addr"
 
-luci.sys.net.ipv4_hints(function(ip, name)
+luci.sys.net.ipv4_clients(function(ip, name)
 	o:value(ip, "%s (%s)" %{ ip, name })
 end)
 

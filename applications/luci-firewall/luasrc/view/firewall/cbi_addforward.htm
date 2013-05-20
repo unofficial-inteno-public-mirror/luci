@@ -70,7 +70,7 @@
 		cbi_validate_field('_newfwd.intport', true, 'portrange');
 
 		cbi_combobox_init('_newfwd.intaddr', {
-			<% first = true; luci.sys.net.ipv4_hints(function(ip, name) %>
+			<% first = true; luci.sys.net.ipv4_clients(function(ip, name) %>
 				<%- if first then first = false else %>,<% end -%>'<%=ip%>': '<%=ip%> (<%=name%>)'
 			<%- end) %> }, '', '<%: -- custom -- %>');
 
