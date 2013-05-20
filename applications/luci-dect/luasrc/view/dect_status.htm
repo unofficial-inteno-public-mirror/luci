@@ -1,27 +1,69 @@
 <%+header%>
 
 <script type="text/javascript">//<![CDATA[
-	XHR.poll(1, '<%=luci.dispatcher.build_url("admin/services/dect_status")%>', null,
+
+
+
+function clear_table(table) {
+  var rows = table.rows;
+  var i = rows.length;
+  while (--i) {
+    rows[i].parentNode.removeChild(rows[i]);
+    // or
+    // table.deleteRow(i);
+  }
+}
+
+
+function update_table(table, handset, st) {
+
+
+  var row=table.insertRow(-1);
+  var cell1=row.insertCell(-1);
+  var cell2=row.insertCell(-1);
+  var cell3=row.insertCell(-1);
+  var cell4=row.insertCell(-1);
+  var cell5=row.insertCell(-1);
+
+  cell1.innerHTML=st[handset].handset;
+  cell2.innerHTML=st[handset].rfpi;
+  cell3.innerHTML=st[handset].present;
+
+  var buttonnode= document.createElement('input');
+  buttonnode.setAttribute('type','button');
+  buttonnode.setAttribute('name','ping');
+  buttonnode.setAttribute('value','ping');
+  cell4.appendChild(buttonnode);
+
+  var deletenode= document.createElement('input');
+  deletenode.setAttribute('type','button');
+  deletenode.setAttribute('name','ping1');
+  deletenode.setAttribute('value','delete');
+  cell5.appendChild(deletenode);
+
+}
+
+	XHR.poll(1, '<%=luci.dispatcher.build_url("admin/services/dect/status")%>', null,
 		function(x, st)
 		{
-			var tb = document.getElementById('dect_status');
-			if (st && tb)
-			{
-
-		tb.innerHTML = st.reg_state;
 
 
-			}
+  var table=document.getElementById("dect_status_table");
 
-		var h1 = document.getElementById('hset1');
-			if (st && h1)
-			{
+clear_table(table);
 
-		h1.innerHTML = st.hset1;
+for (i = 0; i < st.length; i++)
+update_table(table, i, st);
 
-}
+
 }
 	);
+
+
+
+
+
+
 //]]></script>
 
 
@@ -42,11 +84,81 @@
   {
   if (xmlhttp.readyState==4 && xmlhttp.status==200)
   {
-  document.getElementById("localtime").innerHTML=xmlhttp.responseText;
+  
   }
   }
   xmlhttp.open("GET","<%=luci.dispatcher.build_url("admin/services/reg_start")%>",true);
   xmlhttp.send();
+  }
+
+
+  function json_test()
+  {
+  var xmlhttp;
+  if (window.XMLHttpRequest)
+  {// code for IE7+, Firefox, Chrome, Opera, Safari
+  xmlhttp=new XMLHttpRequest();
+  }
+  else
+  {// code for IE6, IE5
+  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  xmlhttp.onreadystatechange=function()
+  {
+  if (xmlhttp.readyState==4 && xmlhttp.status==200)
+  {
+
+
+
+
+  <!-- var delete= document.createElement('input'); -->
+  <!-- delete.setAttribute('type','button'); -->
+  <!-- delete.setAttribute('name','1'); -->
+  <!-- delete.setAttribute('value','delete'); -->
+  <!-- cell5.appendChild(delete); -->
+  
+
+  
+
+
+
+  }
+  }
+  xmlhttp.open("GET","<%=luci.dispatcher.build_url("admin/services/json_test")%>",true);
+  xmlhttp.send();
+
+  }
+
+
+
+  function update_status() {
+  var j = JSON.parse(xmlhttp.responseText);
+  
+  var table=document.getElementById("dect_status_table");
+  var row=table.insertRow(-1);
+  var cell1=row.insertCell(-1);
+  var cell2=row.insertCell(-1);
+  var cell3=row.insertCell(-1);
+  var cell4=row.insertCell(-1);
+  var cell5=row.insertCell(-1);
+
+  cell1.innerHTML=j[0].handset;
+  cell2.innerHTML=j[0].rfpi;
+  cell3.innerHTML=j[0].present;
+
+
+  var buttonnode= document.createElement('input');
+  buttonnode.setAttribute('type','button');
+  buttonnode.setAttribute('name','ping1');
+  buttonnode.setAttribute('value','ping');
+  cell4.appendChild(buttonnode);
+
+  var deletenode= document.createElement('input');
+  deletenode.setAttribute('type','button');
+  deletenode.setAttribute('name','ping1');
+  deletenode.setAttribute('value','delete');
+  cell5.appendChild(deletenode);
+
   }
 
 
@@ -68,7 +180,7 @@
 
 <fieldset class="cbi-section">
 	<legend><b>Registration</b></legend>
-	<table class="cbi-section-table" id="dect_status_table">
+	<table class="cbi-section-table">
 	  <tr>
 	    <td class="cbi-section-table-cell">Registration mode</td>
 	    <td class="cbi-section-table-cell" id="dect_status">Collecting data...</td>
@@ -88,17 +200,17 @@
 	<table class="cbi-section-table" id="dect_status_table">
 	  <tr class="cbi-section-table-titles">
 	    <th class="cbi-section-table-cell">Handset</th>
-	    <th class="cbi-section-table-cell">Registered</th>
 	    <th class="cbi-section-table-cell">RFPI</th>
 	    <th class="cbi-section-table-cell">Present</th>
 	    <th class="cbi-section-table-cell">Ping</th>
 	    <th class="cbi-section-table-cell">Delete</th>
 	  </tr>
-	  <tr class="cbi-section-table-row">
-	    <td colspan="6" id="hset1"><em><br />Collecting data...</em></td>
-	  </tr>
+	  <!-- <tr class="cbi-section-table-row"> -->
+	  <!--   <td colspan="5" id="hset1"><em><br />Collecting data...</em></td> -->
+	  <!-- </tr> -->
 	</table>
 </fieldset>
+
 
 
 </body>
