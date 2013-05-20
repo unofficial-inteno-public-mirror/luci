@@ -86,24 +86,24 @@ stop.write = start.write
 
 
 
-f = SimpleForm("rc", translate("Local Startup"),
-	translate("This is the content of /etc/rc.local. Insert your own commands here (in front of 'exit 0') to execute them at the end of the boot process."))
+--f = SimpleForm("rc", translate("Local Startup"),
+--	translate("This is the content of /etc/rc.local. Insert your own commands here (in front of 'exit 0') to execute them at the end of the boot process."))
 
-t = f:field(TextValue, "rcs")
-t.rmempty = true
-t.rows = 20
+--t = f:field(TextValue, "rcs")
+--t.rmempty = true
+--t.rows = 20
 
-function t.cfgvalue()
-	return luci.fs.readfile("/etc/rc.local") or ""
-end
+--function t.cfgvalue()
+--	return luci.fs.readfile("/etc/rc.local") or ""
+--end
 
-function f.handle(self, state, data)
-	if state == FORM_VALID then
-		if data.rcs then
-			luci.fs.writefile("/etc/rc.local", data.rcs:gsub("\r\n", "\n"))
-		end
-	end
-	return true
-end
+--function f.handle(self, state, data)
+--	if state == FORM_VALID then
+--		if data.rcs then
+--			luci.fs.writefile("/etc/rc.local", data.rcs:gsub("\r\n", "\n"))
+--		end
+--	end
+--	return true
+--end
 
-return m, f
+return m
