@@ -13,6 +13,16 @@
   }
 
 
+  function button_click(handset) {
+
+      alert("Ping " + handset);
+  }
+
+  // function delete_hset(handset) {
+
+  //     alert("Delete " + handset);
+  // }
+
   function update_table(table, handset, st) {
       
       
@@ -29,14 +39,16 @@
       
       var buttonnode= document.createElement('input');
       buttonnode.setAttribute('type','button');
-      buttonnode.setAttribute('name','ping');
-      buttonnode.setAttribute('value','ping');
+      buttonnode.setAttribute('name', handset + 1);
+      buttonnode.setAttribute('value', 'ping');
+      buttonnode.onclick=function(){button_click(this.name)};
       cell4.appendChild(buttonnode);
       
       var deletenode= document.createElement('input');
       deletenode.setAttribute('type','button');
-      deletenode.setAttribute('name','ping1');
+      deletenode.setAttribute('name', handset + 1);
       deletenode.setAttribute('value','delete');
+      deletenode.onclick=function(){delete_hset(this.name)};
       cell5.appendChild(deletenode);
       
   }
@@ -87,6 +99,36 @@
 	  }
       }
       xmlhttp.open("GET","<%=luci.dispatcher.build_url("admin/services/dect/reg_start")%>",true);
+      xmlhttp.send();
+  }
+
+
+
+  function delete_hset(handset) {
+
+
+      var rm=document.getElementById("registration_mode");
+
+      var xmlhttp;
+      if (window.XMLHttpRequest)
+      {// code for IE7+, Firefox, Chrome, Opera, Safari
+	  xmlhttp=new XMLHttpRequest();
+      }
+      else
+      {// code for IE6, IE5
+	  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+      }
+      xmlhttp.onreadystatechange=function()
+      {
+	  if (xmlhttp.readyState==4 && xmlhttp.status==200)
+	  {
+	      var eh=document.getElementById("bah");
+
+	      
+	  }
+      }
+      //xmlhttp.open("GET","<%=luci.dispatcher.build_url("admin/services/dect/delete_hset/")%>" + "?handset=" + handset,true);
+      xmlhttp.open("GET","<%=luci.dispatcher.build_url("admin/services/dect/delete_hset/")%>?handset=" + handset,true);
       xmlhttp.send();
   }
   

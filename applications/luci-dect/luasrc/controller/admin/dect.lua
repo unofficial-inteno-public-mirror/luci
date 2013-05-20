@@ -13,11 +13,19 @@ function index()
 	page = entry({"admin", "services", "dect", "reg_state"}, call("reg_state"))
 	page = entry({"admin", "services", "dect", "status"}, call("status"))
 	page = entry({"admin", "services", "dect", "reg_start"}, call("reg_start"))
+	page = entry({"admin", "services", "dect", "delete_hset"}, call("delete_hset"))
 end
 
 function reg_start()
 	luci.sys.exec("/root/dect -r > /dev/null &")
 	status()
+end
+
+function delete_hset(opts)
+	 local handset = luci.http.formvalue("handset")
+	 local rv = luci.sys.exec("/root/dect -d " .. handset)
+	 
+	 luci.http.write(rv)
 end
 
 
