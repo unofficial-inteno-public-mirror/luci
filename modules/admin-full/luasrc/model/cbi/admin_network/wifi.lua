@@ -133,11 +133,11 @@ st.ifname   = arg[1]
 en = s:taboption("general", Button, "__toggle")
 
 if wdev:get("disabled") == "1" or wnet:get("disabled") == "1" then
-	en.title      = translate("Wireless network is disabled")
+	en.title      = translate("%s is disabled" %(wnet:ssid() or wnet:ifname() or "Wireless network"))
 	en.inputtitle = translate("Enable")
 	en.inputstyle = "apply"
 else
-	en.title      = translate("Wireless network is enabled")
+	en.title      = translate("%s is enabled" %(wnet:ssid() or wnet:ifname() or "Wireless network"))
 	en.inputtitle = translate("Disable")
 	en.inputstyle = "reset"
 end
