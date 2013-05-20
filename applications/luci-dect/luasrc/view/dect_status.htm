@@ -2,188 +2,110 @@
 
 <script type="text/javascript">//<![CDATA[
 
-
-
-function clear_table(table) {
-  var rows = table.rows;
-  var i = rows.length;
-  while (--i) {
-    rows[i].parentNode.removeChild(rows[i]);
-    // or
-    // table.deleteRow(i);
+  function clear_table(table) {
+      var rows = table.rows;
+      var i = rows.length;
+      while (--i) {
+	  rows[i].parentNode.removeChild(rows[i]);
+	  // or
+	  // table.deleteRow(i);
+      }
   }
-}
 
 
-function update_table(table, handset, st) {
-
-
-  var row=table.insertRow(-1);
-  var cell1=row.insertCell(-1);
-  var cell2=row.insertCell(-1);
-  var cell3=row.insertCell(-1);
-  var cell4=row.insertCell(-1);
-  var cell5=row.insertCell(-1);
-
-  cell1.innerHTML=st[handset].handset;
-  cell2.innerHTML=st[handset].rfpi;
-  cell3.innerHTML=st[handset].present;
-
-  var buttonnode= document.createElement('input');
-  buttonnode.setAttribute('type','button');
-  buttonnode.setAttribute('name','ping');
-  buttonnode.setAttribute('value','ping');
-  cell4.appendChild(buttonnode);
-
-  var deletenode= document.createElement('input');
-  deletenode.setAttribute('type','button');
-  deletenode.setAttribute('name','ping1');
-  deletenode.setAttribute('value','delete');
-  cell5.appendChild(deletenode);
-
-}
-
-	XHR.poll(1, '<%=luci.dispatcher.build_url("admin/services/dect/status")%>', null,
-		function(x, st)
-		{
-
-
-  var table=document.getElementById("dect_status_table");
-
-clear_table(table);
-
-for (i = 0; i < st.length; i++)
-update_table(table, i, st);
-
-
-}
-	);
-
-
-
-
-
-
-//]]></script>
-
-
-<script type="text/javascript">
-
-  function activate_reg()
-  {
-  var xmlhttp;
-  if (window.XMLHttpRequest)
-  {// code for IE7+, Firefox, Chrome, Opera, Safari
-  xmlhttp=new XMLHttpRequest();
+  function update_table(table, handset, st) {
+      
+      
+      var row=table.insertRow(-1);
+      var cell1=row.insertCell(-1);
+      var cell2=row.insertCell(-1);
+      var cell3=row.insertCell(-1);
+      var cell4=row.insertCell(-1);
+      var cell5=row.insertCell(-1);
+      
+      cell1.innerHTML=st.handsets[handset].handset;
+      cell2.innerHTML=st.handsets[handset].rfpi;
+      cell3.innerHTML=st.handsets[handset].present;
+      
+      var buttonnode= document.createElement('input');
+      buttonnode.setAttribute('type','button');
+      buttonnode.setAttribute('name','ping');
+      buttonnode.setAttribute('value','ping');
+      cell4.appendChild(buttonnode);
+      
+      var deletenode= document.createElement('input');
+      deletenode.setAttribute('type','button');
+      deletenode.setAttribute('name','ping1');
+      deletenode.setAttribute('value','delete');
+      cell5.appendChild(deletenode);
+      
   }
-  else
-  {// code for IE6, IE5
-  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-  }
-  xmlhttp.onreadystatechange=function()
-  {
-  if (xmlhttp.readyState==4 && xmlhttp.status==200)
-  {
   
-  }
-  }
-  xmlhttp.open("GET","<%=luci.dispatcher.build_url("admin/services/reg_start")%>",true);
-  xmlhttp.send();
-  }
+  XHR.poll(1, '<%=luci.dispatcher.build_url("admin/services/dect/status")%>', null,
+	   function(x, st) {
 
-
-  function json_test()
-  {
-  var xmlhttp;
-  if (window.XMLHttpRequest)
-  {// code for IE7+, Firefox, Chrome, Opera, Safari
-  xmlhttp=new XMLHttpRequest();
-  }
-  else
-  {// code for IE6, IE5
-  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-  }
-  xmlhttp.onreadystatechange=function()
-  {
-  if (xmlhttp.readyState==4 && xmlhttp.status==200)
-  {
-
-
-
-
-  <!-- var delete= document.createElement('input'); -->
-  <!-- delete.setAttribute('type','button'); -->
-  <!-- delete.setAttribute('name','1'); -->
-  <!-- delete.setAttribute('value','delete'); -->
-  <!-- cell5.appendChild(delete); -->
+	       var rm=document.getElementById("registration_mode");
+	       if (st.reg_active == true) {
+		   rm.innerHTML = "Enabled";
+	       } else if (rm.innerHTML != "Enabling...") {
+		   rm.innerHTML = "Disabled";
+	       }
+	       
+	       
+	       var table=document.getElementById("dect_status_table");
+	       
+	       clear_table(table);
+	       
+	       for (i = 0; i < st.handsets.length; i++)
+		   update_table(table, i, st);
+	       
+	   }
+	  );
   
-
   
+  function activate_reg() {
 
 
+      var rm=document.getElementById("registration_mode");
 
+      rm.innerHTML = "Enabling...";
+      
+      var xmlhttp;
+      if (window.XMLHttpRequest)
+      {// code for IE7+, Firefox, Chrome, Opera, Safari
+	  xmlhttp=new XMLHttpRequest();
+      }
+      else
+      {// code for IE6, IE5
+	  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+      }
+      xmlhttp.onreadystatechange=function()
+      {
+	  if (xmlhttp.readyState==4 && xmlhttp.status==200)
+	  {
+	      
+	  }
+      }
+      xmlhttp.open("GET","<%=luci.dispatcher.build_url("admin/services/dect/reg_start")%>",true);
+      xmlhttp.send();
   }
-  }
-  xmlhttp.open("GET","<%=luci.dispatcher.build_url("admin/services/json_test")%>",true);
-  xmlhttp.send();
-
-  }
-
-
-
-  function update_status() {
-  var j = JSON.parse(xmlhttp.responseText);
   
-  var table=document.getElementById("dect_status_table");
-  var row=table.insertRow(-1);
-  var cell1=row.insertCell(-1);
-  var cell2=row.insertCell(-1);
-  var cell3=row.insertCell(-1);
-  var cell4=row.insertCell(-1);
-  var cell5=row.insertCell(-1);
-
-  cell1.innerHTML=j[0].handset;
-  cell2.innerHTML=j[0].rfpi;
-  cell3.innerHTML=j[0].present;
-
-
-  var buttonnode= document.createElement('input');
-  buttonnode.setAttribute('type','button');
-  buttonnode.setAttribute('name','ping1');
-  buttonnode.setAttribute('value','ping');
-  cell4.appendChild(buttonnode);
-
-  var deletenode= document.createElement('input');
-  deletenode.setAttribute('type','button');
-  deletenode.setAttribute('name','ping1');
-  deletenode.setAttribute('value','delete');
-  cell5.appendChild(deletenode);
-
-  }
-
-
-
+  
+  
 </script>
-
-
 
 
 </head>
 
 
-
-
 <body>
-
-
-
 
 <fieldset class="cbi-section">
 	<legend><b>Registration</b></legend>
 	<table class="cbi-section-table">
 	  <tr>
 	    <td class="cbi-section-table-cell">Registration mode</td>
-	    <td class="cbi-section-table-cell" id="dect_status">Collecting data...</td>
+	    <td class="cbi-section-table-cell" id="registration_mode">Collecting data...</td>
 	    <td class="cbi-section-table-cell"><input type='button' onClick="activate_reg()" value='Register DECT' id='strBtn'></td>
 	  </tr>
 	</table>

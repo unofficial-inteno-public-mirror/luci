@@ -16,8 +16,8 @@ function index()
 end
 
 function reg_start()
-	luci.sys.exec("/usr/bin/dect -r > /dev/null &")
-	dect_status()	
+	luci.sys.exec("/root/dect -r > /dev/null &")
+	status()
 end
 
 
