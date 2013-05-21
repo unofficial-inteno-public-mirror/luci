@@ -335,15 +335,64 @@ local function _nethints(what, callback)
 	end
 end
 
-local function _notaroute(ip)
-	local line
-	local ret = true
-	for line in luci.util.execi("route -n") do
+local function _isinternal(ip)
+	local ret, dev, line, ln, cnt, leave
+	local cur = uci.cursor()
+	ret = true
+	leave = false
+	cnt = 0
+
+	for line in io.lines("/proc/net/arp") do
 		if line:match(ip) then
-			ret = false
-			break
+			for ln in line:gmatch("%S+") do
+				cnt = cnt + 1
+				if cnt == 6 then
+					dev = ln
+				end
+			end
 		end
 	end
+
+	if not leave then
+		cur:foreach("layer2_interface_ethernet", "ethernet_interface",
+			function(s)
+				if s.ifname == dev then
+					ret = false
+					leave = true
+				end
+			end)
+	end
+
+	if not leave then
+		cur:foreach("layer2_interface_adsl", "atm_bridge",
+			function(s)
+				if s.ifname == dev then
+					ret = false
+					leave = true
+				end
+			end)
+	end
+
+	if not leave then
+		cur:foreach("layer2_interface_vdsl", "vdsl_interface",
+			function(s)
+				if s.ifname == dev then
+					ret = false
+					leave = true
+				end
+			end)
+	end
+
+	if not leave then
+		cur:foreach("layer2_interface_vlan", "vlan_interface",
+			function(s)
+				if s.ifname == dev then
+					ret = false
+					leave = true
+				end
+			end)
+	end
+
 	return ret
 end
 
@@ -365,7 +414,7 @@ local function _clients(what, callback)
 	if fs.access("/proc/net/arp") then
 		for e in io.lines("/proc/net/arp") do
 			ip, mac = e:match("^([%d%.]+)%s+%S+%s+%S+%s+([a-fA-F0-9:]+)%s+")
-			if ip and mac and _notaroute(ip) then
+			if ip and mac and _isinternal(ip) then
 				_add(what, mac:upper(), ip, nil, nil)
 			end
 		end
