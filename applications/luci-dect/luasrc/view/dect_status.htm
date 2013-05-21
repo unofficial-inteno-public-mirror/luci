@@ -63,20 +63,30 @@
 
   function delete_missing_rows(table, handsets) {
 
+      for (var i = 0; i < handsets.length; i++) {
+	  if(table_has_handset(table, handsets[i]) == false)
+	      table_add_handset(table, handsets[i]);
+      }
+
 
   }
 
 
   function update_existing_rows(table, handsets) {
 
+      // for (var i = 0; i < handsets.length; i++) {
+      // 	  if(table_has_handset(table, handsets[i]) == false)
+      // 	     table_add_handset(table, handsets[i]);
+      // }
+
 
   }
 
-  function table_has_handset(table, handset) {
-      for (i = 0; i < table.length; i++) {
-	  var hst=table.rows[i].cells[0].innerHTML;
-	  if (hst == handset)
-	      return true;
+  function table_has_handset(table, h) {
+      for (var i = 0; i < table.rows.length; i++) {
+      	  var hst=table.rows[i].cells[0].innerHTML;
+      	  if (hst == h.handset)
+      	      return true;
       }
       return false;
   }
@@ -97,14 +107,14 @@
       
       var buttonnode= document.createElement('input');
       buttonnode.setAttribute('type','button');
-      buttonnode.setAttribute('name', h.handset + 1);
+      buttonnode.setAttribute('name', h.handset);
       buttonnode.setAttribute('value', 'ping');
       buttonnode.onclick=function(){button_click(this.name)};
       cell4.appendChild(buttonnode);
       
       var deletenode= document.createElement('input');
       deletenode.setAttribute('type','button');
-      deletenode.setAttribute('name', h.handset + 1);
+      deletenode.setAttribute('name', h.handset);
       deletenode.setAttribute('value','delete');
       deletenode.onclick=function(){delete_hset(this.name)};
       cell5.appendChild(deletenode);
@@ -114,8 +124,8 @@
 
   function add_new_rows(table, handsets) {
 
-      for (i = 0; i < handsets.length; i++) {
-	  //if(table_has_handset(table, handsets[i] == false)
+      for (var i = 0; i < handsets.length; i++) {
+	  if(table_has_handset(table, handsets[i]) == false)
 	     table_add_handset(table, handsets[i]);
       }
 
@@ -137,10 +147,10 @@
 	       
 	       var table=document.getElementById("dect_status_table");
 	       
-	       clear_table(table);
+	       //clear_table(table);
 	       
 	       // Delete missing rows
-	       //delete_missing_rows(table, st.handsets);
+	       delete_missing_rows(table, st.handsets);
 	       
 	       // Update existing rows
 	       //update_existing_rows(table, st.handsets);
