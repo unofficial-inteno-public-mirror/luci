@@ -60,12 +60,24 @@
       
   }
   
+  function handsets_has_hst(handsets, hst) {
+      
+      for (var i = 0; i < handsets.length; i++) {
+      	  if (hst == handsets[i].handset)
+      	      return true;
+      }
+      return false;
+
+  }
 
   function delete_missing_rows(table, handsets) {
 
-      for (var i = 0; i < handsets.length; i++) {
-	  if(table_has_handset(table, handsets[i]) == false)
-	      table_add_handset(table, handsets[i]);
+      for (var i = 1; i < table.rows.length; i++) {
+  	  var hst=table.rows[i].cells[0].innerHTML;
+	  
+  	  if (handsets_has_hst(handsets, hst) == false)
+	      table.deleteRow(i);
+	  
       }
 
 
@@ -89,6 +101,15 @@
       	      return true;
       }
       return false;
+  }
+
+
+  function handset_get_row(table, handset) {
+      for (var i = 0; i < table.rows.length; i++) {
+      	  var hst=table.rows[i].cells[0].innerHTML;
+      	  if (hst == handset)
+	      return table.rows[i];
+      }
   }
 
 
@@ -128,7 +149,7 @@
 	  if(table_has_handset(table, handsets[i]) == false)
 	     table_add_handset(table, handsets[i]);
       }
-
+      
 
       
   }
@@ -193,7 +214,8 @@
       xmlhttp.send();
   }
 
-
+  
+  
 
   function delete_hset(handset) {
 
@@ -201,7 +223,7 @@
       var rm=document.getElementById("registration_mode");
       var table=document.getElementById("dect_status_table");
       
-      var row = table.rows[handset];
+      var row = handset_get_row(table, handset);
       row.style.display = "none";
 
       var xmlhttp;
