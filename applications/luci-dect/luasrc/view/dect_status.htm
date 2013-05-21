@@ -2,11 +2,18 @@
 
 <script type="text/javascript">//<![CDATA[
 
+
+  var deleting = new Array();
+
+  
+  
+
   function clear_table(table) {
       var rows = table.rows;
       var i = rows.length;
       while (--i) {
-	  rows[i].parentNode.removeChild(rows[i]);
+	  if (rows[i].style.display != "none")
+	      rows[i].parentNode.removeChild(rows[i]);
 	  // or
 	  // table.deleteRow(i);
       }
@@ -26,7 +33,7 @@
   function update_table(table, handset, st) {
       
       
-      var row=table.insertRow(-1);
+      var row=table.insertRow(handset + 1);
       var cell1=row.insertCell(-1);
       var cell2=row.insertCell(-1);
       var cell3=row.insertCell(-1);
@@ -53,6 +60,70 @@
       
   }
   
+
+  function delete_missing_rows(table, handsets) {
+
+
+  }
+
+
+  function update_existing_rows(table, handsets) {
+
+
+  }
+
+  function table_has_handset(table, handset) {
+      for (i = 0; i < table.length; i++) {
+	  var hst=table.rows[i].cells[0].innerHTML;
+	  if (hst == handset)
+	      return true;
+      }
+      return false;
+  }
+
+
+  function table_add_handset(table, h) {
+
+      var row=table.insertRow(-1);
+      var cell1=row.insertCell(-1);
+      var cell2=row.insertCell(-1);
+      var cell3=row.insertCell(-1);
+      var cell4=row.insertCell(-1);
+      var cell5=row.insertCell(-1);
+      
+      cell1.innerHTML=h.handset;
+      cell2.innerHTML=h.rfpi;
+      cell3.innerHTML=h.present;
+      
+      var buttonnode= document.createElement('input');
+      buttonnode.setAttribute('type','button');
+      buttonnode.setAttribute('name', h.handset + 1);
+      buttonnode.setAttribute('value', 'ping');
+      buttonnode.onclick=function(){button_click(this.name)};
+      cell4.appendChild(buttonnode);
+      
+      var deletenode= document.createElement('input');
+      deletenode.setAttribute('type','button');
+      deletenode.setAttribute('name', h.handset + 1);
+      deletenode.setAttribute('value','delete');
+      deletenode.onclick=function(){delete_hset(this.name)};
+      cell5.appendChild(deletenode);
+
+
+  }
+
+  function add_new_rows(table, handsets) {
+
+      for (i = 0; i < handsets.length; i++) {
+	  //if(table_has_handset(table, handsets[i] == false)
+	     table_add_handset(table, handsets[i]);
+      }
+
+
+      
+  }
+
+
   XHR.poll(1, '<%=luci.dispatcher.build_url("admin/services/dect/status")%>', null,
 	   function(x, st) {
 
@@ -68,8 +139,18 @@
 	       
 	       clear_table(table);
 	       
-	       for (i = 0; i < st.handsets.length; i++)
-		   update_table(table, i, st);
+	       // Delete missing rows
+	       //delete_missing_rows(table, st.handsets);
+	       
+	       // Update existing rows
+	       //update_existing_rows(table, st.handsets);
+
+	       // Add new rows
+	       add_new_rows(table, st.handsets);
+
+	       // for (i = 0; i < st.handsets.length; i++) {
+	       // 	   update_table(table, i, st);
+	       // }
 	       
 	   }
 	  );
@@ -108,6 +189,10 @@
 
 
       var rm=document.getElementById("registration_mode");
+      var table=document.getElementById("dect_status_table");
+      
+      var row = table.rows[handset];
+      row.style.display = "none";
 
       var xmlhttp;
       if (window.XMLHttpRequest)
