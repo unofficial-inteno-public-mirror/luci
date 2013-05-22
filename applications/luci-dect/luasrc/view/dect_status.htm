@@ -3,19 +3,12 @@
 <script type="text/javascript">//<![CDATA[
 
 
-  var deleting = new Array();
-
-  
-  
-
   function clear_table(table) {
       var rows = table.rows;
       var i = rows.length;
       while (--i) {
 	  if (rows[i].style.display != "none")
 	      rows[i].parentNode.removeChild(rows[i]);
-	  // or
-	  // table.deleteRow(i);
       }
   }
 
@@ -25,10 +18,6 @@
       alert("Ping " + handset);
   }
 
-  // function delete_hset(handset) {
-
-  //     alert("Delete " + handset);
-  // }
 
   function update_table(table, handset, st) {
       
@@ -60,6 +49,7 @@
       
   }
   
+
   function handsets_has_hst(handsets, hst) {
       
       for (var i = 0; i < handsets.length; i++) {
@@ -70,6 +60,7 @@
 
   }
 
+
   function delete_missing_rows(table, handsets) {
 
       for (var i = 1; i < table.rows.length; i++) {
@@ -77,22 +68,9 @@
 	  
   	  if (handsets_has_hst(handsets, hst) == false)
 	      table.deleteRow(i);
-	  
       }
-
-
   }
 
-
-  function update_existing_rows(table, handsets) {
-
-      // for (var i = 0; i < handsets.length; i++) {
-      // 	  if(table_has_handset(table, handsets[i]) == false)
-      // 	     table_add_handset(table, handsets[i]);
-      // }
-
-
-  }
 
   function table_has_handset(table, h) {
       for (var i = 0; i < table.rows.length; i++) {
@@ -159,8 +137,8 @@
       deletenode.onclick=function(){delete_hset(this.name)};
       cell5.appendChild(deletenode);
 
-
   }
+
 
   function add_new_rows(table, handsets) {
 
@@ -169,38 +147,10 @@
 	     table_add_handset(table, handsets[i]);
       }
       
-
-      
   }
 
 
-  XHR.poll(1, '<%=luci.dispatcher.build_url("admin/services/dect/status")%>', null,
-	   function(x, st) {
-
-	       var rm=document.getElementById("registration_mode");
-	       if (st.reg_active == true) {
-		   rm.innerHTML = "Enabled";
-	       } else if (rm.innerHTML != "Enabling...") {
-		   rm.innerHTML = "Disabled";
-	       }
-	       
-	       var table=document.getElementById("dect_status_table");
-	       
-	       // Delete missing rows
-	       delete_missing_rows(table, st.handsets);
-	       
-	       // Add new rows
-	       add_new_rows(table, st.handsets);
-
-	       // Update existing rows
-	       update_handsets(table, st.handsets);
-
-	   }
-	  );
-  
-  
   function activate_reg() {
-
 
       var rm=document.getElementById("registration_mode");
 
@@ -231,8 +181,6 @@
 
   function delete_hset(handset) {
 
-
-      var rm=document.getElementById("registration_mode");
       var table=document.getElementById("dect_status_table");
       
       var row = handset_get_row(table, handset);
@@ -251,18 +199,40 @@
       {
 	  if (xmlhttp.readyState==4 && xmlhttp.status==200)
 	  {
-	      var eh=document.getElementById("bah");
 
 	      
 	  }
       }
-      //xmlhttp.open("GET","<%=luci.dispatcher.build_url("admin/services/dect/delete_hset/")%>" + "?handset=" + handset,true);
       xmlhttp.open("GET","<%=luci.dispatcher.build_url("admin/services/dect/delete_hset/")%>?handset=" + handset,true);
       xmlhttp.send();
   }
+
   
-  
-  
+  // Polling background thread
+  XHR.poll(1, '<%=luci.dispatcher.build_url("admin/services/dect/status")%>', null,
+	   function(x, st) {
+
+	       var rm=document.getElementById("registration_mode");
+	       if (st.reg_active == true) {
+		   rm.innerHTML = "Enabled";
+	       } else if (rm.innerHTML != "Enabling...") {
+		   rm.innerHTML = "Disabled";
+	       }
+	       
+	       var table=document.getElementById("dect_status_table");
+	       
+	       // Delete missing rows
+	       delete_missing_rows(table, st.handsets);
+	       
+	       // Add new rows
+	       add_new_rows(table, st.handsets);
+
+	       // Update existing rows
+	       update_handsets(table, st.handsets);
+
+	   }
+	  );
+    
 </script>
 
 
