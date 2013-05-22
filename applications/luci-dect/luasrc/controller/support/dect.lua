@@ -1,4 +1,4 @@
-module("luci.controller.support.dect", package.seeall)
+module("luci.controller.admin.dect", package.seeall)
 
 function index()
 	if not nixio.fs.access("/usr/bin/dectmngr") then
@@ -7,39 +7,33 @@ function index()
 
 	local page
 
-	page = entry({"support", "services", "dect"}, template("dect_status"), _("DECT"))
+	page = entry({"admin", "services", "dect"}, template("dect_status"), _("DECT"))
 	page.dependent = true
 
-	page = entry({"support", "services", "reg_start"}, call("reg_start"))
-	page = entry({"support", "services", "reg_def"}, call("reg_def"))
-	page = entry({"support", "services", "dect_status"}, call("dect_status"))
+	page = entry({"admin", "services", "dect", "status"}, call("status"))
+	page = entry({"admin", "services", "dect", "reg_start"}, call("reg_start"))
+	page = entry({"admin", "services", "dect", "delete_hset"}, call("delete_hset"))
 end
 
 function reg_start()
-	luci.sys.exec("/sbin/dectreg > /dev/null &")
-	luci.http.redirect(luci.dispatcher.build_url("support/services/dect"))
-	return
+	luci.sys.exec("/usr/bin/dect -r > /dev/null &")
+	status()
 end
 
-function reg_def()
-	luci.sys.exec("rm -f /etc/dect/nvs")
-	luci.http.redirect(luci.dispatcher.build_url("support/services/dect"))
-	return
+function delete_hset(opts)
+	 local handset = luci.http.formvalue("handset")
+	 local rv = luci.sys.exec("/usr/bin/dect -d " .. handset)
+	 
+	 luci.http.write(rv)
 end
 
-function dect_status()
-	local sys  = require "luci.sys"
-	local uci  = require "luci.model.uci".cursor()
-	local run = 0
 
-	if nixio.fs.access("/var/dectisregistering") then
-		run = 1
-	end
+function status()
 
-	local status = {
-		running = run
-	}
+	local rv = luci.sys.exec("/usr/bin/dect -j")
 
 	luci.http.prepare_content("application/json")
-	luci.http.write_json(status)
+	luci.http.write(rv)
 end
+
+
