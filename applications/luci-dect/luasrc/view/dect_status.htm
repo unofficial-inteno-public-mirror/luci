@@ -117,7 +117,7 @@
 
       for (var i = 0; i < handsets.length; i++) {
 
-	  var row = handset_get_row(table, handsets[i]);
+	  var row = handset_get_row(table, handsets[i].handset);
 	  row.cells[2].innerHTML = handsets[i].present;
       }
   }
