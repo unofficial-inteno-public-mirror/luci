@@ -113,6 +113,16 @@
   }
 
 
+  function update_handsets(table, handsets) {
+
+      for (var i = 0; i < handsets.length; i++) {
+
+	  var row = handset_get_row(table, handsets[i]);
+	  row.cells[2].innerHTML = handsets[i].present;
+      }
+  }
+
+
   function table_add_handset(table, h) {
 
       var i;
@@ -174,24 +184,17 @@
 		   rm.innerHTML = "Disabled";
 	       }
 	       
-	       
 	       var table=document.getElementById("dect_status_table");
-	       
-	       //clear_table(table);
 	       
 	       // Delete missing rows
 	       delete_missing_rows(table, st.handsets);
 	       
-	       // Update existing rows
-	       //update_existing_rows(table, st.handsets);
-
 	       // Add new rows
 	       add_new_rows(table, st.handsets);
 
-	       // for (i = 0; i < st.handsets.length; i++) {
-	       // 	   update_table(table, i, st);
-	       // }
-	       
+	       // Update existing rows
+	       update_handsets(table, st.handsets);
+
 	   }
 	  );
   
