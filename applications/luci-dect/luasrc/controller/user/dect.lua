@@ -1,4 +1,4 @@
-module("luci.controller.admin.dect", package.seeall)
+module("luci.controller.user.dect", package.seeall)
 
 function index()
 	if not nixio.fs.access("/usr/bin/dectmngr") then
@@ -7,13 +7,13 @@ function index()
 
 	local page
 
-	page = entry({"admin", "services", "dect"}, template("dect_status"), _("DECT"))
+	page = entry({"user", "services", "dect"}, template("dect_status"), _("DECT"))
 	page.dependent = true
 
-	page = entry({"admin", "services", "dect", "status"}, call("status"))
-	page = entry({"admin", "services", "dect", "reg_start"}, call("reg_start"))
-	page = entry({"admin", "services", "dect", "delete_hset"}, call("delete_hset"))
-	page = entry({"admin", "services", "dect", "ping_hset"}, call("ping_hset"))
+	page = entry({"user", "services", "dect", "status"}, call("status"))
+	page = entry({"user", "services", "dect", "reg_start"}, call("reg_start"))
+	page = entry({"user", "services", "dect", "delete_hset"}, call("delete_hset"))
+	page = entry({"user", "services", "dect", "ping_hset"}, call("ping_hset"))
 end
 
 function reg_start()
