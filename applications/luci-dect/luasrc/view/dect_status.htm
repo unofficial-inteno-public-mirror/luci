@@ -13,43 +13,6 @@
   }
 
 
-  function button_click(handset) {
-
-      alert("Ping " + handset);
-  }
-
-
-  // function update_table(table, handset, st) {
-      
-      
-  //     var row=table.insertRow(handset + 1);
-  //     var cell1=row.insertCell(-1);
-  //     var cell2=row.insertCell(-1);
-  //     var cell3=row.insertCell(-1);
-  //     var cell4=row.insertCell(-1);
-  //     var cell5=row.insertCell(-1);
-      
-  //     cell1.innerHTML=st.handsets[handset].handset;
-  //     cell2.innerHTML=st.handsets[handset].rfpi;
-  //     cell3.innerHTML=st.handsets[handset].present;
-      
-  //     var buttonnode= document.createElement('input');
-  //     buttonnode.setAttribute('type','button');
-  //     buttonnode.setAttribute('name', handset + 1);
-  //     buttonnode.setAttribute('value', 'ping');
-  //     buttonnode.onclick=function(){ping_hset(this.name)};
-  //     cell4.appendChild(buttonnode);
-      
-  //     var deletenode= document.createElement('input');
-  //     deletenode.setAttribute('type','button');
-  //     deletenode.setAttribute('name', handset + 1);
-  //     deletenode.setAttribute('value','delete');
-  //     deletenode.onclick=function(){delete_hset(this.name)};
-  //     cell5.appendChild(deletenode);
-      
-  // }
-  
-
   function handsets_has_hst(handsets, hst) {
       
       for (var i = 0; i < handsets.length; i++) {
@@ -97,6 +60,16 @@
 
 	  var row = handset_get_row(table, handsets[i].handset);
 	  row.cells[2].innerHTML = handsets[i].present;
+	  
+
+	  if (row.cells[3].innerHTML == "enab") {
+	      // enabling state
+	      if (handsets[i].pinging == true)
+		  row.cells[3].innerHTML = true;
+	  } else {
+	      // all other states
+	      row.cells[3].innerHTML = handsets[i].pinging;
+	  }
       }
   }
 
@@ -118,24 +91,26 @@
       var cell3=row.insertCell(-1);
       var cell4=row.insertCell(-1);
       var cell5=row.insertCell(-1);
+      var cell6=row.insertCell(-1);
       
       cell1.innerHTML=h.handset;
       cell2.innerHTML=h.rfpi;
       cell3.innerHTML=h.present;
+      cell4.innerHTML=h.pinging;
       
       var buttonnode= document.createElement('input');
       buttonnode.setAttribute('type','button');
       buttonnode.setAttribute('name', h.handset);
       buttonnode.setAttribute('value', 'ping');
       buttonnode.onclick=function(){ping_hset(this.name)};
-      cell4.appendChild(buttonnode);
+      cell5.appendChild(buttonnode);
       
       var deletenode= document.createElement('input');
       deletenode.setAttribute('type','button');
       deletenode.setAttribute('name', h.handset);
       deletenode.setAttribute('value','delete');
       deletenode.onclick=function(){delete_hset(this.name)};
-      cell5.appendChild(deletenode);
+      cell6.appendChild(deletenode);
 
   }
 
@@ -210,6 +185,10 @@
 
   function ping_hset(handset) {
 
+      var table=document.getElementById("dect_status_table");
+      var row = handset_get_row(table, handset);
+      row.cells[3].innerHTML = "enab";
+
       var xmlhttp;
       if (window.XMLHttpRequest)
       {// code for IE7+, Firefox, Chrome, Opera, Safari
@@ -260,6 +239,7 @@
 </script>
 
 
+
 </head>
 
 
@@ -267,10 +247,10 @@
 
 <fieldset class="cbi-section">
 	<legend><b>Registration</b></legend>
-	<table class="cbi-section-table">
+	<table class="cbi-section-table" style="fixed">
 	  <tr>
-	    <td class="cbi-section-table-cell">Registration mode</td>
-	    <td class="cbi-section-table-cell" id="registration_mode">Collecting data...</td>
+	    <td class="cbi-section-table-cell" style="width:120px" style="background-color:green">Registration mode:</td>
+	    <td class="cbi-section-table-cell" style="width:120px" id="registration_mode">Collecting data...</td>
 	    <td class="cbi-section-table-cell"><input type='button' onClick="activate_reg()" value='Register DECT' id='strBtn'></td>
 	  </tr>
 	</table>
@@ -289,6 +269,7 @@
 	    <th class="cbi-section-table-cell">Handset</th>
 	    <th class="cbi-section-table-cell">RFPI</th>
 	    <th class="cbi-section-table-cell">Present</th>
+	    <th class="cbi-section-table-cell">Pinging</th>
 	    <th class="cbi-section-table-cell">Ping</th>
 	    <th class="cbi-section-table-cell">Delete</th>
 	  </tr>
