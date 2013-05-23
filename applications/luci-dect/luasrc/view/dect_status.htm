@@ -19,35 +19,35 @@
   }
 
 
-  function update_table(table, handset, st) {
+  // function update_table(table, handset, st) {
       
       
-      var row=table.insertRow(handset + 1);
-      var cell1=row.insertCell(-1);
-      var cell2=row.insertCell(-1);
-      var cell3=row.insertCell(-1);
-      var cell4=row.insertCell(-1);
-      var cell5=row.insertCell(-1);
+  //     var row=table.insertRow(handset + 1);
+  //     var cell1=row.insertCell(-1);
+  //     var cell2=row.insertCell(-1);
+  //     var cell3=row.insertCell(-1);
+  //     var cell4=row.insertCell(-1);
+  //     var cell5=row.insertCell(-1);
       
-      cell1.innerHTML=st.handsets[handset].handset;
-      cell2.innerHTML=st.handsets[handset].rfpi;
-      cell3.innerHTML=st.handsets[handset].present;
+  //     cell1.innerHTML=st.handsets[handset].handset;
+  //     cell2.innerHTML=st.handsets[handset].rfpi;
+  //     cell3.innerHTML=st.handsets[handset].present;
       
-      var buttonnode= document.createElement('input');
-      buttonnode.setAttribute('type','button');
-      buttonnode.setAttribute('name', handset + 1);
-      buttonnode.setAttribute('value', 'ping');
-      buttonnode.onclick=function(){button_click(this.name)};
-      cell4.appendChild(buttonnode);
+  //     var buttonnode= document.createElement('input');
+  //     buttonnode.setAttribute('type','button');
+  //     buttonnode.setAttribute('name', handset + 1);
+  //     buttonnode.setAttribute('value', 'ping');
+  //     buttonnode.onclick=function(){ping_hset(this.name)};
+  //     cell4.appendChild(buttonnode);
       
-      var deletenode= document.createElement('input');
-      deletenode.setAttribute('type','button');
-      deletenode.setAttribute('name', handset + 1);
-      deletenode.setAttribute('value','delete');
-      deletenode.onclick=function(){delete_hset(this.name)};
-      cell5.appendChild(deletenode);
+  //     var deletenode= document.createElement('input');
+  //     deletenode.setAttribute('type','button');
+  //     deletenode.setAttribute('name', handset + 1);
+  //     deletenode.setAttribute('value','delete');
+  //     deletenode.onclick=function(){delete_hset(this.name)};
+  //     cell5.appendChild(deletenode);
       
-  }
+  // }
   
 
   function handsets_has_hst(handsets, hst) {
@@ -127,7 +127,7 @@
       buttonnode.setAttribute('type','button');
       buttonnode.setAttribute('name', h.handset);
       buttonnode.setAttribute('value', 'ping');
-      buttonnode.onclick=function(){button_click(this.name)};
+      buttonnode.onclick=function(){ping_hset(this.name)};
       cell4.appendChild(buttonnode);
       
       var deletenode= document.createElement('input');
@@ -204,6 +204,30 @@
 	  }
       }
       xmlhttp.open("GET","<%=luci.dispatcher.build_url("admin/services/dect/delete_hset/")%>?handset=" + handset,true);
+      xmlhttp.send();
+  }
+
+
+  function ping_hset(handset) {
+
+      var xmlhttp;
+      if (window.XMLHttpRequest)
+      {// code for IE7+, Firefox, Chrome, Opera, Safari
+	  xmlhttp=new XMLHttpRequest();
+      }
+      else
+      {// code for IE6, IE5
+	  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+      }
+      xmlhttp.onreadystatechange=function()
+      {
+	  if (xmlhttp.readyState==4 && xmlhttp.status==200)
+	  {
+
+	      
+	  }
+      }
+      xmlhttp.open("GET","<%=luci.dispatcher.build_url("admin/services/dect/ping_hset/")%>?handset=" + handset,true);
       xmlhttp.send();
   }
 
