@@ -24,17 +24,13 @@ m = Map("firewall", translate("Firewall - Port Forwards"),
 -- Port Forwards
 --
 
-a = m:section(NamedSection, "add", "redirect", translate("Add New Port Forward"))
-a.template  = "firewall/cbi_addforward"
-a.addremove = true
-a.anonymous = true
-
 s = m:section(TypedSection, "redirect", translate("Port Forwards"))
 s.template  = "cbi/tblsection"
 s.addremove = true
 s.anonymous = true
 s.sortable  = true
 s.extedit   = ds.build_url("admin/network/firewall/forwards/%s")
+s.template_addremove = "firewall/cbi_addforward"
 
 function s.create(self, section)
 	local n = m:formvalue("_newfwd.name")
