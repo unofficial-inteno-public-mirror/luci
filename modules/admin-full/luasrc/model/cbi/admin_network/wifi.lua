@@ -161,7 +161,9 @@ for _, net in ipairs(wdev:get_wifinets()) do
 end
 
 	band = s:taboption("advanced", ListValue, "band", translate("Band"))
+	--band:value("auto", translate("Auto"))
 	band:value("b", translate("2.4GHz"))
+	--band:value("a", translate("5GHz"))
 
 if has_sta then
 	ch = s:taboption("advanced", DummyValue, "choice", translate("Channel"))
@@ -386,11 +388,6 @@ if hwtype == "broadcom" then
 	obss:value("1", "Enable")	
 	obss:value("0", "Disable")
 
-	arate = s:taboption("advanced", ListValue, "arate", translate("Rate"))
-	arate:depends("hwmode", "11bg")
-	arate:depends("hwmode", "auto")
-	arate:value("auto", "Auto")	
-
 	n20rate = s:taboption("advanced", ListValue, "n20rate", translate("Rate"))
 	n20rate:depends("bandwidth", "20")
 	n20rate:depends({hwmode="11n", channel="auto"})
@@ -462,6 +459,7 @@ if hwtype == "broadcom" then
 	n40rate:value("-m 32", "MCS 32: 6 Mbps")	
 
 	grate = s:taboption("advanced", ListValue, "grate", translate("Rate"))
+	grate:depends("hwmode", "11bg")
 	grate:depends("hwmode", "11g")
 	grate:depends("hwmode", "11gst")
 	grate:depends("hwmode", "11lrs")
