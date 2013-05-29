@@ -37,7 +37,7 @@ netbridge = m:field(ListValue, "_bridge", translate("Set as"))
 netbridge:value("", "standalone interface")
 netbridge:value("1", "bridge over multiple interfaces")
 netbridge:value("2", "bridge alias")
-netbridge:value("3", "multi WAN")
+netbridge:value("3", "any WAN")
 
 
 sifname = m:field(Value, "_ifname", translate("Cover the following interface"))
@@ -107,7 +107,7 @@ function newproto.write(self, section, value)
 	if name and #name > 0 then
 		local br = (netbridge:formvalue(section) == "1") and "bridge"
 		local al = (netbridge:formvalue(section) == "2") and "alias"
-		local mw = (netbridge:formvalue(section) == "3") and "multiwan"
+		local mw = (netbridge:formvalue(section) == "3") and "anywan"
 		local net = nw:add_network(name, { proto = value, type = br or al or mw or nil})
 		if net then
 			local ifn

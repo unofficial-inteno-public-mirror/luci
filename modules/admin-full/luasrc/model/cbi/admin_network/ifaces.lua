@@ -243,7 +243,7 @@ if not net:is_virtual() then
 	br:value("bridge", "bridge over multiple interfaces")
 	br:value("alias", "bridge alias")
 	if guser == "admin" then
-		br:value("multiwan", "multi WAN")
+		br:value("anywan", "any WAN")
 	end
 	br.rmempty = true
 
@@ -377,15 +377,15 @@ end
 
 
 if not net:is_virtual() then
-	ifname_multiwan = s:taboption("physical", Value, "ifname_multiwan", translate("Interfaces"))
-	ifname_multiwan.template = "cbi/network_wanifacelist"
-	ifname_multiwan.nobridges = true
-	ifname_multiwan.rmempty = false
-	ifname_multiwan.network = arg[1]
-	ifname_multiwan.widget = "checkbox"
-	ifname_multiwan:depends("type", "multiwan")
-	ifname_multiwan.cfgvalue = ifname_single.cfgvalue
-	ifname_multiwan.write = ifname_single.write
+	ifname_anywan = s:taboption("physical", Value, "ifname_anywan", translate("Interfaces"))
+	ifname_anywan.template = "cbi/network_wanifacelist"
+	ifname_anywan.nobridges = true
+	ifname_anywan.rmempty = false
+	ifname_anywan.network = arg[1]
+	ifname_anywan.widget = "checkbox"
+	ifname_anywan:depends("type", "anywan")
+	ifname_anywan.cfgvalue = ifname_single.cfgvalue
+	ifname_anywan.write = ifname_single.write
 end
 
 
@@ -431,7 +431,7 @@ if guser == "admin" then
 			if not net:is_floating() and net:is_empty() then
 				local ifn = ((br and (br:formvalue(section) == "bridge"))
 					and ifname_multi:formvalue(section)
-				     or ifname_single:formvalue(section) or ifname_alias:formvalue(section) or ifname_multiwan:formvalue(section))
+				     or ifname_single:formvalue(section) or ifname_alias:formvalue(section) or ifname_anywan:formvalue(section))
 
 				for ifn in ut.imatch(ifn) do
 					return value
