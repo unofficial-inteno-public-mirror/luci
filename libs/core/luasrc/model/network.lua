@@ -1634,12 +1634,12 @@ function wifinet.name(self)
 end
 
 function wifinet.ifname(self)
-	local ifn = tonumber(sys.exec("wlc ifname | awk -F'wl' '{print$2}'"))
-	local nid = tonumber(sys.exec("echo %s | cut -d'k' -f 2" %self.netid)) - 1
+	local ifn = "%s" sys.exec("echo %s | awk -F'.' '{print$1}'" %self.netid)
+	local nid = tonumber(sys.exec("echo %s | awk -F'network' '{print$2}'" %self.netid)) - 1
 	if nid == 0 then
-		return "wl%d" %ifn
+		return "%s" %ifn
 	else
-		return "wl%d.%d" %{ifn, nid}
+		return "%s.%d" %{ifn, nid}
 	end
 end
 
@@ -1729,7 +1729,7 @@ function wifinet.bitrate(self)
 end
 
 function wifinet.channel(self)
-	return sys.exec("wlc channel") + 0
+	return sys.exec("wlctl channel | grep current | awk '{print$4}'") + 0
 end
 
 function wifinet.signal(self)
@@ -1741,7 +1741,7 @@ function wifinet.noise(self)
 end
 
 function wifinet.country(self)
-	return sys.exec("wlc country") or "00"
+	return sys.exec("wlctl country | awk '{print$1}'") or "00"
 end
 
 function wifinet.txpower(self)
