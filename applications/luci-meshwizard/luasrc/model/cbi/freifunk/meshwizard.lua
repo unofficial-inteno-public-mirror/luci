@@ -108,7 +108,7 @@ uci:foreach("wireless", "wifi-device", function(section)
 	elseif hwtype == "mac80211" then
 		sys.exec("iw reg set " .. syscc)
 	elseif hwtype == "broadcom" then
-		sys.exec ("wlc country " .. syscc)
+		sys.exec ("wlctl country | awk '{print$1}' " .. syscc)
 	end
 
 	local chan = n:taboption(device, ListValue, device .. "_channel", translate("Channel"),

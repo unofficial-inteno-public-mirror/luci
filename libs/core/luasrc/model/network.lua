@@ -1634,7 +1634,7 @@ function wifinet.name(self)
 end
 
 function wifinet.ifname(self)
-	local ifn = "%s" sys.exec("echo %s | awk -F'.' '{print$1}'" %self.netid)
+	local ifn = "wl0"
 	local nid = tonumber(sys.exec("echo %s | awk -F'network' '{print$2}'" %self.netid)) - 1
 	if nid == 0 then
 		return "%s" %ifn
