@@ -612,7 +612,7 @@ mode = s:taboption("general", ListValue, "mode", translate("Mode"))
 mode.override_values = true
 mode:value("ap", translate("Access Point"))
 --mode:value("sta", translate("Client"))
-mode:value("adhoc", translate("Ad-Hoc"))
+--mode:value("adhoc", translate("Ad-Hoc"))
 
 bssid = s:taboption("general", Value, "bssid", translate("<abbr title=\"Basic Service Set Identifier\">BSSID</abbr>"))
 
@@ -851,8 +851,8 @@ if hwtype == "broadcom" then
 		end
 	end
 
-	mode:value("wds", translate("WDS"))
-	mode:value("monitor", translate("Monitor"))
+	--mode:value("wds", translate("WDS"))
+	--mode:value("monitor", translate("Monitor"))
 
 	hidden = s:taboption("general", Flag, "hidden", translate("Hide <abbr title=\"Extended Service Set Identifier\">ESSID</abbr>"))
 	hidden:depends({mode="ap"})
