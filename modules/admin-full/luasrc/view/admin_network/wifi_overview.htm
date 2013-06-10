@@ -350,6 +350,11 @@ You may obtain a copy of the License at
 				</td>
 				<td style="width:310px;text-align:right">
 					<!-- <input type="button" class="cbi-button cbi-button-find" style="width:100px" onclick="location.href='<%=luci.dispatcher.build_url("admin/network/wireless_join")%>?device=<%=dev:name()%>'" title="<%:Find and join network%>" value="<%:Scan%>" /> -->
+				<% if dev:radio() then %>
+					<input type="button" class="cbi-button cbi-button-reload" style="width:100px" onclick="location.href='<%=luci.dispatcher.build_url("admin/network/wireless_onoff/")%>off?device=<%=dev:name()%>'" title="<%:Turn off wireless radio%>" value="<%:Turn Off%>" />
+				<% else %>
+					<input type="button" class="cbi-button cbi-button-reload" style="width:100px" onclick="location.href='<%=luci.dispatcher.build_url("admin/network/wireless_onoff/")%>on?device=<%=dev:name()%>'" title="<%:Turn on wireless radio%>" value="<%:Turn On%>" />
+				<% end %>
 					<input type="button" class="cbi-button cbi-button-add" style="width:100px" onclick="location.href='<%=luci.dispatcher.build_url("admin/network/wireless_add")%>?device=<%=dev:name()%>'" title="<%:Provide new network%>" value="<%:Add%>" />
 				</td>
 			</tr>

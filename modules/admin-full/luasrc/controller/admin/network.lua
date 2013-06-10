@@ -56,6 +56,9 @@ function index()
 			page = entry({"admin", "network", "wireless_join"}, call("wifi_join"), nil)
 			page.leaf = true
 
+			page = entry({"admin", "network", "wireless_onoff"}, call("wifi_onoff"), nil)
+			page.leaf = true
+
 			page = entry({"admin", "network", "wireless_add"}, call("wifi_add"), nil)
 			page.leaf = true
 
@@ -206,6 +209,28 @@ function wifi_join()
 	else
 		luci.template.render("admin_network/wifi_join")
 	end
+end
+
+function wifi_onoff(act)
+	local uci = require("luci.model.uci").cursor()
+	local dev = luci.http.formvalue("device")
+
+	uci:set("wireless", dev, "radio", act)
+	uci:commit("wireless")
+	uci:save("wireless")
+	uci:load("wireless")
+
+	if act == "off" then
+		luci.sys.exec("wlctl -i %s down" %dev)
+	else
+		luci.sys.exec("wlctl -i %s up" %dev)
+	end
+
+	if nixio.fs.access("/usr/sbin/ledctl") then
+		luci.sys.exec("ledctl wireless %s 1>/dev/null" %act)
+	end
+
+	luci.http.redirect(luci.dispatcher.build_url("admin/network/wireless"))
 end
 
 function wifi_add()

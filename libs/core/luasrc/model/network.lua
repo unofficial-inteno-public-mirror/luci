@@ -1524,6 +1524,21 @@ function wifidev.is_up(self)
 	return up
 end
 
+function wifidev.radio(self)
+	local up = false
+
+	_uci_state:foreach("wireless", "wifi-device",
+		function(s)
+			if s['.name'] == self.sid then
+				if s.radio ~= "off" then
+					up = true
+				end
+			end
+		end)
+
+	return up
+end
+
 function wifidev.get_wifinet(self, net)
 	if _uci_real:get("wireless", net) == "wifi-iface" then
 		return wifinet(net)
