@@ -1,5 +1,5 @@
 
-m = Map("snmpd", translate("SNMP"))
+m = Map("snmpd")
 
 -- System --
 s = m:section(TypedSection, "system", translate("System"))
