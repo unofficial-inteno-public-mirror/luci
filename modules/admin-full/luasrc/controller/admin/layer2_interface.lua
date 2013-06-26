@@ -1,3 +1,4 @@
+module("luci.controller.admin.layer2_interface", package.seeall)
 function index()
         local ubus = require "ubus".connect()
         local specs=ubus:call("router", "quest", { info = "specs" })
