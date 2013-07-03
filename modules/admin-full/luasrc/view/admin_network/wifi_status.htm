@@ -12,15 +12,15 @@
 
 				var icon;
 				if (is_assoc)
-					icon = "<%=resource%>/icons/wifi.png";
+					icon = "<%=resource%>/icons/wqr_" + iw.ssid + ".png";
 				else
 					icon = "<%=resource%>/icons/wifi_disabled.png";
 
 				var s = document.getElementById('<%=self.option%>-iw-signal');
 				if (s)
 					s.innerHTML = String.format(
-						'<img src="<%=resource%>/icons/wqr_%s.png" title="" /><br />' +
-						'<small></small>', iw.ssid
+						'<img src="%s" title="" /><br />' +
+						'<small></small>', icon
 					);
 
 				var d = document.getElementById('<%=self.option%>-iw-description');
