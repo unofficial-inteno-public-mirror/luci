@@ -172,25 +172,8 @@ function wifi_join()
 	end
 end
 
-function wifi_onoff(act)
-	local uci = require("luci.model.uci").cursor()
-	local dev = luci.http.formvalue("device")
-
-	uci:set("wireless", dev, "radio", act)
-	uci:commit("wireless")
-	uci:save("wireless")
-	uci:load("wireless")
-
-	if act == "off" then
-		luci.sys.exec("wlctl -i %s down" %dev)
-	else
-		luci.sys.exec("wlctl -i %s up" %dev)
-	end
-
-	if nixio.fs.access("/usr/sbin/ledctl") then
-		luci.sys.exec("ledctl wireless %s 1>/dev/null" %act)
-	end
-
+function wifi_onoff()
+	luci.sys.exec("ACTION=register INTERFACE=ecobutton /sbin/hotplug-call button")
 	luci.http.redirect(luci.dispatcher.build_url("admin/network/wireless"))
 end
 

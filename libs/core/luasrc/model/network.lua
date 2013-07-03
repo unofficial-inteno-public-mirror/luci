@@ -1686,8 +1686,9 @@ function wifinet.active_mode_i18n(self)
 end
 
 function wifinet.active_ssid(self)
-	local ssid = "%s" %sys.exec("wlctl -i %q ssid | awk '{print$3}'" %self:ifname())
-	return ssid:gsub('"', '')
+	--local ssid = "%s" %sys.exec("wlctl -i %q ssid | awk '{print$3}'" %self:ifname())
+	--return ssid:gsub('"', '')
+	return _uci_state:get("wireless", self.sid, "ssid")
 end
 
 function wifinet.active_bssid(self)
