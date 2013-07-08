@@ -1,0 +1,39 @@
+m = Map ("voice_client", translate("Voice Settings"))
+
+brcm = m:section(TypedSection, "brcm_advanced")
+brcm.anonymous = true
+
+countries = {	AUS = "AUSTRALIA",
+		BEL = "BELGIUM",
+		BRA = "BRAZIL",
+		CHL = "CHILE",
+		CHN = "CHINA",
+		CZE = "CZECH",
+		DNK = "DENMARK",
+		ETS = "ETSI",
+		FIN = "FINLAND",
+		FRA = "FRANCE",
+		DEU = "GERMANY",
+		HUN = "HUNGARY",
+		IND = "INDIA",
+		ITA = "ITALY",
+		JPN = "JAPAN",
+		NLD = "NETHERLANDS",
+		NZL = "NEW ZEALAND",
+		USA = "NORTH AMERICA",
+		ESP = "SPAIN",
+		SWE = "SWEDEN",
+		CHE = "SWITZERLAND",
+		NOR = "NORWAY",
+		TWN = "TAIWAN",
+		GBR = "UK",
+		ARE = "UNITED ARAB EMIRATES",
+		T57 = "CFG TR57" }
+
+country = brcm:option(ListValue, 'country', 'Locale selection')
+for k,v in pairs(countries) do
+	country:value(k, v)
+end
+country.default = "SWE"
+
+return m

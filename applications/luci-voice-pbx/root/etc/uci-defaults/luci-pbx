@@ -1,0 +1,51 @@
+#!/bin/sh
+
+uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@pbx[-1]
+	add ucitrack pbx
+	set ucitrack.@pbx[-1].init=pbx_asterisk
+	add_list ucitrack.@pbx[-1].affects=asterisk
+	commit ucitrack
+EOF
+uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@pbx_advanced[-1]
+	add ucitrack pbx_advanced
+	set ucitrack.@pbx_advanced[-1].init=pbx_asterisk
+	add_list ucitrack.@pbx-advanced[-1].affects=asterisk
+	commit ucitrack
+EOF
+uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@pbx_calls[-1]
+	add ucitrack pbx_calls
+	set ucitrack.@pbx_calls[-1].init=pbx_asterisk
+	add_list ucitrack.@pbx-calls[-1].affects=asterisk
+	commit ucitrack
+EOF
+uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@pbx_google[-1]
+	add ucitrack pbx_google
+	set ucitrack.@pbx_google[-1].init=pbx_asterisk
+	add_list ucitrack.@pbx-google[-1].affects=asterisk
+	commit ucitrack
+EOF
+uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@pbx_users[-1]
+	add ucitrack pbx_users
+	set ucitrack.@pbx_users[-1].init=pbx_asterisk
+	add_list ucitrack.@pbx_users[-1].affects=asterisk
+	commit ucitrack
+EOF
+uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@pbx_voip[-1]
+	add ucitrack pbx_voip
+	set ucitrack.@pbx_voip[-1].init=pbx_asterisk
+	add_list ucitrack.@pbx_voip[-1].affects=asterisk
+	commit ucitrack
+EOF
+uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@asterisk[-1]
+	add ucitrack asterisk
+	set ucitrack.@asterisk[-1].init=asterisk
+	commit ucitrack
+EOF
+exit 0

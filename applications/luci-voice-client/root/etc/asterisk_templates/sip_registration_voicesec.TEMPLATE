@@ -1,0 +1,5 @@
+#exec echo "register => |USER|:$(/usr/bin/voicesec -d /usr/lib/asterisk/voicesec_|ACCOUNT|)|AUTHUSER|@|ACCOUNT||PORT|/|CONTACT_USER|"
+; terminate call after five minutes without data
+rtpholdtimeout=300
+rtptimeout=300
+

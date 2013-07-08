@@ -1,0 +1,5 @@
+register => |DEFAULTUSER|:|SECRET|@peer-|NAME|
+context = incoming_calls
+; terminate call after five minutes without data
+rtpholdtimeout=300
+rtptimeout=300

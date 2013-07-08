@@ -1,0 +1,40 @@
+
+[default]
+
+exten => _X!,1,Answer()
+exten => _X!,2,Playback(tt-monkeys)
+exten => _X!,3,Hangup()
+
+[incoming_calls]
+
+; incoming calls from the sip gateway should end up here
+exten => s,1,Dial(BRCM/0&BRCM/1)
+exten => s,n,Hangup()
+
+; incoming calls to any number will endup here
+exten => _X!,1,Answer()
+exten => _X!,2,Playback(tt-monkeys)
+exten => _X!,3,Hangup()
+
+[local]
+
+; test extension to test playback into phone
+exten => 1234,1,Answer()
+exten => 1234,2,Playback(tt-monkeys)
+exten => 1234,n,Hangup()
+
+; test extension to test echoing sound into the phone
+exten => 4567,1,Answer()
+exten => 4567,n,Echo()
+exten => 4567,n,Hangup()
+
+; extensions to call the other port
+exten => 0000,1,Dial(BRCM/0)
+exten => 1111,1,Dial(BRCM/1)
+
+; extension to dial out to the world via the sip-provider
+exten => _X!,1,Dial(SIP/${EXTEN}@peer-|NAME|)
+
+
+
+
