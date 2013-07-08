@@ -16,7 +16,9 @@ $Id: index.htm 7022 2011-05-04 21:04:31Z jow $
 <%
 	require "luci.fs"
 	require "luci.tools.status"
-	require "luci.ihgsp"
+	require "luci.quest"
+
+	local advanced = (luci.http.formvalue("advanced") == "1")
 
 	local has_ipv6 = luci.fs.access("/proc/net/ipv6_route")
 	local has_dhcp = luci.fs.access("/etc/config/dhcp")
@@ -24,6 +26,8 @@ $Id: index.htm 7022 2011-05-04 21:04:31Z jow $
 	      has_wifi = has_wifi and has_wifi.size > 0
 
 	local prt = require "luci.model.ports".init()
+
+	local router = luci.quest.router_static_sysinfo()
 
 	if luci.http.formvalue("status") == "1" then
 		local ntm = require "luci.model.network".init()
@@ -45,7 +49,7 @@ $Id: index.htm 7022 2011-05-04 21:04:31Z jow $
 		local rv = {
 			uptime     = luci.sys.uptime(),
 			localtime  = os.date(),
-			cpu        = luci.sys.exec("top -n1 | grep -m 1 'CPU:' | awk -F' ' '{print$2}'") ,
+			cpu	   = luci.quest.cpuload,
 			memtotal   = memtotal,
 			memcached  = memcached,
 			membuffers = membuffers,
@@ -571,7 +575,7 @@ $Id: index.htm 7022 2011-05-04 21:04:31Z jow $
 
 <h2><a id="content" name="content"><%:Status%></a></h2>
 
-<% if luci.http.formvalue("advanced") == "1" then %>
+<% if advanced then %>
 	<p align="center"><input type="radio" name="view_type" value="basic" onclick=location.href="<%=REQUEST_URI%>?advanced=0"> <b>Basic View<b/> &nbsp;&nbsp;&nbsp;&nbsp;
 	<input type="radio" name="view_type" value="advanced" checked onclick=location.href="<%=REQUEST_URI%>?advanced=1"> <b>Advanced View<b/>
 <% else %>
@@ -585,32 +589,32 @@ $Id: index.htm 7022 2011-05-04 21:04:31Z jow $
 
 	<table width="100%" cellspacing="10">
 		<tr><td width="33%"><%:Router Name%></td><td><%=luci.sys.hostname() or "?"%></td></tr>
-		<% if luci.http.formvalue("advanced") == "1" then %>
-			<tr><td width="33%"><%:Router Model%></td><td><%=luci.sys.exec('cat /etc/iop_version | cut -d"_" -f1')%></td></tr>
+		<% if advanced then %>
+			<tr><td width="33%"><%:Router Model%></td><td><%=pcdata(router.model)%></td></tr>
 		<% end %>
-		<tr><td width="33%"><%:iopsys Version%></td><td><%=pcdata(luci.ihgsp.version) %></td></tr>
-		<% if luci.http.formvalue("advanced") == "1" then %>
-			<tr><td width="33%"><%:Brcm Version%></td><td><%=pcdata(luci.ihgsp.brcmversion) %></td></tr>
+		<tr><td width="33%"><%:iopsys Version%></td><td><%=pcdata(router.iopversion) %></td></tr>
+		<% if advanced then %>
+			<tr><td width="33%"><%:Brcm Version%></td><td><%=pcdata(router.brcmversion) %></td></tr>
 			<tr><td width="33%"><%:CFE Version%></td><td>
-				<%=luci.sys.exec('brcm_fw_tool -l info')%> /
-				<%=luci.sys.exec('brcm_fw_tool -k info')%> /
-				<%=luci.sys.exec('brcm_fw_tool -e info')%>
+				<%=pcdata(router.cfeversion)%> /
+				<%=pcdata(router.socmodel)%> /
+				<%=pcdata(router.socrevision)%>
 			</td></tr>
 			<tr><td width="33%"><%:OpenWrt Version%></td><td>
 				<%=pcdata(luci.version.distname)%> <%=pcdata(luci.version.distversion)%> /
 				<%=pcdata(luci.version.luciname)%> <%=pcdata(luci.version.luciversion)%>
 			</td></tr>
-			<tr><td width="33%"><%:Kernel Version%></td><td><%=luci.sys.exec("uname -r")%></td></tr>
+			<tr><td width="33%"><%:Kernel Version%></td><td><%=pcdata(router.kernel)%></td></tr>
 		<% end %>
 		<tr><td width="33%"><%:Local Time%></td><td id="localtime">-</td></tr>
 		<tr><td width="33%"><%:Uptime%></td><td id="uptime">-</td></tr>
-		<% if luci.http.formvalue("advanced") == "1" then %>
+		<% if advanced then %>
 			<tr><td width="33%"><%:CPU%></td><td id="cpu">-</td></tr>
 		<% end %>
 	</table>
 </fieldset>
 
-<% if luci.http.formvalue("advanced") == "1" then %>
+<% if advanced then %>
 <fieldset class="cbi-section">
 	<legend><%:Memory%></legend>
 

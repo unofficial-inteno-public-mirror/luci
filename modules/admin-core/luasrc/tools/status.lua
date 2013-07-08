@@ -14,20 +14,33 @@ You may obtain a copy of the License at
 module("luci.tools.status", package.seeall)
 
 local uci = require "luci.model.uci".cursor()
+local bus = require "ubus"
 
-function is_connected(ip)
-        local ap = tonumber(luci.sys.exec("arping -f -c 1 -w 1 %s -I $(grep -w %s /proc/net/arp | awk '{print$6}') | grep -c 'Received 1 replies'" %{ip, ip}))
-        if ap > 0 then
-                return 1
-        else
-                return 0
-        end
+local _ubus, _ubuscache
+
+function init_ubus()
+	_ubus         = bus.connect()
+	_ubuscache = { }
+end
+
+function is_connected(ip, field)
+
+	if not _ubuscache[ip] then
+		_ubuscache[ip] = _ubus:call("router", "host", { ipaddr = ip })
+	end
+	if _ubuscache[ip] and field then
+		return _ubuscache[ip][field]
+	else
+		return 0
+	end
 end
 
 local function dhcp_leases_common(family)
 	local rv = { }
 	local nfs = require "nixio.fs"
 	local leasefile = "/var/dhcp.leases"
+
+	init_ubus()
 
 	uci:foreach("dhcp", "dnsmasq",
 		function(s)
@@ -52,7 +65,7 @@ local function dhcp_leases_common(family)
 							macaddr  = mac,
 							ipaddr   = ip,
 							hostname = (name ~= "*") and name,
-							status = is_connected(ip)
+							status = is_connected(ip, "connected")
 						}
 					elseif family == 6 and ip:match(":") then
 						rv[#rv+1] = {
