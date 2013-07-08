@@ -1,7 +1,12 @@
 
 m = Map("provisioning", translate("IUP Provisioning"), translate("Setup your IUP provisioning parameters"))
 
-s = m:section(TypedSection, "general", "General") -- Configure atm interface
+
+
+s = m:section(TypedSection, "general", "General") 
+s.anonymous=true
+
+
 enapoll = s:option(Flag, "enabled", translate("Enabled"))
 enapoll.enabled = "on"
 enapoll.disabled = "off"
@@ -14,7 +19,19 @@ end
 timelist = s:option(ListValue, "interval", translate("Update weekly or daily"))
 timelist:value("weekly", translate("Weekly"))
 timelist:value("daily", translate("Daily"))
+backup=s:option(Button, "getprov", translate("Exportfile"),translate("Dump running config into a tar archive that can be used for iup Provsioning"))
 
+
+
+
+backup.write = function(self, section)
+local backup_cmd  = "sysupgrade --create-backup-uci - 2>/dev/null"
+local reader = ltn12_popen(backup_cmd)
+		luci.http.header('Content-Disposition', 'attachment; filename="backup-%s-%s.tar.gz"' % {
+			luci.sys.hostname(), os.date("%Y-%m-%d")})
+		luci.http.prepare_content("application/x-targz")
+		luci.ltn12.pump.all(reader, luci.http.write)	
+end
 s2 = m:section(NamedSection,"configserver","server",translate ("Main Provisioning Server"), translate("If added will override DHCP Discover Provisioning"))
 
 s2.addremove = true
@@ -56,8 +73,36 @@ ena = s3:option(Flag, "enabled", translate("Enabled"))
 ena.enabled = "on"
 ena.disabled = "off"
 ena.rmempt = false
+
+
+function ltn12_popen(command)
+
+	local fdi, fdo = nixio.pipe()
+	local pid = nixio.fork()
+
+	if pid > 0 then
+		fdo:close()
+		local close
+		return function()
+			local buffer = fdi:read(2048)
+			local wpid, stat = nixio.waitpid(pid, "nohang")
+			if not close and wpid and stat == "exited" then
+				close = true
+			end
+
+			if buffer and #buffer > 0 then
+				return buffer
+			elseif close then
+				fdi:close()
+				return nil
+			end
+		end
+	elseif pid == 0 then
+		nixio.dup(fdo, nixio.stdout)
+		fdi:close()
+		fdo:close()
+		nixio.exec("/bin/sh", "-c", command)
+	end
+end
+
 return m -- returns the map
-
-
-
-
