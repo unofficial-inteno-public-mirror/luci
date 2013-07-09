@@ -12,31 +12,9 @@ function bertStart() {
       		val = berTime.options[idx].value;
    	}
 
-    	if (val == 1)
-		loc = "<%=luci.dispatcher.build_url("admin/network/xdsl_berstart", '1')%>";
-	else if (val == 5)
-		loc = "<%=luci.dispatcher.build_url("admin/network/xdsl_berstart", '5')%>";
-	else if (val == 10)
-		loc = "<%=luci.dispatcher.build_url("admin/network/xdsl_berstart", '10')%>";
-	else if (val == 20)
-		loc = "<%=luci.dispatcher.build_url("admin/network/xdsl_berstart", '20')%>";
-	else if (val == 40)
-		loc = "<%=luci.dispatcher.build_url("admin/network/xdsl_berstart", '40')%>";
-	else if (val == 60)
-		loc = "<%=luci.dispatcher.build_url("admin/network/xdsl_berstart", '60')%>";
-	else if (val == 120)
-		loc = "<%=luci.dispatcher.build_url("admin/network/xdsl_berstart", '120')%>";
-	else if (val == 180)
-		loc = "<%=luci.dispatcher.build_url("admin/network/xdsl_berstart", '180')%>";
-	else if (val == 240)
-		loc = "<%=luci.dispatcher.build_url("admin/network/xdsl_berstart", '240')%>";
-	else if (val == 300)
-		loc = "<%=luci.dispatcher.build_url("admin/network/xdsl_berstart", '300')%>";
-	else if (val == 360)
-		loc = "<%=luci.dispatcher.build_url("admin/network/xdsl_berstart", '360')%>";
-	else
-		loc = "<%=luci.dispatcher.build_url("admin/network/xdsl_berstart", '5')%>";	
-	return loc;	
+	loc = "<%=luci.dispatcher.build_url("admin/network/xdsl_berstart/")%>" +val;
+
+	return loc;
 }
 
 function bertShow() {

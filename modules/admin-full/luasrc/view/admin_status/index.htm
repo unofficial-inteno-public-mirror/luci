@@ -73,8 +73,7 @@ $Id: index.htm 7022 2011-05-04 21:04:31Z jow $
 				link    = wan:adminlink(),
 				Wname   = prt:Wname(wan:ifname()),
 				l2name  = prt:l2name(wan:ifname()),
-				dsrate  = prt:dslrate("down"),
-				usrate  = prt:dslrate("up")
+				dslrate  = prt:dslrate(),
 			}
 		end
 
@@ -240,12 +239,12 @@ $Id: index.htm 7022 2011-05-04 21:04:31Z jow $
 					{
 						s += String.format(
 							'<strong><%:Downstream Rate%>: </strong>%s Kbps<br />',
-							ifc.dsrate
+							ifc.dslrate.down
 						);
 
 						s += String.format(
 							'<strong><%:Upstream Rate%>: </strong>%s Kbps<br />',
-							ifc.usrate
+							ifc.dslrate.up
 						);
 
 						ss.innerHTML = String.format('<small>%s</small>', s);
@@ -259,12 +258,12 @@ $Id: index.htm 7022 2011-05-04 21:04:31Z jow $
 					{
 						s += String.format(
 							'<strong><%:Downstream Rate%>: </strong>%s Kbps<br />',
-							ifc.dsrate
+							ifc.dslrate.down
 						);
 
 						s += String.format(
 							'<strong><%:Upstream Rate%>: </strong>%s Kbps<br />',
-							ifc.usrate
+							ifc.dslrate.up
 						);
 
 						ss.innerHTML = String.format('<small>%s</small>', s);

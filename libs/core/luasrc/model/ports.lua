@@ -134,10 +134,14 @@ function l2name (self, ifname)
 	return l2name
 end
 
-function dslrate(self, w) -- DSL Rate
-	if w == "down" then
-		return sys.exec("xdslctl info --stats | grep 'Bearer:' | awk -F'Downstream' '{print$2}' | awk -F' ' '{print$3}'")
-	elseif w == "up" then
-		return sys.exec("xdslctl info --stats | grep 'Bearer:' | awk -F'Upstream rate =' '{print$2}' | awk -F' ' '{print$1}'")
-	end
+function dslrate(self) -- DSL Rate
+	local xdsl = sys.exec("xdslctl info --stats")
+	local rv = { }
+
+	rv = {
+		down	= xdsl:match("Bearer:%s+%d+%S+%s+%S+%s+%S+%s+%S+%s+%d+%s+%S+%s+Downstream rate = (%d+)%s+%S+") or 0,
+		up	= xdsl:match("Bearer:%s+%d+%S+%s+Upstream rate = (%d+)%s+") or 0
+	}
+
+	return rv
 end

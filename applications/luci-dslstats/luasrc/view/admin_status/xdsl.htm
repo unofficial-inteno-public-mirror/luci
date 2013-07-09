@@ -5,72 +5,7 @@
 
 		local rv = {}
 
-		rv.dsl = {
-			mode	= ntm:dslmode(),
-			traffic	= ntm:dsltraffic(),
-			status	= ntm:dslstatus(),
-			lps	= ntm:dsllps(),
-			trldn	= ntm:dsltrellis(0),
-			trlup	= ntm:dsltrellis(1),
-			snrdn	= ntm:dslsnr(0),
-			snrup	= ntm:dslsnr(1),
-			atndn	= ntm:dslatten(0),
-			atnup	= ntm:dslatten(1),
-			opwdn	= ntm:dslopwr(0),
-			opwup	= ntm:dslopwr(1),
-			artdn	= ntm:dslarate(0),
-			artup	= ntm:dslarate(1),
-			rtedn	= ntm:dslrate(0),
-			rteup	= ntm:dslrate(1),
-			msgdn	= ntm:dslmsgc(0),
-			msgup	= ntm:dslmsgc(1),
-			Bdn	= ntm:dslB(0),
-			Bup	= ntm:dslB(1),
-			Mdn	= ntm:dslM(0),
-			Mup	= ntm:dslM(1),
-			Tdn	= ntm:dslT(0),
-			Tup	= ntm:dslT(1),
-			Rdn	= ntm:dslR(0),
-			Rup	= ntm:dslR(1),
-			Sdn	= ntm:dslS(0),
-			Sup	= ntm:dslS(1),
-			Ldn	= ntm:dslL(0),
-			Lup	= ntm:dslL(1),
-			Ddn	= ntm:dslD(0),
-			Dup	= ntm:dslD(1),
-			dlydn	= ntm:dsldelay(0),
-			dlyup	= ntm:dsldelay(1),
-			inpdn	= ntm:dslinp(0),
-			inpup	= ntm:dslinp(1),
-			frmdn	= ntm:dslsprframe(0),
-			frmup	= ntm:dslsprframe(1),
-			sprdn	= ntm:dslsprframerr(0),
-			sprup	= ntm:dslsprframerr(1),
-			rswdn	= ntm:dslrsw(0),
-			rswup	= ntm:dslrsw(1),
-			rscdn	= ntm:dslrsce(0),
-			rscup	= ntm:dslrsce(1),
-			rsudn	= ntm:dslrsue(0),
-			rsuup	= ntm:dslrsue(1),
-			hecdn	= ntm:dslhec(0),
-			hecup	= ntm:dslhec(1),
-			ocddn	= ntm:dslocd(0),
-			ocdup	= ntm:dslocd(1),
-			lcddn	= ntm:dsllcd(0),
-			lcdup	= ntm:dsllcd(1),
-			tcldn	= ntm:dsltcells(0),
-			tclup	= ntm:dsltcells(1),
-			dcldn	= ntm:dsldcells(0),
-			dclup	= ntm:dsldcells(1),
-			berdn	= ntm:dslberrs(0),
-			berup	= ntm:dslberrs(1),
-			tesdn	= ntm:dsltes(0),
-			tesup	= ntm:dsltes(1),
-			tssdn	= ntm:dsltses(0),
-			tssup	= ntm:dsltses(1),
-			tuadn	= ntm:dsltuas(0),
-			tuaup	= ntm:dsltuas(1)
-		}
+		rv = ntm:get_xdslstats()
 
 		luci.http.prepare_content("application/json")
 		luci.http.write_json(rv)
@@ -96,12 +31,16 @@
 
 	var update_status = function() {
 		iwxhr.get('<%=REQUEST_URI%>', { status: 1 },
-			function(x, info)
+			function(x, xdsl)
 			{
-				var xdsl = info.dsl;
-
 				if (xdsl)
 				{
+					/* Enable BER Test button only if DSL connection is up */
+					if (xdsl.mode == "" )
+						document.getElementById('bertbutton').disabled="disabled";
+					else
+						document.getElementById('bertbutton').disabled="";
+
 					document.getElementById('dslmode').innerHTML = xdsl.mode;
 					document.getElementById('dsltraffic').innerHTML = xdsl.traffic;
 					document.getElementById('dslstatus').innerHTML = xdsl.status;
@@ -179,7 +118,7 @@
 <div class="cbi-map" id="cbi-network">
 	<h2><a id="content" name="content"><%:xDSL Statistics%></a></h2>
 	<div align="right" class="cbi-map-descr"><%:%>
-		<input type='button' style="width:100px" onClick="berTest()" title="<%:Start xDSL BER Test%>" value="BER Test">
+		<input id="bertbutton" type='button' style="width:100px" onClick="berTest()" title="<%:Start xDSL BER Test%>" value="BER Test">
 		<input type="button" style="width:100px" onclick="if (confirm('<%:Really reset the xDSL statistics? The reset cannot be undone.%>')) location.href='<%=luci.dispatcher.build_url("admin/network/xdsl_reset")%>'" title="<%:Reset xDSL Statistics%>" value="<%:Reset%>" />
 	</div>
 
@@ -195,10 +134,10 @@
 				</tr>
 
 						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
-							<td id="dslmode" class="cbi-value-field"><%=ntm:dslmode()%></td>
-							<td id="dsltraffic" class="cbi-value-field"><%=ntm:dsltraffic()%></td>
-							<td id="dslstatus" class="cbi-value-field"><%=ntm:dslstatus()%></td>
-							<td id="dsllps" class="cbi-value-field"><%=ntm:dsllps()%></td>
+							<td id="dslmode" class="cbi-value-field"><%:%></td>
+							<td id="dsltraffic" class="cbi-value-field"><%:%></td>
+							<td id="dslstatus" class="cbi-value-field"><%:%></td>
+							<td id="dsllps" class="cbi-value-field"><%:%></td>
 						</tr>
 			</table>
 		</div>
@@ -218,7 +157,7 @@
 				</tr>
 
 						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
-							<td class="cbi-value-field"><%="Line Coding(Trellis)"%></td>
+							<td class="cbi-value-field"><%="Line Coding (Trellis)"%></td>
 							<td id="trldn" class="cbi-value-field"></td>
 							<td id="trlup" class="cbi-value-field"></td>
 						</tr>

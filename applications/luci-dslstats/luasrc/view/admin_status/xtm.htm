@@ -3,20 +3,9 @@
 
 	if luci.http.formvalue("status") == "1" then
 
-		local rv = {}
+		local rv = { }
 
-		rv.tm = {
-			inoct	= ntm:tminoct(),
-			outoct	= ntm:tmoutoct(),
-			inpac	= ntm:tminpac(),
-			outpac	= ntm:tmoutpac(),
-			inoam	= ntm:tminoam(),
-			outoam	= ntm:tmoutoam(),
-			inasm	= ntm:tminasm(),
-			outasm	= ntm:tmoutasm(),
-			inperr	= ntm:tminpackerr(),
-			incerr	= ntm:tmincellerr()
-		}
+		rv = ntm:get_xtmstats()
 
 		luci.http.prepare_content("application/json")
 		luci.http.write_json(rv)
@@ -34,10 +23,8 @@
 
 	var update_status = function() {
 		iwxhr.get('<%=REQUEST_URI%>', { status: 1 },
-			function(x, info)
+			function(x, xtm)
 			{
-				var xtm = info.tm;
-
 				if (xtm)
 				{
 					document.getElementById('tminoct').innerHTML = xtm.inoct;

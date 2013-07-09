@@ -1,26 +1,15 @@
 <%-
 	local ntm = require "luci.model.xdsl".init()
+	local bert = ntm:get_bertstats()
+	local bertrunning = (bert.status == "RUNNING")
 -%>
 
-<script language="javascript">
-
-function bertClose() {
-   window.close();
-}
-
-</script>
-
-<%
-	if (ntm:bertstatus() == "RUNNING") then
-%>
+<% if bertrunning then %>
 		<meta http-equiv="refresh" content="2" >
-<%
-	else
-%>
+<% else %>
 		<meta http-equiv="refresh" content="20" >
-<%
-	end 
-%>
+<% end  %>
+
 <body bgcolor="#F8F8FF">
 <div class="cbi-map" id="cbi-network">
 	<div align="right" class="cbi-map-descr"><%:%>
@@ -37,42 +26,36 @@ function bertClose() {
 
 						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
 							<td class="cbi-value-field"><%="Status"%></td>
-							<td class="cbi-value-field"><%=ntm:bertstatus()%></td>
+							<td class="cbi-value-field"><%=bert.status%></td>
 						</tr>
 
 						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
 							<td class="cbi-value-field"><%="Total Time"%></td>
-							<td class="cbi-value-field"><%=ntm:berttotal()%></td>
+							<td class="cbi-value-field"><%=bert.total%> seconds</td>
 						</tr>
 
 						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
 							<td class="cbi-value-field"><%="Elapsed Time"%></td>
-							<td class="cbi-value-field"><%=ntm:bertelapsed()%></td>
+							<td class="cbi-value-field"><%=bert.elapsed%> seconds</td>
 						</tr>
 
 						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
 							<td class="cbi-value-field"><%="Bits Tested"%></td>
-							<td class="cbi-value-field"><%=ntm:berttested()%></td>
+							<td class="cbi-value-field"><%=bert.tested%></td>
 						</tr>
 
 						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
 							<td class="cbi-value-field"><%="Error Bits"%></td>
-							<td class="cbi-value-field"><%=ntm:berterror()%></td>
+							<td class="cbi-value-field"><%=bert.errored%></td>
 						</tr>
 
 			</table>
 		</div>
 	</fieldset>
-	<%
-		if (ntm:bertstatus() == "RUNNING") then
-	%>
+	<% if bertrunning then %>
 			<p align="center"><input type='button' onClick="location.href='<%=luci.dispatcher.build_url("admin/network/xdsl_berstop")%>'" value='Stop'>
-	<%
-		else
-	%>
-			<p align="center"><input type='button' onClick='bertClose()' value='Close'>
-	<%
-		end 
-	%>
+	<% else %>
+			<p align="center"><input type='button' onClick='window.close()' value='Close'>
+	<% end %>
 </div>
 </body>
