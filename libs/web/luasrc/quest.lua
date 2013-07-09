@@ -3,14 +3,14 @@ module("luci.quest", package.seeall)
 local bus = require "ubus"
 
 function router_static_sysinfo()
-	local _ubus         = bus.connect()
+	local _ubus
 	local _ubuscache = { }
-
 	local rv = { }
 
-	if not _ubuscache["system"] then
-		_ubuscache["system"] = _ubus:call("router", "quest", { info = "system" })
-	end
+	_ubus = bus.connect()
+	_ubuscache["system"] = _ubus:call("router", "quest", { info = "system" })
+	_ubus:close()
+
 	if not _ubuscache["system"] then
 		return rv
 	end
@@ -31,12 +31,13 @@ function router_static_sysinfo()
 end
 
 function router_dynamic_sysinfo(field)
-	local _ubus         = bus.connect()
+	local _ubus
 	local _ubuscache = { }
 
-	if not _ubuscache["system"] then
-		_ubuscache["system"] = _ubus:call("router", "quest", { info = "system" })
-	end
+	_ubus = bus.connect()
+	_ubuscache["system"] = _ubus:call("router", "quest", { info = "system" })
+	_ubus:close()
+
 	if not _ubuscache["system"] then
 		return 0
 	end
@@ -48,15 +49,15 @@ cpuload = router_dynamic_sysinfo("cpu_per")
 uptime = router_dynamic_sysinfo("uptime")
 
 function router_keys()
-	local _ubus         = bus.connect()
+	local _ubus
 	local _ubuscache = { }
-
 	local rv = { }
 
-	if not _ubuscache["system"] then
-		_ubuscache["system"] = _ubus:call("router", "quest", { info = "keys" })
-	end
-	if not _ubuscache["system"] then
+	_ubus = bus.connect()
+	_ubuscache["keys"] = _ubus:call("router", "quest", { info = "keys" })
+	_ubus:close()
+
+	if not _ubuscache["keys"] then
 		return rv
 	end
 
@@ -70,15 +71,15 @@ function router_keys()
 end
 
 function router_specs()
-	local _ubus         = bus.connect()
+	local _ubus
 	local _ubuscache = { }
-
 	local rv = { }
 
-	if not _ubuscache["system"] then
-		_ubuscache["system"] = _ubus:call("router", "quest", { info = "specs" })
-	end
-	if not _ubuscache["system"] then
+	_ubus = bus.connect()
+	_ubuscache["specs"] = _ubus:call("router", "quest", { info = "specs" })
+	_ubus:close()
+
+	if not _ubuscache["specs"] then
 		return rv
 	end
 
@@ -95,15 +96,15 @@ function router_specs()
 end
 
 function router_memory_info()
-	local _ubus         = bus.connect()
+	local _ubus
 	local _ubuscache = { }
-
 	local rv = { }
 
-	if not _ubuscache["system"] then
-		_ubuscache["system"] = _ubus:call("router", "quest", { info = "system" })
-	end
-	if not _ubuscache["system"] then
+	_ubus = bus.connect()
+	_ubuscache["memory"] = _ubus:call("router", "quest", { info = "memory" })
+	_ubus:close()
+
+	if not _ubuscache["memory"] then
 		return rv
 	end
 

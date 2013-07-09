@@ -13,16 +13,20 @@ local _ubus, _ubusdevcache
 _uci_real  = cursor or _uci_real or uci.cursor()
 
 function init(cursor)
-	_ubus         = bus.connect()
-	_ubusdevcache = { }
 	return _M
 end
 
 function status_eth(self, port, field)
+	_ubus         = bus.connect()
+	_ubusdevcache = { }
+
 	if not _ubusdevcache[port] then
 		_ubusdevcache[port] = _ubus:call("network.device", "status",
 		                                        { name = port })
 	end
+
+	_ubus:close()
+
 	if _ubusdevcache[port] and field then
 		if _ubusdevcache[port][field] then
 			return "up"

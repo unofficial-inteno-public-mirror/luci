@@ -16,18 +16,14 @@ module("luci.tools.status", package.seeall)
 local uci = require "luci.model.uci".cursor()
 local bus = require "ubus"
 
-local _ubus, _ubuscache
-
-function init_ubus()
-	_ubus         = bus.connect()
-	_ubuscache = { }
-end
-
 function is_connected(ip, field)
+	local _ubus
+	local _ubuscache = { }
 
-	if not _ubuscache[ip] then
-		_ubuscache[ip] = _ubus:call("router", "host", { ipaddr = ip })
-	end
+	_ubus = bus.connect()
+	_ubuscache[ip] = _ubus:call("router", "host", { ipaddr = ip })
+	_ubus:close()
+
 	if _ubuscache[ip] and field then
 		return _ubuscache[ip][field]
 	else
@@ -39,8 +35,6 @@ local function dhcp_leases_common(family)
 	local rv = { }
 	local nfs = require "nixio.fs"
 	local leasefile = "/var/dhcp.leases"
-
-	init_ubus()
 
 	uci:foreach("dhcp", "dnsmasq",
 		function(s)
