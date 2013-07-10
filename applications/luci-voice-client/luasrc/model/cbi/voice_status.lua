@@ -3,6 +3,7 @@ Read SIP account status from asterisk and present registration status for the SI
 ]]--
 
 u = luci.model.uci:cursor()
+us = luci.model.uci:cursor_state()
 
 function get_status()
 	local status = {}
@@ -24,6 +25,7 @@ function get_status()
 				acc_state = "Yes"
 			else
 				acc_state = string.format("No (%s)", acc_state)
+				acc_regtime = us:get("asterisk", host, "sip_registry_last_register")
 			end
 
 			row = {
@@ -81,6 +83,6 @@ s:option(DummyValue, "user", "User")
 s:option(DummyValue, "domain", "Domain")
 s:option(DummyValue, "state", "Registered")
 s:option(DummyValue, "refresh", "Registration interval (s)")
-s:option(DummyValue, "regtime", "Registration time")
+s:option(DummyValue, "regtime", "Last registration")
 
 return m
