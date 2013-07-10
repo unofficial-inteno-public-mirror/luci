@@ -126,6 +126,22 @@ function blindxfer.validate(self, value, section)
 	return nil, "Not a valid key for Blind Transfer"
 end
 
+tos_sip = sip:option(Value, 'tos_sip', "SIP DiffServ", "Differentiated services/TOS for SIP data. Recommended value: cs3")
+tos_sip.default = "cs3"
+tos_sip.optional = true
+
+tos_audio = sip:option(Value, 'tos_audio', "Audio DiffServ", "Differentiated services/TOS for Audio data. Recommended value: ef")
+tos_audio.default = "ef"
+tos_audio.optional = true
+
+--tos_video = sip:option(Value, 'tos_video', "Video DiffServ", "Differentiated services/TOS for Video data. Recommended value: af41")
+--tos_video.default = "af41"
+--tos_video.optional = true
+
+--tos_text = sip:option(Value, 'tos_text', "Text DiffServ", "Differentiated services/TOS for Text data. Recommended value: af41")
+--tos_text.default = "af41"
+--tos_text.optional = true
+
 -- Fixed length numbers
 s = m:section(TypedSection, "sip_service_provider", "Fixed length number series")
 s.template  = "cbi/tblsection"

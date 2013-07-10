@@ -30,6 +30,13 @@ registertimeout=|REGISTERTIMEOUT|
 registerattempts=|REGISTERATTEMPTS|
 remotehold=|REMOTEHOLD|
 
+; Differentiated Services settings. See https://wiki.asterisk.org/wiki/display/AST/IP+Quality+of+Service for a description of these parameters.
+tos_sip=|TOS_SIP|		; Sets TOS for SIP packets. Recommended = cs3
+tos_audio=|TOS_AUDIO|		; Sets TOS for RTP audio packets. Recommended = ef
+tos_video=|TOS_VIDEO|		; Sets TOS for RTP video packets. Recommended = af41
+tos_text=|TOS_TEXT|		; Sets TOS for RTP text packets. Recommended = af41
+
+
 #include sip_registrations.conf
 
 [authentication]

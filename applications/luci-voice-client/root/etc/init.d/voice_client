@@ -221,6 +221,10 @@ configure_sip()
 	local registertimeout
 	local registerattempts
 	local remotehold
+	local tos_sip
+	local tos_audio
+	local tos_video
+	local tos_text
 
 	config_get useragent $1 useragent
 	config_get externhost $1 externhost
@@ -232,40 +236,70 @@ configure_sip()
 	config_get registertimeout $1 registertimeout
 	config_get registerattempts $1 registerattempts
 	config_get remotehold $1 remotehold
+	config_get tos_sip $1 tos_sip
+	config_get tos_audio $1 tos_audio
+	config_get tos_video $1 tos_video
+	config_get tos_text $1 tos_text
 
 	[ -z "$useragent" ] && useragent="$USERAGENT"
 
 	sed -i "s/|USERAGENT|/$useragent/g"		$WORKDIR/sip.tmp
+	sed -i "s/|DTMFMODE|/$dtmfmode/"		$WORKDIR/sip.tmp
 
 	if [ -z "$externhost" ] ; then
-		sed -i "s/externhost=|EXTERNHOST|//g"	$WORKDIR/sip.tmp
+		sed -i "s/externhost=|EXTERNHOST|/;externhost=/g"	$WORKDIR/sip.tmp
 	else
-		sed -i "s/|EXTERNHOST|/$externhost/g"	$WORKDIR/sip.tmp
+		sed -i "s/|EXTERNHOST|/$externhost/g"			$WORKDIR/sip.tmp
 	fi
 
 	if [ -z "$bindport" ] ; then
-		sed -i "s/bindport=|BINDPORT|//g"	$WORKDIR/sip.tmp
+		sed -i "s/bindport=|BINDPORT|/;bindport=/g"	$WORKDIR/sip.tmp
 	else
-		sed -i "s/|BINDPORT|/$bindport/g"	$WORKDIR/sip.tmp
+		sed -i "s/|BINDPORT|/$bindport/g"		$WORKDIR/sip.tmp
 	fi
-	sed -i "s/|DTMFMODE|/$dtmfmode/"		$WORKDIR/sip.tmp
 
 	if [ -z "$registertimeout" ] ; then
-		sed -i "s/registertimeout=|REGISTERTIMEOUT|//g"	$WORKDIR/sip.tmp
+		sed -i "s/registertimeout=|REGISTERTIMEOUT|/;registertimeout=/g"	$WORKDIR/sip.tmp
 	else
-		sed -i "s/|REGISTERTIMEOUT|/$registertimeout/g"	$WORKDIR/sip.tmp
+		sed -i "s/|REGISTERTIMEOUT|/$registertimeout/g"				$WORKDIR/sip.tmp
 	fi
 
 	if [ -z "$registerattempts" ] ; then
-		sed -i "s/registerattempts=|REGISTERATTEMPTS|//g"	$WORKDIR/sip.tmp
+		sed -i "s/registerattempts=|REGISTERATTEMPTS|/;registerattempts=/g"	$WORKDIR/sip.tmp
 	else
-		sed -i "s/|REGISTERATTEMPTS|/$registerattempts/g"	$WORKDIR/sip.tmp
+		sed -i "s/|REGISTERATTEMPTS|/$registerattempts/g"			$WORKDIR/sip.tmp
 	fi
 
 	if [ -z "$remotehold" ] ; then
-		sed -i "s/remotehold=|REMOTEHOLD|//g"	$WORKDIR/sip.tmp
+		sed -i "s/remotehold=|REMOTEHOLD|/;remotehold=/g"			$WORKDIR/sip.tmp
 	else
-		sed -i "s/|REMOTEHOLD|/$remotehold/g"	$WORKDIR/sip.tmp
+		sed -i "s/|REMOTEHOLD|/$remotehold/g"					$WORKDIR/sip.tmp
+	fi
+
+
+	# Set Differentiated Services values (optional)
+	if [ -z "$tos_sip" ] ; then
+		sed -i "s/tos_sip=|TOS_SIP|/;tos_sip=/g"	$WORKDIR/sip.tmp
+	else
+		sed -i "s/|TOS_SIP|/$tos_sip/g"			$WORKDIR/sip.tmp
+	fi
+
+	if [ -z "$tos_audio" ] ; then
+		sed -i "s/tos_audio=|TOS_AUDIO|/;tos_audio=/g"	$WORKDIR/sip.tmp
+	else
+		sed -i "s/|TOS_AUDIO|/$tos_audio/g"		$WORKDIR/sip.tmp
+	fi
+
+	if [ -z "$tos_video" ] ; then
+		sed -i "s/tos_video=|TOS_VIDEO|/;tos_video=/g"	$WORKDIR/sip.tmp
+	else
+		sed -i "s/|TOS_VIDEO|/$tos_video/g"		$WORKDIR/sip.tmp
+	fi
+
+	if [ -z "$tos_text" ] ; then
+		sed -i "s/tos_text=|TOS_TEXT|/;tos_text=/g"	$WORKDIR/sip.tmp
+	else
+		sed -i "s/|TOS_TEXT|/$tos_text/g"		$WORKDIR/sip.tmp
 	fi
 
 	# Set RTP port range
