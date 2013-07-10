@@ -144,14 +144,14 @@ function action_flashops()
 			luci.template.render("admin_system/applyreboot")
 			luci.sys.reboot()
 		end
-	elseif luci.http.formvalue("image") or luci.http.formvalue("step") then
+	elseif luci.http.formvalue("image") or luci.http.formvalue("url") or luci.http.formvalue("step") then
 
 		--
 		-- Download image if URL given
 		--
 		local url = luci.http.formvalue("url")
 
-		if url and url:match("http") then
+		if url and (url:match("http://") or url:match("ftp://")) then
 			luci.sys.exec("wget -O %s %s" %{image_tmp, url})
 		end
 
