@@ -13,6 +13,8 @@ You may obtain a copy of the License at
 $Id: processes.lua 7025 2011-05-04 21:23:55Z jow $
 ]]--
 
+local quest = require "luci.quest"
+
 f = SimpleForm("processes", translate("Processes"))
 f.reset = false
 f.submit = false
@@ -48,8 +50,8 @@ else
 	t = f:section(Table, { 1 })
 	pid = t:option(DummyValue, "PID", translate( "Number of Running Processes"))
 	cpu = t:option(DummyValue, "CPU", translate("CPU Usage"))
-	pid.value = luci.sys.exec("cat /proc/loadavg | awk -F' ' '{print$4}' | cut -d'/' -f 2")
-	cpu.value = luci.sys.exec("top -n1 | grep -m 1 'CPU:' | awk -F' ' '{print$2}'")
+	pid.value = quest.processes
+	cpu.value = quest.cpuload
 end
 
 return f

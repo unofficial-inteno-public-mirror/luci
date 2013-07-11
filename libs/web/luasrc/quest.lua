@@ -45,6 +45,7 @@ function router_dynamic_sysinfo(field)
 	return _ubuscache["system"][field]
 end
 
+processes = router_dynamic_sysinfo("procs")
 cpuload = router_dynamic_sysinfo("cpu_per")
 uptime = router_dynamic_sysinfo("uptime")
 
