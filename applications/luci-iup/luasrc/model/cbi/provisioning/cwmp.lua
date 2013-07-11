@@ -3,8 +3,8 @@ m = Map("cwmp",translate("TR-069"))
 
 
 local bit = require "bit"
-
-s = m:section(NamedSection, "acs",  translate("Configure ACS specifc settings"),translate("Configure ACS specifc settings"))
+local uci = require("luci.model.uci").cursor()
+s = m:section(NamedSection, "acs",  translate("Configure ACS specific settings"),translate("Configure ACS specific settings"))
 s.addremove = false
 s.anonymous = false
 
@@ -22,20 +22,18 @@ n = s:option(Value, "url",translate("URL") )
 
 n = s:option(Value, "periodic_inform_interval",translate("Periodic Inform Interval") )
 
-s = m:section(NamedSection, "cpe",  translate("Configure CPE specifc settings"),translate("Configure CPE specifc settings"))
+s = m:section(NamedSection, "cpe",  translate("Configure CPE specific settings"),translate("Configure CPE specific settings"))
 s.addremove = false
 s.anonymous = false
 
-iface = s:option(ListValue, "interface", translate("WAN Interfaces"))
-local ifcs = net:get_layer2interfaces()
-		if ifcs then
-			local _, ifn
-		
-			for _, ifn in ipairs(ifcs) do
-				iface:value(ifn:name(), translate(ifn:layer2name()))
-			end
-		end	
-
+iface = s:option(ListValue, "default_wan_interface", translate("WAN Interfaces"))
+uci:foreach("network", "interface",
+	function (section)
+		local ifc = section[".name"]
+		if ifc ~= "loopback" then
+			iface:value(ifc)
+		end
+	end)
 n = s:option(Value, "userid",translate("Connection Request User Name") )
 n = s:option(Value, "passwd",translate("Connection Request User Password") )  
 n = s:option(Value, "port",translate("Port") )
