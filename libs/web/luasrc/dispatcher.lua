@@ -53,7 +53,7 @@ local fi
 function build_url(...)
 	local path = {...}
 	local url = { http.getenv("SCRIPT_NAME") or "" }
-	local guser = "%s" %context.path[1]
+	local guser = context.path[1]
 
 	local k, v
 	for k, v in pairs(context.urltoken) do

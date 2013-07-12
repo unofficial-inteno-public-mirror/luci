@@ -12,7 +12,7 @@ You may obtain a copy of the License at
 
 local map, section, net = ...
 local ifc = net:get_interface()
-local guser = "%s" %luci.dispatcher.context.path[1]
+local guser = luci.dispatcher.context.path[1]
 
 local ipaddr, netmask, gateway, broadcast, dns, accept_ra, send_rs, ip6addr, ip6gw
 local mtu, metric

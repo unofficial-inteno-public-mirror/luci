@@ -21,7 +21,7 @@ local fw = require "luci.model.firewall"
 
 arg[1] = arg[1] or ""
 
-local guser = "%s" %luci.dispatcher.context.path[1]
+local guser = luci.dispatcher.context.path[1]
 local has_dnsmasq  = fs.access("/etc/config/dhcp")
 local has_firewall = fs.access("/etc/config/firewall")
 

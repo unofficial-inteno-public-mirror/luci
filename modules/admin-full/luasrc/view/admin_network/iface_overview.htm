@@ -13,7 +13,7 @@ You may obtain a copy of the License at
 <%-
 	local ntm = require "luci.model.network".init()
 	local fwm = require "luci.model.firewall".init()
-	local guser = "%s" %luci.dispatcher.context.path[1]
+	local guser = luci.dispatcher.context.path[1]
 
 	local net
 	local ifaces = { }

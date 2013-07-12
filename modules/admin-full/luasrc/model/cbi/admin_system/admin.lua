@@ -15,7 +15,7 @@ $Id: admin.lua 8153 2012-01-06 16:42:02Z jow $
 
 local fs = require "nixio.fs"
 
-local guser = "%s" %luci.dispatcher.context.path[1]
+local guser = luci.dispatcher.context.path[1]
 
 m = Map("system", translate("Change Password"))
 

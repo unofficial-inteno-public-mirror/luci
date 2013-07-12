@@ -19,6 +19,7 @@ $Id: index.htm 7022 2011-05-04 21:04:31Z jow $
 	require "luci.quest"
 
 	local advanced = (luci.http.formvalue("advanced") == "1")
+	local guser = luci.dispatcher.context.path[1]
 
 	local has_ipv6 = luci.fs.access("/proc/net/ipv6_route")
 	local has_dhcp = luci.fs.access("/etc/config/dhcp")
@@ -238,50 +239,40 @@ $Id: index.htm 7022 2011-05-04 21:04:31Z jow $
 					if (ifc.Wname.search("ptm") != "-1")
 					{
 						s += String.format(
-							'<strong><%:Downstream Rate%>: </strong>%s Kbps<br />',
-							ifc.dslrate.down
-						);
-
-						s += String.format(
+							'<strong><%:Downstream Rate%>: </strong>%s Kbps<br />' +
 							'<strong><%:Upstream Rate%>: </strong>%s Kbps<br />',
-							ifc.dslrate.up
+							ifc.dslrate.down, ifc.dslrate.up
 						);
 
-						ss.innerHTML = String.format('<small>%s</small>', s);
-						si.innerHTML = String.format(
-							'<img src="<%=resource%>/icons/vdsl2.png" />' +
-							'<br /><small><a href="%s">%s<br />%s</a></small>',
-								ifc.link, ifc.l2name, ifc.ifname
-						);
+						si.innerHTML = String.format('<img src="<%=resource%>/icons/vdsl2.png" />');
 					}
 					else if (ifc.Wname.search("atm") != "-1")
 					{
 						s += String.format(
-							'<strong><%:Downstream Rate%>: </strong>%s Kbps<br />',
-							ifc.dslrate.down
-						);
-
-						s += String.format(
+							'<strong><%:Downstream Rate%>: </strong>%s Kbps<br />' +
 							'<strong><%:Upstream Rate%>: </strong>%s Kbps<br />',
-							ifc.dslrate.up
+							ifc.dslrate.down, ifc.dslrate.up
 						);
 
-						ss.innerHTML = String.format('<small>%s</small>', s);
-						si.innerHTML = String.format(
-							'<img src="<%=resource%>/icons/adsl.png" />' +
-							'<br /><small><a href="%s">%s<br />%s</a></small>',
-								ifc.link, ifc.l2name, ifc.ifname
-						);
+						si.innerHTML = String.format('<img src="<%=resource%>/icons/adsl.png" />');
 					}
 					else
 					{
-						ss.innerHTML = String.format('<small>%s</small>', s);
-						si.innerHTML = String.format(
-							'<img src="<%=resource%>/icons/ethernetwan.png" />' +
+						si.innerHTML = String.format('<img src="<%=resource%>/icons/ethernetwan.png" />');
+					}
+
+					ss.innerHTML = String.format('<small>%s</small>', s);
+					<% if guser == "admin" then %>
+						si.innerHTML += String.format(
 							'<br /><small><a href="%s">%s<br />%s</a></small>',
 								ifc.link, ifc.l2name, ifc.ifname
 						);
-					}
+					<% else %>
+						si.innerHTML += String.format(
+							'<br /><small>%s<br />%s</small>',
+								ifc.l2name, ifc.ifname
+						);
+					<% end %>
 				}
 				else
 				{
@@ -320,11 +311,18 @@ $Id: index.htm 7022 2011-05-04 21:04:31Z jow $
 					}
 
 					ss6.innerHTML = String.format('<small>%s</small>', s);
-					si6.innerHTML = String.format(
-						'<img src="<%=resource%>/icons/ethernetwan.png" />' +
-						'<br /><small><a href="%s">%s<br />%s</a></small>',
-							ifc.link, ifc.l2name, ifc.ifname
-					);
+					si6.innerHTML = String.format('<img src="<%=resource%>/icons/ethernetwan.png" />');
+					<% if guser == "admin" then %>
+						si6.innerHTML += String.format(
+							'<br /><small><a href="%s">%s<br />%s</a></small>',
+								ifc.link, ifc.l2name, ifc.ifname
+						);
+					<% else %>
+						si6.innerHTML += String.format(
+							'<br /><small>%s<br />%s</small>',
+								ifc.l2name, ifc.ifname
+						);
+					<% end %>
 				}
 				else
 				{
