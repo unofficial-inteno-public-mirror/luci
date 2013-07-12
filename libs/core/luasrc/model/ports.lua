@@ -8,8 +8,6 @@ local bus = require "ubus"
 
 module "luci.model.ports"
 
-local _ubus, _ubusdevcache
-
 _uci_real  = cursor or _uci_real or uci.cursor()
 
 function init(cursor)
@@ -17,18 +15,15 @@ function init(cursor)
 end
 
 function status_eth(self, port, field)
-	_ubus         = bus.connect()
-	_ubusdevcache = { }
+	local _ubus
+	local _ubuscache = { }
 
-	if not _ubusdevcache[port] then
-		_ubusdevcache[port] = _ubus:call("network.device", "status",
-		                                        { name = port })
-	end
-
+	_ubus = bus.connect()
+	_ubuscache[port] = _ubus:call("network.device", "status", { name = port })
 	_ubus:close()
 
-	if _ubusdevcache[port] and field then
-		if _ubusdevcache[port][field] then
+	if _ubuscache[port] and field then
+		if _ubuscache[port][field] then
 			return "up"
 		else
 			return "down"
@@ -83,6 +78,20 @@ function Wname (self, ifname)
 				end
 			end
 		end
+	elseif ifname:match("pppo") then
+		local _ubus
+		local _ubuscache = { }
+		local newif = ifname:sub(7)
+
+		_ubus = bus.connect()
+		_ubuscache[newif] = _ubus:call("network.interface", "status", { interface = newif })
+		_ubus:close()
+
+		if _ubuscache[newif] then
+			wanif = _ubuscache[newif]["device"]
+		else
+			wanif = ""
+		end
 	end
 	return wanif
 end
@@ -110,7 +119,7 @@ function l2name (self, ifname)
 				l2name = s.name
 			end
 		end)
-	elseif ifname:match("br-") then
+	elseif ifname:match("br-") or ifname:match("pppo") then
 		local vif = self:Wname(ifname)
 		if vif:match("^atm%d.1$")  then
 			_uci_real:foreach("layer2_interface_adsl", "atm_bridge",
