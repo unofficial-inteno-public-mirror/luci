@@ -1,3 +1,4 @@
+<% if luci.dispatcher.context.path[1] ~= "user" then %>
 <fieldset class="cbi-section">
 	<% if luci.http.formvalue("advanced") == "1" then %>
 		<p>This list gives an overview over currently running system processes and their status.</p><br/>
@@ -9,3 +10,4 @@
 		<input type="radio" name="view_type" value="advanced" onclick=location.href="<%=REQUEST_URI%>?advanced=1"> Advanced (Experienced Users)
 	<% end %>
 </fieldset>
+<% end %>

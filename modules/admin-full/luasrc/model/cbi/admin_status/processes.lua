@@ -14,6 +14,7 @@ $Id: processes.lua 7025 2011-05-04 21:23:55Z jow $
 ]]--
 
 local quest = require "luci.quest"
+local guser = luci.dispatcher.context.path[1]
 
 f = SimpleForm("processes", translate("Processes"))
 f.reset = false
@@ -21,7 +22,7 @@ f.submit = false
 
 f:section(SimpleSection).template  = "processes_status"
 
-if luci.http.formvalue("advanced") == "1" then
+if luci.http.formvalue("advanced") == "1" and guser ~= "user" then
 	t = f:section(Table, luci.sys.process.list())
 	t:option(DummyValue, "PID", translate("PID"))
 	t:option(DummyValue, "USER", translate("Owner"))
