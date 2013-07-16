@@ -27,11 +27,6 @@ for i, dev in ipairs(devices) do
 end
 
 
-
-
-
-
-
 m = Map("samba", translate("Network Shares"))
 
 s = m:section(TypedSection, "samba", "Samba")
@@ -62,16 +57,18 @@ s:option(Value, "name", translate("Name"))
 pth = s:option(ListValue, "path", translate("Device"))
 for i, dev in ipairs(devices) do
         local s = tonumber((fs.readfile("/sys/class/block/%s/size" % dev:sub(6))))
-	local sdahost=sys.exec("ls -l /sys/class/block/%s"  % dev:sub(6))
-	local scsiid=sdahost:match("host%d")
-	  local usbinfo=fs.readfile("/proc/scsi/usb-storage/%s" % scsiid:match("%d"))
-        size[dev] = s and math.floor(s / 2048)
-	 if dev:match("^/mnt/sd%w%d$") then
-	    if usbinfo:match("Vendor: [%w%s%d.,]*\n") and usbinfo:match("Product: [%w%s%d.,]*\n") then
-	      pth:value(dev, translate(usbinfo:match("Vendor: [%w%s%d.,]*\n").." "..usbinfo:match("Product: [%w%s%d.,]*\n").." size :"..size[dev].."Mb"))
-	    else 
-	     pth:value(dev, translate(dev.." size :"..size[dev].."Mb"))
-	     end 
+	local sdahost = sys.exec("ls -l /sys/class/block/%s"  % dev:sub(6))
+	local scsiid = sdahost:match("host%d")
+	if scsiid then
+		local usbinfo=fs.readfile("/proc/scsi/usb-storage/%s" % scsiid:match("%d"))
+		size[dev] = s and math.floor(s / 2048)
+		if dev:match("^/mnt/sd%w%d$") then
+			if usbinfo:match("Vendor: [%w%s%d.,]*\n") and usbinfo:match("Product: [%w%s%d.,]*\n") then
+				pth:value(dev, translate(usbinfo:match("Vendor: [%w%s%d.,]*\n").." "..usbinfo:match("Product: [%w%s%d.,]*\n").." size :"..size[dev].."Mb"))
+			else
+				pth:value(dev, translate(dev.." size :"..size[dev].."Mb"))
+			end
+		end
 	end
 end
 	
@@ -106,21 +103,5 @@ dm = s:option(Value, "dir_mask", translate("Directory mask"),
 dm.rmempty = true
 dm.default="0700"
 dm.size = 4
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 return m
