@@ -153,8 +153,16 @@ function authenticator.htmlauth(validator, accs, default)
 	local user = luci.http.formvalue("username")
 	local pass = luci.http.formvalue("password")
 
-	if user and validator(user, pass) then
+	local vuser = (user == "admin" or user == "support" or user == "user")
+	local userip = luci.http.getenv("REMOTE_ADDR")
+
+	if user and validator(user, pass) and userip then
+		luci.sys.exec("logger -t HTTP login succeeded for %s from %s" %{user, userip})
 		return user
+	elseif vuser and userip then
+		luci.sys.exec("logger -t HTTP login failed for %s from %s, wrong password" %{user, userip})
+	elseif user and userip then
+		luci.sys.exec("logger -t HTTP login failed for %s from %s, wrong username" %{user, userip})
 	end
 
 	require("luci.i18n")
