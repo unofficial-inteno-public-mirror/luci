@@ -385,8 +385,7 @@ if hwtype == "broadcom" then
 
 	obss = s:taboption("advanced", ListValue, "obss_coex", translate("OBSS Co-Existence"))
 	obss:depends("bandwidth", "40")
-	obss:value("1", "Enable")	
-	obss:value("0", "Disable")
+	obss:value("1", "Enable")
 
 	n20rate = s:taboption("advanced", ListValue, "n20rate", translate("Rate"))
 	n20rate:depends("bandwidth", "20")
