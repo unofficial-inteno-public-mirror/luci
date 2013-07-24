@@ -46,12 +46,15 @@ s.anonymous = true
 -- Only show configuration for lines that actually exist
 -- Also set a "name" depending on the line type
 function s.filter(self, section)
+	cur = luci.model.uci:cursor()
 	line_number = tonumber(section:match("%d+"))
 	if line_number < dectCount then
-		self.map:set(section, "name", "DECT " .. line_number + 1)
+		cur:set("voice_client", section, "name", "DECT " .. line_number + 1)
 	else
-		self.map:set(section, "name", "Tel " .. line_number - dectCount +1)
+		cur:set("voice_client", section, "name", "Tel " .. line_number - dectCount + 1)
 	end
+	cur:save("voice_client")
+	cur:commit("voice_client")
 	return line_number < allCount
 end
 
