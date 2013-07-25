@@ -761,10 +761,45 @@ pbx_fix_ownership()
 	chown $ASTUSER:$ASTGROUP -R $ASTDIRSRECURSIVE
 }
 
+#Load brcm line types and counts using the brcminfo util
+lineType=""
+for x in $(brcminfo)
+do
+	case $x in
+		"DECT") lineType="dectCount" ;;
+		"FXS") lineType="fxsCount" ;;
+		"FXO") lineType="fxoCount" ;;
+		"All") lineType="allCount" ;;
+		[0-9]) eval "$lineType=$x" ;;
+	esac
+done
+
+#
+# Calculate a name for each brcm line, depending on port type
+# and number. The name is used to make UI look better.
+#
+set_line_name()
+{
+	line_number=${1:4}
+	if [ "$line_number" -lt "$dectCount" ] ; then
+		uci_set voice_client $1 name "DECT $(( $line_number + 1 ))"
+	elif [ "$line_number" -lt "$allCount" ] ; then
+		uci_set voice_client $1 name "Tel $(( $line_number - $dectCount + 1 ))"
+	else
+		uci_set voice_client $1 name $1
+	fi
+}
+
 start() {
 	mkdir -p $WORKDIR
 	# Load config file
 	config_load voice_client
+
+	########################################################
+	# Set line names according to whats reported by brcminfo
+	########################################################
+	config_foreach set_line_name brcm_line
+	uci_commit voice_client
 
 	#########################
 	# Dialplan configuration
