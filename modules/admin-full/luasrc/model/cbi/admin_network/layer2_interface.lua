@@ -28,9 +28,11 @@ e.disabled = ""
 e = s:taboption("modulation",Flag, "AnnexM", translate("AnnexM"))
 e.enabled = "Enabled"
 e.disabled = ""
-e = s:taboption("modulation",Flag, "VDSL2", translate("VDSL2"))
-e.enabled = "Enabled"
-e.disabled = ""
+if specs.vdsl then
+  e = s:taboption("modulation",Flag, "VDSL2", translate("VDSL2"))
+  e.enabled = "Enabled"
+  e.disabled = ""
+end
 if not specs then
         e = s:taboption("profile",Flag, "8a", translate("8a"))  
         e.enabled = "Enabled"                                    
@@ -79,18 +81,19 @@ else
         e.disabled = ""
         end
 end
+  if specs.vdsl then
 e = s:taboption("capabilities",Flag, "US0", translate("US0"))
 e.enabled = "on"
 e.disabled = "off"
-
+  end
 e = s:taboption("capabilities",Flag, "bitswap", translate("Bitswap"))
 e.enabled = "on"
 e.disabled = "off"
-  if specs.vdsl then
+ 
     e = s:taboption("capabilities",Flag, "sra", translate("SRA"))
     e.enabled = "on"
     e.disabled = "off"
-  end
+  
 return m	
 
 
