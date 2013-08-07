@@ -86,10 +86,11 @@ e.disabled = "off"
 e = s:taboption("capabilities",Flag, "bitswap", translate("Bitswap"))
 e.enabled = "on"
 e.disabled = "off"
-e = s:taboption("capabilities",Flag, "sra", translate("SRA"))
-e.enabled = "on"
-e.disabled = "off"
-
+  if specs.vdsl then
+    e = s:taboption("capabilities",Flag, "sra", translate("SRA"))
+    e.enabled = "on"
+    e.disabled = "off"
+  end
 return m	
 
 
