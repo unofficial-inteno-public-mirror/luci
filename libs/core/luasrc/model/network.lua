@@ -1649,7 +1649,7 @@ function wifinet.name(self)
 end
 
 function wifinet.ifname(self)
-	local ifn = "wl0"
+	local ifn = _uci_state:get("wireless", self.sid, "device")
 	local nid = tonumber(sys.exec("echo %s | awk -F'network' '{print$2}'" %self.netid)) - 1
 	if nid == 0 then
 		return "%s" %ifn
@@ -1724,44 +1724,42 @@ end
 
 function wifinet.assoclist(self)
         assoctable = {}
-	local bssid
-        for i=1, sys.exec("wlctl -i %q assoclist | grep -c 'assoclist'" %self:ifname()) do
-		bssid = sys.exec("wlctl -i %q assoclist | awk -F' ' 'NR==%d''{print $2}'" %{self:ifname(), i})
-        	assoctable[bssid] = {}
-		assoctable[bssid]['signal'] = sys.exec("wlctl rssi %s" %bssid)
-		assoctable[bssid]['noise'] = sys.exec("wlctl -i %q noise" %self:ifname())
+        for bssid in utl.execi("wlctl -i %q assoclist | awk '{print$2}'" %self:ifname()) do
+		assoctable[bssid] = {}
+		assoctable[bssid]['signal'] = sys.exec("wlctl -i %q rssi %s" %{self:ifname(), bssid})
+		assoctable[bssid]['noise'] = sys.exec("wlctl -i %q assoc | grep Mode: | awk '{print$10}'" %self:ifname())
         end
-	return assoctable	
+	return assoctable
 end
 
 function wifinet.frequency(self)
-	freqs = {"2.412", "2.417", "2.422", "2.427", "2.432", "2.437", "2.442", "2.447", "2.452", "2.457", "2.462", "2.467", "2.472"}
---	return sys.exec("wlctl status | grep 'Chanspec' | awk -F' ' '{print$2}' | awk -F'G' '{print$1}'")
-	return freqs[self:channel()]
+--	freqs = {"2.412", "2.417", "2.422", "2.427", "2.432", "2.437", "2.442", "2.447", "2.452", "2.457", "2.462", "2.467", "2.472"}
+--	return freqs[self:channel()]
+	return sys.exec("wlctl -i %q status | grep 'Chanspec' | awk -F' ' '{print$2}' | awk -F'G' '{print$1}'" %self:ifname())
 end
 
 function wifinet.bitrate(self)
-	return sys.exec("wlctl rate | awk -F' ' '{print$1}'")
+	return sys.exec("wlctl -i %q rate | awk -F' ' '{print$1}'" %self:ifname())
 end
 
 function wifinet.channel(self)
-	return sys.exec("wlctl channel | grep current | awk '{print$4}'") + 0
+	return sys.exec("wlctl -i %q channel | grep current | awk '{print$4}'" %self:ifname()) + 0
 end
 
 function wifinet.signal(self)
-	return sys.exec("wlctl status | grep 'RSSI' | awk -F' ' '{print$4}'") or 0
+	return sys.exec("wlctl -i %q status | grep 'RSSI' | awk -F' ' '{print$4}'" %self:ifname()) or 0
 end
 
 function wifinet.noise(self)
-	return sys.exec("wlctl noise") or 0
+	return sys.exec("wlctl -i %q noise" %self:ifname()) or sys.exec("wlctl -i %q assoc | grep Mode: | awk '{print$10}'" %self:ifname()) or 0
 end
 
 function wifinet.country(self)
-	return sys.exec("wlctl country | awk '{print$1}'") or "00"
+	return sys.exec("wlctl -i %q country | awk '{print$1}'" %self:ifname()) or "00"
 end
 
 function wifinet.txpower(self)
-	local pwr = (sys.exec("wlctl txpwr | awk -F' ' '{print$1}'") or 0)
+	local pwr = (sys.exec("wlctl -i %q txpwr | awk -F' ' '{print$1}'" %self:ifname()) or 0)
 	return pwr + self:txpower_offset()
 end
 
