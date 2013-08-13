@@ -1481,11 +1481,23 @@ function wifidev.name(self)
 	return self.sid
 end
 
+function wifidev.bands(self)
+	return sys.exec("wlctl -i %q bands" %self.sid)
+end
+
+function wifidev.channels(self, country, band, bwidth)
+	local bnd = "2"
+	if band == "a" then
+		bnd = "5"
+	end
+	return utl.execi("wlctl -i %q chanspecs -c %s -b %s -w %s" %{self.sid, country, bnd, bwidth})
+end
+
 function wifidev.hwmodes(self)
-	if sys.exec("wlctl status | grep '802.11N Capable'") then
-		return { b = true, g = true, n = true }
+	if sys.exec("wlctl -i %q status" %self.sid):match("VHT Capable") then
+		return { b = true, g = true, n = true, ac = true }
 	else
-		return { b = true, g = true }
+		return { b = true, g = true, n = true }
 	end
 end
 
@@ -1504,6 +1516,7 @@ function wifidev.get_i18n(self)
 	if l.b then m = m .. "b" end
 	if l.g then m = m .. "g" end
 	if l.n then m = m .. "n" end
+	if l.ac then m = m .. "ac" end
 
 	return "%s 802.11%s Wireless Controller (%s)" %{ t, m, self:name() }
 end
@@ -1733,7 +1746,7 @@ function wifinet.assoclist(self)
 end
 
 function wifinet.frequency(self)
---	freqs = {"2.412", "2.417", "2.422", "2.427", "2.432", "2.437", "2.442", "2.447", "2.452", "2.457", "2.462", "2.467", "2.472"}
+--	freqs = {"2.412", "2.417", "2.422", "2.427", "2.432", "2.437", "2.442", "2.447", "2.452", "2.457", "2.462", "2.467", "2.472", "2.484"}
 --	return freqs[self:channel()]
 	return sys.exec("wlctl -i %q status | grep 'Chanspec' | awk -F' ' '{print$2}' | awk -F'G' '{print$1}'" %self:ifname())
 end

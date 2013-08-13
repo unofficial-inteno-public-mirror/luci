@@ -160,11 +160,7 @@ for _, net in ipairs(wdev:get_wifinets()) do
 	end
 end
 
-	band = s:taboption("advanced", ListValue, "band", translate("Band"))
-	--band:value("auto", translate("Auto"))
-	band:value("b", translate("2.4GHz"))
-	--band:value("a", translate("5GHz"))
-
+--[[
 if has_sta then
 	ch = s:taboption("advanced", DummyValue, "choice", translate("Channel"))
 	ch.value = translatef("Locked to channel %d used by %s",
@@ -191,185 +187,62 @@ else
 --		end
 --	end
 end
-
-------------------- MAC80211 Device ------------------
-
-if hwtype == "mac80211" then
-	if #tx_power_list > 1 then
-		tp = s:taboption("general", ListValue,
-			"txpower", translate("Transmit Power"), "dBm")
-		tp.rmempty = true
-		tp.default = tx_power_cur
-		function tp.cfgvalue(...)
-			return txpower_current(Value.cfgvalue(...), tx_power_list)
-		end
-
-		for _, p in ipairs(tx_power_list) do
-			tp:value(p.driver_dbm, "%i dBm (%i mW)"
-				%{ p.display_dbm, p.display_mw })
-		end
-	end
-
-	mode = s:taboption("advanced", ListValue, "hwmode", translate("Mode"))
-	mode:value("", translate("auto"))
-	if hw_modes.b then mode:value("11b", "802.11b") end
-	if hw_modes.g then mode:value("11g", "802.11g") end
-	if hw_modes.a then mode:value("11a", "802.11a") end
-
-	if htcaps then
-		if hw_modes.g and hw_modes.n then mode:value("11ng", "802.11g+n") end
-		if hw_modes.a and hw_modes.n then mode:value("11na", "802.11a+n") end
-
-		htmode = s:taboption("advanced", ListValue, "htmode", translate("HT mode"))
-		htmode:depends("hwmode", "11na")
-		htmode:depends("hwmode", "11ng")
-		htmode:value("HT20", "20MHz")
-		htmode:value("HT40-", translate("40MHz 2nd channel below"))
-		htmode:value("HT40+", translate("40MHz 2nd channel above"))
-
-		noscan = s:taboption("advanced", Flag, "noscan", translate("Force 40MHz mode"),
-			translate("Always use 40MHz channels even if the secondary channel overlaps. Using this option does not comply with IEEE 802.11n-2009!"))
-		noscan:depends("htmode", "HT40+")
-		noscan:depends("htmode", "HT40-")
-		noscan.default = noscan.disabled
-
-		--htcapab = s:taboption("advanced", DynamicList, "ht_capab", translate("HT capabilities"))
-		--htcapab:depends("hwmode", "11na")
-		--htcapab:depends("hwmode", "11ng")
-	end
-
-	local cl = iw and iw.countrylist
-	if cl and #cl > 0 then
-		cc = s:taboption("advanced", ListValue, "country", translate("Country Code"), translate("Use ISO/IEC 3166 alpha2 country codes."))
-		cc.default = tostring(iw and iw.country or "00")
-		for _, c in ipairs(cl) do
-			cc:value(c.alpha2, "%s - %s" %{ c.alpha2, c.name })
-		end
-	else
-		s:taboption("advanced", Value, "country", translate("Country Code"), translate("Use ISO/IEC 3166 alpha2 country codes."))
-	end
-
-	s:taboption("advanced", Value, "distance", translate("Distance Optimization"),
-		translate("Distance to farthest network member in meters."))
-
-	-- external antenna profiles
-	local eal = iw and iw.extant
-	if eal and #eal > 0 then
-		ea = s:taboption("advanced", ListValue, "extant", translate("Antenna Configuration"))
-		for _, eap in ipairs(eal) do
-			ea:value(eap.id, "%s (%s)" %{ eap.name, eap.description })
-			if eap.selected then
-				ea.default = eap.id
-			end
-		end
-	end
-
-	s:taboption("advanced", Value, "frag", translate("Fragmentation Threshold"))
-	s:taboption("advanced", Value, "rts", translate("RTS/CTS Threshold"))
-end
-
-
-------------------- Madwifi Device ------------------
-
-if hwtype == "atheros" then
-	tp = s:taboption("general",
-		(#tx_power_list > 0) and ListValue or Value,
-		"txpower", translate("Transmit Power"), "dBm")
-
-	tp.rmempty = true
-	tp.default = tx_power_cur
-
-	function tp.cfgvalue(...)
-		return txpower_current(Value.cfgvalue(...), tx_power_list)
-	end
-
-	for _, p in ipairs(tx_power_list) do
-		tp:value(p.driver_dbm, "%i dBm (%i mW)"
-			%{ p.display_dbm, p.display_mw })
-	end
-
-	mode = s:taboption("advanced", ListValue, "hwmode", translate("Mode"))
-	mode:value("", translate("auto"))
-	if hw_modes.b then mode:value("11b", "802.11b") end
-	if hw_modes.g then mode:value("11g", "802.11g") end
-	if hw_modes.a then mode:value("11a", "802.11a") end
-	if hw_modes.g then mode:value("11bg", "802.11b+g") end
-	if hw_modes.g then mode:value("11gst", "802.11g + Turbo") end
-	if hw_modes.a then mode:value("11ast", "802.11a + Turbo") end
-	mode:value("fh", translate("Frequency Hopping"))
-
-	s:taboption("advanced", Flag, "diversity", translate("Diversity")).rmempty = false
-
-	if not nsantenna then
-		ant1 = s:taboption("advanced", ListValue, "txantenna", translate("Transmitter Antenna"))
-		ant1.widget = "radio"
-		ant1.orientation = "horizontal"
-		ant1:depends("diversity", "")
-		ant1:value("0", translate("auto"))
-		ant1:value("1", translate("Antenna 1"))
-		ant1:value("2", translate("Antenna 2"))
-
-		ant2 = s:taboption("advanced", ListValue, "rxantenna", translate("Receiver Antenna"))
-		ant2.widget = "radio"
-		ant2.orientation = "horizontal"
-		ant2:depends("diversity", "")
-		ant2:value("0", translate("auto"))
-		ant2:value("1", translate("Antenna 1"))
-		ant2:value("2", translate("Antenna 2"))
-
-	else -- NanoFoo
-		local ant = s:taboption("advanced", ListValue, "antenna", translate("Transmitter Antenna"))
-		ant:value("auto")
-		ant:value("vertical")
-		ant:value("horizontal")
-		ant:value("external")
-	end
-
-	s:taboption("advanced", Value, "distance", translate("Distance Optimization"),
-		translate("Distance to farthest network member in meters."))
-	s:taboption("advanced", Value, "regdomain", translate("Regulatory Domain"))
-	s:taboption("advanced", Value, "country", translate("Country Code"))
-	s:taboption("advanced", Flag, "outdoor", translate("Outdoor Channels"))
-
-	--s:option(Flag, "nosbeacon", translate("Disable HW-Beacon timer"))
-end
-
-
+]]
 
 ------------------- Broadcom Device ------------------
 
 if hwtype == "broadcom" then
 
+	country = s:taboption("general", ListValue, "country", translate("Country"))
+	country:value("ALL", "ALL")
+	country:value("DK", "DENMARK")
+	country:value("EE", "ESTONIA")
+	country:value("FI", "FINLAND")
+	country:value("NO", "NORWAY")
+	country:value("SE", "SWEDEN")
+	country:value("US", "UNITED STATES")
+
+	s:taboption("general", Value, "maxassoc", translate("Connection Limit"))
+
+	band = s:taboption("advanced", ListValue, "band", translate("Band"))
+
+	bnd = wdev:bands()
+	if bnd:match("b") then band:value("b", translate("2.4GHz")) end
+	if bnd:match("a") then band:value("a", translate("5GHz")) end
+
+	mode = s:taboption("advanced", ListValue, "hwmode", translate("Mode"))
+	mode:value("auto", "Auto")
+	mode:value("11b", "802.11b", {band="b"})
+	mode:value("11bg", "802.11b+g", {band="b"})
+	mode:value("11g", "802.11g", {band="b"})
+	mode:value("11gst", "802.11g + Turbo", {band="b"})
+	mode:value("11lrs", "802.11 LRS", {band="b"})
+	mode:value("11n", "802.11n")
+	if wdev:hwmodes().ac then 
+		mode:value("11ac", "802.11ac", {band="a"})
+	end
+
+	bw = s:taboption("advanced", ListValue, "bandwidth", translate("Bandwidth"))
+	bw:depends("hwmode", "auto")
+	bw:depends("hwmode", "11n")
+	bw:depends("hwmode", "11ac")
+	bw:value("20", "20MHz")
+	bw:value("40", "40Mhz")
+	bw:value("80", "80Mhz", {hwmode="11ac"})
+
+	ch = s:taboption("advanced", ListValue, "channel", translate("Channel"))
+	ch:value("auto", translate("Auto"))
+
+	btn = s:taboption("advanced", Button, "btn" , translate("Update Channel List"))
+	function btn.write(self)
+		for chn in wdev:channels(wdev:get("country"), wdev:get("band"), wdev:get("bandwidth")) do
+			ch:value(chn, chn)
+		end
+	end
+
 	timer = s:taboption("advanced", Value, "scantimer", translate("Auto Channel Timer"), "min")
 	timer:depends("channel", "auto")
 	timer.default = 10
-
-	mode = s:taboption("advanced", ListValue, "hwmode", translate("Mode"))
-	mode:value("auto", "Auto")	
-	mode:value("11b", "802.11b")
-	mode:value("11bg", "802.11b+g")
-	mode:value("11g", "802.11g")
-	mode:value("11gst", "802.11g + Turbo")
-	mode:value("11lrs", "802.11 LRS")
-	mode:value("11n", "802.11n")
-
-	bw = s:taboption("advanced", ListValue, "bandwidth", translate("Bandwidth"))
-	bw:depends({hwmode="11n", channel="3"})
-	bw:depends({hwmode="11n", channel="4"})
-	bw:depends({hwmode="11n", channel="5"})
-	bw:depends({hwmode="11n", channel="6"})
-	bw:depends({hwmode="11n", channel="7"})
-	bw:depends({hwmode="11n", channel="8"})
-	bw:depends({hwmode="11n", channel="9"})
-	bw:depends({hwmode="11n", channel="10"})
-	bw:depends({hwmode="11n", channel="11"})
-	bw:value("20", "20MHz")
-	bw:value("40", "40Mhz")
-
-	sb = s:taboption("advanced", ListValue, "sideband", translate("Control Sideband"))
-	sb:depends("bandwidth", "40")
-	sb:value("lower", "Lower")
-	sb:value("upper", "Upper")
 
 	rifs = s:taboption("advanced", ListValue, "rifs", translate("RIFS"))
 	rifs:depends("hwmode", "auto")
@@ -387,75 +260,54 @@ if hwtype == "broadcom" then
 	obss:depends("bandwidth", "40")
 	obss:value("1", "Enable")
 
-	n20rate = s:taboption("advanced", ListValue, "n20rate", translate("Rate"))
-	n20rate:depends("bandwidth", "20")
-	n20rate:depends({hwmode="11n", channel="auto"})
-	n20rate:depends({hwmode="11n", channel="1"})
-	n20rate:depends({hwmode="11n", channel="2"})
-	n20rate:depends({hwmode="11n", channel="12"})
-	n20rate:depends({hwmode="11n", channel="13"})
-	n20rate:value("auto", "Auto")	
-	n20rate:value("-r 1", "Legacy 1 Mbps")
-	n20rate:value("-r 2", "Legacy 2 Mbps")
-	n20rate:value("-r 5.5", "Legacy 5.5 Mbps")
-	n20rate:value("-r 6", "Legacy 6 Mbps")
-	n20rate:value("-r 9", "Legacy 9 Mbps")
-	n20rate:value("-r 11", "Legacy 11 Mbps")
-	n20rate:value("-r 12", "Legacy 12 Mbps")
-	n20rate:value("-r 18", "Legacy 18 Mbps")
-	n20rate:value("-r 24", "Legacy 24 Mbps")
-	n20rate:value("-r 36", "Legacy 36 Mbps")
-	n20rate:value("-r 48", "Legacy 48 Mbps")
-	n20rate:value("-r 54", "Legacy 54 Mbps")
-	n20rate:value("-m 0", "MCS 0: 6.5 Mbps")	
-	n20rate:value("-m 1", "MCS 1: 13 Mbps")
-	n20rate:value("-m 2", "MCS 2: 19.5 Mbps")
-	n20rate:value("-m 3", "MCS 3: 26 Mbps")
-	n20rate:value("-m 4", "MCS 4: 39 Mbps")
-	n20rate:value("-m 5", "MCS 5: 52 Mbps")
-	n20rate:value("-m 6", "MCS 6: 58.5 Mbps")
-	n20rate:value("-m 7", "MCS 7: 65 Mbps")
-	n20rate:value("-m 8", "MCS 8: 13 Mbps")
-	n20rate:value("-m 9", "MCS 9: 26 Mbps")
-	n20rate:value("-m 10", "MCS 10: 39 Mbps")
-	n20rate:value("-m 11", "MCS 11: 52 Mbps")
-	n20rate:value("-m 12", "MCS 12: 78 Mbps")
-	n20rate:value("-m 13", "MCS 13: 104 Mbps")
-	n20rate:value("-m 14", "MCS 14: 117 Mbps")
-	n20rate:value("-m 15", "MCS 15: 130 Mbps")
-
-	n40rate = s:taboption("advanced", ListValue, "n40rate", translate("Rate"))
-	n40rate:depends("bandwidth", "40")
-	n40rate:value("auto", "Auto")	
-	n40rate:value("-r 1", "Legacy 1 Mbps")
-	n40rate:value("-r 2", "Legacy 2 Mbps")
-	n40rate:value("-r 5.5", "Legacy 5.5 Mbps")
-	n40rate:value("-r 6", "Legacy 6 Mbps")
-	n40rate:value("-r 9", "Legacy 9 Mbps")
-	n40rate:value("-r 11", "Legacy 11 Mbps")
-	n40rate:value("-r 12", "Legacy 12 Mbps")
-	n40rate:value("-r 18", "Legacy 18 Mbps")
-	n40rate:value("-r 24", "Legacy 24 Mbps")
-	n40rate:value("-r 36", "Legacy 36 Mbps")
-	n40rate:value("-r 48", "Legacy 48 Mbps")
-	n40rate:value("-r 54", "Legacy 54 Mbps")
-	n40rate:value("-m 0", "MCS 0: 13.5 Mbps")	
-	n40rate:value("-m 1", "MCS 1: 27 Mbps")
-	n40rate:value("-m 2", "MCS 2: 40.5 Mbps")
-	n40rate:value("-m 3", "MCS 3: 54 Mbps")
-	n40rate:value("-m 4", "MCS 4: 81 Mbps")
-	n40rate:value("-m 5", "MCS 5: 108 Mbps")
-	n40rate:value("-m 6", "MCS 6: 121.5 Mbps")
-	n40rate:value("-m 7", "MCS 7: 135 Mbps")
-	n40rate:value("-m 8", "MCS 8: 27 Mbps")
-	n40rate:value("-m 9", "MCS 9: 54 Mbps")
-	n40rate:value("-m 10", "MCS 10: 81 Mbps")
-	n40rate:value("-m 11", "MCS 11: 108 Mbps")
-	n40rate:value("-m 12", "MCS 12: 162 Mbps")
-	n40rate:value("-m 13", "MCS 13: 216 Mbps")
-	n40rate:value("-m 14", "MCS 14: 243 Mbps")
-	n40rate:value("-m 15", "MCS 15: 270 Mbps")
-	n40rate:value("-m 32", "MCS 32: 6 Mbps")	
+	nrate = s:taboption("advanced", ListValue, "nrate", translate("Rate"))
+	nrate:depends({hwmode="11n"})
+	nrate:value("auto", "Auto")	
+	nrate:value("-r 1", "Legacy 1 Mbps")
+	nrate:value("-r 2", "Legacy 2 Mbps")
+	nrate:value("-r 5.5", "Legacy 5.5 Mbps")
+	nrate:value("-r 6", "Legacy 6 Mbps")
+	nrate:value("-r 9", "Legacy 9 Mbps")
+	nrate:value("-r 11", "Legacy 11 Mbps")
+	nrate:value("-r 12", "Legacy 12 Mbps")
+	nrate:value("-r 18", "Legacy 18 Mbps")
+	nrate:value("-r 24", "Legacy 24 Mbps")
+	nrate:value("-r 36", "Legacy 36 Mbps")
+	nrate:value("-r 48", "Legacy 48 Mbps")
+	nrate:value("-r 54", "Legacy 54 Mbps")
+	nrate:value("-m 0", "MCS 0: 6.5 Mbps", {bandwidth="20"})
+	nrate:value("-m 1", "MCS 1: 13 Mbps", {bandwidth="20"})
+	nrate:value("-m 2", "MCS 2: 19.5 Mbps", {bandwidth="20"})
+	nrate:value("-m 3", "MCS 3: 26 Mbps", {bandwidth="20"})
+	nrate:value("-m 4", "MCS 4: 39 Mbps", {bandwidth="20"})
+	nrate:value("-m 5", "MCS 5: 52 Mbps", {bandwidth="20"})
+	nrate:value("-m 6", "MCS 6: 58.5 Mbps", {bandwidth="20"})
+	nrate:value("-m 7", "MCS 7: 65 Mbps", {bandwidth="20"})
+	nrate:value("-m 8", "MCS 8: 13 Mbps", {bandwidth="20"})
+	nrate:value("-m 9", "MCS 9: 26 Mbps", {bandwidth="20"})
+	nrate:value("-m 10", "MCS 10: 39 Mbps", {bandwidth="20"})
+	nrate:value("-m 11", "MCS 11: 52 Mbps", {bandwidth="20"})
+	nrate:value("-m 12", "MCS 12: 78 Mbps", {bandwidth="20"})
+	nrate:value("-m 13", "MCS 13: 104 Mbps", {bandwidth="20"})
+	nrate:value("-m 14", "MCS 14: 117 Mbps", {bandwidth="20"})
+	nrate:value("-m 15", "MCS 15: 130 Mbps", {bandwidth="20"})
+	nrate:value("-m 0 ", "MCS 0: 13.5 Mbps", {bandwidth="40"})
+	nrate:value("-m 1 ", "MCS 1: 27 Mbps", {bandwidth="40"})
+	nrate:value("-m 2 ", "MCS 2: 40.5 Mbps", {bandwidth="40"})
+	nrate:value("-m 3 ", "MCS 3: 54 Mbps", {bandwidth="40"})
+	nrate:value("-m 4 ", "MCS 4: 81 Mbps", {bandwidth="40"})
+	nrate:value("-m 5 ", "MCS 5: 108 Mbps", {bandwidth="40"})
+	nrate:value("-m 6 ", "MCS 6: 121.5 Mbps", {bandwidth="40"})
+	nrate:value("-m 7 ", "MCS 7: 135 Mbps", {bandwidth="40"})
+	nrate:value("-m 8 ", "MCS 8: 27 Mbps", {bandwidth="40"})
+	nrate:value("-m 9 ", "MCS 9: 54 Mbps", {bandwidth="40"})
+	nrate:value("-m 10 ", "MCS 10: 81 Mbps", {bandwidth="40"})
+	nrate:value("-m 11 ", "MCS 11: 108 Mbps", {bandwidth="40"})
+	nrate:value("-m 12 ", "MCS 12: 162 Mbps", {bandwidth="40"})
+	nrate:value("-m 13 ", "MCS 13: 216 Mbps", {bandwidth="40"})
+	nrate:value("-m 14 ", "MCS 14: 243 Mbps", {bandwidth="40"})
+	nrate:value("-m 15 ", "MCS 15: 270 Mbps", {bandwidth="40"})
+	nrate:value("-m 32 ", "MCS 32: 6 Mbps", {bandwidth="40"})
 
 	grate = s:taboption("advanced", ListValue, "grate", translate("Rate"))
 	grate:depends("hwmode", "11bg")
@@ -497,37 +349,10 @@ if hwtype == "broadcom" then
 	rxcpspps = s:taboption("advanced", Value, "rxchainps_pps", translate("RX Chain Power Save PPS"))
 	rxcpspps.default = 10
 
-	ant1 = s:taboption("antenna", ListValue, "txantenna", translate("Transmitter Antenna"))
-	ant1.widget = "radio"
-	ant1:depends("diversity", "")
-	ant1:value("3", translate("auto"))
-	ant1:value("0", translate("Antenna 1"))
-	ant1:value("1", translate("Antenna 2"))
-	ant1.default = "3"
-
-	ant2 = s:taboption("antenna", ListValue, "rxantenna", translate("Receiver Antenna"))
-	ant2.widget = "radio"
-	ant2:depends("diversity", "")
-	ant2:value("3", translate("auto"))
-	ant2:value("0", translate("Antenna 1"))
-	ant2:value("1", translate("Antenna 2"))
-	ant2.default = "3"
-
 	s:taboption("advanced", Flag, "frameburst", translate("Frame Bursting"))
 
 	--s:taboption("advanced", Value, "distance", translate("Distance Optimization"))
 	--s:option(Value, "slottime", translate("Slot time"))
-
-	country = s:taboption("general", ListValue, "country", translate("Country"))
-	country:value("ALL", "ALL")
-	country:value("DK", "DENMARK")
-	country:value("EE", "ESTONIA")
-	country:value("FI", "FINLAND")
-	country:value("NO", "NORWAY")
-	country:value("SE", "SWEDEN")
-	country:value("US", "UNITED STATES")
-
-	s:taboption("general", Value, "maxassoc", translate("Connection Limit"))
 
 	frag = s:taboption("advanced", Value, "frag", translate("Fragmentation Threshold"))
 	frag.default = 2346
@@ -571,24 +396,28 @@ if hwtype == "broadcom" then
 	wa:value("1", "Enable")
 	wa:value("0", "Disable")
 
-	--wdsmode = s:taboption("bridge", ListValue, "wdsmode", translate("WDS Mode"), "Selecting Automatic WDS mode will dynamically grant WDS membership to anyone")
-	--wdsmode:value("0", translate("Manual"))
-	--wdsmode:value("1", translate("Automatic"))
-	--wdslist = s:taboption("bridge", DynamicList, "wdslist", translate("WDS Connection List"))
-	--wdslist:depends({wdsmode="0"})
-	--wdstimo = s:taboption("bridge", Value, "wdstimo", translate("WDS Link Detection Timeout"), "min")
-end
+	ant1 = s:taboption("antenna", ListValue, "txantenna", translate("Transmitter Antenna"))
+	ant1.widget = "radio"
+	ant1:depends("diversity", "")
+	ant1:value("3", translate("auto"))
+	ant1:value("0", translate("Antenna 1"))
+	ant1:value("1", translate("Antenna 2"))
+	ant1.default = "3"
 
+	ant2 = s:taboption("antenna", ListValue, "rxantenna", translate("Receiver Antenna"))
+	ant2.widget = "radio"
+	ant2:depends("diversity", "")
+	ant2:value("3", translate("auto"))
+	ant2:value("0", translate("Antenna 1"))
+	ant2:value("1", translate("Antenna 2"))
+	ant2.default = "3"
 
---------------------- HostAP Device ---------------------
-
-if hwtype == "prism2" then
-	s:taboption("advanced", Value, "txpower", translate("Transmit Power"), "att units").rmempty = true
-
-	s:taboption("advanced", Flag, "diversity", translate("Diversity")).rmempty = false
-
-	s:taboption("advanced", Value, "txantenna", translate("Transmitter Antenna"))
-	s:taboption("advanced", Value, "rxantenna", translate("Receiver Antenna"))
+--	wdsmode = s:taboption("bridge", ListValue, "wdsmode", translate("WDS Mode"), "Selecting Automatic WDS mode will dynamically grant WDS membership to anyone")
+--	wdsmode:value("0", translate("Manual"))
+--	wdsmode:value("1", translate("Automatic"))
+--	wdslist = s:taboption("bridge", DynamicList, "wdslist", translate("WDS Connection List"))
+--	wdslist:depends({wdsmode="0"})
+--	wdstimo = s:taboption("bridge", Value, "wdstimo", translate("WDS Link Detection Timeout"), "min")
 end
 
 
@@ -652,165 +481,6 @@ function network.write(self, section, value)
 			end
 		end
 	end
-end
-
--------------------- MAC80211 Interface ----------------------
-
-if hwtype == "mac80211" then
-	if fs.access("/usr/sbin/iw") then
-		mode:value("mesh", "802.11s")
-	end
-
-	mode:value("ahdemo", translate("Pseudo Ad-Hoc (ahdemo)"))
-	mode:value("monitor", translate("Monitor"))
-	bssid:depends({mode="adhoc"})
-	bssid:depends({mode="sta"})
-	bssid:depends({mode="sta-wds"})
-
-	mp = s:taboption("macfilter", ListValue, "macfilter", translate("MAC-Address Filter"))
-	mp:depends({mode="ap"})
-	mp:depends({mode="ap-wds"})
-	mp:value("", translate("disable"))
-	mp:value("allow", translate("Allow listed only"))
-	mp:value("deny", translate("Allow all except listed"))
-
-	ml = s:taboption("macfilter", DynamicList, "maclist", translate("MAC-List"))
-	ml.datatype = "macaddr"
-	ml:depends({macfilter="allow"})
-	ml:depends({macfilter="deny"})
-	nt.mac_hints(function(mac, name) ml:value(mac, "%s (%s)" %{ mac, name }) end)
-
-	mode:value("ap-wds", "%s (%s)" % {translate("Access Point"), translate("WDS")})
-	mode:value("sta-wds", "%s (%s)" % {translate("Client"), translate("WDS")})
-
-	function mode.write(self, section, value)
-		if value == "ap-wds" then
-			ListValue.write(self, section, "ap")
-			m.uci:set("wireless", section, "wds", 1)
-		elseif value == "sta-wds" then
-			ListValue.write(self, section, "sta")
-			m.uci:set("wireless", section, "wds", 1)
-		else
-			ListValue.write(self, section, value)
-			m.uci:delete("wireless", section, "wds")
-		end
-	end
-
-	function mode.cfgvalue(self, section)
-		local mode = ListValue.cfgvalue(self, section)
-		local wds  = m.uci:get("wireless", section, "wds") == "1"
-
-		if mode == "ap" and wds then
-			return "ap-wds"
-		elseif mode == "sta" and wds then
-			return "sta-wds"
-		else
-			return mode
-		end
-	end
-
-	hidden = s:taboption("general", Flag, "hidden", translate("Hide <abbr title=\"Extended Service Set Identifier\">ESSID</abbr>"))
-	hidden:depends({mode="ap"})
-	hidden:depends({mode="ap-wds"})
-
-	wmm = s:taboption("general", Flag, "wmm", translate("WMM Mode"))
-	wmm:depends({mode="ap"})
-	wmm:depends({mode="ap-wds"})
-	wmm.default = wmm.enabled
-end
-
-
-
--------------------- Madwifi Interface ----------------------
-
-if hwtype == "atheros" then
-	mode:value("ahdemo", translate("Pseudo Ad-Hoc (ahdemo)"))
-	mode:value("monitor", translate("Monitor"))
-	mode:value("ap-wds", "%s (%s)" % {translate("Access Point"), translate("WDS")})
-	mode:value("sta-wds", "%s (%s)" % {translate("Client"), translate("WDS")})
-	mode:value("wds", translate("Static WDS"))
-
-	function mode.write(self, section, value)
-		if value == "ap-wds" then
-			ListValue.write(self, section, "ap")
-			m.uci:set("wireless", section, "wds", 1)
-		elseif value == "sta-wds" then
-			ListValue.write(self, section, "sta")
-			m.uci:set("wireless", section, "wds", 1)
-		else
-			ListValue.write(self, section, value)
-			m.uci:delete("wireless", section, "wds")
-		end
-	end
-
-	function mode.cfgvalue(self, section)
-		local mode = ListValue.cfgvalue(self, section)
-		local wds  = m.uci:get("wireless", section, "wds") == "1"
-
-		if mode == "ap" and wds then
-			return "ap-wds"
-		elseif mode == "sta" and wds then
-			return "sta-wds"
-		else
-			return mode
-		end
-	end
-
-	bssid:depends({mode="adhoc"})
-	bssid:depends({mode="ahdemo"})
-	bssid:depends({mode="wds"})
-
-	wdssep = s:taboption("advanced", Flag, "wdssep", translate("Separate WDS"))
-	wdssep:depends({mode="ap-wds"})
-
-	s:taboption("advanced", Flag, "doth", "802.11h")
-	hidden = s:taboption("general", Flag, "hidden", translate("Hide <abbr title=\"Extended Service Set Identifier\">ESSID</abbr>"))
-	hidden:depends({mode="ap"})
-	hidden:depends({mode="adhoc"})
-	hidden:depends({mode="ap-wds"})
-	hidden:depends({mode="sta-wds"})
-	isolate = s:taboption("advanced", Flag, "isolate", translate("Separate Clients"),
-	 translate("Prevents client-to-client communication"))
-	isolate:depends({mode="ap"})
-	s:taboption("advanced", Flag, "bgscan", translate("Background Scan"))
-
-	mp = s:taboption("macfilter", ListValue, "macpolicy", translate("MAC-Address Filter"))
-	mp:value("", translate("disable"))
-	mp:value("allow", translate("Allow listed only"))
-	mp:value("deny", translate("Allow all except listed"))
-
-	ml = s:taboption("macfilter", DynamicList, "maclist", translate("MAC-List"))
-	ml.datatype = "macaddr"
-	ml:depends({macpolicy="allow"})
-	ml:depends({macpolicy="deny"})
-	nt.mac_hints(function(mac, name) ml:value(mac, "%s (%s)" %{ mac, name }) end)
-
-	s:taboption("advanced", Value, "rate", translate("Transmission Rate"))
-	s:taboption("advanced", Value, "mcast_rate", translate("Multicast Rate"))
-	s:taboption("advanced", Value, "frag", translate("Fragmentation Threshold"))
-	s:taboption("advanced", Value, "rts", translate("RTS/CTS Threshold"))
-	s:taboption("advanced", Value, "minrate", translate("Minimum Rate"))
-	s:taboption("advanced", Value, "maxrate", translate("Maximum Rate"))
-	s:taboption("advanced", Flag, "compression", translate("Compression"))
-
-	s:taboption("advanced", Flag, "bursting", translate("Frame Bursting"))
-	s:taboption("advanced", Flag, "turbo", translate("Turbo Mode"))
-	s:taboption("advanced", Flag, "ff", translate("Fast Frames"))
-
-	s:taboption("advanced", Flag, "wmm", translate("WMM Mode"))
-	s:taboption("advanced", Flag, "xr", translate("XR Support"))
-	s:taboption("advanced", Flag, "ar", translate("AR Support"))
-
-	local swm = s:taboption("advanced", Flag, "sw_merge", translate("Disable HW-Beacon timer"))
-	swm:depends({mode="adhoc"})
-
-	local nos = s:taboption("advanced", Flag, "nosbeacon", translate("Disable HW-Beacon timer"))
-	nos:depends({mode="sta"})
-	nos:depends({mode="sta-wds"})
-
-	local probereq = s:taboption("advanced", Flag, "probereq", translate("Do not send probe responses"))
-	probereq.enabled  = "0"
-	probereq.disabled = "1"
 end
 
 
@@ -878,34 +548,6 @@ if hwtype == "broadcom" then
 
 	bssid:depends({mode="wds"})
 	bssid:depends({mode="adhoc"})
-end
-
-
------------------------ HostAP Interface ---------------------
-
-if hwtype == "prism2" then
-	mode:value("wds", translate("WDS"))
-	mode:value("monitor", translate("Monitor"))
-
-	hidden = s:taboption("general", Flag, "hidden", translate("Hide <abbr title=\"Extended Service Set Identifier\">ESSID</abbr>"))
-	hidden:depends({mode="ap"})
-	hidden:depends({mode="adhoc"})
-	hidden:depends({mode="wds"})
-
-	bssid:depends({mode="sta"})
-
-	mp = s:taboption("macfilter", ListValue, "macpolicy", translate("MAC-Address Filter"))
-	mp:value("", translate("disable"))
-	mp:value("allow", translate("Allow listed only"))
-	mp:value("deny", translate("Allow all except listed"))
-	ml = s:taboption("macfilter", DynamicList, "maclist", translate("MAC-List"))
-	ml:depends({macpolicy="allow"})
-	ml:depends({macpolicy="deny"})
-	nt.mac_hints(function(mac, name) ml:value(mac, "%s (%s)" %{ mac, name }) end)
-
-	s:taboption("advanced", Value, "rate", translate("Transmission Rate"))
-	s:taboption("advanced", Value, "frag", translate("Fragmentation Threshold"))
-	s:taboption("advanced", Value, "rts", translate("RTS/CTS Threshold"))
 end
 
 
@@ -983,53 +625,7 @@ encr:value("none", "No Encryption")
 encr:value("wep-open",   translate("WEP Open System"), {mode="ap"}, {mode="sta"}, {mode="ap-wds"}, {mode="sta-wds"}, {mode="adhoc"}, {mode="ahdemo"}, {mode="wds"})
 encr:value("wep-shared", translate("WEP Shared Key"),  {mode="ap"}, {mode="sta"}, {mode="ap-wds"}, {mode="sta-wds"}, {mode="adhoc"}, {mode="ahdemo"}, {mode="wds"})
 
-if hwtype == "atheros" or hwtype == "mac80211" or hwtype == "prism2" then
-	local supplicant = fs.access("/usr/sbin/wpa_supplicant")
-	local hostapd = fs.access("/usr/sbin/hostapd")
-
-	-- Probe EAP support
-	local has_ap_eap  = (os.execute("hostapd -veap >/dev/null 2>/dev/null") == 0)
-	local has_sta_eap = (os.execute("wpa_supplicant -veap >/dev/null 2>/dev/null") == 0)
-
-	if hostapd and supplicant then
-		encr:value("psk", "WPA-PSK", {mode="ap"}, {mode="sta"}, {mode="ap-wds"}, {mode="sta-wds"})
-		encr:value("psk2", "WPA2-PSK", {mode="ap"}, {mode="sta"}, {mode="ap-wds"}, {mode="sta-wds"})
-		encr:value("psk-mixed", "WPA-PSK/WPA2-PSK Mixed Mode", {mode="ap"}, {mode="sta"}, {mode="ap-wds"}, {mode="sta-wds"})
-		if has_ap_eap and has_sta_eap then
-			encr:value("wpa", "WPA-EAP", {mode="ap"}, {mode="sta"}, {mode="ap-wds"}, {mode="sta-wds"})
-			encr:value("wpa2", "WPA2-EAP", {mode="ap"}, {mode="sta"}, {mode="ap-wds"}, {mode="sta-wds"})
-		end
-	elseif hostapd and not supplicant then
-		encr:value("psk", "WPA-PSK", {mode="ap"}, {mode="ap-wds"})
-		encr:value("psk2", "WPA2-PSK", {mode="ap"}, {mode="ap-wds"})
-		encr:value("psk-mixed", "WPA-PSK/WPA2-PSK Mixed Mode", {mode="ap"}, {mode="ap-wds"})
-		if has_ap_eap then
-			encr:value("wpa", "WPA-EAP", {mode="ap"}, {mode="ap-wds"})
-			encr:value("wpa2", "WPA2-EAP", {mode="ap"}, {mode="ap-wds"})
-		end
-		encr.description = translate(
-			"WPA-Encryption requires wpa_supplicant (for client mode) or hostapd (for AP " ..
-			"and ad-hoc mode) to be installed."
-		)
-	elseif not hostapd and supplicant then
-		encr:value("psk", "WPA-PSK", {mode="sta"}, {mode="sta-wds"})
-		encr:value("psk2", "WPA2-PSK", {mode="sta"}, {mode="sta-wds"})
-		encr:value("psk-mixed", "WPA-PSK/WPA2-PSK Mixed Mode", {mode="sta"}, {mode="sta-wds"})
-		if has_sta_eap then
-			encr:value("wpa", "WPA-EAP", {mode="sta"}, {mode="sta-wds"})
-			encr:value("wpa2", "WPA2-EAP", {mode="sta"}, {mode="sta-wds"})
-		end
-		encr.description = translate(
-			"WPA-Encryption requires wpa_supplicant (for client mode) or hostapd (for AP " ..
-			"and ad-hoc mode) to be installed."
-		)
-	else
-		encr.description = translate(
-			"WPA-Encryption requires wpa_supplicant (for client mode) or hostapd (for AP " ..
-			"and ad-hoc mode) to be installed."
-		)
-	end
-elseif hwtype == "broadcom" then
+if hwtype == "broadcom" then
 	encr:value("psk", "WPA-PSK", {mode="ap"}, {mode="wds"})
 	encr:value("psk2", "WPA2-PSK", {mode="ap"}, {mode="wds"})
 	encr:value("pskmixedpsk2", "WPA-PSK/WPA2-PSK Mixed Mode", {mode="ap"}, {mode="wds"})
@@ -1135,83 +731,5 @@ for slot=1,4 do
 	end
 end
 
-
-if hwtype == "atheros" or hwtype == "mac80211" or hwtype == "prism2" then
-	nasid = s:taboption("encryption", Value, "nasid", translate("NAS ID"))
-	nasid:depends({mode="ap", encryption="wpa"})
-	nasid:depends({mode="ap", encryption="wpa2"})
-	nasid:depends({mode="ap-wds", encryption="wpa"})
-	nasid:depends({mode="ap-wds", encryption="wpa2"})
-	nasid.rmempty = true
-
-	eaptype = s:taboption("encryption", ListValue, "eap_type", translate("EAP-Method"))
-	eaptype:value("tls",  "TLS")
-	eaptype:value("ttls", "TTLS")
-	eaptype:value("peap", "PEAP")
-	eaptype:depends({mode="sta", encryption="wpa"})
-	eaptype:depends({mode="sta", encryption="wpa2"})
-	eaptype:depends({mode="sta-wds", encryption="wpa"})
-	eaptype:depends({mode="sta-wds", encryption="wpa2"})
-
-	cacert = s:taboption("encryption", FileUpload, "ca_cert", translate("Path to CA-Certificate"))
-	cacert:depends({mode="sta", encryption="wpa"})
-	cacert:depends({mode="sta", encryption="wpa2"})
-	cacert:depends({mode="sta-wds", encryption="wpa"})
-	cacert:depends({mode="sta-wds", encryption="wpa2"})
-
-	clientcert = s:taboption("encryption", FileUpload, "client_cert", translate("Path to Client-Certificate"))
-	clientcert:depends({mode="sta", encryption="wpa"})
-	clientcert:depends({mode="sta", encryption="wpa2"})
-	clientcert:depends({mode="sta-wds", encryption="wpa"})
-	clientcert:depends({mode="sta-wds", encryption="wpa2"})
-
-	privkey = s:taboption("encryption", FileUpload, "priv_key", translate("Path to Private Key"))
-	privkey:depends({mode="sta", eap_type="tls", encryption="wpa2"})
-	privkey:depends({mode="sta", eap_type="tls", encryption="wpa"})
-	privkey:depends({mode="sta-wds", eap_type="tls", encryption="wpa2"})
-	privkey:depends({mode="sta-wds", eap_type="tls", encryption="wpa"})
-
-	privkeypwd = s:taboption("encryption", Value, "priv_key_pwd", translate("Password of Private Key"))
-	privkeypwd:depends({mode="sta", eap_type="tls", encryption="wpa2"})
-	privkeypwd:depends({mode="sta", eap_type="tls", encryption="wpa"})
-	privkeypwd:depends({mode="sta-wds", eap_type="tls", encryption="wpa2"})
-	privkeypwd:depends({mode="sta-wds", eap_type="tls", encryption="wpa"})
-
-
-	auth = s:taboption("encryption", Value, "auth", translate("Authentication"))
-	auth:value("PAP")
-	auth:value("CHAP")
-	auth:value("MSCHAP")
-	auth:value("MSCHAPV2")
-	auth:depends({mode="sta", eap_type="peap", encryption="wpa2"})
-	auth:depends({mode="sta", eap_type="peap", encryption="wpa"})
-	auth:depends({mode="sta", eap_type="ttls", encryption="wpa2"})
-	auth:depends({mode="sta", eap_type="ttls", encryption="wpa"})
-	auth:depends({mode="sta-wds", eap_type="peap", encryption="wpa2"})
-	auth:depends({mode="sta-wds", eap_type="peap", encryption="wpa"})
-	auth:depends({mode="sta-wds", eap_type="ttls", encryption="wpa2"})
-	auth:depends({mode="sta-wds", eap_type="ttls", encryption="wpa"})
-
-
-	identity = s:taboption("encryption", Value, "identity", translate("Identity"))
-	identity:depends({mode="sta", eap_type="peap", encryption="wpa2"})
-	identity:depends({mode="sta", eap_type="peap", encryption="wpa"})
-	identity:depends({mode="sta", eap_type="ttls", encryption="wpa2"})
-	identity:depends({mode="sta", eap_type="ttls", encryption="wpa"})
-	identity:depends({mode="sta-wds", eap_type="peap", encryption="wpa2"})
-	identity:depends({mode="sta-wds", eap_type="peap", encryption="wpa"})
-	identity:depends({mode="sta-wds", eap_type="ttls", encryption="wpa2"})
-	identity:depends({mode="sta-wds", eap_type="ttls", encryption="wpa"})
-
-	password = s:taboption("encryption", Value, "password", translate("Password"))
-	password:depends({mode="sta", eap_type="peap", encryption="wpa2"})
-	password:depends({mode="sta", eap_type="peap", encryption="wpa"})
-	password:depends({mode="sta", eap_type="ttls", encryption="wpa2"})
-	password:depends({mode="sta", eap_type="ttls", encryption="wpa"})
-	password:depends({mode="sta-wds", eap_type="peap", encryption="wpa2"})
-	password:depends({mode="sta-wds", eap_type="peap", encryption="wpa"})
-	password:depends({mode="sta-wds", eap_type="ttls", encryption="wpa2"})
-	password:depends({mode="sta-wds", eap_type="ttls", encryption="wpa"})
-end
 
 return m
