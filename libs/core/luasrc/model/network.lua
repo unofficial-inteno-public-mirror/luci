@@ -1490,7 +1490,7 @@ function wifidev.channels(self, country, band, bwidth)
 	if band == "a" then
 		bnd = "5"
 	end
-	return utl.execi("wlctl -i %q chanspecs -c %s -b %s -w %s" %{self.sid, country, bnd, bwidth})
+	return utl.execi("wlctl -i %q chanspecs -c %s -b %s -w %s | awk '{print$1}'" %{self.sid, country, bnd, bwidth})
 end
 
 function wifidev.hwmodes(self)
@@ -1540,14 +1540,9 @@ end
 function wifidev.radio(self)
 	local up = false
 
-	_uci_state:foreach("wireless", "wifi-device",
-		function(s)
-			if s['.name'] == self.sid then
-				if s.radio ~= "off" then
-					up = true
-				end
-			end
-		end)
+	if self:get("radio") ~= "off" then
+		up = true
+	end
 
 	return up
 end

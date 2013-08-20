@@ -205,8 +205,7 @@ if hwtype == "broadcom" then
 	s:taboption("general", Value, "maxassoc", translate("Connection Limit"))
 
 	band = s:taboption("advanced", ListValue, "band", translate("Band"))
-
-	bnd = wdev:bands()
+	local bnd = wdev:bands()
 	if bnd:match("b") then band:value("b", translate("2.4GHz")) end
 	if bnd:match("a") then band:value("a", translate("5GHz")) end
 
@@ -222,27 +221,153 @@ if hwtype == "broadcom" then
 		mode:value("11ac", "802.11ac", {band="a"})
 	end
 
-	bw = s:taboption("advanced", ListValue, "bandwidth", translate("Bandwidth"))
-	bw:depends("hwmode", "auto")
-	bw:depends("hwmode", "11n")
-	bw:depends("hwmode", "11ac")
-	bw:value("20", "20MHz")
-	bw:value("40", "40Mhz")
-	bw:value("80", "80Mhz", {hwmode="11ac"})
+--	bw = s:taboption("advanced", ListValue, "bandwidth", translate("Bandwidth"))
+--	bw:depends("hwmode", "auto")
+--	bw:depends("hwmode", "11n")
+--	bw:depends("hwmode", "11ac")
+--	bw:value("20", "20MHz")
+--	bw:value("40", "40Mhz", {hwmode="11n"}, {hwmode="11ac"})
+--	bw:value("80", "80Mhz", {hwmode="11ac"})
 
 	ch = s:taboption("advanced", ListValue, "channel", translate("Channel"))
 	ch:value("auto", translate("Auto"))
 
-	btn = s:taboption("advanced", Button, "btn" , translate("Update Channel List"))
-	function btn.write(self)
-		for chn in wdev:channels(wdev:get("country"), wdev:get("band"), wdev:get("bandwidth")) do
-			ch:value(chn, chn)
+	function detailed_name(chnspec)
+		local channel
+		if chnspec:match("/80") then
+			channel = chnspec:sub(0, chnspec:find("/") - 1)
+		elseif chnspec:match("l") then
+			channel = chnspec:sub(0, chnspec:find("l") - 1) .. " / Sideband: Lower"
+		elseif chnspec:match("u") then
+			channel = chnspec:sub(0, chnspec:find("u") - 1) .. " / Sideband: Upper"
+		else
+			channel = chnspec
 		end
+		return channel
 	end
+
+
+--	for chn in wdev:channels(wdev:get("country"), wdev:get("band"), wdev:get("bandwidth")) do
+--		if chn ~= "" then
+--			ch:value(chn, detailed_name(chn))
+--		end
+--	end
+
+	ch:value("1", translate("1/20"), {band="b"})
+	ch:value("2", translate("2/20"), {band="b"})
+	ch:value("3", translate("3/20"), {band="b"})
+	ch:value("4", translate("4/20"), {band="b"})
+	ch:value("5", translate("5/20"), {band="b"})
+	ch:value("6", translate("6/20"), {band="b"})
+	ch:value("7", translate("7/20"), {band="b"})
+	ch:value("8", translate("8/20"), {band="b"})
+	ch:value("9", translate("9/20"), {band="b"})
+	ch:value("10", translate("10/20"), {band="b"})
+	ch:value("11", translate("11/20"), {band="b"})
+	ch:value("12", translate("12/20"), {band="b"})
+	ch:value("13", translate("13/20"), {band="b"})
+	ch:value("5u", translate("5u/40"), {band="b", hwmode="11n"})
+	ch:value("6u", translate("6u/40"), {band="b", hwmode="11n"})
+	ch:value("7u", translate("7u/40"), {band="b", hwmode="11n"})
+	ch:value("8u", translate("8u/40"), {band="b", hwmode="11n"})
+	ch:value("9u", translate("9u/40"), {band="b", hwmode="11n"})
+	ch:value("10u", translate("10u/40"), {band="b", hwmode="11n"})
+	ch:value("11u", translate("11u/40"), {band="b", hwmode="11n"})
+	ch:value("12u", translate("12u/40"), {band="b", hwmode="11n"})
+	ch:value("13u", translate("13u/40"), {band="b", hwmode="11n"})
+	ch:value("1l", translate("1l/40"), {band="b", hwmode="11n"})
+	ch:value("2l", translate("2l/40"), {band="b", hwmode="11n"})
+	ch:value("3l", translate("3l/40"), {band="b", hwmode="11n"})
+	ch:value("4l", translate("4l/40"), {band="b", hwmode="11n"})
+	ch:value("5l", translate("5l/40"), {band="b", hwmode="11n"})
+	ch:value("6l", translate("6l/40"), {band="b", hwmode="11n"})
+	ch:value("7l", translate("7l/40"), {band="b", hwmode="11n"})
+	ch:value("8l", translate("8l/40"), {band="b", hwmode="11n"})
+	ch:value("9l", translate("9l/40"), {band="b", hwmode="11n"})
+	ch:value("36", translate("36/20"), {band="a"})
+	ch:value("40", translate("40/20"), {band="a"})
+	ch:value("44", translate("44/20"), {band="a"})
+	ch:value("48", translate("48/20"), {band="a"})
+	ch:value("52", translate("52/20"), {band="a"})
+	ch:value("56", translate("56/20"), {band="a"})
+	ch:value("60", translate("60/20"), {band="a"})
+	ch:value("64", translate("64/20"), {band="a"})
+	ch:value("100", translate("100/20"), {band="a"})
+	ch:value("104", translate("104/20"), {band="a"})
+	ch:value("108", translate("108/20"), {band="a"})
+	ch:value("112", translate("112/20"), {band="a"})
+	ch:value("116", translate("116/20"), {band="a"})
+	ch:value("132", translate("132/20"), {band="a"})
+	ch:value("136", translate("136/20"), {band="a"})
+	ch:value("140", translate("140/20"), {band="a"})
+	ch:value("144", translate("144/20"), {band="a"})
+	ch:value("149", translate("149/20"), {band="a"})
+	ch:value("153", translate("153/20"), {band="a"})
+	ch:value("157", translate("157/20"), {band="a"})
+	ch:value("161", translate("161/20"), {band="a"})
+	ch:value("165", translate("165/20"), {band="a"})
+	ch:value("40u", translate("40u/40"), {band="a"})
+	ch:value("48u", translate("48u/40"), {band="a"})
+	ch:value("56u", translate("56u/40"), {band="a"})
+	ch:value("64u", translate("64u/40"), {band="a"})
+	ch:value("104u", translate("104u/40"), {band="a"})
+	ch:value("112u", translate("112u/40"), {band="a"})
+	ch:value("136u", translate("136u/40"), {band="a"})
+	ch:value("144u", translate("144u/40"), {band="a"})
+	ch:value("153u", translate("153u/40"), {band="a"})
+	ch:value("161u", translate("161u/40"), {band="a"})
+	ch:value("36l", translate("36l/40"), {band="a"})
+	ch:value("44l", translate("44l/40"), {band="a"})
+	ch:value("52l", translate("52l/40"), {band="a"})
+	ch:value("60l", translate("60l/40"), {band="a"})
+	ch:value("100l", translate("100l/40"), {band="a"})
+	ch:value("108l", translate("108l/40"), {band="a"})
+	ch:value("132l", translate("132l/40"), {band="a"})
+	ch:value("140l", translate("140l/40"), {band="a"})
+	ch:value("149l", translate("149l/40"), {band="a"})
+	ch:value("157l", translate("157l/40"), {band="a"})
+--	if wdev:hwmodes().ac and wdev:get("country") == "US" then 
+		ch:value("36/80", translate("36/80"), {hwmode="11ac", country="US"})
+		ch:value("52/80", translate("52/80"), {hwmode="11ac", country="US"})
+		ch:value("100/80", translate("100/80"), {hwmode="11ac", country="US"})
+		ch:value("132/80", translate("132/80"), {hwmode="11ac", country="US"})
+		ch:value("149/80", translate("149/80"), {hwmode="11ac", country="US"})
+		ch:value("40/80", translate("40/80"), {hwmode="11ac", country="US"})
+		ch:value("56/80", translate("56/80"), {hwmode="11ac", country="US"})
+		ch:value("104/80", translate("104/80"), {hwmode="11ac", country="US"})
+		ch:value("136/80", translate("136/80"), {hwmode="11ac", country="US"})
+		ch:value("153/80", translate("153/80"), {hwmode="11ac", country="US"})
+		ch:value("44/80", translate("44/80"), {hwmode="11ac", country="US"})
+		ch:value("60/80", translate("60/80"), {hwmode="11ac", country="US"})
+		ch:value("108/80", translate("108/80"), {hwmode="11ac", country="US"})
+		ch:value("140/80", translate("140/80"), {hwmode="11ac", country="US"})
+		ch:value("157/80", translate("157/80"), {hwmode="11ac", country="US"})
+		ch:value("48/80", translate("48/80"), {hwmode="11ac", country="US"})
+		ch:value("64/80", translate("64/80"), {hwmode="11ac", country="US"})
+		ch:value("112/80", translate("112/80"), {hwmode="11ac", country="US"})
+		ch:value("144/80", translate("144/80"), {hwmode="11ac", country="US"})
+		ch:value("161/80", translate("161/80"), {hwmode="11ac", country="US"})
+--	end
+
+--	btn = s:taboption("advanced", Button, "btn")
+--	btn.inputtitle = "Update Channel List"
+--	btn.title = " "
+--	function btn.write(self)
+--		local chn
+--		for chn in wdev:channels(wdev:get("country"), wdev:get("band"), wdev:get("bandwidth")) do
+--			if chn ~= "" then
+--				ch:value(chn, detailed_name(chn))
+--			end
+--		end
+--		btn.inputtitle = "Update Channel List"
+--		nw:save("wireless")
+--		nw:commit("wireless")
+--	end
 
 	timer = s:taboption("advanced", Value, "scantimer", translate("Auto Channel Timer"), "min")
 	timer:depends("channel", "auto")
 	timer.default = 10
+	timer.rmempty = true;
 
 	rifs = s:taboption("advanced", ListValue, "rifs", translate("RIFS"))
 	rifs:depends("hwmode", "auto")
@@ -256,25 +381,26 @@ if hwtype == "broadcom" then
 	rifsad:value("0", "Off")	
 	rifsad:value("-1", "Auto")
 
-	obss = s:taboption("advanced", ListValue, "obss_coex", translate("OBSS Co-Existence"))
-	obss:depends("bandwidth", "40")
-	obss:value("1", "Enable")
+--	obss = s:taboption("advanced", ListValue, "obss_coex", translate("OBSS Co-Existence"))
+--	obss:depends("bandwidth", "40")
+--	obss:depends("bandwidth", "80")
+--	obss:value("1", "Enable")
 
 	nrate = s:taboption("advanced", ListValue, "nrate", translate("Rate"))
 	nrate:depends({hwmode="11n"})
 	nrate:value("auto", "Auto")	
-	nrate:value("-r 1", "Legacy 1 Mbps")
-	nrate:value("-r 2", "Legacy 2 Mbps")
-	nrate:value("-r 5.5", "Legacy 5.5 Mbps")
-	nrate:value("-r 6", "Legacy 6 Mbps")
-	nrate:value("-r 9", "Legacy 9 Mbps")
-	nrate:value("-r 11", "Legacy 11 Mbps")
-	nrate:value("-r 12", "Legacy 12 Mbps")
-	nrate:value("-r 18", "Legacy 18 Mbps")
-	nrate:value("-r 24", "Legacy 24 Mbps")
-	nrate:value("-r 36", "Legacy 36 Mbps")
-	nrate:value("-r 48", "Legacy 48 Mbps")
-	nrate:value("-r 54", "Legacy 54 Mbps")
+	nrate:value("-r 1", "Legacy 1 Mbps", {band="b"})
+	nrate:value("-r 2", "Legacy 2 Mbps", {band="b"})
+	nrate:value("-r 5.5", "Legacy 5.5 Mbps", {band="b"})
+	nrate:value("-r 6", "Legacy 6 Mbps", {band="b"})
+	nrate:value("-r 9", "Legacy 9 Mbps", {band="b"})
+	nrate:value("-r 11", "Legacy 11 Mbps", {band="b"})
+	nrate:value("-r 12", "Legacy 12 Mbps", {band="b"})
+	nrate:value("-r 18", "Legacy 18 Mbps", {band="b"})
+	nrate:value("-r 24", "Legacy 24 Mbps", {band="b"})
+	nrate:value("-r 36", "Legacy 36 Mbps", {band="b"})
+	nrate:value("-r 48", "Legacy 48 Mbps", {band="b"})
+	nrate:value("-r 54", "Legacy 54 Mbps", {band="b"})
 	nrate:value("-m 0", "MCS 0: 6.5 Mbps", {bandwidth="20"})
 	nrate:value("-m 1", "MCS 1: 13 Mbps", {bandwidth="20"})
 	nrate:value("-m 2", "MCS 2: 19.5 Mbps", {bandwidth="20"})
@@ -308,6 +434,34 @@ if hwtype == "broadcom" then
 	nrate:value("-m 14 ", "MCS 14: 243 Mbps", {bandwidth="40"})
 	nrate:value("-m 15 ", "MCS 15: 270 Mbps", {bandwidth="40"})
 	nrate:value("-m 32 ", "MCS 32: 6 Mbps", {bandwidth="40"})
+--[[
+	nrate:value("-m 0 ", "MCS 0: 29 Mbps", {bandwidth="80"})
+	nrate:value("-m 1 ", "MCS 1: 58.5 Mbps", {bandwidth="80"})
+	nrate:value("-m 2 ", "MCS 2: 87.5 Mbps", {bandwidth="80"})
+	nrate:value("-m 3 ", "MCS 3: 117 Mbps", {bandwidth="80"})
+	nrate:value("-m 4 ", "MCS 4: 175.5 Mbps", {bandwidth="80"})
+	nrate:value("-m 5 ", "MCS 5: 234 Mbps", {bandwidth="80"})
+	nrate:value("-m 6 ", "MCS 6: 263 Mbps", {bandwidth="80"})
+	nrate:value("-m 7 ", "MCS 7: 292.5 Mbps", {bandwidth="80"})
+
+	nrate:value("-m 8 ", "MCS 8: 58.5 Mbps", {bandwidth="80"})
+	nrate:value("-m 9 ", "MCS 9: 117 Mbps", {bandwidth="80"})
+	nrate:value("-m 10 ", "MCS 10: 175.5 Mbps", {bandwidth="80"})
+	nrate:value("-m 11 ", "MCS 11: 234 Mbps", {bandwidth="80"})
+
+	nrate:value("-m 12 ", "MCS 12: 351 Mbps", {bandwidth="80"})
+	nrate:value("-m 13 ", "MCS 13: 468 Mbps", {bandwidth="80"})
+	nrate:value("-m 14 ", "MCS 14: 526.5 Mbps", {bandwidth="80"})
+	nrate:value("-m 15 ", "MCS 15: 585 Mbps", {bandwidth="80"})
+	nrate:value("-m 16 ", "MCS 15: 270 Mbps", {bandwidth="80"})
+	nrate:value("-m 17 ", "MCS 15: 175.5 Mbps", {bandwidth="80"})
+	nrate:value("-m 18 ", "MCS 15: 270 Mbps", {bandwidth="80"})
+	nrate:value("-m 19 ", "MCS 15: 270 Mbps", {bandwidth="80"})
+	nrate:value("-m 20 ", "MCS 15: 270 Mbps", {bandwidth="80"})
+	nrate:value("-m 21 ", "MCS 15: 702 Mbps", {bandwidth="80"})
+	nrate:value("-m 22 ", "MCS 15: 789.5 Mbps", {bandwidth="80"})
+	nrate:value("-m 23 ", "MCS 15: 877.5 Mbps", {bandwidth="80"})
+]]
 
 	grate = s:taboption("advanced", ListValue, "grate", translate("Rate"))
 	grate:depends("hwmode", "11bg")
