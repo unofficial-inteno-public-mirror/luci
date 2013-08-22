@@ -631,15 +631,15 @@ $Id: index.htm 7022 2011-05-04 21:04:31Z jow $
 	<table class="cbi-section-table">
 		<tr class="cbi-section-table-titles">
 
-			<%for _prt in luci.util.execi(". /lib/network/config.sh && interfaceorder | tr ' ' '\n'") do%>
-			      <th class="cbi-section-table-cell"><%=prt:port_type(_prt)%></th>
+			<%for _prt in luci.util.execi("db get hw.board.ethernetPortNames | tr ' ' '\n'") do%>
+			      <th class="cbi-section-table-cell"><%=_prt%></th>
 			<%end%>
 			<th class="cbi-section-table-cell"><%:DSL%></th>
 			<th class="cbi-section-table-cell"><%:USB%></th>
 		</tr>
 
 		<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
-			<%for _prt in luci.util.execi(". /lib/network/config.sh && interfaceorder | tr ' ' '\n'") do%>
+			<%for _prt in luci.util.execi("db get hw.board.ethernetPortOrder | tr ' ' '\n'") do%>
 				<td id="port_<%=_prt%>" class="cbi-value-field"><img src="<%=resource%>/icons/ethernet<%=prt:eth_type(tonumber(_prt:sub(4)))%>_disabled.png"/></td>
 			<% end %>
 
