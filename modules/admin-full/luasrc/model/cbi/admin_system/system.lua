@@ -114,7 +114,7 @@ if guser ~= "user" then
 	-- Connection Status
 	--
 
-	local has_videoled = (tonumber(luci.sys.exec("ledctl | egrep -w -i -c 'TV|Video'")) >= 1)
+	local has_videoled = (luci.sys.exec("db get hw.leds.TV_green 2>/dev/null") ~= "")
 
 	int_test = s:taboption("connection", Value, "netping_addr", translate("Internet"), translate("for Internet connection test"))
 	int_test.rmempty = true
