@@ -1,0 +1,67 @@
+<%-
+	function hextodec(hex)
+		if hex == "0xffffffff" then
+			return "-1"
+		else
+			return luci.sys.exec("printf '%d'" %hex)
+		end
+	end
+
+	function hextoip(hex)
+		return luci.sys.exec("printf '%d'" %("0x"..hex:sub(3, 4))).."."..
+			luci.sys.exec("printf '%d'" %("0x"..hex:sub(5, 6))).."."..
+			luci.sys.exec("printf '%d'" %("0x"..hex:sub(7, 8))).."."..
+			luci.sys.exec("printf '%d'" %("0x"..hex:sub(9, 10)))
+	end
+-%>
+
+<%+header%>
+
+<div class="cbi-map" id="cbi-network">
+	<h2><a id="content" name="content"><%:IGMP Snooping%></a></h2>
+
+	<fieldset class="cbi-section" id="cbi-table-table">
+		<legend>IGMP Snooping Table</legend>
+		<div class="cbi-section-node">
+			<table class="cbi-section-table">
+				<tr class="cbi-section-table-titles">
+					<th class="cbi-section-table-cell"><%:Bridge%></th>
+					<th class="cbi-section-table-cell"><%:Snooping Device%></th>
+					<th class="cbi-section-table-cell"><%:Source Device%></th>
+					<th class="cbi-section-table-cell"><%:#TAGS%></th>
+					<th class="cbi-section-table-cell"><%:LAN-TCI%></th>
+					<th class="cbi-section-table-cell"><%:WAN-TCI%></th>
+					<th class="cbi-section-table-cell"><%:Group%></th>
+					<th class="cbi-section-table-cell"><%:Mode%></th>
+					<th class="cbi-section-table-cell"><%:Source%></th>
+					<th class="cbi-section-table-cell"><%:Timeout%></th>
+					<th class="cbi-section-table-cell"><%:Reporter%></th>
+					<th class="cbi-section-table-cell"><%:Index%></th>
+				</tr>
+
+				<% for line in luci.util.execi("cat /proc/net/igmp_snooping | grep -v snooping | grep -v bridge") do%>
+					<% local bridge, device, srcdev, tags, lantci, wantci, group, mode, source, timeout, reporter, index
+	 				= line:match("(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%d+)%s+(%S+)%s+(%S+)") %>
+
+					<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+							<td class="cbi-value-field"><%=bridge%></td>
+							<td class="cbi-value-field"><%=device%></td>
+							<td class="cbi-value-field"><%=srcdev%></td>
+							<td class="cbi-value-field"><%=tags%></td>
+							<td class="cbi-value-field"><%=hextodec(lantci)%></td>
+							<td class="cbi-value-field"><%=hextodec(wantci)%></td>
+							<td class="cbi-value-field"><%=hextoip(group)%></td>
+							<td class="cbi-value-field"><%=mode%></td>
+							<td class="cbi-value-field"><%=hextoip(source)%></td>
+							<td class="cbi-value-field"><%=timeout%></td>
+							<td class="cbi-value-field"><%=hextoip(reporter)%></td>
+							<td class="cbi-value-field"><%=hextodec(index)%></td>
+					</tr>
+				<%end%>
+			</table>
+		</div>
+	</fieldset>
+	<br />
+</div>
+
+<%+footer%>

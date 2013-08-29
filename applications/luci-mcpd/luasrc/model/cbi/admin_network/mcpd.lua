@@ -1,18 +1,21 @@
 local net = require "luci.model.network".init()
+local bus = require "ubus"
+local bit = require "bit"
+local uci = require("luci.model.uci").cursor()
+
 m = Map("mcpd",translate("IGMP Proxy"))
 
 
-local bit = require "bit"
-local uci = require("luci.model.uci").cursor()
 s = m:section(TypedSection, "mcpd",  translate("Configure IGMP proxy specific parameters"))
 s.addremove = false
 s.anonymous = true
 
-iface = s:option(ListValue, "igmp_proxy_interfaces", translate("WAN IGMP proxy interfaces"))
+iface = s:option(ListValue, "igmp_proxy_interfaces", translate("WAN IGMP proxy interface"))
 uci:foreach("network", "interface",
 	function (section)
 		local ifc = section[".name"]
-		if ifc ~= "loopback" then
+		local islan = section["is_lan"]
+		if ifc ~= "loopback" and islan ~= "1" then
 			iface:value(ifc)
 		end
 	end)
@@ -52,17 +55,34 @@ n = s:option(Flag, "igmp_proxy_enable",translate("Proxy enable"),
 n.enabled="1"
 n.disabled="0"
                                                                      
-n = s:option(ListValue, "igmp_snooping_enable",translate("IGMP Snooping Mode"),
+n = s:option(ListValue, "igmp_snooping_enable",translate("IGMP snooping mode"),
 ("Choose snooping mode"))
 n:value("0", "Disabled")
 n:value("1", "Standard")
 n:value("2", "Blocking")
-                                                                                                                                                    
-n = s:option(Value, "igmp_snooping_interfaces",translate("IGMP snooping interfaces"))
 
+function deviceof(intface)
+	local _ubus
+	local _ubuscache = { }
 
+	_ubus = bus.connect()
+	_ubuscache[intface] = _ubus:call("network.interface.%s" %intface, "status", {})
+	_ubus:close()
+
+	if _ubuscache[intface] then
+		return _ubuscache[intface]["device"] or _ubuscache[intface]["l3_device"] or ""
+	end
+end
+
+snpifaces = s:option(ListValue, "igmp_snooping_interfaces", translate("IGMP snooping interface"))
+uci:foreach("network", "interface",
+	function (section)
+		local ifc = section[".name"]
+		local islan = section["is_lan"]
+		if ifc ~= "loopback" and islan and islan == "1" then
+			snpifaces:value(deviceof(ifc), ifc)
+		end
+	end)
 
 return m
-
-
 
