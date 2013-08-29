@@ -1,10 +1,7 @@
 <%-
 	function hextodec(hex)
-		if hex == "0xffffffff" then
-			return "-1"
-		else
-			return luci.sys.exec("printf '%d'" %hex)
-		end
+		local newhex = luci.sys.exec("echo $((%d & 0x0000FFFF))" %hex)
+		return luci.sys.exec("printf '%d'" %newhex)
 	end
 
 	function hextoip(hex)
@@ -39,7 +36,7 @@
 					<th class="cbi-section-table-cell"><%:Index%></th>
 				</tr>
 
-				<% for line in luci.util.execi("cat /proc/net/igmp_snooping | grep -v snooping | grep -v bridge") do%>
+				<% for line in luci.util.execi("cat /proc/net/igmp_snooping | grep -v snooping | grep -v reporter") do%>
 					<% local bridge, device, srcdev, tags, lantci, wantci, group, mode, source, timeout, reporter, index
 	 				= line:match("(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%d+)%s+(%S+)%s+(%S+)") %>
 
