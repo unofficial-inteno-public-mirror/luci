@@ -26,11 +26,12 @@ s = m:section(NamedSection, "cpe",  translate("Configure CPE specific settings")
 s.addremove = false
 s.anonymous = false
 
-iface = s:option(ListValue, "default_wan_interface", translate("WAN Interfaces"))
+iface = s:option(ListValue, "default_wan_interface", translate("WAN Interface"))
 uci:foreach("network", "interface",
 	function (section)
 		local ifc = section[".name"]
-		if ifc ~= "loopback" then
+		local islan = section["is_lan"]
+		if ifc ~= "loopback" and islan ~= "1" then
 			iface:value(ifc)
 		end
 	end)
