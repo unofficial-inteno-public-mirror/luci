@@ -38,7 +38,7 @@ end
 
 m = Map ("voice_client", "SIP Service Providers")
 s = m:section(TypedSection, "sip_service_provider")
-s.template  = "cbi/tblsection"
+s.template = "voice_client/tblsection_refresh"
 s.anonymous = true
 s.addremove = true
 s.extedit = ds.build_url("admin/services/voice/voice_sip/%s")
@@ -133,6 +133,32 @@ function l.cfgvalue(self, section)
 		end
 	end
 	return v
+end
+
+r = s:option(DummyValue, "registration_state", "Registered")
+function r.cfgvalue(self, section)
+	local state = "N/A"
+
+	sip_registry = luci.sys.exec("asterisk -rx 'sip show registry'")
+
+	lines = string.split(sip_registry, "\n")
+	for _, line in ipairs(lines) do
+		host, port = line:sub(1,40):match("^%s*(sip%d+):(%d+)%s*$")
+		if host then
+			account = line:sub(0, 4):match("^%s*(.-)%s*$")
+			if account == section then
+				acc_state = line:sub(71, 91):match("^%s*(.-)%s*$")
+				if acc_state == "Registered" then
+					acc_state = "Yes"
+				else
+					acc_state = string.format("No (%s)", acc_state)
+				end
+				state = acc_state
+				break
+			end
+		end
+	end
+	return state
 end
 
 return m
