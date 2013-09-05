@@ -33,7 +33,7 @@
 			<%for _, ch in ipairs(channels) do%>
 			<b>Channel <%=ch%></b>
 			<table class="cbi-section-table">
-					<% for line in luci.util.execi("wlctl -i %s scanresults_summary" %device) do%>
+					<% for line in luci.util.execi("wlctl -i %s scanresults_summary 2>/dev/null" %device) do%>
 						<% local bssid, rssi, band, channel, mode, ssid
 		 				= line:match("BSSID:%s+(%S+)%s+RSSI:%s+(%S+)%s+dBm%s+Band:%s+(%S+)%s+Channel:%s+(%d+)%s+802.11:%s+(%S+)%s+SSID:%s+(%S+)") %>
 					
