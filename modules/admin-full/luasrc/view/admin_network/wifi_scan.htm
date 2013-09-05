@@ -55,20 +55,22 @@
 					local sids = { " ", ".1", ".2", ".3", ".4" }
 					for _, sid in ipairs(sids) do
 						local wif = device .. sid
-						if luci.sys.exec("wlctl -i %s bssid 2>/dev/null" %wif) ~= "" then
-							if tonumber(luci.sys.exec("wlctl -i %s channel | grep current | awk '{print$NF}'" %device)) == tonumber(ch) then
-								local myssid = luci.sys.exec("wlctl -i %s ssid | awk '{print$NF}' | sed 's/\"//g'" %wif)
-								local mybssid = luci.sys.exec("wlctl -i %s bssid" %wif)
-								local mymode = "b/g"
-								if tonumber(luci.sys.exec("wlctl -i %s status | grep -c '802.11N Capable'" %wif)) > 0 then 
-									mymode = "b/g/n"
-								end
+						local mybssid = luci.sys.exec("wlctl -i %s bssid 2>/dev/null" %wif)
+						if mybssid and mybssid ~= "" then
+							local status = luci.sys.exec("wlctl -i %s status" %wif)
+							local myrssi, mychannel = status:match("Mode:%s+Managed%s+RSSI:%s+(%S+)%s+dBm%s+SNR:%s+%S+%s+dB%s+noise:%s+%S+%s+dBm%s+Channel:%s+(%S+)")
+							local myssid = status:match("SSID: \"(%S+)\"")
+							local mymode = "b/g"
+							if status:match("802.11N") then mymode = "b/g/n" end
+							if tonumber(mychannel) == tonumber(ch) then
 					%>
 								<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
 										<td class="cbi-value-field" width="20%"><%:#%></td>
 										<td class="cbi-value-field" width="30%"><%=myssid%></td>
 										<td class="cbi-value-field" width="20%"><%=mybssid%></td>
-										<td class="cbi-value-field" width="15%"><%:0%></td>
+										<td class="cbi-value-field" width="15%"><%=myrssi%></td>
+										<!--<td class="cbi-value-field"><%=myband%></td>
+										<td class="cbi-value-field"><%=mychannel%></td>-->
 										<td class="cbi-value-field" width="15%"><%=mymode%></td>
 								</tr>
 					<% 		end
