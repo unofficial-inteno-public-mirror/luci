@@ -39,7 +39,7 @@
 					
 						<%if tonumber(ch) == tonumber(channel) and band == "2.4GHz" then%>
 						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
-								<td class="cbi-value-field" width="20%"><%: %></td>
+								<td class="cbi-value-field" width="20%"><%:%></td>
 								<td class="cbi-value-field" width="30%"><%=ssid%></td>
 								<td class="cbi-value-field" width="20%"><%=bssid%></td>
 								<td class="cbi-value-field" width="15%"><%=rssi%></td>
@@ -65,13 +65,13 @@
 							if tonumber(mychannel) == tonumber(ch) then
 					%>
 								<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
-										<td class="cbi-value-field" width="20%"><%:#%></td>
-										<td class="cbi-value-field" width="30%"><%=myssid%></td>
-										<td class="cbi-value-field" width="20%"><%=mybssid%></td>
-										<td class="cbi-value-field" width="15%"><%=myrssi%></td>
+										<td class="cbi-value-field" width="20%"><b><%:%></b></td>
+										<td class="cbi-value-field" width="30%"><b><%=myssid%></b></td>
+										<td class="cbi-value-field" width="20%"><b><%=mybssid%></b></td>
+										<td class="cbi-value-field" width="15%"><b><%=myrssi%></b></td>
 										<!--<td class="cbi-value-field"><%=myband%></td>
 										<td class="cbi-value-field"><%=mychannel%></td>-->
-										<td class="cbi-value-field" width="15%"><%=mymode%></td>
+										<td class="cbi-value-field" width="15%"><b><%=mymode%></b></td>
 								</tr>
 					<% 		end
 						end
