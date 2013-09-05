@@ -55,7 +55,7 @@ function index()
 			page = entry({"user", "network", "wireless_shutdown"}, call("wifi_shutdown"), nil)
 			page.leaf = true
 
-			page = entry({"admin", "network", "wireless_scan"}, template("admin_network/wifi_scan"), nil)
+			page = entry({"user", "network", "wireless_scan"}, template("admin_network/wifi_scan"), nil)
 			page.leaf = true
 
 			page = entry({"user", "network", "wireless"}, arcombine(template("admin_network/wifi_overview"), cbi("admin_network/wifi")), _("Wireless"), 15)
