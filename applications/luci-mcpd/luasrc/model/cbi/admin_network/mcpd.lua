@@ -15,7 +15,8 @@ uci:foreach("network", "interface",
 	function (section)
 		local ifc = section[".name"]
 		local islan = section["is_lan"]
-		if ifc ~= "loopback" and islan ~= "1" then
+		local typ = section["type"]
+		if ifc ~= "loopback" and islan ~= "1" and typ ~= "alias" then
 			iface:value(ifc)
 		end
 	end)
@@ -78,8 +79,8 @@ snpifaces = s:option(ListValue, "igmp_snooping_interfaces", translate("IGMP snoo
 uci:foreach("network", "interface",
 	function (section)
 		local ifc = section[".name"]
-		local islan = section["is_lan"]
-		if ifc ~= "loopback" and islan and islan == "1" then
+		local typ = section["type"]
+		if ifc ~= "loopback" and typ ~= "alias" then
 			snpifaces:value(deviceof(ifc), ifc)
 		end
 	end)
