@@ -3,7 +3,7 @@ m = Map("provisioning", translate("IUP Provisioning"), translate("Setup your IUP
 
 
 
-s = m:section(TypedSection, "general", "General") 
+s = m:section(TypedSection, "general", "General")
 s.anonymous=true
 
 
@@ -46,6 +46,11 @@ url = s2:option(Value, "url", translate("URL"))
 --function url:validate(value)
 --	return value:match("([fh][t][tp]?[ps]://[.]+)")
 --end
+
+deckey = s2:option(Value, "deckey", translate("Decryption Key"), translate("If not entered, DES Key will be used instead"))
+deckey.rmempty = true;
+deckey.password = true;
+
 s4 = m:section(NamedSection,"iup","server",translate ("DHCP Discover Provisioning Server"))
 
 --s2.addremove = true
