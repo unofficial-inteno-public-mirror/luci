@@ -24,7 +24,9 @@ function router_static_sysinfo()
 		socmodel = _ubuscache["system"]["socmod"],
 		socrevision = _ubuscache["system"]["socrev"],
 		cfeversion = _ubuscache["system"]["cfever"],
-		kernel = _ubuscache["system"]["kernel"]
+		kernel = _ubuscache["system"]["kernel"],
+		serialno = _ubuscache["system"]["serialno"],
+		basemac = _ubuscache["system"]["basemac"]
 	}
 
 	return rv

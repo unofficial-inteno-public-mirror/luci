@@ -1,0 +1,98 @@
+<%-
+	require "luci.quest"
+	local prt = require "luci.model.ports".init()
+	local sysinfo = luci.quest.router_static_sysinfo()
+	local keys = luci.quest.router_keys()
+	local lanmac = luci.sys.exec("ifconfig br-lan | grep HWaddr | awk '{print$NF}'") or sysinfo.basemac
+	local wl = {
+		ssid = luci.sys.exec("wlctl -i wl0 ssid | awk '{print$NF}'"),
+		version = luci.sys.exec("wlctl -i wl0 ver | awk '{print$NF}'"),
+		status = luci.sys.exec("wlctl -i wl0 isup"),
+		mac = luci.sys.exec("ifconfig wl0 | grep HWaddr | awk '{print$NF}'")
+	}
+	local dsl = {
+		annex = luci.sys.exec("cat /proc/nvram/dslAnnex"),
+		downrate = prt:dslrate().down,
+		uprate = prt:dslrate().up,
+		version = luci.sys.exec("adslctl --version 2>&1 | grep ADSL | awk '{print$NF}'")
+	}
+-%>
+
+<%+header%>
+
+<div class="cbi-map" id="cbi-network">
+	<h2><a id="content" name="content"><%:CPE Info%></a></h2>
+
+	<fieldset class="cbi-section" id="cbi-table-table">
+		<div class="cbi-section-node">
+			<table class="cbi-section-table">
+				<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+					<td class="cbi-value-field"><%:IOP Version%></td>
+					<td class="cbi-value-field"><%=sysinfo.iopversion%></td>
+				</tr>
+				<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+					<td class="cbi-value-field"><%:Serial No%></td>
+					<td class="cbi-value-field"><%=sysinfo.serialno%></td>
+				</tr>
+				<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+					<td class="cbi-value-field"><%:Wireless SSID%></td>
+					<td class="cbi-value-field"><%=wl.ssid%></td>
+				</tr>
+				<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+					<td class="cbi-value-field"><%: LAN MAC%></td>
+					<td class="cbi-value-field"><%=lanmac%></td>
+				</tr>
+				<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+					<td class="cbi-value-field"><%:WLAN MAC%></td>
+					<td class="cbi-value-field"><%=wl.mac%></td>
+				</tr>
+				<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+					<td class="cbi-value-field"><%:DSL Annex%></td>
+					<td class="cbi-value-field"><%=dsl.annex%></td>
+				</tr>
+				<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+					<td class="cbi-value-field"><%:Auth Key%></td>
+					<td class="cbi-value-field"><%=keys.authkey%></td>
+				</tr>
+				<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+					<td class="cbi-value-field"><%:DES Key%></td>
+					<td class="cbi-value-field"><%=keys.deskey%></td>
+				</tr>
+				<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+					<td class="cbi-value-field"><%:WPA Key%></td>
+					<td class="cbi-value-field"><%=keys.wpakey%></td>
+				</tr>
+				<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+					<td class="cbi-value-field"><%:DSL Downstream Link Rate%></td>
+					<td class="cbi-value-field"><%=dsl.downrate%></td>
+				</tr>
+				<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+					<td class="cbi-value-field"><%:DSL Upstream Link Rate%></td>
+					<td class="cbi-value-field"><%=dsl.uprate%></td>
+				</tr>
+				<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+					<td class="cbi-value-field"><%:Board Model%></td>
+					<td class="cbi-value-field"><%=sysinfo.model%></td>
+				</tr>
+				<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+					<td class="cbi-value-field"><%:CFE Version%></td>
+					<td class="cbi-value-field"><%=sysinfo.cfeversion%></td>
+				</tr>
+				<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+					<td class="cbi-value-field"><%:ADSL Version%></td>
+					<td class="cbi-value-field"><%=dsl.version%></td>
+				</tr>
+				<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+					<td class="cbi-value-field"><%:WLAN Version%></td>
+					<td class="cbi-value-field"><%=wl.version%></td>
+				</tr>
+				<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+					<td class="cbi-value-field"><%:WLAN Status%></td>
+					<td class="cbi-value-field"><%=wl.status%></td>
+				</tr>
+			</table>
+		</div>
+	</fieldset>
+	<br />
+</div>
+
