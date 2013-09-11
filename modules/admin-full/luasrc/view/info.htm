@@ -5,7 +5,7 @@
 	local keys = luci.quest.router_keys()
 	local lanmac = luci.sys.exec("ifconfig br-lan | grep HWaddr | awk '{print$NF}'") or sysinfo.basemac
 	local wl = {
-		ssid = luci.sys.exec("wlctl -i wl0 ssid | awk '{print$NF}'"),
+		ssid = luci.sys.exec("wlctl -i wl0 ssid | awk '{print$NF}' | sed 's/\"//g'"),
 		version = luci.sys.exec("wlctl -i wl0 ver | awk '{print$NF}'"),
 		status = luci.sys.exec("wlctl -i wl0 isup"),
 		mac = luci.sys.exec("ifconfig wl0 | grep HWaddr | awk '{print$NF}'")
