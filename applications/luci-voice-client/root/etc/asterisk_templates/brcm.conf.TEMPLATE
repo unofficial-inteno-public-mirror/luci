@@ -54,17 +54,6 @@ echocancel=on
 ; 3 = Aggressive VAD
 silence=0
 
-; Specify the RFC 2833 DTMF relay type
-; off = Disable RFC 2833 DTMF relay
-; rfc2833 = Enable RFC 2833 DTMF relay
-; info = Enable RFC 2833 DTMF relay with DTMF tone subtraction
-dtmfrelay=|DTMFRELAY|
-
-; DTMF sending mode (ast_frame.frametype)
-; on = send AST_FRAME_NULL/AST_FRAME_DTMF (i.e. fixed DTMF length)
-; off = send AST_FRAME_DTMF_END/AST_FRAME_DTMF_BEGIN (i.e. variable DTMF length)
-shortdtmf=on
-
 ; TX Gain value between -96 and 32 dB
 txgain=0
 

@@ -671,21 +671,18 @@ configure_brcm()
 {
 	echo "Configuring BRCM"
 	local country
-	local dtmfmode
 	local jbenable
 	local jbforce
 	local jbmaxsize
 	local jbimpl
 
 	config_get country BRCM country
-	config_get dtmfmode SIP dtmfmode 
 	config_get jbenable BRCM jbenable
 	config_get jbforce BRCM jbforce
 	config_get jbmaxsize BRCM jbmaxsize
 	config_get jbimpl BRCM jbimpl
 
 	sed -i "s/|COUNTRY|/$country/"				$WORKDIR/brcm.tmp
-	sed -i "s/|DTMFRELAY|/$dtmfmode/"			$WORKDIR/brcm.tmp
 	sed -i "s/|JBENABLE|/$jbenable/"			$WORKDIR/brcm.tmp
 	sed -i "s/|JBFORCE|/$jbforce/"				$WORKDIR/brcm.tmp
 	sed -i "s/|JBMAXSIZE|/$jbmaxsize/"			$WORKDIR/brcm.tmp
