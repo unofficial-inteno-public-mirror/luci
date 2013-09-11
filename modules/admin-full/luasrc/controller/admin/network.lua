@@ -214,8 +214,8 @@ function wifi_join()
 	end
 end
 
-function wifi_onoff()
-	luci.sys.exec("ACTION=register INTERFACE=ecobutton /sbin/hotplug-call button")
+function wifi_onoff(dev)
+	luci.sys.exec("pidof ecobutton || /sbin/ecobutton %s" %dev)
 	luci.http.redirect(luci.dispatcher.build_url("admin/network/wireless"))
 end
 
