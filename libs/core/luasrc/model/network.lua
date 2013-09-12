@@ -1512,6 +1512,12 @@ function wifidev.hwmodes(self)
 	end
 end
 
+function wifidev.antenna(self)
+	local ta = (sys.exec("wlctl -i %q txant 2>/dev/null" %self.sid) ~= "")
+	local ra = (sys.exec("wlctl -i %q antdiv 2>/dev/null" %self.sid) ~= "")
+	return { txant = ta, rxant = ra }
+end
+
 function wifidev.get_i18n(self)
 	local x = self.sid
 	local t = "Generic"

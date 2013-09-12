@@ -548,21 +548,25 @@ if hwtype == "broadcom" then
 	wa:value("1", "Enable")
 	wa:value("0", "Disable")
 
-	ant1 = s:taboption("antenna", ListValue, "txantenna", translate("Transmitter Antenna"))
-	ant1.widget = "radio"
-	ant1:depends("diversity", "")
-	ant1:value("3", translate("auto"))
-	ant1:value("0", translate("Antenna 1"))
-	ant1:value("1", translate("Antenna 2"))
-	ant1.default = "3"
+	if wdev:antenna().txant then
+		ant1 = s:taboption("antenna", ListValue, "txantenna", translate("Transmitter Antenna"))
+		ant1.widget = "radio"
+		ant1:depends("diversity", "")
+		ant1:value("3", translate("auto"))
+		ant1:value("0", translate("Antenna 1"))
+		ant1:value("1", translate("Antenna 2"))
+		ant1.default = "3"
+	end
 
-	ant2 = s:taboption("antenna", ListValue, "rxantenna", translate("Receiver Antenna"))
-	ant2.widget = "radio"
-	ant2:depends("diversity", "")
-	ant2:value("3", translate("auto"))
-	ant2:value("0", translate("Antenna 1"))
-	ant2:value("1", translate("Antenna 2"))
-	ant2.default = "3"
+	if wdev:antenna().rxant then
+		ant2 = s:taboption("antenna", ListValue, "rxantenna", translate("Receiver Antenna"))
+		ant2.widget = "radio"
+		ant2:depends("diversity", "")
+		ant2:value("3", translate("auto"))
+		ant2:value("0", translate("Antenna 1"))
+		ant2:value("1", translate("Antenna 2"))
+		ant2.default = "3"
+	end
 
 --	wdsmode = s:taboption("bridge", ListValue, "wdsmode", translate("WDS Mode"), "Selecting Automatic WDS mode will dynamically grant WDS membership to anyone")
 --	wdsmode:value("0", translate("Manual"))
