@@ -1482,7 +1482,18 @@ function wifidev.name(self)
 end
 
 function wifidev.bands(self)
-	return sys.exec("wlctl -i %q bands" %self.sid)
+	if self.sid:match("^wl%d") then
+		local wlno = self.sid:sub(3) + 1
+		local pci = sys.exec("cat /proc/bus/pci/devices | grep wl | sed -n %dp | awk '{print$2}'" %wlno)
+		if pci:match("43a2") then
+			return "a"
+		end
+	end
+	if sys.exec("wlctl -i %s phylist" %self.sid) == "v" then
+		return "a"
+	end
+	return "b"
+--	return sys.exec("wlctl -i %q bands" %self.sid)
 end
 
 function wifidev.channels(self, country, band, bwidth)
@@ -1504,7 +1515,7 @@ end
 function wifidev.get_i18n(self)
 	local x = self.sid
 	local t = "Generic"
-	if x == "wl0" or x == "wl1" or x == "wl2" or x == "wl3" then
+	if x:match("^wl%d") then
 		t = "Broadcom"
 	elseif x == "madwifi" then
 		t = "Atheros"
@@ -1657,8 +1668,8 @@ function wifinet.name(self)
 end
 
 function wifinet.ifname(self)
-	local ifn = _uci_state:get("wireless", self.sid, "device")
-	local nid = tonumber(sys.exec("echo %s | awk -F'network' '{print$2}'" %self.netid)) - 1
+	local ifn = sys.exec("echo %s | awk -F'.network' '{print$1}'" %self.netid)
+	local nid = tonumber(sys.exec("echo %s | awk -F'.network' '{print$2}'" %self.netid)) - 1
 	if nid == 0 then
 		return "%s" %ifn
 	else
