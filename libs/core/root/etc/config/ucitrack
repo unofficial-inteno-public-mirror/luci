@@ -2,6 +2,8 @@ config network
 	option init network
 	list affects dhcp
 	list affects radvd
+	list affects mcpd
+	list affects dropbear
 
 config wireless
 	list affects network
