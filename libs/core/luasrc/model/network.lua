@@ -1674,13 +1674,26 @@ function wifinet.name(self)
 end
 
 function wifinet.ifname(self)
-	local ifn = sys.exec("echo %s | awk -F'.network' '{print$1}'" %self.netid)
-	local nid = tonumber(sys.exec("echo %s | awk -F'.network' '{print$2}'" %self.netid)) - 1
-	if nid == 0 then
-		return "%s" %ifn
-	else
-		return "%s.%d" %{ifn, nid}
-	end
+	local num = { }
+	local nid
+	local ifname
+	local found = false
+	_uci_real:foreach("wireless", "wifi-iface",
+		function(s)
+			if s.device and not found then
+				num[s.device] = num[s.device] and num[s.device] + 1 or 1
+				if s['.name'] == self.sid then
+					nid = num[s.device] - 1
+					if nid == 0 then
+						ifname = "%s" %{ s.device }
+					else
+						ifname = "%s.%d" %{ s.device, nid }
+					end
+					found = true
+				end
+			end
+		end)
+	return ifname
 end
 
 function wifinet.get_device(self)
