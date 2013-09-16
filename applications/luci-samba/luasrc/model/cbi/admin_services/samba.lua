@@ -16,6 +16,7 @@ require("luci.tools.webadmin")
 local sys = require "luci.sys"
 local fs   = require "nixio.fs"
 local util = require "nixio.util"
+local uci = require("luci.model.uci").cursor()
 
 
 local devices = {}
@@ -36,6 +37,19 @@ s:option(Value, "name", translate("Hostname"))
 s:option(Value, "description", translate("Description"))
 s:option(Value, "workgroup", translate("Workgroup"))
 
+intf = s:option(MultiValue, "interfaces", translate("Interfaces"), translate("samba will listen on all interfaces if not selected"))
+intf.rmempty = true
+uci:foreach("network", "interface",
+	function (section)
+		local ifc = section[".name"]
+		local islan = section["is_lan"]
+		local typ = section["type"]
+		if ifc ~= "loopback" and typ ~= "alias" then
+			intf:value(ifc)
+		end
+	end)
+intf.widget = "checkbox"
+
 s = m:section(TypedSection, "sambausers", translate("Samba Users"))
 s.anonymous = true
 s.addremove = true
@@ -55,6 +69,7 @@ s.template = "cbi/tblsection"
 
 s:option(Value, "name", translate("Name"))
 pth = s:option(ListValue, "path", translate("Device"))
+
 for i, dev in ipairs(devices) do
         local s = tonumber((fs.readfile("/sys/class/block/%s/size" % dev:sub(6))))
 	local sdahost = sys.exec("ls -l /sys/class/block/%s"  % dev:sub(6))
@@ -72,8 +87,24 @@ for i, dev in ipairs(devices) do
 	end
 end
 	
-		
+
 compath = s:option(Value, "dirpath", translate("Directory"))
+
+function dirpath_is_valid(value)
+	if value:match("..") then
+		return false
+	else
+		return true
+	end
+end
+
+function compath.validate(self, value, section)
+    if dirpath_is_valid(value) then
+        return value
+    else
+        return nil, "Invalid Directory"
+    end
+end
 
 if nixio.fs.access("/etc/config/fstab") then
         pth.titleref = luci.dispatcher.build_url("admin", "system", "fstab")

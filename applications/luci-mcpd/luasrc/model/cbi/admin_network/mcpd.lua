@@ -80,7 +80,8 @@ uci:foreach("network", "interface",
 	function (section)
 		local ifc = section[".name"]
 		local typ = section["type"]
-		if ifc ~= "loopback" and typ ~= "alias" then
+		local islan = section["is_lan"]
+		if ifc ~= "loopback" and typ ~= "alias" and (islan == "1" or typ == "bridge") then
 			snpifaces:value(deviceof(ifc), ifc)
 		end
 	end)

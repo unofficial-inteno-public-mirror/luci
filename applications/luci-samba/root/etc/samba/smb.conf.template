@@ -14,3 +14,6 @@
 	guest account = nobody
 	invalid users = root
 	smb passwd file = /etc/samba/smbpasswd
+        interfaces = br-lan
+        bind interfaces only = yes
+
