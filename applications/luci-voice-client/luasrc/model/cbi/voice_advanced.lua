@@ -41,13 +41,15 @@ m = Map ("voice_client", translate("Advanced settings"))
 sip = m:section(TypedSection, "sip_advanced", "Advanced SIP settings")
 sip.anonymous = true
 
-proxy = sip:option(Value, 'sip_proxy', "SIP Proxy", "Allow incoming calls from the specified proxy")
+proxy = sip:option(DynamicList, "sip_proxy", "SIP Proxy servers", "Allow incoming calls from the specified proxies")
 proxy.optional = true
 function proxy.validate(self, value, section)
-	if datatypes.host(value) then
-		return value
+	for k,v in pairs(value) do
+		if not datatypes.host(v) then
+			return nil, "SIP Proxy must be a hostname or ip address: " .. v
+		end
 	end
-	return nil, "SIP Proxy must be a hostname or ip address"
+	return value
 end
 
 bindport = sip:option(Value, 'bindport', "Bindport", "UDP Port to bind to (listen on)")
