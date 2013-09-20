@@ -228,20 +228,9 @@ if has_ntpd then
 			end
 		end
 
-		ntp1 = s:option(Value, "ntp1", translate("NTPServer1"))
-		ntp1:depends("enable", "1")
-		ntp2 = s:option(Value, "ntp2", translate("NTPServer2"))
-		ntp2:depends("enable", "1")
-		ntp3 = s:option(Value, "ntp3", translate("NTPServer3"))
-		ntp3:depends("enable", "1")
-		ntp4 = s:option(Value, "ntp4", translate("NTPServer4"))
-		ntp4:depends("enable", "1")
-		ntp5 = s:option(Value, "ntp5", translate("NTPServer5"))
-		ntp5:depends("enable", "1")
-		
-		--o = s:option(DynamicList, "server", translate("NTP server candidates"))
-		--o.datatype = "host"
-		--o:depends("enable", "1")
+		o = s:option(DynamicList, "server", translate("NTP server candidates"))
+		o.datatype = "host"
+		o:depends("enable", "1")
 
 		-- retain server list even if disabled
 		function o.remove() end
