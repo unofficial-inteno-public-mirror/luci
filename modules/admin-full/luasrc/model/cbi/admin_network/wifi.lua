@@ -589,6 +589,7 @@ s:tab("general", translate("General Setup"))
 s:tab("encryption", translate("Wireless Security"))
 s:tab("macfilter", translate("MAC-Filter"))
 s:tab("advanced", translate("Advanced Settings"))
+s:tab("anyfi", translate("Anyfi"))
 
 s:taboption("general", Value, "ssid", translate("<abbr title=\"Extended Service Set Identifier\">ESSID</abbr>"))
 
@@ -645,34 +646,26 @@ end
 if hwtype == "broadcom" then
 
 	if fs.access("/sbin/myfid") then
-		anyfi_srv = s:taboption("general", Flag, "anyfi_enabled", translate("Anyfi.net remote access"),
-		                         translate("Allow remote access to this Wi-Fi network."))
+		anyfi_srv = s:taboption("anyfi", Flag, "anyfi_disabled", translate("Enable Anyfi"),
+		                         translate("Enable remote access to this Wi-Fi network."))
 		anyfi_srv:depends({mode="ap", encryption="psk"})
 		anyfi_srv:depends({mode="ap", encryption="psk2"})
 		anyfi_srv:depends({mode="ap", encryption="pskmixedpsk2"})
+		anyfi_srv.enabled = "0"
 		anyfi_srv.rmempty = false
 		anyfi_srv.default = "0"
 
 		function anyfi_srv.write(self, section, value)
-			if value == "1"  then
-				wdev:set("anyfi_enabled", "1")
-			else
-				local dev_anyfi_enabled = "0"
-				local old_enabled = wdev:get("anyfi_enabled")
-				for _, net in ipairs(wdev:get_wifinets()) do
-			    	      if net:name() == wnet:name() then
-			       	          if value == "1" then
-			       	  	      dev_anyfi_enabled = "1"
-					  end
-				      elseif net:get("anyfi_enabled") == "1" then
-				         dev_anyfi_enabled = "1"
-				      end
-				end
-				if dev_anyfi_enabled ~= old_enabled then
-					wdev:set("anyfi_enabled", dev_anyfi_enabled)
-				end
-			end
-			self.map:set(section, "anyfi_enabled", value)
+			wdev:set("anyfi_disabled", "1")
+			self.map:set(section, "anyfi_disabled", value)
+		end
+
+		anyfi_server = s:taboption("anyfi", Value, "anyfi_server", translate("Anyfi Server"))
+		anyfi_server.default = "anyfi.net"
+
+		function anyfi_server.write(self, section, value)
+			wdev:set("anyfi_server", value)
+			self.map:set(section, "anyfi_server", value)
 		end
 	end
 
