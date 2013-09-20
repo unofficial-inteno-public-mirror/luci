@@ -8,9 +8,11 @@ function index()
 
 	local page
 	
-	page = node("support", "network", "spstart")
-	page.target = template("admin_network/spstart")
-	page.title  = _("Speed Test")
+	if nixio.fs.access("/usr/sbin/tptest") then
+		page = node("support", "network", "spstart")
+		page.target = template("admin_network/spstart")
+		page.title  = _("Speed Test")
+	end
 
 	page = node("support", "network", "spshowresults")
 	page.target = template("admin_network/spshowresults")
