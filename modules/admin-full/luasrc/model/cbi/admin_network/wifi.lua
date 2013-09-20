@@ -646,18 +646,22 @@ end
 if hwtype == "broadcom" then
 
 	if fs.access("/sbin/myfid") then
-		anyfi_srv = s:taboption("anyfi", Flag, "anyfi_disabled", translate("Enable Anyfi"),
-		                         translate("Enable remote access to this Wi-Fi network."))
-		anyfi_srv:depends({mode="ap", encryption="psk"})
-		anyfi_srv:depends({mode="ap", encryption="psk2"})
-		anyfi_srv:depends({mode="ap", encryption="pskmixedpsk2"})
-		anyfi_srv.enabled = "0"
-		anyfi_srv.rmempty = false
-		anyfi_srv.default = "0"
+		anyfi_status = s:taboption("anyfi", Flag, "anyfi_enabled", translate("Enable Anyfi"), translate("Enable remote access to this Wi-Fi network."))
+		anyfi_status:depends({mode="ap", encryption="psk"})
+		anyfi_status:depends({mode="ap", encryption="psk2"})
+		anyfi_status:depends({mode="ap", encryption="pskmixedpsk2"})
+		anyfi_status.rmempty = false
+		anyfi_status.default = "0"
 
-		function anyfi_srv.write(self, section, value)
-			wdev:set("anyfi_disabled", "1")
-			self.map:set(section, "anyfi_disabled", value)
+		function anyfi_status.write(self, section, value)
+			wdev:set("anyfi_enabled", value)
+			self.map:set(section, "anyfi_enabled", value)
+			for _, net in ipairs(wdev:get_wifinets()) do
+				if net:get("anyfi_enabled") == "1" then
+					wdev:set("anyfi_enabled", "1")
+					break
+				end
+			end
 		end
 
 		anyfi_server = s:taboption("anyfi", Value, "anyfi_server", translate("Anyfi Server"))
