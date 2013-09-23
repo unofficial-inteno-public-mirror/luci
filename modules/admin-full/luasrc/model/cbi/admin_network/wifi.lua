@@ -119,6 +119,7 @@ s:tab("macfilter", translate("MAC-Filter"))
 s:tab("advanced", translate("Advanced Settings"))
 s:tab("antenna", translate("Antenna Selection"))
 --s:tab("bridge", translate("Wireless Bridge"))
+s:tab("anyfi", translate("Anyfi"))
 
 --[[
 back = s:option(DummyValue, "_overview", translate("Overview"))
@@ -574,6 +575,68 @@ if hwtype == "broadcom" then
 --	wdslist = s:taboption("bridge", DynamicList, "wdslist", translate("WDS Connection List"))
 --	wdslist:depends({wdsmode="0"})
 --	wdstimo = s:taboption("bridge", Value, "wdstimo", translate("WDS Link Detection Timeout"), "min")
+
+	function anyfi_bandwidth_is_valid(value)
+		if not tonumber(value) or tonumber(value) < 1 or tonumber(value) > 100 then
+			return false
+		else
+			return true
+		end
+	end
+
+	if fs.access("/sbin/myfid") then
+		anyfi_floor = s:taboption("anyfi", Value, "anyfi_floor", translate("Anyfi Floor"), translate("The percentage of available spectrum and backhaul that mobile users are allowed to consume even if there is competition with the primary user"))
+		anyfi_floor.rmempty = true
+		anyfi_floor.default = "10"
+		anyfi_floor:value("10", "10%")
+		anyfi_floor:value("20", "20%")
+		anyfi_floor:value("30", "30%")
+		anyfi_floor:value("40", "40%")
+		anyfi_floor:value("50", "50%")
+		anyfi_floor:value("60", "60%")
+		anyfi_floor:value("70", "70%")
+		anyfi_floor:value("80", "80%")
+		anyfi_floor:value("90", "90%")
+		anyfi_floor:value("100", "100%")
+
+		function anyfi_floor.validate(self, value, section)
+		    if anyfi_bandwidth_is_valid(value) then
+			return value
+		    else
+			return nil, "Invalid value for Anyfi Floor, enter a value between 1-100 without '%'"
+		    end
+		end
+
+		anyfi_ceiling = s:taboption("anyfi", Value, "anyfi_ceiling", translate("Anyfi Ceiling"), translate("The maximum percentage of available spectrum and backhaul that mobile users are allowed to consume"))
+		anyfi_ceiling.rmempty = true
+		anyfi_ceiling.default = "100"
+		anyfi_ceiling:value("10", "10%")
+		anyfi_ceiling:value("20", "20%")
+		anyfi_ceiling:value("30", "30%")
+		anyfi_ceiling:value("40", "40%")
+		anyfi_ceiling:value("50", "50%")
+		anyfi_ceiling:value("60", "60%")
+		anyfi_ceiling:value("70", "70%")
+		anyfi_ceiling:value("80", "80%")
+		anyfi_ceiling:value("90", "90%")
+		anyfi_ceiling:value("100", "100%")
+
+		function anyfi_ceiling.validate(self, value, section)
+		    if anyfi_bandwidth_is_valid(value) then
+			return value
+		    else
+			return nil, "Invalid value for Anyfi Ceiling, enter a value between 1-100 without '%'"
+		    end
+		end
+
+		anyfi_uplink = s:taboption("anyfi", Value, "anyfi_uplink", translate("Anyfi Uplink"), translate("The total upstream bandwidth available on the WAN connection, in bits per second"))
+		anyfi_uplink.rmempty = true
+		--anyfi_uplink.default = "1048576"
+
+		anyfi_downlink = s:taboption("anyfi", Value, "anyfi_downlink", translate("Anyfi Downlink"), translate("The total downstream bandwidth available on the WAN connection, in bits per second"))
+		anyfi_downlink.rmempty = true
+		--anyfi_downlink.default = "8388608"
+	end
 end
 
 
@@ -646,7 +709,7 @@ end
 if hwtype == "broadcom" then
 
 	if fs.access("/sbin/myfid") then
-		anyfi_status = s:taboption("anyfi", Flag, "anyfi_enabled", translate("Enable Anyfi"), translate("Enable remote access to this Wi-Fi network."))
+		anyfi_status = s:taboption("anyfi", Flag, "anyfi_enabled", translate("Enable Anyfi"), translate("Enable remote access to this wireless network"))
 		anyfi_status:depends({mode="ap", encryption="psk"})
 		anyfi_status:depends({mode="ap", encryption="psk2"})
 		anyfi_status:depends({mode="ap", encryption="pskmixedpsk2"})
@@ -664,13 +727,17 @@ if hwtype == "broadcom" then
 			end
 		end
 
-		anyfi_server = s:taboption("anyfi", Value, "anyfi_server", translate("Anyfi Server"))
+		anyfi_server = s:taboption("anyfi", Value, "anyfi_server", translate("Anyfi Server"), translate("A comma separated string of Fully Qualified Domain Names or IP addresses"))
+		anyfi_server.rmempty = false
 		anyfi_server.default = "anyfi.net"
 
 		function anyfi_server.write(self, section, value)
 			wdev:set("anyfi_server", value)
 			self.map:set(section, "anyfi_server", value)
 		end
+
+		anyfi_uuid = s:taboption("anyfi", Value, "anyfi_uuid", translate("Anyfi UUID"), translate("A UUID that uniquely identifies this wireless network"))
+		anyfi_uuid.rmempty = true		
 	end
 
 	--mode:value("wds", translate("WDS"))
