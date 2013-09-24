@@ -39,15 +39,11 @@ function index()
 		arcombine(cbi("voice_sip"), cbi("voice_sip_details")),
 		_("SIP Providers"), 2).leaf = true
 	entry({"support", "services", "voice", "voice_brcm"},	cbi("voice_brcm"),	"Lines",		3)
+	entry({"support", "services", "voice", "voice_advanced"},	cbi("voice_advanced"),	"Advanced Settings",	4)
+	entry({"support", "services", "voice", "voice_dialplan"},	cbi("voice_dialplan"),	"Dialplan",		5)
 	entry({"support", "services", "voice", "voice_log"},	cbi("voice_log"),	"Call Log",		6).leaf = true
 	entry({"support", "status", "voice"},			cbi("voice_status"),	"SIP Registration",	80)
 
-	entry({"user", "services", "voice"},			cbi("voice"),		"Voice",		80)
-	entry({"user", "services", "voice", "voice"},		cbi("voice"),		"Voice",		1)
-	entry({"user", "services", "voice", "voice_sip"},
-		arcombine(cbi("voice_sip"), cbi("voice_sip_details")),
-		_("SIP Providers"), 2).leaf = true
-	entry({"user", "services", "voice", "voice_brcm"},	cbi("voice_brcm"),	"Lines",		3)
-	entry({"user", "services", "voice", "voice_log"},	cbi("voice_log"),	"Call Log",		6).leaf = true
+	entry({"user", "services", "voice"},			cbi("voice_log"),	"Voice",		80)
 	entry({"user", "status", "voice"},			cbi("voice_status"),	"SIP Registration",	80)
 end
