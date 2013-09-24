@@ -37,7 +37,7 @@
 						<% local bssid, rssi, band, channel, mode, ssid
 		 				= line:match("BSSID:%s+(%S+)%s+RSSI:%s+(%S+)%s+dBm%s+Band:%s+(%S+)%s+Channel:%s+(%d+)%s+802.11:%s+(%S+)%s+SSID:%s+(%S+)") %>
 					
-						<%if tonumber(ch) == tonumber(channel) and band == "2.4GHz" then%>
+						<%if ssid and tonumber(ch) == tonumber(channel) and band == "2.4GHz" then%>
 						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
 								<td class="cbi-value-field" width="20%"><%:%></td>
 								<td class="cbi-value-field" width="30%"><%=ssid%></td>
@@ -62,7 +62,7 @@
 							local myssid = status:match("SSID: \"(%S+)\"")
 							local mymode = "b/g"
 							if status:match("802.11N") then mymode = "b/g/n" end
-							if tonumber(mychannel) == tonumber(ch) then
+							if myssid and tonumber(mychannel) == tonumber(ch) then
 					%>
 								<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
 										<td class="cbi-value-field" width="20%"><b><%:%></b></td>
