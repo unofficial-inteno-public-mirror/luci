@@ -65,3 +65,6 @@ config 'layer2_interface_vlan'
 
 config 'layer2_interface_ethernet'
         option 'init' 'layer2_interface_ethernet'
+
+config 'domain_name_access'
+        option 'init' domain_name_access'
