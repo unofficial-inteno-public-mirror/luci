@@ -1797,8 +1797,8 @@ function wifinet.country(self)
 end
 
 function wifinet.txpower(self)
-	local pwr = (sys.exec("wlctl -i %q txpwr | awk -F' ' '{print$1}'" %self:ifname()) or 0)
-	return pwr + self:txpower_offset()
+	local pwr_percent = (sys.exec("wlctl -i %q pwr_percent | awk -F' ' '{print$1}'" %self:ifname()) or 100)
+	return pwr_percent
 end
 
 function wifinet.txpower_offset(self)
