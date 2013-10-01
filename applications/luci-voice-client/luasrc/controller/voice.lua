@@ -22,28 +22,24 @@
 module("luci.controller.voice", package.seeall)
 
 function index()
-	entry({"admin", "services", "voice"},			cbi("voice"),		"Voice",		80)
-	entry({"admin", "services", "voice", "voice"},		cbi("voice"),		"Voice",		1)
-	entry({"admin", "services", "voice", "voice_sip"},
-		arcombine(cbi("voice_sip"), cbi("voice_sip_details")),
-		_("SIP Providers"), 2).leaf = true
-	entry({"admin", "services", "voice", "voice_brcm"},	cbi("voice_brcm"),	"Lines",		3)
-	entry({"admin", "services", "voice", "voice_advanced"},	cbi("voice_advanced"),	"Advanced Settings",	4)
-	entry({"admin", "services", "voice", "voice_dialplan"},	cbi("voice_dialplan"),	"Dialplan",		5)
-	entry({"admin", "services", "voice", "voice_log"},	cbi("voice_log"),	"Call Log",		6).leaf = true
-	entry({"admin", "status", "voice"},			cbi("voice_status"),	"SIP Registration",	80)
+	local users = { "admin", "support", "user" }
 
-	entry({"support", "services", "voice"},			cbi("voice"),		"Voice",		80)
-	entry({"support", "services", "voice", "voice"},	cbi("voice"),		"Voice",		1)
-	entry({"support", "services", "voice", "voice_sip"},
-		arcombine(cbi("voice_sip"), cbi("voice_sip_details")),
-		_("SIP Providers"), 2).leaf = true
-	entry({"support", "services", "voice", "voice_brcm"},	cbi("voice_brcm"),	"Lines",		3)
-	entry({"support", "services", "voice", "voice_advanced"},	cbi("voice_advanced"),	"Advanced Settings",	4)
-	entry({"support", "services", "voice", "voice_dialplan"},	cbi("voice_dialplan"),	"Dialplan",		5)
-	entry({"support", "services", "voice", "voice_log"},	cbi("voice_log"),	"Call Log",		6).leaf = true
-	entry({"support", "status", "voice"},			cbi("voice_status"),	"SIP Registration",	80)
+	for k, user in pairs(users) do
 
-	entry({"user", "services", "voice"},			cbi("voice_log"),	"Voice",		80)
-	entry({"user", "status", "voice"},			cbi("voice_status"),	"SIP Registration",	80)
+		if user == "user"  then
+			entry({user, "services", "voice"},			cbi("voice_log"),	"Voice",		80)
+			entry({user, "status", "voice"},			cbi("voice_status"),	"SIP Registration",	80)
+		else
+			entry({user, "services", "voice"},			cbi("voice"),		"Voice",		80)
+			entry({user, "services", "voice", "voice"},		cbi("voice"),		"Voice",		1)
+			entry({user, "services", "voice", "voice_sip"},
+				arcombine(cbi("voice_sip"), cbi("voice_sip_details")),
+				_("SIP Providers"), 2).leaf = true
+			entry({user, "services", "voice", "voice_brcm"},	cbi("voice_brcm"),	"Lines",		3)
+			entry({user, "services", "voice", "voice_advanced"},	cbi("voice_advanced"),	"Advanced Settings",	4)
+			entry({user, "services", "voice", "voice_dialplan"},	cbi("voice_dialplan"),	"Dialplan",		5)
+			entry({user, "services", "voice", "voice_log"},	cbi("voice_log"),	"Call Log",		6).leaf = true
+			entry({user, "status", "voice"},			cbi("voice_status"),	"SIP Registration",	80)
+		end
+	end
 end

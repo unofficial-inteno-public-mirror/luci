@@ -5,7 +5,7 @@ Description:
 A template parser supporting includes, translations, Lua code blocks
 and more. It can be used either as a compiler or as an interpreter.
 
-FileId: $Id: template.lua 9558 2012-12-18 13:58:22Z jow $
+FileId: $Id: template.lua 9492 2012-11-25 19:17:55Z jow $
 
 License:
 Copyright 2008 Steven Barth <steven@midlink.org>

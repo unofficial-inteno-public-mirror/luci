@@ -9,7 +9,7 @@ You may obtain a copy of the License at
 
         http://www.apache.org/licenses/LICENSE-2.0
 
-$Id: ushare.lua 9413 2012-10-29 14:38:50Z jow $
+$Id: ushare.lua 9412 2012-10-29 14:36:52Z jow $
 
 ]]--
 

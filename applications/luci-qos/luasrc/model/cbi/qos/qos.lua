@@ -9,7 +9,7 @@ You may obtain a copy of the License at
 
 	http://www.apache.org/licenses/LICENSE-2.0
 
-$Id: qos.lua 9558 2012-12-18 13:58:22Z jow $
+$Id: qos.lua 9417 2012-11-10 20:55:50Z soma $
 ]]--
 
 local wa = require "luci.tools.webadmin"

@@ -10,7 +10,7 @@ You may obtain a copy of the License at
 
 	http://www.apache.org/licenses/LICENSE-2.0
 
-$Id: olsrdplugins.lua 6591 2010-11-30 21:57:25Z soma $
+$Id: olsrdplugins.lua 9681 2013-03-16 18:23:39Z soma $
 ]]--
 
 local ip = require "luci.ip"
@@ -93,7 +93,6 @@ if arg[1] then
 		["olsrd_httpinfo.so.0.1"] = {
 			{ Value,	"port",				"80" },
 			{ DynamicList,	"Host",				"163.24.87.3" },
---			{ DynamicList,	"Net",				"0.0.0.0/0", IpMask2Cidr, Cidr2IpMask }
 			{ DynamicList,  "Net",				"0.0.0.0/0", Cidr2IpMask }
 		},
 
@@ -136,7 +135,14 @@ if arg[1] then
 		},
 
 		["olsrd_txtinfo.so.0.1"] = {
-			{ Value,	"accept",			"10.247.200.4" }
+			{ Value,	"accept",			"127.0.0.1" }
+		},
+
+		["olsrd_jsoninfo.so.0.0"] = {
+			{ Value,	"accept",			"127.0.0.1" },
+			{ Value,	"port",				"9090" },
+			{ Value,	"UUIDFile",			"/etc/olsrd/olsrd.uuid" },
+
 		},
 
 		["olsrd_watchdog.so.0.1"] = {

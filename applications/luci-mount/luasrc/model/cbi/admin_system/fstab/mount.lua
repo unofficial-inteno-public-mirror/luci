@@ -9,14 +9,14 @@ You may obtain a copy of the License at
 
 	http://www.apache.org/licenses/LICENSE-2.0
 
-$Id: mount.lua 6562 2010-11-27 04:55:38Z jow $
+$Id: mount.lua 9866 2013-07-09 09:33:22Z jow $
 ]]--
 
 local fs   = require "nixio.fs"
 local util = require "nixio.util"
 
-local has_extroot = fs.access("/lib/preinit/00_extroot.conf")
-local has_fscheck = fs.access("/lib/functions/fsck.sh")
+local has_extroot = fs.access("/sbin/block")
+local has_fscheck = fs.access("/usr/sbin/e2fsck")
 
 local devices = {}
 util.consume((fs.glob("/dev/sd*")), devices)

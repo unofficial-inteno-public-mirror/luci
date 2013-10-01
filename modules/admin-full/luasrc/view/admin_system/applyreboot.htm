@@ -9,7 +9,7 @@ You may obtain a copy of the License at
 
 	http://www.apache.org/licenses/LICENSE-2.0
 
-$Id: applyreboot.htm 8847 2012-07-01 20:05:05Z dgolle $
+$Id: applyreboot.htm 9898 2013-09-01 16:39:55Z soma $
 
 -%>
 
@@ -24,10 +24,10 @@ $Id: applyreboot.htm 8847 2012-07-01 20:05:05Z dgolle $
 
 				img.onload = function() {
 					window.clearInterval(interval);
-					location.href = 'http://<%=addr or luci.http.getenv("SERVER_NAME")%>/';
+					location.href = ('https:' == document.location.protocol ? 'https://' : 'http://') + '<%=addr or luci.http.getenv("SERVER_NAME")%>/';
 				};
 
-				img.src = 'http://<%=addr or luci.http.getenv("SERVER_NAME")%><%=resource%>/icons/loading.gif?' + Math.random();
+				img.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + '<%=addr or luci.http.getenv("SERVER_NAME")%><%=resource%>/icons/loading.gif?' + Math.random();
 			}, 5000);
 		//]]></script>
 	</head>

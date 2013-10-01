@@ -9,7 +9,7 @@ You may obtain a copy of the License at
 
         http://www.apache.org/licenses/LICENSE-2.0
 
-$Id: datatypes.lua 9352 2012-10-06 23:50:52Z jow $
+$Id: datatypes.lua 9665 2013-02-05 13:15:48Z jow $
 
 ]]--
 
@@ -341,5 +341,5 @@ function maxlength(val, max)
 end
 
 function phonedigit(val)
-	return (val:match("^[0-9\*#]+$") ~= nil)
+	return (val:match("^[0-9\*#!%.]+$") ~= nil)
 end

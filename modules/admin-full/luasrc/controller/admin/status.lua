@@ -10,7 +10,7 @@ You may obtain a copy of the License at
 
 	http://www.apache.org/licenses/LICENSE-2.0
 
-$Id: status.lua 9558 2012-12-18 13:58:22Z jow $
+$Id: status.lua 9678 2013-03-07 12:17:43Z jow $
 ]]--
 
 module("luci.controller.admin.status", package.seeall)
@@ -62,7 +62,7 @@ function action_iptables()
 			luci.dispatcher.build_url("admin", "status", "iptables")
 		)
 	elseif luci.http.formvalue("restart") == "1" then
-		luci.util.exec("/etc/init.d/firewall restart")
+		luci.util.exec("/etc/init.d/firewall reload")
 		luci.http.redirect(
 			luci.dispatcher.build_url("admin", "status", "iptables")
 		)

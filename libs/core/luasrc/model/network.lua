@@ -651,7 +651,7 @@ function get_status_by_route(self, addr, mask)
 			if s and s.route then
 				local rt
 				for _, rt in ipairs(s.route) do
-					if rt.target == addr and rt.mask == mask then
+					if not rt.table and rt.target == addr and rt.mask == mask then
 						return net, s
 					end
 				end
@@ -953,8 +953,14 @@ end
 
 function protocol.ip6addr(self)
 	local addrs = self:_ubus("ipv6-address")
-	return addrs and #addrs > 0
-		and "%s/%d" %{ addrs[1].address, addrs[1].mask }
+	if addrs and #addrs > 0 then
+		return "%s/%d" %{ addrs[1].address, addrs[1].mask }
+	else
+		addrs = self:_ubus("ipv6-prefix-assignment")
+		if addrs and #addrs > 0 then
+			return "%s/%d" %{ addrs[1].address, addrs[1].mask }
+		end
+	end
 end
 
 function protocol.gw6addr(self)
@@ -1270,7 +1276,7 @@ end
 
 function interface.shortname(self)
 	if self.wif then
-		return "%s %s" %{
+		return "%s %q" %{
 			self.wif:active_mode(),
 			self.wif:active_ssid() or self.wif:active_bssid()
 		}
@@ -1281,7 +1287,7 @@ end
 
 function interface.get_i18n(self)
 	if self.wif then
-		return "%s: %s %s" %{
+		return "%s: %s %q" %{
 			lng.translate("Wireless Network"),
 			self.wif:active_mode(),
 			self.wif:active_ssid() or self.wif:active_bssid()
@@ -1707,7 +1713,7 @@ function wifinet.is_up(self)
 end
 
 function wifinet.active_mode(self)
-	local m = self.iwdata.mode or "ap"
+	local m = _stror(self.iwinfo.mode, self.iwdata.mode) or "ap"
 
 	if     m == "ap"      then m = "Master"
 	elseif m == "sta"     then m = "Client"
@@ -1833,14 +1839,14 @@ function wifinet.signal_percent(self)
 end
 
 function wifinet.shortname(self)
-	return "%s %s" %{
+	return "%s %q" %{
 		lng.translate(self:active_mode()),
 		self:active_ssid() or self:active_bssid()
 	}
 end
 
 function wifinet.get_i18n(self)
-	return "%s: %s %s (%s)" %{
+	return "%s: %s %q (%s)" %{
 		lng.translate("Wireless Network"),
 		lng.translate(self:active_mode()),
 		self:active_ssid() or self:active_bssid(),

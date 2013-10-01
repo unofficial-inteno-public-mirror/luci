@@ -5,7 +5,7 @@ Description:
 A very minimalistic but yet effective internationalisation module
 
 FileId:
-$Id: i18n.lua 9558 2012-12-18 13:58:22Z jow $
+$Id: i18n.lua 9520 2012-12-02 13:30:46Z jow $
 
 License:
 Copyright 2008 Steven Barth <steven@midlink.org>

@@ -9,8 +9,6 @@ You may obtain a copy of the License at
 
 	http://www.apache.org/licenses/LICENSE-2.0
 
-$Id: index.htm 7022 2011-05-04 21:04:31Z jow $
-
 -%>
 
 <%
@@ -25,17 +23,20 @@ $Id: index.htm 7022 2011-05-04 21:04:31Z jow $
 	local has_dhcp = luci.fs.access("/etc/config/dhcp")
 	local has_wifi = luci.fs.stat("/etc/config/wireless")
 	      has_wifi = has_wifi and has_wifi.size > 0
+	local has_swap
 
 	local prt = require "luci.model.ports".init()
-
 	local router = luci.quest.router_static_sysinfo()
 
 	if luci.http.formvalue("status") == "1" then
 		local ntm = require "luci.model.network".init()
 		local wan = ntm:get_wannet()
 		local wan6 = ntm:get_wan6net()
-
-		local _, _, memtotal, memcached, membuffers, memfree = luci.sys.sysinfo()
+	
+		local _, _, memtotal, memcached, membuffers, memfree, _, swaptotal, swapcached, swapfree = luci.sys.sysinfo()
+		if swaptotal > 0 then
+			has_swap = 1
+		end
 
 		local conn_count = tonumber((
 			luci.sys.exec("wc -l /proc/net/nf_conntrack") or
@@ -55,9 +56,13 @@ $Id: index.htm 7022 2011-05-04 21:04:31Z jow $
 			memcached  = memcached,
 			membuffers = membuffers,
 			memfree    = memfree,
+			swaptotal  = swaptotal,
+			swapcached = swapcached,
+			swapfree   = swapfree,
 			connmax    = conn_max,
 			conncount  = conn_count,
 			leases     = luci.tools.status.dhcp_leases(),
+			leases6    = luci.tools.status.dhcp6_leases(),
 			wifinets   = luci.tools.status.wifi_networks()
 		}
 
@@ -371,6 +376,44 @@ $Id: index.htm 7022 2011-05-04 21:04:31Z jow $
 							td.innerHTML = '<em><br /><%:There are no active leases.%></em>';
 					}
 				}
+
+				var ls6 = document.getElementById('lease6_status_table');
+				if (ls6 && info.leases6)
+				{
+					ls6.parentNode.style.display = 'block';
+
+					/* clear all rows */
+					while( ls6.rows.length > 1 )
+						ls6.rows[0].parentNode.deleteRow(1);
+
+					for( var i = 0; i < info.leases6.length; i++ )
+					{
+						var timestr;
+
+						if (info.leases6[i].expires <= 0)
+							timestr = '<em><%:expired%></em>';
+						else
+							timestr = String.format('%t', info.leases6[i].expires);
+
+						var tr = ls6.rows[0].parentNode.insertRow(-1);
+							tr.className = 'cbi-section-table-row cbi-rowstyle-' + ((i % 2) + 1);
+
+						tr.insertCell(-1).innerHTML = info.leases6[i].hostname ? info.leases6[i].hostname : '?';
+						tr.insertCell(-1).innerHTML = info.leases6[i].ip6addr;
+						tr.insertCell(-1).innerHTML = info.leases6[i].duid;
+						tr.insertCell(-1).innerHTML = timestr;
+					}
+
+					if( ls6.rows.length == 1 )
+					{
+						var tr = ls6.rows[0].parentNode.insertRow(-1);
+							tr.className = 'cbi-section-table-row';
+
+						var td = tr.insertCell(-1);
+							td.colSpan = 4;
+							td.innerHTML = '<em><br /><%:There are no active leases.%></em>';
+					}
+				}
 				<% end %>
 
 				<% if has_wifi then %>
@@ -622,6 +665,18 @@ $Id: index.htm 7022 2011-05-04 21:04:31Z jow $
 		<tr><td width="33%"><%:Buffered%></td><td id="membuff">-</td></tr>
 	</table>
 </fieldset>
+
+<% if has_swap then %>
+<fieldset class="cbi-section">
+	<legend><%:Swap%></legend>
+
+	<table width="100%" cellspacing="10">
+		<tr><td width="33%"><%:Total Available%></td><td id="swaptotal">-</td></tr>
+		<tr><td width="33%"><%:Free%></td><td id="swapfree">-</td></tr>
+		<tr><td width="33%"><%:Cached%></td><td id="swapcache">-</td></tr>
+	</table>
+</fieldset>
+<% end %>
 <% end %>
 
 <!-- Port Status -->
@@ -689,6 +744,22 @@ $Id: index.htm 7022 2011-05-04 21:04:31Z jow $
 		</tr>
 	</table>
 </fieldset>
+
+<fieldset class="cbi-section" style="display:none">
+	<legend><%:DHCPv6 Leases%></legend>
+
+	<table class="cbi-section-table" id="lease6_status_table">
+		<tr class="cbi-section-table-titles">
+			<th class="cbi-section-table-cell"><%:Hostname%></th>
+			<th class="cbi-section-table-cell"><%:IPv6-Address%></th>
+			<th class="cbi-section-table-cell"><%:DUID%></th>
+			<th class="cbi-section-table-cell"><%:Leasetime remaining%></th>
+		</tr>
+		<tr class="cbi-section-table-row">
+			<td colspan="4"><em><br /><%:Collecting data...%></em></td>
+		</tr>
+	</table>
+</fieldset>
 <% end %>
 
 <% if has_wifi then %>
@@ -731,7 +802,6 @@ $Id: index.htm 7022 2011-05-04 21:04:31Z jow $
 			end
 		end
 	end
-	
 -%>
 
 <%+footer%>

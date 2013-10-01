@@ -10,7 +10,7 @@ You may obtain a copy of the License at
 
 	http://www.apache.org/licenses/LICENSE-2.0
 
-$Id: upnp.lua 9570 2012-12-25 02:45:42Z jow $
+$Id: upnp.lua 9569 2012-12-25 02:44:19Z jow $
 ]]--
 
 local uci = require("luci.model.uci").cursor()
@@ -71,7 +71,6 @@ uci:foreach("network", "interface",
 			intif:value(ifc)
 		end
 	end)
-
 
 s:taboption("advanced", Flag, "system_uptime", translate("Report system instead of daemon uptime")).default = "1"
 

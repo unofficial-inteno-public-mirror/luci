@@ -26,18 +26,6 @@ function index()
 
 	entry({"admin", "services", "upnp", "status"}, call("act_status")).leaf = true
 	entry({"admin", "services", "upnp", "delete"}, call("act_delete")).leaf = true
-
-	page = entry({"support", "services", "upnp"}, cbi("upnp/upnp"), _("UPNP"))
-	page.dependent = true
-
-	entry({"support", "services", "upnp", "status"}, call("act_status")).leaf = true
-	entry({"support", "services", "upnp", "delete"}, call("act_delete")).leaf = true
-
-	page = entry({"user", "services", "upnp"}, cbi("upnp/upnp"), _("UPNP"))
-	page.dependent = true
-
-	entry({"user", "services", "upnp", "status"}, call("act_status")).leaf = true
-	entry({"user", "services", "upnp", "delete"}, call("act_delete")).leaf = true
 end
 
 function act_status()

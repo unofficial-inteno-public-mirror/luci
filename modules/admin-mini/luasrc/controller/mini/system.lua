@@ -10,7 +10,7 @@ You may obtain a copy of the License at
 
 	http://www.apache.org/licenses/LICENSE-2.0
 
-$Id: system.lua 9655 2013-01-27 18:43:41Z jow $
+$Id: system.lua 9563 2012-12-20 15:01:04Z jow $
 ]]--
 
 module("luci.controller.mini.system", package.seeall)

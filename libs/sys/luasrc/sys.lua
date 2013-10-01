@@ -5,7 +5,7 @@ Description:
 Utilities for interaction with the Linux system
 
 FileId:
-$Id: sys.lua 9623 2013-01-18 14:08:37Z jow $
+$Id: sys.lua 9662 2013-01-30 13:36:20Z soma $
 
 License:
 Copyright 2008 Steven Barth <steven@midlink.org>
@@ -176,6 +176,9 @@ function sysinfo()
 	local memfree = tonumber(meminfo:match("MemFree:%s*(%d+)"))
 	local membuffers = tonumber(meminfo:match("Buffers:%s*(%d+)"))
 	local bogomips = tonumber(cpuinfo:match("[Bb]ogo[Mm][Ii][Pp][Ss].-: ([^\n]+)")) or 0
+	local swaptotal = tonumber(meminfo:match("SwapTotal:%s*(%d+)"))
+	local swapcached = tonumber(meminfo:match("SwapCached:%s*(%d+)"))
+	local swapfree = tonumber(meminfo:match("SwapFree:%s*(%d+)"))
 
 	local system =
 		cpuinfo:match("system type\t+: ([^\n]+)") or
@@ -190,7 +193,7 @@ function sysinfo()
 		nixio.uname().machine or
 		system
 
-	return system, model, memtotal, memcached, membuffers, memfree, bogomips
+	return system, model, memtotal, memcached, membuffers, memfree, bogomips, swaptotal, swapcached, swapfree
 end
 
 --- Retrieves the output of the "logread" command.
@@ -896,9 +899,9 @@ function user.getpasswd(username)
 	local pwe = nixio.getsp and nixio.getsp(username) or nixio.getpw(username)
 	local pwh = pwe and (pwe.pwdp or pwe.passwd)
 	if not pwh or #pwh < 1 or pwh == "!" or pwh == "x" then
-		return nil
+		return nil, pwe
 	else
-		return pwh
+		return pwh, pwe
 	end
 end
 
@@ -907,17 +910,11 @@ end
 -- @param pass		String containing the password to compare
 -- @return			Boolean indicating wheather the passwords are equal
 function user.checkpasswd(username, pass)
-	local pwh = user.getpasswd(username)
-	
-	if nixio.getpw(username) then
-		if pwh and nixio.crypt(pass, pwh) ~= pwh then
-			return false
-		else
-			return true
-		end
-	else
-		return false
+	local pwh, pwe = user.getpasswd(username)
+	if pwe then
+		return (pwh == nil or nixio.crypt(pass, pwh) == pwh)
 	end
+	return false
 end
 
 --- Change the password of given user.

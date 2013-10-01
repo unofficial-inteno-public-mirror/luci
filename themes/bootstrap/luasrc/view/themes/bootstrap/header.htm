@@ -79,7 +79,7 @@ You may obtain a copy of the License at
 				end
                 if level > 2 then
 		%>
-			<li class="tabmenu-item-<%=v%><% if nnode._menu_selected or (node.leaf and v == leaf) then %> active<% end %>">
+			<li class="tabmenu-item-<%=v%><%- if nnode._menu_selected or (node.leaf and v == leaf) then %> active<% end %>">
 			    <a href="<%=nodeurl(prefix, v, nnode.query)%>"><%=striptags(translate(nnode.title))%></a>
 			</li>
 		<%      end
@@ -102,9 +102,15 @@ You may obtain a copy of the License at
   <meta charset="utf-8">
   <title><%=striptags( hostname .. ( (node and node.title) and ' - ' .. translate(node.title) or '')) %> - LuCI</title>
   <!--[if lt IE 9]><script src="<%=media%>/html5.js"></script><![endif]-->
+  <meta name="viewport" content="initial-scale=1.0">
   <link rel="stylesheet" href="<%=media%>/cascade.css">
+  <link rel="stylesheet" media="only screen and (max-device-width: 854px)" href="<%=media%>/mobile.css" type="text/css" />
   <link rel="shortcut icon" href="<%=media%>/favicon.ico">
   <% if node and node.css then %><link rel="stylesheet" href="<%=resource%>/<%=node.css%>">
+  <% end -%>
+  <% if css then %><style title="text/css">
+  <%-= css %>
+  </style>
   <% end -%>
   <script src="<%=resource%>/xhr.js"></script>
  </head>
@@ -189,8 +195,7 @@ You may obtain a copy of the License at
    </div>
   </header>
 
-
-<%- if luci.sys.user.getuser("root") and not luci.sys.user.getpasswd("root") then -%>
+<%- if luci.sys.process.info("uid") == 0 and luci.sys.user.getuser("root") and not luci.sys.user.getpasswd("root") then -%>
 <div class="container">
 	<div class="alert-message warning">
 		<h4><%:No password set!%></h4>
