@@ -13,13 +13,14 @@ exten => _X.,1,		Transfer(SIP/${EXTEN}@|ACCOUNT|,,)
 
 [|ACCOUNT|-outgoing]
 ; Context used for normal outgoing calls
-exten => _[*#0-9].,1,	|CUSTOM_OUTGOING|
-exten => _[*#0-9].,n,	Set(result=${SHELL(/usr/lib/asterisk/log_call.sh Outgoing ${EXTEN})})
-exten => _[*#0-9].,n,	Set(DB(LASTCALL/|ACCOUNT|)=${EXTEN})
+exten => _[*#0-9].,1,	Set(DIAL_EXTEN=${EXTEN})
+exten => _[*#0-9].,n,	|CUSTOM_OUTGOING|
+exten => _[*#0-9].,n,	Set(result=${SHELL(/usr/lib/asterisk/log_call.sh Outgoing ${DIAL_EXTEN})})
+exten => _[*#0-9].,n,	Set(DB(LASTCALL/|ACCOUNT|)=${DIAL_EXTEN})
 exten => _[*#0-9].,n,	Set(CALLERID(name)=|DISPLAYNAME|)
 exten => _[*#0-9].,n,	Set(__TRANSFER_CONTEXT=|ACCOUNT|-transfer)
-exten => _[*#0-9].,n,	Dial(SIP/${EXTEN}@|ACCOUNT|,,gT)
-exten => _[*#0-9].,n,	Macro(endcall,|ACCOUNT|,${EXTEN},${CHANNEL(name)},|MAX_RETRIES|,|RETRYTIME|,|WAITTIME|,|CBBS_KEY|)
+exten => _[*#0-9].,n,	Dial(SIP/${DIAL_EXTEN}@|ACCOUNT|,,gT)
+exten => _[*#0-9].,n,	Macro(endcall,|ACCOUNT|,${DIAL_EXTEN},${CHANNEL(name)},|MAX_RETRIES|,|RETRYTIME|,|WAITTIME|,|CBBS_KEY|)
 exten => _[*#0-9].,n,	Goto(hangup,h,2)
 exten => _[*#0-9].,n,	Hangup()
 
