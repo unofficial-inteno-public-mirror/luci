@@ -4,6 +4,7 @@ config network
 	list affects radvd
 	list affects mcpd
 	list affects dropbear
+	list affects domain_name_access
 
 config wireless
 	list affects network
@@ -67,4 +68,4 @@ config 'layer2_interface_ethernet'
         option 'init' 'layer2_interface_ethernet'
 
 config 'domain_name_access'
-        option 'init' domain_name_access'
+        option 'init' 'domain_name_access'
