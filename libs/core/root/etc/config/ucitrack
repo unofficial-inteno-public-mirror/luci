@@ -4,6 +4,7 @@ config network
 	list affects radvd
 	list affects mcpd
 	list affects dropbear
+	list affects samba
 	list affects domain_name_access
 
 config wireless

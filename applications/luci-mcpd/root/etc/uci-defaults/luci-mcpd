@@ -6,5 +6,6 @@ uci -q batch <<-EOF >/dev/null
 	set ucitrack.@mcpd[-1].init=mcpd
 	commit ucitrack
 EOF
+
 rm -f /tmp/luci-indexcache
 exit 0
