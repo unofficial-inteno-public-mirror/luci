@@ -1,6 +1,6 @@
 <%-
 	function hextodec(hex)
-		local newhex = luci.sys.exec("echo $((%d & 0x0000FFFF))" %hex)
+		local newhex = luci.sys.exec("echo $((%d & 0x000000FF))" %hex)
 		return luci.sys.exec("printf '%d'" %newhex)
 	end
 
