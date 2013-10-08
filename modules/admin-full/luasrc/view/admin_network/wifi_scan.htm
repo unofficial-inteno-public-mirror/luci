@@ -56,7 +56,7 @@
 					for _, sid in ipairs(sids) do
 						local wif = device .. sid
 						local mybssid = luci.sys.exec("wlctl -i %s bssid 2>/dev/null" %wif)
-						if mybssid and mybssid ~= "" then
+						if mybssid and not mybssid:match("00:00:00:00:00:00") then
 							local status = luci.sys.exec("wlctl -i %s status" %wif)
 							local myrssi, mychannel = status:match("Mode:%s+Managed%s+RSSI:%s+(%S+)%s+dBm%s+SNR:%s+%S+%s+dB%s+noise:%s+%S+%s+dBm%s+Channel:%s+(%S+)")
 							local myssid = status:match("SSID: \"(%S+)\"")
