@@ -10,7 +10,7 @@ s = m:section(TypedSection, "mcpd",  translate("Configure IGMP proxy specific pa
 s.addremove = false
 s.anonymous = true
 
-iface = s:option(ListValue, "igmp_proxy_interfaces", translate("WAN IGMP proxy interface"))
+iface = s:option(ListValue, "igmp_proxy_interfaces", translate("IGMP proxy interface"))
 uci:foreach("network", "interface",
 	function (section)
 		local ifc = section[".name"]
@@ -75,7 +75,7 @@ function deviceof(intface)
 	end
 end
 
-snpifaces = s:option(ListValue, "igmp_snooping_interfaces", translate("IGMP snooping interface"))
+snpifaces = s:option(MultiValue, "igmp_snooping_interfaces", translate("IGMP snooping interfaces"))
 uci:foreach("network", "interface",
 	function (section)
 		local ifc = section[".name"]
