@@ -23,14 +23,21 @@ function startspt(self, opts) -- Start speed test
 	local server = sys.exec("echo %s | awk -F':' '{print$1}'" %opts:sub(1))
 	local port = sys.exec("echo %s | awk -F':' '{print$2}'" %opts:sub(1))
 	local url = server.." "..port
+	local dpack, upack
+
 	sys.exec("echo %q > /var/tptesturl" %url)
 	sys.exec("echo %s | awk -F':' '{print$3}' > /var/tptestmode" %opts:sub(1))
+
 	if theinterface() == "WAN" then
-		return sptrun(100, 10, url)
+		dpack, upack = sys.exec("uci get speedtest.@packetsize[-1].ethernet"):match("(%d+)/(%d+)") or 100,10
 	elseif theinterface() == "VDSL" then
-		return sptrun(50, 50, url)
+		dpack, upack = sys.exec("uci get speedtest.@packetsize[-1].vdsl"):match("(%d+)/(%d+)") or 50,5
 	elseif theinterface() == "ADSL" then
-		return sptrun(25, 1, url)
+		dpack, upack = sys.exec("uci get speedtest.@packetsize[-1].adsl"):match("(%d+)/(%d+)") or 25,1
+	end
+
+	if dpack and upack then
+		return sptrun(dpack, upack, url)
 	else
 		return 1
 	end
@@ -55,7 +62,7 @@ end
 function theinterface(self) -- Decide the Interface
 	local vdsl = tonumber(sys.exec("cat /var/state/layer2_interface | grep 'vdsl' | grep -c 'up'"))
 	local adsl = tonumber(sys.exec("cat /var/state/layer2_interface | grep 'adsl' | grep -c 'up'"))
-	local wan = tonumber(sys.exec("route -n | tail -1 | grep 'UG' | egrep -c 'eth|br-'"))
+	local wan = tonumber(sys.exec("route -n | grep 'UG' | tail -1 | egrep -c 'eth|br-'"))
 
 	if vdsl > 0 then
 		return "VDSL"
