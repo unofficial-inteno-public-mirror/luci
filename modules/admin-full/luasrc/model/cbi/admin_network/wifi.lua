@@ -18,6 +18,8 @@ local ut = require "luci.util"
 local nt = require "luci.sys".net
 local fs = require "nixio.fs"
 
+local guser = luci.dispatcher.context.path[1]
+
 arg[1] = arg[1] or ""
 
 m = Map("wireless", "",
@@ -119,7 +121,9 @@ s:tab("macfilter", translate("MAC-Filter"))
 s:tab("advanced", translate("Advanced Settings"))
 s:tab("antenna", translate("Antenna Selection"))
 --s:tab("bridge", translate("Wireless Bridge"))
+if guser == "admin" then
 s:tab("anyfi", translate("Anyfi"))
+end
 
 --[[
 back = s:option(DummyValue, "_overview", translate("Overview"))
@@ -584,7 +588,7 @@ if hwtype == "broadcom" then
 		end
 	end
 
-	if fs.access("/sbin/myfid") then
+	if guser == "admin" and fs.access("/sbin/myfid") then
 		anyfi_floor = s:taboption("anyfi", Value, "anyfi_floor", translate("Anyfi Floor"), translate("The percentage of available spectrum and backhaul that mobile users are allowed to consume even if there is competition with the primary user"))
 		anyfi_floor.rmempty = true
 		anyfi_floor.default = "10"
@@ -726,18 +730,22 @@ if hwtype == "broadcom" then
 				end
 			end
 		end
+	
+		if guser == "admin" then
+			anyfi_server = s:taboption("anyfi", Value, "anyfi_server", translate("Anyfi Server"), translate("A comma separated string of Fully Qualified Domain Names or IP addresses"))
+			anyfi_server:depends("anyfi_enabled", "1")
+			anyfi_server.rmempty = false
+			anyfi_server.default = "anyfi.net"
 
-		anyfi_server = s:taboption("anyfi", Value, "anyfi_server", translate("Anyfi Server"), translate("A comma separated string of Fully Qualified Domain Names or IP addresses"))
-		anyfi_server.rmempty = false
-		anyfi_server.default = "anyfi.net"
+			function anyfi_server.write(self, section, value)
+				wdev:set("anyfi_server", value)
+				self.map:set(section, "anyfi_server", value)
+			end
 
-		function anyfi_server.write(self, section, value)
-			wdev:set("anyfi_server", value)
-			self.map:set(section, "anyfi_server", value)
+			anyfi_uuid = s:taboption("anyfi", Value, "anyfi_uuid", translate("Anyfi UUID"), translate("A UUID that uniquely identifies this wireless network"))
+			anyfi_uuid:depends("anyfi_enabled", "1")
+			anyfi_uuid.rmempty = true
 		end
-
-		anyfi_uuid = s:taboption("anyfi", Value, "anyfi_uuid", translate("Anyfi UUID"), translate("A UUID that uniquely identifies this wireless network"))
-		anyfi_uuid.rmempty = true		
 	end
 
 	--mode:value("wds", translate("WDS"))
