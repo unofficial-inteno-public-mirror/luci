@@ -49,7 +49,7 @@ function get_xdslstats()
 	local rv = { }
 
 	rv = {
-		mode	= xdsl:match("Mode:%s+(%S+)") or "",
+		mode	= xdsl:match("Mode:%s+(%S+%s+%S+%s+%S+)") or "",
 		traffic	= xdsl:match("TPS%S+:%s+(%S+)%s+%S+") or "",
 		status	= xdsl:match("Status:%s+(%S+)") or "",
 		lps	= xdsl:match("Link Power State:%s+(%S+)") or "",
