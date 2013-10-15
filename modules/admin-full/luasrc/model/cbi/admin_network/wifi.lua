@@ -199,13 +199,66 @@ end
 if hwtype == "broadcom" then
 
 	country = s:taboption("general", ListValue, "country", translate("Country"))
-	country:value("ALL", "ALL")
+	--[[local code, cntry
+	for line in ut.execi("wlctl -i %s country list | grep -v countries" %wdev:name()) do
+		if line then
+			code = line:match("(%S+)%s+(%S*)")
+			cntry = line:sub(4)
+			if code and cntry and cntry ~= "" then
+				country:value(code, cntry)
+			end
+		end
+	end--]]
+	country:value("AL", "ALBANIA")
+	country:value("AU", "AUSTRALIA")
+	country:value("AT", "AUSTRIA")
+	country:value("AZ", "AZERBAIJAN")
+	country:value("BY", "BELARUS")
+	country:value("BE", "BELGIUM")
+	country:value("BA", "BOSNIA AND HERZEGOVINA")
+	country:value("BG", "BULGARIA")
+	country:value("HR", "CROATIA")
+	country:value("CY", "CYPRUS")
+	country:value("CZ", "CZECH REPUBLIC")
 	country:value("DK", "DENMARK")
 	country:value("EE", "ESTONIA")
 	country:value("FI", "FINLAND")
+	country:value("FR", "FRANCE")
+	country:value("DE", "GERMANY")
+	country:value("GR", "GREECE")
+	country:value("HU", "HUNGARY")
+	country:value("IS", "ICELAND")
+	country:value("IN", "INDIA")
+	country:value("IE", "IRELAND")
+	country:value("IL", "ISRAEL")
+	country:value("IT", "ITALY")
+	country:value("JP", "JAPAN")
+	country:value("LV", "LATVIA")
+	country:value("LI", "LIECHTENSTEIN")
+	country:value("LT", "LITHUANIA")
+	country:value("LU", "LUXEMBOURG")
+	country:value("MK", "MACEDONIA")
+	country:value("MT", "MALTA")
+	country:value("MD", "MOLDOVA")
+	country:value("MC", "MONACO")
+	country:value("ME", "MONTENEGRO")
+	country:value("NL", "NETHERLANDS")
 	country:value("NO", "NORWAY")
+	country:value("PL", "POLAND")
+	country:value("PT", "PORTUGAL")
+	country:value("RO", "ROMANIA")
+	country:value("RU", "RUSSIA")
+	country:value("RS", "SERBIA")
+	country:value("SK", "SLOVAKIA")
+	country:value("SI", "SLOVENIA")
+	country:value("ES", "SPAIN")
 	country:value("SE", "SWEDEN")
+	country:value("CH", "SWITZERLAND")
+	country:value("TR", "TURKEY")
+	country:value("UA", "UKRAINE")
+	country:value("GB", "UNITED KINGDOM")
 	country:value("US", "UNITED STATES")
+	country:value("EU", "EUROPEAN UNION")
 
 	s:taboption("general", Value, "maxassoc", translate("Connection Limit"))
 
@@ -254,14 +307,12 @@ if hwtype == "broadcom" then
 		end
 		return channel
 	end
---[[
-	for chn in wdev:channels(wdev:get("country"), wdev:get("band"), wdev:get("bandwidth")) do
+
+	--[[for chn in wdev:channels(wdev:get("country"), wdev:get("band"), wdev:get("bandwidth")) do
 		if chn ~= "" then
 			ch:value(chn, detailed_name(chn))
 		end
-	end
-]]
-
+	end]]
 	ch:value("1", detailed_name("1"), {band="b", bandwidth="20"})
 	ch:value("2", detailed_name("2"), {band="b", bandwidth="20"})
 	ch:value("3", detailed_name("3"), {band="b", bandwidth="20"})
@@ -494,7 +545,6 @@ if hwtype == "broadcom" then
 	rateset = s:taboption("advanced", Value, "rateset", translate("Basic Rate"))
 	rateset:value("default", "Default")	
 	rateset:value("all", "All")
-
 ]]
 
 	rxcps = s:taboption("advanced", ListValue, "rxchainps", translate("RX Chain Power Save"))
