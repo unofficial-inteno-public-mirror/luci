@@ -9,7 +9,7 @@ You may obtain a copy of the License at
 
 	http://www.apache.org/licenses/LICENSE-2.0
 
-$Id: forward-details.lua 8962 2012-08-09 10:03:32Z jow $
+$Id: forward-details.lua 9842 2013-06-13 17:25:44Z jow $
 ]]--
 
 local sys = require "luci.sys"
@@ -38,22 +38,6 @@ else
 	end
 	m.title = "%s - %s" %{ translate("Firewall - Port Forwards"), name }
 end
-
-local wan_zone = nil
-
-m.uci:foreach("firewall", "zone",
-	function(s)
-		local n = s.network or s.name
-		if n then
-			local i
-			for i in n:gmatch("%S+") do
-				if i == "wan" then
-					wan_zone = s.name
-					return false
-				end
-			end
-		end
-	end)
 
 s = m:section(NamedSection, arg[1], "redirect", "")
 s.anonymous = true
@@ -164,7 +148,6 @@ o.datatype = "portrange"
 o = s:option(Flag, "reflection", translate("Enable NAT Loopback"))
 o.rmempty = true
 o.default = o.enabled
-o:depends("src", wan_zone)
 o.cfgvalue = function(...)
 	return Flag.cfgvalue(...) or "1"
 end

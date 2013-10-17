@@ -55,22 +55,6 @@ elseif rule_type == "redirect" then
 
 	m.title = "%s - %s" %{ translate("Firewall - Traffic Rules"), name }
 
-	local wan_zone = nil
-
-	m.uci:foreach("firewall", "zone",
-		function(s)
-			local n = s.network or s.name
-			if n then
-				local i
-				for i in n:gmatch("%S+") do
-					if i == "wan" then
-						wan_zone = s.name
-						return false
-					end
-				end
-			end
-		end)
-
 	s = m:section(NamedSection, arg[1], "redirect", "")
 	s.anonymous = true
 	s.addremove = false
@@ -104,16 +88,6 @@ elseif rule_type == "redirect" then
 	o.nocreate = true
 	o.default = "wan"
 	o.template = "cbi/firewall_zonelist"
-
-
-	o = s:option(DynamicList, "src_mac", translate("Source MAC address"))
-	o.rmempty = true
-	o.datatype = "neg(macaddr)"
-	o.placeholder = translate("any")
-
-	luci.sys.net.mac_hints(function(mac, name)
-		o:value(mac, "%s (%s)" %{ mac, name })
-	end)
 
 
 	o = s:option(Value, "src_ip", translate("Source IP address"))
