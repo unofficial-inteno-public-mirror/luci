@@ -18,7 +18,6 @@ local fs   = require "nixio.fs"
 local util = require "nixio.util"
 local uci = require("luci.model.uci").cursor()
 
-
 local devices = {}
 util.consume((fs.glob("/mnt/sd*")), devices)
 local size = {}
@@ -37,14 +36,14 @@ s:option(Value, "name", translate("Hostname"))
 s:option(Value, "description", translate("Description"))
 s:option(Value, "workgroup", translate("Workgroup"))
 
-intf = s:option(MultiValue, "interfaces", translate("Interfaces"), translate("samba will listen on all interfaces if not selected"))
+intf = s:option(MultiValue, "interfaces", translate("Interfaces"), translate("the interface(s) samba will listen on; samba will not start if no interface is selected"))
 intf.rmempty = true
 uci:foreach("network", "interface",
 	function (section)
 		local ifc = section[".name"]
 		local islan = section["is_lan"]
 		local typ = section["type"]
-		if ifc ~= "loopback" and typ ~= "alias" then
+		if ifc ~= "loopback" and typ ~= "alias" and islan == "1" then
 			intf:value(ifc)
 		end
 	end)
@@ -91,7 +90,7 @@ end
 compath = s:option(Value, "dirpath", translate("Directory"))
 
 function dirpath_is_valid(value)
-	if value:match("..") then
+	if value:match("%.%.") then
 		return false
 	else
 		return true
