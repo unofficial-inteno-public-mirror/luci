@@ -42,7 +42,7 @@
 				</tr>
 
 				<% if router.kernel == "2.6.30" then %>
-					<% for line in luci.util.execi("cat /proc/net/igmp_snooping | grep -v snooping | grep -v reporter") do %>
+					<% for line in luci.util.execi("cat /proc/net/igmp_snooping | grep 'br-' | grep -v 'snooping' | grep -v 'reporter'") do %>
 						<% local bridge, device, srcdev, tags, lantci, wantci, group, mode, source, timeout, reporter, index
 						= line:match("(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)") %>
 
@@ -62,7 +62,7 @@
 						</tr>
 					<%end%>
 				<%else%>
-					<% for line in luci.util.execi("cat /proc/net/igmp_snooping | grep -v snooping | grep -v reporter") do %>
+					<% for line in luci.util.execi("cat /proc/net/igmp_snooping | grep 'br-' | grep -v 'snooping' | grep -v 'reporter'") do %>
 						<% local bridge, device, srcdev, tags, lantci, wantci, group, mode, source, reporter, timeout, index
 						= line:match("(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)") %>
 
