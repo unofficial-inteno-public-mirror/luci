@@ -279,7 +279,7 @@ if hwtype == "broadcom" then
 	end
 
 	mode = s:taboption("advanced", ListValue, "hwmode", translate("Mode"))
-	mode:value("auto", "Auto", {band="b", bandwidth="20"})
+	mode:value("auto", "Auto", {band="b"})
 	mode:value("11b", "802.11b", {band="b", bandwidth="20"})
 	mode:value("11bg", "802.11b+g", {band="b", bandwidth="20"})
 	mode:value("11g", "802.11g", {band="b", bandwidth="20"})
