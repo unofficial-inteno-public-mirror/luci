@@ -706,6 +706,7 @@ configure_brcm_line()
 	local jitter_target
 	local txgain
 	local rxgain
+	local dtmfcompatibility
 
 	config_get sip_account $1 sip_account
 	config_get ptime $1 ptime
@@ -718,6 +719,7 @@ configure_brcm_line()
 	config_get jitter_target $1 jitter_target
 	config_get txgain $1 txgain
 	config_get rxgain $1 rxgain
+	config_get dtmfcompatibility $1 dtmfcompatibility
 
 	#If line is configured with no sip_account, use local_extensions context
 	if [ "$sip_account" == "-" ] ; then
@@ -737,6 +739,7 @@ configure_brcm_line()
 	sed -i "s/|JITTERTARGET|/$jitter_target/"		$WORKDIR/brcm_line.tmp
 	sed -i "s/|TXGAIN|/$txgain/"				$WORKDIR/brcm_line.tmp
 	sed -i "s/|RXGAIN|/$rxgain/"				$WORKDIR/brcm_line.tmp	
+	sed -i "s/|DTMFCOMPATIBILITY|/$dtmfcompatibility/"      $WORKDIR/brcm_line.tmp
 
 	#Configure BRCM line with codecs according to the SIP line settings
 	local is_fax

@@ -14,5 +14,6 @@ silence=|SILENCE|
 context=|CONTEXT|
 context_direct=|CONTEXT|-direct
 period=|PERIOD|
+dtmfcompatibility=|DTMFCOMPATIBILITY|
 |ALLOW|
 
