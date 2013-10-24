@@ -6,7 +6,7 @@ function index()
 		return
 	end
 
-	local users = { "admin", "support", "user" }
+	local users = { "admin", "support" }
         local page
 
 	for k, user in pairs(users) do
