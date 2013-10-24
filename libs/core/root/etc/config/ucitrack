@@ -8,7 +8,7 @@ config network
 	list affects domain_name_access
 
 config wireless
-	list affects network
+	option init network
 
 config firewall
 	option init firewall
@@ -55,6 +55,9 @@ config tinyproxy
 
 config 6relayd
 	option init 6relayd
+	
+config 'domain_name_access'
+        option 'init' 'domain_name_access'
 
 config 'layer2_interface'
         option 'init' 'layer2_interface'
@@ -71,5 +74,3 @@ config 'layer2_interface_vlan'
 config 'layer2_interface_ethernet'
         option 'init' 'layer2_interface_ethernet'
 
-config 'domain_name_access'
-        option 'init' 'domain_name_access'

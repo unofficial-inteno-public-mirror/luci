@@ -25,10 +25,7 @@ arg[1] = arg[1] or ""
 m = Map("wireless", "",
 	translate("The <em>Device Configuration</em> section covers settings which are shared among all defined wireless networks (if the radio hardware is multi-SSID capable). " ..
 		"Per network settings like encryption or operation mode are grouped in the <em>Interface Configuration</em>."))
-		
 
-m:chain("network")
-m:chain("firewall")
 
 local ifsection
 
@@ -728,6 +725,8 @@ network.widget = "checkbox"
 network.novirtual = true
 
 function network.write(self, section, value)
+	m:chain("network")
+	m:chain("firewall")
 	local i = nw:get_interface(section)
 	if i then
 		if value == '-' then
