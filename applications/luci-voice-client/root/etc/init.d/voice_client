@@ -690,7 +690,7 @@ configure_brcm()
 	sed -i "s/|JBMAXSIZE|/$jbmaxsize/"			$WORKDIR/brcm.tmp
 	sed -i "s/|JBIMPL|/$jbimpl/"				$WORKDIR/brcm.tmp
 
-	if [ "$dtmfmode" == "compatibility"] ; then
+	if [ "$dtmfmode" == "compatibility" ] ; then
 		dtmfcompatibility="1"
 	else
 		dtmfcompatibility="0"
