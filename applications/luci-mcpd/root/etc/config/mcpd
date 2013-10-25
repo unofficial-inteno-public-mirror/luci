@@ -1,6 +1,6 @@
 config mcpd 'mcpd'
         option igmp_proxy_interfaces 'wan'
-        option igmp_default_version '3'
+        option igmp_default_version '2'
         option igmp_query_interval '125'
         option igmp_query_response_interval '10'
         option igmp_last_member_query_interval '10'
