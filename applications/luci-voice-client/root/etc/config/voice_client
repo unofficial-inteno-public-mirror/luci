@@ -6,7 +6,6 @@ config 'brcm_line' 'brcm0'
 	option 'vad' '0'
 	option 'txgain' 0
 	option 'rxgain' 0
-	option 'dtmfcompatibility' 1
 
 config 'brcm_line' 'brcm1'
 	option 'extension' '1111'
@@ -16,7 +15,6 @@ config 'brcm_line' 'brcm1'
 	option 'vad' '0'
 	option 'txgain' 0
 	option 'rxgain' 0
-	option 'dtmfcompatibility' 1
 
 config 'brcm_line' 'brcm2'
 	option 'extension' '2222'
@@ -26,7 +24,6 @@ config 'brcm_line' 'brcm2'
 	option 'vad' '0'
 	option 'txgain' 0
 	option 'rxgain' 0
-	option 'dtmfcompatibility' 1
 
 config 'brcm_line' 'brcm3'
 	option 'extension' '3333'
@@ -36,7 +33,6 @@ config 'brcm_line' 'brcm3'
 	option 'vad' '0'
 	option 'txgain' 0
 	option 'rxgain' 0
-	option 'dtmfcompatibility' 1
 
 config 'brcm_line' 'brcm4'
 	option 'extension' '4444'
@@ -46,7 +42,6 @@ config 'brcm_line' 'brcm4'
 	option 'vad' '0'
 	option 'txgain' 0
 	option 'rxgain' 0
-	option 'dtmfcompatibility' 1
 
 config 'brcm_line' 'brcm5'
 	option 'extension' '5555'
@@ -56,7 +51,6 @@ config 'brcm_line' 'brcm5'
 	option 'vad' '0'
 	option 'txgain' 0
 	option 'rxgain' 0
-	option 'dtmfcompatibility' 1
 
 config 'brcm_line' 'brcm6'
 	option 'extension' '6666'
@@ -66,7 +60,6 @@ config 'brcm_line' 'brcm6'
 	option 'vad' '0'
 	option 'txgain' 0
 	option 'rxgain' 0
-	option 'dtmfcompatibility' 1
 
 config 'brcm_line' 'brcm7'
 	option 'extension' '7777'
@@ -76,7 +69,6 @@ config 'brcm_line' 'brcm7'
 	option 'vad' '0'
 	option 'txgain' 0
 	option 'rxgain' 0
-	option 'dtmfcompatibility' 1
 
 config 'dialplan' 'custom_dialplan'
 	option 'custom_outgoing_enabled' '0'
@@ -89,7 +81,7 @@ config 'dialplan' 'custom_dialplan'
 config 'sip_advanced' 'SIP'
 	option 'rtpstart' '10000'
 	option 'rtpend' '20000'
-	option 'dtmfmode' 'rfc2833'
+	option 'dtmfmode' 'compatibility'
 	option 'blindxfer' '#'
 	option 'remotehold' 'yes'
 
@@ -100,6 +92,7 @@ config 'brcm_advanced' 'BRCM'
 	option 'jbmaxsize' '500'
 	option 'jbimpl' 'adaptive'
 	option 'genericplc' 'yes'
+	option 'dtmfcompatibility' '1'
 
 config 'features' 'features'
 	option 'cbbs_enabled' '1'

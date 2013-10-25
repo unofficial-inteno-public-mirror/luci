@@ -75,8 +75,4 @@ m.uci:foreach("voice_client", "sip_service_provider",
 sip_account:value("-", "-")
 sip_account.default = "-"
 
--- Show DTMF compatibility checkbox
-dtmf_compatibility = s:option(Flag, "dtmfcompatibility", "Enable DTMF compatibility mode")
-dtmf_compatibility.default = 1
-
 return m

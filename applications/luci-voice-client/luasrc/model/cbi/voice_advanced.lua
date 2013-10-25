@@ -90,10 +90,11 @@ function rtpend.validate(self, value, section)
 end
 
 dtmfmode = sip:option(ListValue, "dtmfmode", "DTMF Mode")
+dtmfmode:value("compatibility", "Compatibility")
 dtmfmode:value("rfc2833", "RFC 2833")
 dtmfmode:value("info", "SIP INFO")
 dtmfmode:value("inband", "Inband")
-dtmfmode.default = "rfc2833"
+dtmfmode.default = "compatibility"
 
 registertimeout = sip:option(Value, 'registertimeout', "Register Timeout", "Time in seconds between registration attempts");
 registertimeout.default = 30
