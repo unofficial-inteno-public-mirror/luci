@@ -1488,18 +1488,19 @@ function wifidev.name(self)
 end
 
 function wifidev.bands(self)
-	if self.sid:match("^wl%d") then
-		local wlno = self.sid:sub(3) + 1
-		local pci = sys.exec("cat /proc/bus/pci/devices | grep wl | sed -n %dp | awk '{print$2}'" %wlno)
-		if pci:match("43a2") then
-			return "a"
-		end
-	end
-	if sys.exec("wlctl -i %s phylist" %self.sid) == "v" then
+	return sys.exec("wlctl -i %q bands" %self.sid)
+end
+
+function wifidev.band(self)
+	local bands = self:bands()
+	if bands:match("a") and not bands:match("b") then
 		return "a"
 	end
+--	if sys.exec("wlctl -i %s phylist" %self.sid) == "v" then
+--		return "a"
+--	end
 	return "b"
---	return sys.exec("wlctl -i %q bands" %self.sid)
+--	return sys.exec("wlctl -i %q band" %self.sid)
 end
 
 function wifidev.channels(self, country, band, bwidth)
@@ -1512,7 +1513,7 @@ end
 
 function wifidev.hwmodes(self)
 	if sys.exec("wlctl -i %q status" %self.sid):match("VHT Capable") then
-		return { b = true, g = true, n = true, ac = true }
+		return { n = true, ac = true }
 	else
 		return { b = true, g = true, n = true }
 	end

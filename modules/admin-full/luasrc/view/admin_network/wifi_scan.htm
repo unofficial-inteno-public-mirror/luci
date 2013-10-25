@@ -1,6 +1,29 @@
 <%-
+	local ntm = require "luci.model.network".init()
+	local sys = require "luci.sys"
+	local utl = require "luci.util"
+	
 	local device = luci.http.formvalue("device")
-	luci.sys.exec("wlctl -i %s scan && sleep 1" %device)
+	local devices  = ntm:get_wifidevs()
+	
+	local wlband
+	local dev
+	for _, dev in ipairs(devices) do
+		if device == dev:name() then
+			wlband = dev:band()
+			break
+		end
+	end
+
+	local wlfreq, wlf
+	if wlband == "a" then
+		wlfreq = "5GHz"
+		wlf = "5"
+	else
+		wlfreq = "2.4GHz"
+		wlf = "2"
+	end
+	sys.exec("wlctl -i %s scan && sleep 2" %device)
 -%>
 
 <%+header%>
@@ -19,7 +42,7 @@
 		<div class="cbi-section-node">
 			<table class="cbi-section-table">
 				<tr class="cbi-section-table-titles">
-					<th class="cbi-section-table-cell" width="20%"><%: %></th>
+					<th class="cbi-section-table-cell" width="20%"><%:Channel%> (<%=wlfreq%>)</th>
 					<th class="cbi-section-table-cell" width="30%"><%:SSID%></th>
 					<th class="cbi-section-table-cell" width="20%"><%:BSSID%></th>
 					<th class="cbi-section-table-cell" width="15%"><%:RSSI (dBm)%></th>
@@ -29,15 +52,15 @@
 				</tr>
 			</table>
 
-			<%local channels = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 }%>
-			<%for _, ch in ipairs(channels) do%>
-			<b>Channel <%=ch%></b>
+
+			<%for ch in utl.execi("wlctl -i %s chanspecs -b %s -w 20 -c SE | awk '{print$1}' | grep -v '^$'" %{device, wlf}) do%>
+			<b><%=ch%></b>
 			<table class="cbi-section-table">
-					<% for line in luci.util.execi("wlctl -i %s scanresults_summary 2>/dev/null" %device) do%>
+					<% for line in utl.execi("wlctl -i %s scanresults_summary 2>/dev/null" %device) do%>
 						<% local bssid, rssi, band, channel, mode, ssid
 		 				= line:match("BSSID:%s+(%S+)%s+RSSI:%s+(%S+)%s+dBm%s+Band:%s+(%S+)%s+Channel:%s+(%d+)%s+802.11:%s+(%S+)%s+SSID:%s+(%S+)") %>
 					
-						<%if ssid and tonumber(ch) == tonumber(channel) and band == "2.4GHz" then%>
+						<%if ssid and tonumber(ch) == tonumber(channel) and band == wlfreq then%>
 						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
 								<td class="cbi-value-field" width="20%"><%:%></td>
 								<td class="cbi-value-field" width="30%"><%=ssid%></td>
@@ -55,13 +78,18 @@
 					local sids = { " ", ".1", ".2", ".3", ".4" }
 					for _, sid in ipairs(sids) do
 						local wif = device .. sid
-						local mybssid = luci.sys.exec("wlctl -i %s bssid 2>/dev/null" %wif)
+						local mybssid = sys.exec("wlctl -i %s bssid 2>/dev/null" %wif)
 						if mybssid and not mybssid:match("00:00:00:00:00:00") then
-							local status = luci.sys.exec("wlctl -i %s status" %wif)
+							local status = sys.exec("wlctl -i %s status" %wif)
 							local myrssi, mychannel = status:match("Mode:%s+Managed%s+RSSI:%s+(%S+)%s+dBm%s+SNR:%s+%S+%s+dB%s+noise:%s+%S+%s+dBm%s+Channel:%s+(%S+)")
 							local myssid = status:match("SSID: \"(%S+)\"")
+							local myband = status:match("Chanspec:%s+(%S+)%s+%S+")
 							local mymode = "b/g"
-							if status:match("802.11N") then mymode = "b/g/n" end
+							if status:match("VHT Capable") then
+								mymode = "n/ac"
+							elseif status:match("802.11N") or status:match("HT Capable") then
+								mymode = "b/g/n"
+							end
 							if myssid and tonumber(mychannel) == tonumber(ch) then
 					%>
 								<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">

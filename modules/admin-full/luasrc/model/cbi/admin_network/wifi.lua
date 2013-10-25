@@ -260,7 +260,7 @@ if hwtype == "broadcom" then
 	s:taboption("general", Value, "maxassoc", translate("Connection Limit"))
 
 	band = s:taboption("advanced", ListValue, "band", translate("Band"))
-	local bnd = wdev:bands()
+	local bnd = wdev:band()
 	if bnd:match("b") then
 		band:value("b", translate("2.4GHz"))
 	end
