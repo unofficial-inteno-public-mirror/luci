@@ -1234,13 +1234,14 @@ function interface.type(self)
 		return "ethernet"
 	end
 end
+
 function interface.portname(self)
-	return sys.exec(". /lib/network/config.sh && interfacename %s"%self.ifname)	
+	return sys.exec(". /lib/network/config.sh && interfacename %s" %self.ifname)
 end
+
 function interface.layer2name(self)
-	
-	 local seen = self.ifname
-	 local names="messedup"
+	local seen = self.ifname
+	local names="messedup"
 	if self.ifname:match("atm%d")  then
 	name=_uci_real:foreach("layer2_interface_adsl", "atm_bridge",
 		function(s)
@@ -1272,7 +1273,6 @@ function interface.layer2name(self)
 		return names
 	end
 end
-
 
 function interface.shortname(self)
 	if self.wif then

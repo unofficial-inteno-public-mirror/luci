@@ -94,6 +94,43 @@ function newproto.validate(self, value, section)
 		local al = (netbridge:formvalue(section) == "2")
 		local mw = (netbridge:formvalue(section) == "3")
 		local ifn = (br and mifname:formvalue(section)) or (al and aifname:formvalue(section)) or (mw and mwifname:formvalue(section)) or sifname:formvalue(section)
+		
+		-- check if selected interface is used by a bridge
+		if ifn == (br and mifname:formvalue(section)) then
+			local already = false
+			local there
+			local intface, ifname, typ, adv
+			uci:foreach("network", "interface",
+			function (section)
+				if already then
+					return
+				end
+				intface = section[".name"]
+				typ = section["type"]
+				ifname = section["ifname"]
+				
+				if typ  == "bridge" and ifname then
+					for iface in ifname:gmatch("%S+") do
+						for nif in utl.imatch(ifn) do
+							if iface == nif then
+								if there then 
+									there = there .. ", " .. nif
+									adv = "are"
+								else
+									there = nif
+									adv = "is"
+								end
+								already = true
+							end
+						end
+					end
+				end
+			end)
+			if already then
+				return nil, translate("%s %s used by %s" %{there, adv, intface})
+			end
+		end
+
 		for ifn in utl.imatch(ifn) do
 			return value
 		end
