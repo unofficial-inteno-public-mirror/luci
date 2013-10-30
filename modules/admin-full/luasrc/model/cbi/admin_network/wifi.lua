@@ -298,7 +298,7 @@ if hwtype == "broadcom" then
 		elseif chnspec:match("l") then
 			channel = chnspec:sub(0, chnspec:find("l") - 1) .. " @lower sideband"
 		elseif chnspec:match("u") then
-			channel = chnspec:sub(0, chnspec:find("u") - 1) .. " @uppder sideband"
+			channel = chnspec:sub(0, chnspec:find("u") - 1) .. " @upper sideband"
 		else
 			channel = chnspec
 		end
