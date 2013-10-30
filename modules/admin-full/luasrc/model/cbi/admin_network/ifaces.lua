@@ -232,15 +232,33 @@ if guser == "admin" then
 	if nw:has_ipv6() then
 		iface6rd = s:taboption("general", Value, "iface6rd", translate("6rd interface"), translate("6rd interface to be configured from DHCP"))
 		iface6rd:depends("proto", "dhcp")
+		m.uci:foreach("network", "interface",
+		function (section)
+			local ifc = section[".name"]
+			local proto = section["proto"]
+			if proto == "6rd" then
+				iface6rd:value(ifc)
+			end
+		end)
 
 		function iface6rd.write(self, section, value)
-			local oldintface = m.uci:get("network", section, "iface6rd")
-			if value ~= oldintface then
-				m.uci:set("network", section, "iface6rd", value)
-				if oldinterface then
-					m.uci:delete("network", oldintface)
+			local me = section
+			local new6rd = value
+			local old6rd = m.uci:get("network", section, "iface6rd")
+			local there = m.uci:get("network", new6rd)
+			if new6rd ~= old6rd then
+				if there then
+					local islan = m.uci:get("network", new6rd, "is_lan")
+					if me == new6rd or islan == "1" then
+						return
+					end
+					m.uci:delete("network", new6rd)
 				end
-				m.uci:section("network", "interface", value, {
+				m.uci:set("network", section, "iface6rd", new6rd)
+				if old6rd then
+					m.uci:delete("network", old6rd)
+				end
+				m.uci:section("network", "interface", new6rd, {
 					proto	= "6rd",
 					auto	= "0"
 				})
