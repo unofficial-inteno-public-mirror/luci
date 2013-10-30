@@ -228,6 +228,25 @@ if guser == "admin" then
 			p_switch:depends("proto", pr:proto())
 		end
 	end
+	
+	if nw:has_ipv6() then
+		iface6rd = s:taboption("general", Value, "iface6rd", translate("6rd interface"), translate("6rd interface to be configured from DHCP"))
+		iface6rd:depends("proto", "dhcp")
+
+		function iface6rd.write(self, section, value)
+			local oldintface = m.uci:get("network", section, "iface6rd")
+			if value ~= oldintface then
+				m.uci:set("network", section, "iface6rd", value)
+				if oldinterface then
+					m.uci:delete("network", oldintface)
+				end
+				m.uci:section("network", "interface", value, {
+					proto	= "6rd",
+					auto	= "0"
+				})
+			end
+		end
+	end
 end
 
 

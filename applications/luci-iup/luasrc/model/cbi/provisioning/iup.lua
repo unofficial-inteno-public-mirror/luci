@@ -1,5 +1,5 @@
 
-m = Map("provisioning", translate("IUP Provisioning"), translate("Setup your IUP provisioning parameters"))
+m = Map("provisioning", translate("IUP Provisioning"), translate("Setup your IUP Provisioning parameters"))
 
 
 
@@ -19,7 +19,7 @@ end
 timelist = s:option(ListValue, "interval", translate("Update weekly or daily"))
 timelist:value("weekly", translate("Weekly"))
 timelist:value("daily", translate("Daily"))
-backup=s:option(Button, "getprov", translate("Exportfile"),translate("Dump running config into a tar archive that can be used for iup Provsioning"))
+backup=s:option(Button, "getprov", translate("Export file"),translate("Dump running config into a tar archive that can be used for IUP Provisioning"))
 
 
 
