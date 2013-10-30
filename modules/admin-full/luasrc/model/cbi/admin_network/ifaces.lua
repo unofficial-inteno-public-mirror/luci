@@ -239,21 +239,31 @@ if guser == "admin" then
 				iface6rd:value(ifc)
 			end
 		end)
+		
+		function iface6rd.validate(self, value, section)
+			local me = section
+			local new6rd = value
+			local there = m.uci:get("network", new6rd)
+			if there then
+				local islan = m.uci:get("network", new6rd, "is_lan")
+				if me == new6rd then
+					return nil, "6rd interface cannot have the same name as this interface"
+				elseif islan == "1" then
+					return nil, "'%s' is an already existing local area network interface, therefore cannot be set as 6rd interface" %new6rd
+				end
+			end
+			return value
+		end
 
 		function iface6rd.write(self, section, value)
-			local me = section
 			local new6rd = value
 			local old6rd = m.uci:get("network", section, "iface6rd")
 			local there = m.uci:get("network", new6rd)
 			if new6rd ~= old6rd then
+				m.uci:set("network", section, "iface6rd", new6rd)
 				if there then
-					local islan = m.uci:get("network", new6rd, "is_lan")
-					if me == new6rd or islan == "1" then
-						return
-					end
 					m.uci:delete("network", new6rd)
 				end
-				m.uci:set("network", section, "iface6rd", new6rd)
 				if old6rd then
 					m.uci:delete("network", old6rd)
 				end
