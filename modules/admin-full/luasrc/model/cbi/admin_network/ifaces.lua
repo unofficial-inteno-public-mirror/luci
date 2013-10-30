@@ -229,9 +229,8 @@ if guser == "admin" then
 		end
 	end
 	
-	if nw:has_ipv6() then
+	if nw:has_ipv6() and net:proto() == "dhcp" then
 		iface6rd = s:taboption("general", Value, "iface6rd", translate("6rd interface"), translate("6rd interface to be configured from DHCP"))
-		iface6rd:depends("proto", "dhcp")
 		m.uci:foreach("network", "interface",
 		function (section)
 			local ifc = section[".name"]
