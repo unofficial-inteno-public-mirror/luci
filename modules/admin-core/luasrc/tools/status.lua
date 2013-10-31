@@ -16,6 +16,21 @@ module("luci.tools.status", package.seeall)
 local uci = require "luci.model.uci".cursor()
 local bus = require "ubus"
 
+function is_associated(mac)
+	local devices = luci.sys.exec("cat /proc/net/dev")
+	for dev in devices:gmatch("(%S+):%s+%S*") do
+		if dev:match("^wl%d") then
+			local assoclist = luci.sys.exec("wlctl -i %q assoclist" %dev)
+			for assoc in assoclist:gmatch("assoclist%s+(%S+)") do
+				if assoc == mac:upper() then
+					return 1
+				end
+			end
+		end
+	end
+	return nil
+end
+
 function is_connected(ip, field)
 	local _ubus
 	local _ubuscache = { }
@@ -59,7 +74,7 @@ local function dhcp_leases_common(family)
 							macaddr  = mac,
 							ipaddr   = ip,
 							hostname = (name ~= "*") and name,
-							status = is_connected(ip, "connected")
+							status   = is_associated(mac) or is_connected(ip, "connected")
 						}
 					elseif family == 6 and ip:match(":") then
 						rv[#rv+1] = {
@@ -67,7 +82,7 @@ local function dhcp_leases_common(family)
 							ip6addr  = ip,
 							duid     = (duid ~= "*") and duid,
 							hostname = (name ~= "*") and name,
-							status = 1 --TODO
+							status   = 1 --TODO
 						}
 					end
 				end
