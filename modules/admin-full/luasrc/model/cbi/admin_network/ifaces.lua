@@ -479,13 +479,14 @@ if guser == "admin" then
 			local there, intface, ifname, typ, adv
 			m.uci:foreach("network", "interface",
 			function (s)
-				if there then
-					return
-				end
 				intface = s[".name"]
 				typ = s["type"]
 				ifname = s["ifname"]
 				
+				if intface == net:name() or there then
+					return
+				end
+
 				if typ  == "bridge" and ifname then
 					for iface in ifname:gmatch("%S+") do
 						for nif in ut.imatch(ifn) do
