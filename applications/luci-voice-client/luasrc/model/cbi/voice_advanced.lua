@@ -307,6 +307,14 @@ plc:depends("jbenable", "yes")
 plc.disabled = "no"
 plc.enabled = "yes"
 
+dialoutmsec = brcm:option(Value, "dialoutmsec", "Inter-digit timeout")
+function dialoutmsec.validate(self, value, section)
+	if datatypes.uinteger(value) then
+		return value
+	end
+	return nil, "Inter-digit timeout must be a positive number of milliseconds"
+end
+
 -- BRCM advanced line settings ----------------------------------------------
 
 line = m:section(TypedSection, "brcm_line")

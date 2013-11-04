@@ -72,7 +72,7 @@ allow = alaw
 ringsignal=on
 
 ; Inter-digit timeout, milliseconds
-dialoutmsec=4000
+dialoutmsec=|DIALOUTMSEC|
 
 ; Specify packetization rate
 ; Available values are: 5, 10, 20, 30, 40

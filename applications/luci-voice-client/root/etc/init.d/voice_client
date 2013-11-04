@@ -721,6 +721,7 @@ configure_brcm()
 	local jbmaxsize
 	local jbimpl
 	local dtmfcompatibility
+	local dialoutmsec
 
 	config_get country BRCM country
 	config_get jbenable BRCM jbenable
@@ -728,12 +729,14 @@ configure_brcm()
 	config_get jbmaxsize BRCM jbmaxsize
 	config_get jbimpl BRCM jbimpl
 	config_get dtmfmode SIP dtmfmode
+	config_get dialoutmsec BRCM dialoutmsec
 
 	sed -i "s/|COUNTRY|/$country/"				$WORKDIR/brcm.tmp
 	sed -i "s/|JBENABLE|/$jbenable/"			$WORKDIR/brcm.tmp
 	sed -i "s/|JBFORCE|/$jbforce/"				$WORKDIR/brcm.tmp
 	sed -i "s/|JBMAXSIZE|/$jbmaxsize/"			$WORKDIR/brcm.tmp
 	sed -i "s/|JBIMPL|/$jbimpl/"				$WORKDIR/brcm.tmp
+	sed -i "s/|DIALOUTMSEC|/$dialoutmsec/"			$WORKDIR/brcm.tmp
 
 	if [ "$dtmfmode" == "compatibility" ] ; then
 		dtmfcompatibility="1"

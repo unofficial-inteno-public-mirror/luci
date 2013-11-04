@@ -93,6 +93,7 @@ config 'brcm_advanced' 'BRCM'
 	option 'jbimpl' 'adaptive'
 	option 'genericplc' 'yes'
 	option 'dtmfcompatibility' '1'
+	option 'dialoutmsec' '2000'
 
 config 'features' 'features'
 	option 'contact_line_prefix' '1'
