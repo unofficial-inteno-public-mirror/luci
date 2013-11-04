@@ -20,8 +20,11 @@ function index()
 		return
 	end
 
+	local users = { "admin", "support", "user" }
 	local page
 
-	page = entry({"admin", "services", "samba"}, cbi("samba"), _("Network Shares"))
-	page.dependent = true
+	for k, user in pairs(users) do
+		page = entry({user, "services", "samba"}, cbi("samba"), _("Network Shares"))
+		page.dependent = true
+	end
 end
