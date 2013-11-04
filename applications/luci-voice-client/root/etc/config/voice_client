@@ -95,6 +95,7 @@ config 'brcm_advanced' 'BRCM'
 	option 'dtmfcompatibility' '1'
 
 config 'features' 'features'
+	option 'contact_line_prefix' '1'
 	option 'cbbs_enabled' '1'
 	option 'callforward_enabled' '1'
 	option 'redial_enabled' '1'

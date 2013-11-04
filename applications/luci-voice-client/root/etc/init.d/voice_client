@@ -201,6 +201,14 @@ read_lines()
 # "register => user[:secret[:authuser]]@host[:port][/extension]"
 format_sip_contact()
 {
+	local contact_line_prefix
+	config_get contact_line_prefix features contact_line_prefix
+
+	if [ "$contact_line_prefix" != "1" ] ; then
+		echo $2
+		return
+	fi
+
 	local lines=""
 	local call_lines
 	config_get call_lines $1 call_lines
