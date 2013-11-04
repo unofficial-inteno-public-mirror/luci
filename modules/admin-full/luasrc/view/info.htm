@@ -3,12 +3,18 @@
 	local prt = require "luci.model.ports".init()
 	local sysinfo = luci.quest.router_static_sysinfo()
 	local keys = luci.quest.router_keys()
-	local lanmac = luci.sys.exec("ifconfig br-lan | grep HWaddr | awk '{print$NF}'") or sysinfo.basemac
+	lanmac = luci.sys.exec("ifconfig br-lan | grep HWaddr | awk '{print$NF}'")
+	local basemac
+	if lanmac:match("00:22:07") then
+		basemac = lanmac
+	else
+		basemac = sysinfo.basemac:upper()
+	end
 	local wl = {
 		ssid = luci.sys.exec("wlctl -i wl0 ssid | awk '{print$NF}' | sed 's/\"//g'"),
 		version = luci.sys.exec("wlctl -i wl0 ver | awk '{print$NF}'"),
 		status = luci.sys.exec("wlctl -i wl0 isup"),
-		mac = luci.sys.exec("ifconfig wl0 | grep HWaddr | awk '{print$NF}'")
+		mac = luci.sys.exec("wlctl -i wl0 cur_etheraddr | awk '{print$2}'")
 	}
 	local dsl = {
 		annex = luci.sys.exec("cat /proc/nvram/dslAnnex"),
@@ -40,7 +46,7 @@
 				</tr>
 				<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
 					<td class="cbi-value-field"><%: LAN MAC%></td>
-					<td class="cbi-value-field"><%=lanmac%></td>
+					<td class="cbi-value-field"><%=basemac%></td>
 				</tr>
 				<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
 					<td class="cbi-value-field"><%:WLAN MAC%></td>
