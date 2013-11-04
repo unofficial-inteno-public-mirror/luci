@@ -72,6 +72,12 @@ TMPL_MUSICONHOLD=$TEMPLATEDIR/musiconhold.conf.TEMPLATE
 TMPL_BRCM=$TEMPLATEDIR/brcm.conf.TEMPLATE
 TMPL_BRCM_LINE=$TEMPLATEDIR/brcm_line.TEMPLATE
 
+# Escape special characters in a string that is being passed to sed
+escape_sed_substitution()
+{
+	echo $1 | sed -e 's/[\/&]/\\&/g'
+}
+
 # Gets rid of any config files from $ASTERISKDIR not found in $WORKDIR.
 clean_up_asterisk_config_dir()
 {
@@ -243,7 +249,7 @@ configure_sip()
 
 	[ -z "$useragent" ] && useragent="$USERAGENT"
 
-	sed -i "s/|USERAGENT|/$useragent/g"		$WORKDIR/sip.tmp
+	sed -i "s/|USERAGENT|/$(escape_sed_substitution $useragent)/g"		$WORKDIR/sip.tmp
 	sed -i "s/|DTMFMODE|/$dtmfmode/"		$WORKDIR/sip.tmp
 
 	if [ -z "$externhost" ] ; then
@@ -281,25 +287,25 @@ configure_sip()
 	if [ -z "$tos_sip" ] ; then
 		sed -i "s/tos_sip=|TOS_SIP|/;tos_sip=/g"	$WORKDIR/sip.tmp
 	else
-		sed -i "s/|TOS_SIP|/$tos_sip/g"			$WORKDIR/sip.tmp
+		sed -i "s/|TOS_SIP|/$(escape_sed_substitution $tos_sip)/g"			$WORKDIR/sip.tmp
 	fi
 
 	if [ -z "$tos_audio" ] ; then
 		sed -i "s/tos_audio=|TOS_AUDIO|/;tos_audio=/g"	$WORKDIR/sip.tmp
 	else
-		sed -i "s/|TOS_AUDIO|/$tos_audio/g"		$WORKDIR/sip.tmp
+		sed -i "s/|TOS_AUDIO|/$(escape_sed_substitution $tos_audio)/g"		$WORKDIR/sip.tmp
 	fi
 
 	if [ -z "$tos_video" ] ; then
 		sed -i "s/tos_video=|TOS_VIDEO|/;tos_video=/g"	$WORKDIR/sip.tmp
 	else
-		sed -i "s/|TOS_VIDEO|/$tos_video/g"		$WORKDIR/sip.tmp
+		sed -i "s/|TOS_VIDEO|/$(escape_sed_substitution $tos_video)/g"		$WORKDIR/sip.tmp
 	fi
 
 	if [ -z "$tos_text" ] ; then
 		sed -i "s/tos_text=|TOS_TEXT|/;tos_text=/g"	$WORKDIR/sip.tmp
 	else
-		sed -i "s/|TOS_TEXT|/$tos_text/g"		$WORKDIR/sip.tmp
+		sed -i "s/|TOS_TEXT|/$(escape_sed_substitution $tos_text)/g"		$WORKDIR/sip.tmp
 	fi
 
 	# Set RTP port range
@@ -309,7 +315,7 @@ configure_sip()
 
 	# Set blind transfer key
 	cp $TMPL_FEATURES				$WORKDIR/features.tmp
-	sed -i "s/|BLINDXFER|/$blindxfer/"		$WORKDIR/features.tmp
+	sed -i "s/|BLINDXFER|/$(escape_sed_substitution $blindxfer)/"		$WORKDIR/features.tmp
 }
 
 # Get password from existing sip_peers config file
@@ -396,9 +402,9 @@ configure_sip_account()
 
 	# Construct a sip peer entry for account
 	sed -i "s/|NAME|/$1/g"				$WORKDIR/sip_peer.tmp
-	sed -i "s/|AUTHUSER|/$authuser/g"		$WORKDIR/sip_peer.tmp
-	sed -i "s/|USER|/$user/"			$WORKDIR/sip_peer.tmp
-	sed -i "s/|SECRET|/$secret/"			$WORKDIR/sip_peer.tmp
+	sed -i "s/|AUTHUSER|/$(escape_sed_substitution $authuser)/g"		$WORKDIR/sip_peer.tmp
+	sed -i "s/|USER|/$(escape_sed_substitution $user)/"			$WORKDIR/sip_peer.tmp
+	sed -i "s/|SECRET|/$(escape_sed_substitution $secret)/"			$WORKDIR/sip_peer.tmp
 	sed -i "s/|HOST|/$host/"			$WORKDIR/sip_peer.tmp
 	sed -i "s/|FROMDOMAIN|/$domain/"		$WORKDIR/sip_peer.tmp
 
@@ -435,10 +441,10 @@ configure_sip_account()
 
 	# Register account with SIP Service Provider
 	sed -i "s/|ACCOUNT|/$1/g"			$WORKDIR/sip_reg.tmp	
-	sed -i "s/|USER|/$user/g"			$WORKDIR/sip_reg.tmp
-	sed -i "s/|SECRET|/$secret/"			$WORKDIR/sip_reg.tmp
+	sed -i "s/|USER|/$(escape_sed_substitution $user)/g"			$WORKDIR/sip_reg.tmp
+	sed -i "s/|SECRET|/$(escape_sed_substitution $secret)/"			$WORKDIR/sip_reg.tmp
 	if [ -n "$authuser" ] ; then
-		sed -i "s/|AUTHUSER|/:$authuser/"	$WORKDIR/sip_reg.tmp
+		sed -i "s/|AUTHUSER|/:$(escape_sed_substitution $authuser)/"	$WORKDIR/sip_reg.tmp
 	else
 		sed -i "s/|AUTHUSER|//"			$WORKDIR/sip_reg.tmp
 	fi
@@ -597,10 +603,10 @@ create_extensions_account()
 	#common settings
 	sed -i "s/|ACCOUNT|/$1/g"			$WORKDIR/extensions_account.tmp
 	sed -i "s/|CUSTOM_OUTGOING|/$custom_outgoing/"	$WORKDIR/extensions_account.tmp
-	sed -i "s/|DISPLAYNAME|/$displayname/"		$WORKDIR/extensions_account.tmp
+	sed -i "s/|DISPLAYNAME|/$(escape_sed_substitution $displayname)/"		$WORKDIR/extensions_account.tmp
 
 	#cbbs settings
-	sed -i "s/|CBBS_KEY|/$cbbs_key/"		$WORKDIR/extensions_account.tmp
+	sed -i "s/|CBBS_KEY|/$(escape_sed_substitution $cbbs_key)/"		$WORKDIR/extensions_account.tmp
 	sed -i "s/|MAX_RETRIES|/$cbbs_maxretry/"	$WORKDIR/extensions_account.tmp
 	sed -i "s/|RETRYTIME|/$cbbs_retrytime/"		$WORKDIR/extensions_account.tmp
 	sed -i "s/|WAITTIME|/$cbbs_waittime/"		$WORKDIR/extensions_account.tmp
