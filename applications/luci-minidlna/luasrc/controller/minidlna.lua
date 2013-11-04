@@ -19,12 +19,15 @@ function index()
 		return
 	end
 
+	local users = { "admin", "support", "user" }
 	local page
 
-	page = entry({"admin", "services", "minidlna"}, cbi("minidlna"), _("miniDLNA"))
-	page.dependent = true
-
-	entry({"admin", "services", "minidlna_status"}, call("minidlna_status"))
+	for k, user in pairs(users) do
+		page = entry({user, "services", "minidlna"}, cbi("minidlna"), _("miniDLNA"))
+		page.dependent = true
+		
+		entry({user, "services", "minidlna_status"}, call("minidlna_status"))
+	end
 end
 
 function minidlna_status()

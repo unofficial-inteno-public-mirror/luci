@@ -19,13 +19,16 @@ function index()
 		return
 	end
 
+	local users = { "admin", "support", "user" }
 	local page
 
-	page = entry({"admin", "services", "upnp"}, cbi("upnp/upnp"), _("UPNP"))
-	page.dependent = true
+	for k, user in pairs(users) do
+		page = entry({user, "services", "upnp"}, cbi("upnp/upnp"), _("UPNP"))
+		page.dependent = true
 
-	entry({"admin", "services", "upnp", "status"}, call("act_status")).leaf = true
-	entry({"admin", "services", "upnp", "delete"}, call("act_delete")).leaf = true
+		entry({user, "services", "upnp", "status"}, call("act_status")).leaf = true
+		entry({user, "services", "upnp", "delete"}, call("act_delete")).leaf = true
+	end
 end
 
 function act_status()
