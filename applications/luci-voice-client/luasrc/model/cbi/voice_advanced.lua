@@ -339,8 +339,7 @@ ptime:value("40", "40")
 ptime.default = "20"
 
 ecan = line:option(Flag, "echo_cancel", "Echo cancellation")
-ecan.disabled = 0
-ecan.enabled = 1
+ecan.rmempty = false
 
 vad = line:option(ListValue, "vad", "Voice Activity Detection")
 vad:value(0, "Off")
