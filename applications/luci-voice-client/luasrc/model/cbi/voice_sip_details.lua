@@ -174,6 +174,13 @@ end
 
 autoframing = s:option(Flag, "autoframing", "Autoframing", "Negotiate packetization at call establishment")
 
+transports = {udp = "UDP", tcp = "TCP", tls = "TLS"}
+transport = s:option(ListValue, 'transport', "SIP Transport")
+transport.default = "udp"
+for k, v in pairs(transports) do
+	transport:value(k, v)
+end
+
 fax = s:option(Flag, "is_fax", "Use as Fax", "Indicate that this SIP account will be used for a fax machine. This will force some settings to enable inband fax.")
 fax.default = 0
 

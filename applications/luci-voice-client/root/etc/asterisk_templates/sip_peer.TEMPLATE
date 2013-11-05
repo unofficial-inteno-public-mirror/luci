@@ -12,6 +12,7 @@ insecure	= invite
 nat		= yes
 context		= incoming_calls
 port=|PORT|
+transport	= |TRANSPORT|
 outboundproxy=|OUTBOUNDPROXY||OUTBOUNDPROXYPORT|
 autoframing	= |AUTOFRAMING|
 disallow	= all

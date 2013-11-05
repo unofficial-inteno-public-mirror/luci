@@ -353,6 +353,21 @@ configure_sip()
 		sed -i "s/|TOS_TEXT|/$(escape_sed_substitution $tos_text)/g"		$WORKDIR/sip.tmp
 	fi
 
+	# Enable TLS if used by a sip_service_provider
+	local tlsenable="no"
+	local type="sip_service_provider"
+	for section in ${CONFIG_SECTIONS}; do
+		local transport
+		config_get cfgtype "$section" TYPE
+	        [ -n "$type" -a "x$cfgtype" != "x$type" ] && continue
+		config_get transport $section transport
+		if [ "$transport" == "tls" ] ; then
+			tlsenable="yes"
+			break
+		fi
+	done
+	sed -i "s/|TLSENABLE|/$tlsenable/"		$WORKDIR/sip.tmp
+
 	# Set RTP port range
 	
 	sed -i "s/|RTPSTART|/$rtpstart/"		$WORKDIR/rtp.tmp
@@ -416,6 +431,7 @@ configure_sip_account()
 	config_get secret $1 secret
 	config_get is_fax $1 is_fax
 	config_get autoframing $1 autoframing
+	config_get transport $1 transport
 
 	if [ -z "$enabled" -o "$enabled" = "0" ] ; then
 		return
@@ -454,6 +470,7 @@ configure_sip_account()
 	sed -i "s/|SECRET|/$(escape_sed_substitution $secret)/"			$WORKDIR/sip_peer.tmp
 	sed -i "s/|HOST|/$host/"			$WORKDIR/sip_peer.tmp
 	sed -i "s/|FROMDOMAIN|/$domain/"		$WORKDIR/sip_peer.tmp
+	sed -i "s/|TRANSPORT|/$transport/"		$WORKDIR/sip_peer.tmp
 
 	# Set or remove port
 	if [ -z "$port" ] ; then
@@ -493,6 +510,7 @@ configure_sip_account()
 	cat $WORKDIR/sip_peer.tmp >> $WORKDIR/sip_peers.tmp
 
 	# Register account with SIP Service Provider
+	sed -i "s/|TRANSPORT|/$transport/g"		$WORKDIR/sip_reg.tmp	
 	sed -i "s/|ACCOUNT|/$1/g"			$WORKDIR/sip_reg.tmp	
 	sed -i "s/|USER|/$(escape_sed_substitution $user)/g"			$WORKDIR/sip_reg.tmp
 	sed -i "s/|SECRET|/$(escape_sed_substitution $secret)/"			$WORKDIR/sip_reg.tmp
