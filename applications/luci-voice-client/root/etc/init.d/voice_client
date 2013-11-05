@@ -201,10 +201,10 @@ read_lines()
 # "register => user[:secret[:authuser]]@host[:port][/extension]"
 format_sip_contact()
 {
-	local contact_line_prefix
-	config_get contact_line_prefix features contact_line_prefix
+	local contact_line_suffix
+	config_get contact_line_suffix SIP contact_line_suffix
 
-	if [ "$contact_line_prefix" != "1" ] ; then
+	if [ "$contact_line_suffix" != "1" ] ; then
 		echo $2
 		return
 	fi

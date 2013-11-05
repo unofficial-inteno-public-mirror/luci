@@ -121,6 +121,9 @@ remotehold.optional = true
 remotehold.disabled = "no"                              
 remotehold.enabled = "yes"
 
+contact_line_suffix = sip:option(Flag, 'contact_line_suffix', "Line suffix in contact header", "Add a suffix indicating which lines are called to the sip contact header")
+contact_line_suffix.optional = true
+
 blindxfer = sip:option(Value, 'blindxfer', "Blind Transfer", "Key combination to initiate blind transfer of call")
 function blindxfer.validate(self, value, section)
 	if datatypes.phonedigit(value) then
