@@ -31,6 +31,7 @@ local table  = require "table"
 local nixio  = require "nixio"
 local fs     = require "nixio.fs"
 local uci    = require "luci.model.uci"
+local bus    = require "ubus"
 
 local luci  = {}
 luci.util   = require "luci.util"
@@ -306,6 +307,15 @@ local function _nethints(what, callback)
 			end
 		end
 	end
+	
+	if fs.access("/var/hosts/6relayd") then
+		for e in io.lines("/var/hosts/6relayd") do
+			local iface, duid, iaid, hostname, ts, id, length, ip6 = e:match("^# (%S+) (%S+) (%S+) (%S+) (%d+) (%S+) (%S+) (.*)")
+			if duid and ip6 then
+				_add(what, duid:upper(), nil, ip6, hostname ~= "-" and hostname)
+			end
+		end
+	end
 
 	cur:foreach("dhcp", "host",
 		function(s)
@@ -338,70 +348,12 @@ local function _nethints(what, callback)
 	end
 end
 
-local function _isinternal(ip)
-	local ret, dev, line, ln, cnt, leave
-	local cur = uci.cursor()
-	ret = true
-	leave = false
-	cnt = 0
-
-	for line in io.lines("/proc/net/arp") do
-		if line:match(ip) then
-			for ln in line:gmatch("%S+") do
-				cnt = cnt + 1
-				if cnt == 6 then
-					dev = ln
-				end
-			end
-		end
-	end
-
-	if not leave then
-		cur:foreach("layer2_interface_ethernet", "ethernet_interface",
-			function(s)
-				if s.ifname == dev then
-					ret = false
-					leave = true
-				end
-			end)
-	end
-
-	if not leave then
-		cur:foreach("layer2_interface_adsl", "atm_bridge",
-			function(s)
-				if s.ifname == dev then
-					ret = false
-					leave = true
-				end
-			end)
-	end
-
-	if not leave then
-		cur:foreach("layer2_interface_vdsl", "vdsl_interface",
-			function(s)
-				if s.ifname == dev then
-					ret = false
-					leave = true
-				end
-			end)
-	end
-
-	if not leave then
-		cur:foreach("layer2_interface_vlan", "vlan_interface",
-			function(s)
-				if s.ifname == dev then
-					ret = false
-					leave = true
-				end
-			end)
-	end
-
-	return ret
-end
-
 local function _clients(what, callback)
 	local _, k, e, mac, ip, name
 	local hosts = { }
+	local _ubus
+	local _ubuscache = { }
+	local i = 1
 
 	local function _add(i, ...)
 		local k = select(i, ...)
@@ -414,23 +366,19 @@ local function _clients(what, callback)
 		end
 	end
 
-	if fs.access("/proc/net/arp") then
-		for e in io.lines("/proc/net/arp") do
-			ip, mac = e:match("^([%d%.]+)%s+%S+%s+%S+%s+([a-fA-F0-9:]+)%s+")
-			if ip and mac and _isinternal(ip) then
-				_add(what, mac:upper(), ip, nil, nil)
-			end
-		end
-	end
+        _ubus = bus.connect()
+        _ubuscache["clients"] = _ubus:call("router", "clients", { })
+        _ubus:close()
 
-	if fs.access("/var/dhcp.leases") then
-		for e in io.lines("/var/dhcp.leases") do
-			mac, ip, name = e:match("^%d+ (%S+) (%S+) (%S+)")
-			if mac and ip then
-				_add(what, mac:upper(), ip, nil, name ~= "*" and name)
-			end
-		end
-	end
+        while _ubuscache["clients"][i] do
+                ip = _ubuscache["clients"][i]["ipaddr"]
+                mac = _ubuscache["clients"][i]["macaddr"]
+                name = _ubuscache["clients"][i]["hostname"]
+                if ip and mac then
+                	_add(what, mac:upper(), ip, nil, name ~= "*" and name)
+                end
+                i = i + 1
+        end
 
 	for _, e in luci.util.kspairs(hosts) do
 		callback(e[1], e[2], e[3], e[4])
@@ -485,7 +433,7 @@ function net.ipv4_hints(callback)
 	end
 end
 
---- Returns a two-dimensional table of IPv4 address hints.
+--- Returns a two-dimensional table of IPv4 clients.
 -- @return  Table of table containing internal hosts.
 --          Each entry contains the values in the following order:
 --          [ "ip", "name" ]

@@ -15,6 +15,7 @@ You may obtain a copy of the License at
 local sys = require "luci.sys"
 local dsp = require "luci.dispatcher"
 local nxo = require "nixio"
+local io  = require "io"
 
 local ft = require "luci.tools.firewall"
 local nw = require "luci.model.network"
@@ -269,6 +270,12 @@ else
 		o:value(ip, "%s (%s)" %{ ip, name })
 	end)
 
+	if nw:has_ipv6() then
+		luci.sys.net.ipv6_hints(function(ip, name)
+			o:value(ip, "%s (%s)" %{ ip, name })
+		end)
+	end
+
 
 	o = s:option(Value, "src_port", translate("Source port"))
 	o.datatype = "list(neg(portrange))"
@@ -289,6 +296,12 @@ else
 	luci.sys.net.ipv4_hints(function(ip, name)
 		o:value(ip, "%s (%s)" %{ ip, name })
 	end)
+	
+	if nw:has_ipv6() then
+		luci.sys.net.ipv6_hints(function(ip, name)
+			o:value(ip, "%s (%s)" %{ ip, name })
+		end)
+	end
 
 
 	o = s:option(Value, "dest_port", translate("Destination port"))
