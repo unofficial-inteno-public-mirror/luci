@@ -15,7 +15,6 @@ You may obtain a copy of the License at
 local sys = require "luci.sys"
 local dsp = require "luci.dispatcher"
 local nxo = require "nixio"
-local io  = require "io"
 
 local ft = require "luci.tools.firewall"
 local nw = require "luci.model.network"
