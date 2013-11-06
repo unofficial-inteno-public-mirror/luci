@@ -16,23 +16,31 @@ $Id: system.lua 9570 2012-12-25 02:45:42Z jow $
 module("luci.controller.admin.system", package.seeall)
 
 function index()
-	entry({"admin", "system"}, alias("admin", "system", "system"), _("System"), 30).index = true
-	entry({"admin", "system", "system"}, cbi("admin_system/system"), _("System"), 1)
-	entry({"admin", "system", "clock_status"}, call("action_clock_status"))
+	local users = { "admin", "support", "user" }
 
-	entry({"admin", "system", "admin"}, cbi("admin_system/admin"), _("Administration"), 2)
+	for k, user in pairs(users) do
+		entry({user, "system"}, alias(user, "system", "system"), _("System"), 30).index = true
+		entry({user, "system", "system"}, cbi("admin_system/system"), _("System"), 1)
+		entry({user, "system", "clock_status"}, call("action_clock_status"))
 
-	entry({"admin", "system", "startup"}, form("admin_system/startup"), _("Startup"), 45)
-	--entry({"admin", "system", "crontab"}, form("admin_system/crontab"), _("Scheduled Tasks"), 46)
+		entry({user, "system", user}, cbi("admin_system/admin"), _("Administration"), 2)
+		
+		if user == "admin" then
+			entry({user, "system", "startup"}, form("admin_system/startup"), _("Startup"), 45)
+			--entry({user, "system", "crontab"}, form("admin_system/crontab"), _("Scheduled Tasks"), 46)
 
-	if nixio.fs.access("/sys/class/leds") then
-		entry({"admin", "system", "leds"}, cbi("admin_system/leds"), _("<abbr title=\"Light Emitting Diode\">LED</abbr> Configuration"), 60)
+			--if nixio.fs.access("/sys/class/leds") then
+			--	entry({user, "system", "leds"}, cbi("admin_system/leds"), _("<abbr title=\"Light Emitting Diode\">LED</abbr> Configuration"), 60)
+			--end
+		end
+
+		if user ~= "user" then
+			entry({user, "system", "flashops"}, call("action_flashops"), _("Backup / Flash Firmware"), 70)
+			entry({user, "system", "flashops", "backupfiles"}, form("admin_system/backupfiles"))
+		end
+
+		entry({user, "system", "reboot"}, call("action_reboot"), _("Reboot"), 90)
 	end
-
-	entry({"admin", "system", "flashops"}, call("action_flashops"), _("Backup / Flash Firmware"), 70)
-	entry({"admin", "system", "flashops", "backupfiles"}, form("admin_system/backupfiles"))
-
-	entry({"admin", "system", "reboot"}, call("action_reboot"), _("Reboot"), 90)
 end
 
 function action_clock_status()

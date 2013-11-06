@@ -17,7 +17,6 @@ module("luci.controller.admin.status", package.seeall)
 
 function index()
 	local users = { "admin", "support", "user" }
-	local page
 
 	for k, user in pairs(users) do
 		entry({user, "status"}, alias(user, "status", "overview"), _("Status"), 20).index = true

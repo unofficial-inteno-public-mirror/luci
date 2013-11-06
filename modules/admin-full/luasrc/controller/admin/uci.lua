@@ -16,14 +16,17 @@ $Id: uci.lua 7362 2011-08-12 13:16:27Z jow $
 module("luci.controller.admin.uci", package.seeall)
 
 function index()
-	local redir = luci.http.formvalue("redir", true) or
-	  luci.dispatcher.build_url(unpack(luci.dispatcher.context.request))
+	local redir = luci.http.formvalue("redir", true) or luci.dispatcher.build_url(unpack(luci.dispatcher.context.request))
+	  
+	local users = { "admin", "support", "user" }
 
-	entry({"admin", "uci"}, nil, _("Configuration"))
-	entry({"admin", "uci", "changes"}, call("action_changes"), _("Changes"), 40).query = {redir=redir}
-	entry({"admin", "uci", "revert"}, call("action_revert"), _("Revert"), 30).query = {redir=redir}
-	entry({"admin", "uci", "apply"}, call("action_apply"), _("Apply"), 20).query = {redir=redir}
-	entry({"admin", "uci", "saveapply"}, call("action_apply"), _("Save &#38; Apply"), 10).query = {redir=redir}
+	for k, user in pairs(users) do
+		entry({user, "uci"}, nil, _("Configuration"))
+		entry({user, "uci", "changes"}, call("action_changes"), _("Changes"), 40).query = {redir=redir}
+		entry({user, "uci", "revert"}, call("action_revert"), _("Revert"), 30).query = {redir=redir}
+		entry({user, "uci", "apply"}, call("action_apply"), _("Apply"), 20).query = {redir=redir}
+		entry({user, "uci", "saveapply"}, call("action_apply"), _("Save &#38; Apply"), 10).query = {redir=redir}
+	end
 end
 
 function action_changes()

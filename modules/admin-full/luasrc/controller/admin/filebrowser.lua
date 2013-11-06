@@ -16,5 +16,9 @@ $Id: filebrowser.lua 3555 2008-10-10 21:52:22Z jow $
 module("luci.controller.admin.filebrowser", package.seeall)
 
 function index()
-	entry( {"admin", "filebrowser"}, template("cbi/filebrowser") ).leaf = true
+	local users = { "admin", "support", "user" }
+
+	for k, user in pairs(users) do
+		entry( {user, "filebrowser"}, template("cbi/filebrowser") ).leaf = true
+	end
 end
