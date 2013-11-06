@@ -110,6 +110,7 @@ config 'features' 'features'
 	option 'callforward_enabled' '1'
 	option 'redial_enabled' '1'
 	option 'callreturn_enabled' '1'
+	option 'advanced_register_settings' '1'
 
 config 'sip_service_provider' 'sip0'
 	option 'name' 'Account 1'

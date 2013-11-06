@@ -106,24 +106,27 @@ function defaultexpiry.validate(self, value, section)
 	return nil, "Register Interval must be at least 1 second"
 end
 
-registertimeout = sip:option(Value, 'registertimeout', "Register Timeout", "Time before giving up a registration attempt");
-registertimeout.default = 30
-registertimeout.optional = true
-function registertimeout.validate(self, value, section)
-	if datatypes.min(value,1) then
-		return value
+advanced_register_settings = m.uci.get("voice_client", "features", "advanced_register_settings") == "1"
+if advanced_register_settings then
+	registertimeout = sip:option(Value, 'registertimeout', "Register Timeout", "Time before giving up a registration attempt");
+	registertimeout.default = 30
+	registertimeout.optional = true
+	function registertimeout.validate(self, value, section)
+		if datatypes.min(value,1) then
+			return value
+		end
+		return nil, "Register Timeout must be at least 1 second"
 	end
-	return nil, "Register Timeout must be at least 1 second"
-end
 
-registerattempts = sip:option(Value, 'registerattempts', "Register Attempts", "Number of registration attempts before giving up (Set to 0 or empty to try forever)");
-registerattempts.default = 0
-registerattempts.optional = true
-function registerattempts.validate(self, value, section)
-	if datatypes.min(value,0) then
-		return value
+	registerattempts = sip:option(Value, 'registerattempts', "Register Attempts", "Number of registration attempts before giving up (Set to 0 or empty to try forever)");
+	registerattempts.default = 0
+	registerattempts.optional = true
+	function registerattempts.validate(self, value, section)
+		if datatypes.min(value,0) then
+			return value
+		end
+		return nil, "Register Attempts must be at least 1"
 	end
-	return nil, "Register Attempts must be at least 1"
 end
 
 remotehold = sip:option(Flag, 'remotehold', "Remote Hold", "Send hold events to proxy (Let network handle music on hold)")
