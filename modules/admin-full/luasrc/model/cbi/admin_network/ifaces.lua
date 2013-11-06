@@ -476,7 +476,7 @@ if guser == "admin" then
 		-- check if selected interface is used by a bridge
 		if not net:is_floating() and ifname_multi:formvalue(section) then
 			local ifn = ifname_multi:formvalue(section)
-			local there, intface, ifname, typ, adv
+			local there, intface, netname, ifname, typ, adv
 			m.uci:foreach("network", "interface",
 			function (s)
 				intface = s[".name"]
@@ -486,6 +486,7 @@ if guser == "admin" then
 				if intface == net:name() or there then
 					return
 				end
+				netname = intface or "-"
 
 				if typ  == "bridge" and ifname then
 					for iface in ifname:gmatch("%S+") do
@@ -504,7 +505,7 @@ if guser == "admin" then
 				end
 			end)
 			if there then
-				return nil, translate("%s %s used by '%s'" %{there, adv, intface})
+				return nil, translate("%s %s used by '%s'" %{there, adv, netname})
 			end
 		end
 
