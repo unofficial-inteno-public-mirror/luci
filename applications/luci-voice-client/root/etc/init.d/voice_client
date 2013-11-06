@@ -232,6 +232,7 @@ configure_sip()
 	local rtpend
 	local dtmfmode
 	local blindxfer
+	local defaultexpiry
 	local registertimeout
 	local registerattempts
 	local remotehold
@@ -247,6 +248,7 @@ configure_sip()
 	config_get rtpend $1 rtpend
 	config_get dtmfmode $1 dtmfmode
 	config_get blindxfer $1 blindxfer
+	config_get defaultexpiry $1 defaultexpiry
 	config_get registertimeout $1 registertimeout
 	config_get registerattempts $1 registerattempts
 	config_get register403timeout $1 register403timeout
@@ -271,6 +273,12 @@ configure_sip()
 		sed -i "s/bindport=|BINDPORT|/;bindport=/g"	$WORKDIR/sip.tmp
 	else
 		sed -i "s/|BINDPORT|/$bindport/g"		$WORKDIR/sip.tmp
+	fi
+
+	if [ -z "$defaultexpiry" ] ; then
+		sed -i "s/|DEFAULTEXPIRY|/300/g"				$WORKDIR/sip.tmp
+	else
+		sed -i "s/|DEFAULTEXPIRY|/$defaultexpiry/g"			$WORKDIR/sip.tmp
 	fi
 
 	if [ -z "$registertimeout" ] ; then

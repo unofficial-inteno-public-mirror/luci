@@ -96,7 +96,17 @@ dtmfmode:value("info", "SIP INFO")
 dtmfmode:value("inband", "Inband")
 dtmfmode.default = "compatibility"
 
-registertimeout = sip:option(Value, 'registertimeout', "Register Timeout", "Time in seconds between registration attempts");
+defaultexpiry = sip:option(Value, 'defaultexpiry', "Register Interval", "Time in seconds between registration attempts");
+defaultexpiry.default = 300
+defaultexpiry.optional = true
+function defaultexpiry.validate(self, value, section)
+	if datatypes.min(value,1) then
+		return value
+	end
+	return nil, "Register Interval must be at least 1 second"
+end
+
+registertimeout = sip:option(Value, 'registertimeout', "Register Timeout", "Time before giving up a registration attempt");
 registertimeout.default = 30
 registertimeout.optional = true
 function registertimeout.validate(self, value, section)
