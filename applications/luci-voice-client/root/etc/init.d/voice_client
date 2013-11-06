@@ -249,6 +249,7 @@ configure_sip()
 	config_get blindxfer $1 blindxfer
 	config_get registertimeout $1 registertimeout
 	config_get registerattempts $1 registerattempts
+	config_get register403timeout $1 register403timeout
 	config_get remotehold $1 remotehold
 	config_get tos_sip $1 tos_sip
 	config_get tos_audio $1 tos_audio
@@ -282,6 +283,12 @@ configure_sip()
 		sed -i "s/registerattempts=|REGISTERATTEMPTS|/;registerattempts=/g"	$WORKDIR/sip.tmp
 	else
 		sed -i "s/|REGISTERATTEMPTS|/$registerattempts/g"			$WORKDIR/sip.tmp
+	fi
+
+	if [ -z "$register403timeout" ] ; then
+		sed -i "s/register403timeout=|REGISTER403TIMEOUT|/;register403timeout=/g" $WORKDIR/sip.tmp
+	else
+		sed -i "s/|REGISTER403TIMEOUT|/$register403timeout/g"			$WORKDIR/sip.tmp
 	fi
 
 	if [ -z "$remotehold" ] ; then

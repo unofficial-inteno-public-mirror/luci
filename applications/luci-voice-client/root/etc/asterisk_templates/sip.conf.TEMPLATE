@@ -28,6 +28,7 @@ externhost=|EXTERNHOST|
 dtmfmode=|DTMFMODE|
 registertimeout=|REGISTERTIMEOUT|
 registerattempts=|REGISTERATTEMPTS|
+register403timeout=|REGISTER403TIMEOUT|
 remotehold=|REMOTEHOLD|
 
 ; Differentiated Services settings. See https://wiki.asterisk.org/wiki/display/AST/IP+Quality+of+Service for a description of these parameters.
