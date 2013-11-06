@@ -16,29 +16,34 @@ $Id: status.lua 9678 2013-03-07 12:17:43Z jow $
 module("luci.controller.admin.status", package.seeall)
 
 function index()
-	entry({"admin", "status"}, alias("admin", "status", "overview"), _("Status"), 20).index = true
-	entry({"admin", "status", "overview"}, template("admin_status/index"), _("Overview"), 1)
-	entry({"admin", "status", "iptables"}, call("action_iptables"), _("Firewall"), 2).leaf = true
-	entry({"admin", "status", "routes"}, template("admin_status/routes"), _("Routes"), 3)
-	entry({"admin", "status", "syslog"}, call("action_syslog"), _("System Log"), 4)
-	entry({"admin", "status", "dmesg"}, call("action_dmesg"), _("Kernel Log"), 5)
-	entry({"admin", "status", "processes"}, cbi("admin_status/processes"), _("Processes"), 6)
+	local users = { "admin", "support", "user" }
+	local page
 
-	entry({"admin", "status", "realtime"}, alias("admin", "status", "realtime", "load"), _("Realtime Graphs"), 7)
+	for k, user in pairs(users) do
+		entry({user, "status"}, alias(user, "status", "overview"), _("Status"), 20).index = true
+		entry({user, "status", "overview"}, template("admin_status/index"), _("Overview"), 1)
+		entry({user, "status", "iptables"}, call("action_iptables"), _("Firewall"), 2).leaf = true
+		entry({user, "status", "routes"}, template("admin_status/routes"), _("Routes"), 3)
+		entry({user, "status", "syslog"}, call("action_syslog"), _("System Log"), 4)
+		entry({user, "status", "dmesg"}, call("action_dmesg"), _("Kernel Log"), 5)
+		entry({user, "status", "processes"}, cbi("admin_status/processes"), _("Processes"), 6)
 
-	entry({"admin", "status", "realtime", "load"}, template("admin_status/load"), _("Load"), 1).leaf = true
-	entry({"admin", "status", "realtime", "load_status"}, call("action_load")).leaf = true
+		entry({user, "status", "realtime"}, alias(user, "status", "realtime", "load"), _("Realtime Graphs"), 7)
 
-	entry({"admin", "status", "realtime", "bandwidth"}, template("admin_status/bandwidth"), _("Traffic"), 2).leaf = true
-	entry({"admin", "status", "realtime", "bandwidth_status"}, call("action_bandwidth")).leaf = true
+		entry({user, "status", "realtime", "load"}, template("admin_status/load"), _("Load"), 1).leaf = true
+		entry({user, "status", "realtime", "load_status"}, call("action_load")).leaf = true
 
-	--entry({"admin", "status", "realtime", "wireless"}, template("admin_status/wireless"), _("Wireless"), 3).leaf = true
-	--entry({"admin", "status", "realtime", "wireless_status"}, call("action_wireless")).leaf = true
+		entry({user, "status", "realtime", "bandwidth"}, template("admin_status/bandwidth"), _("Traffic"), 2).leaf = true
+		entry({user, "status", "realtime", "bandwidth_status"}, call("action_bandwidth")).leaf = true
 
-	entry({"admin", "status", "realtime", "connections"}, template("admin_status/connections"), _("Connections"), 4).leaf = true
-	entry({"admin", "status", "realtime", "connections_status"}, call("action_connections")).leaf = true
+		--entry({user, "status", "realtime", "wireless"}, template("admin_status/wireless"), _("Wireless"), 3).leaf = true
+		--entry({user, "status", "realtime", "wireless_status"}, call("action_wireless")).leaf = true
 
-	entry({"admin", "status", "nameinfo"}, call("action_nameinfo")).leaf = true
+		entry({user, "status", "realtime", "connections"}, template("admin_status/connections"), _("Connections"), 4).leaf = true
+		entry({user, "status", "realtime", "connections_status"}, call("action_connections")).leaf = true
+
+		entry({user, "status", "nameinfo"}, call("action_nameinfo")).leaf = true
+	end
 end
 
 function action_syslog()
@@ -52,6 +57,7 @@ function action_dmesg()
 end
 
 function action_iptables()
+	local guser = luci.dispatcher.context.path[1] 
 	if luci.http.formvalue("zero") then
 		if luci.http.formvalue("zero") == "6" then
 			luci.util.exec("ip6tables -Z")
@@ -59,12 +65,12 @@ function action_iptables()
 			luci.util.exec("iptables -Z")
 		end
 		luci.http.redirect(
-			luci.dispatcher.build_url("admin", "status", "iptables")
+			luci.dispatcher.build_url(guser, "status", "iptables")
 		)
 	elseif luci.http.formvalue("restart") == "1" then
 		luci.util.exec("/etc/init.d/firewall reload")
 		luci.http.redirect(
-			luci.dispatcher.build_url("admin", "status", "iptables")
+			luci.dispatcher.build_url(guser, "status", "iptables")
 		)
 	else
 		luci.template.render("admin_status/iptables")
