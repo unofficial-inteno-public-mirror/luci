@@ -375,7 +375,7 @@ local function _clients(what, callback)
                 mac = _ubuscache["clients"][i]["macaddr"]
                 name = _ubuscache["clients"][i]["hostname"]
                 if ip and mac then
-                	_add(what, mac:upper(), ip, nil, name ~= "*" and name)
+                	_add(what, mac:upper(), ip, nil, (name ~= "*" and name ~= "") and name)
                 end
                 i = i + 1
         end
