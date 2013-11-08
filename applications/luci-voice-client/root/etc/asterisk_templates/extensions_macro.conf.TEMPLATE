@@ -86,6 +86,7 @@ exten => s,n,		Hangup()
 ; ${ARG5} - Retry interval
 ; ${ARG6} - Wait time
 ; ${ARG7} - Key to press to initiate cbbs
+; ${ARG8} - Tone to play on congestion
 ;
 exten => s,1,			Goto(s-${DIALSTATUS},1)
 exten => s,n,			Hangup()
@@ -99,7 +100,8 @@ exten => s-BUSY,n,		Playback(beep)
 exten => s-BUSY,n,		Hangup()
 
 ;handle congestion
-exten => s-CONGESTION,1,	Playtones(congestion)
+exten => s-CONGESTION,1,	Playtones(${ARG8})
+exten => s-CONGESTION,n,	Wait(5)
 exten => s-CONGESTION,n,	Congestion()
 exten => s-CONGESTION,n,	Hangup()
 

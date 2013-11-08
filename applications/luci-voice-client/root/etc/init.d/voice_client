@@ -555,6 +555,7 @@ create_extensions_account()
 	local custom_outgoing
 	local incoming_lines
 	local direct_dial
+	local congestiontone
 
 	local callforward_enabled
 	local cbbs_enabled
@@ -588,6 +589,14 @@ create_extensions_account()
 		custom_outgoing="NoOp()"
 	else
 		custom_outgoing="Macro(custom-outgoing)"
+	fi
+
+	#Set congestion tone (default to congestion)
+	config_get congestiontone "SIP" congestiontone
+	if [ -n "$congestiontone" ] ; then
+		sed -i "s/|CONGESTIONTONE|/$congestiontone/"	$WORKDIR/extensions_account.tmp
+	else
+		sed -i "s/|CONGESTIONTONE|/congestion/"	$WORKDIR/extensions_account.tmp
 	fi
 
 	# load cbbs settings if enabled

@@ -161,6 +161,11 @@ tos_audio.optional = true
 --tos_text.default = "af41"
 --tos_text.optional = true
 
+congestiontone = sip:option(ListValue, "congestiontone", "Congestion tone", "Tone to play on congestion")
+congestiontone:value("congestion", "congestion")
+congestiontone:value("info", "info")
+congestiontone.optional = true
+
 -- Fixed length numbers
 s = m:section(TypedSection, "sip_service_provider", "Fixed length number series")
 s.template  = "cbi/tblsection"
