@@ -593,10 +593,8 @@ create_extensions_account()
 
 	#Set congestion tone (default to congestion)
 	config_get congestiontone "SIP" congestiontone
-	if [ -n "$congestiontone" ] ; then
-		sed -i "s/|CONGESTIONTONE|/$congestiontone/"	$WORKDIR/extensions_account.tmp
-	else
-		sed -i "s/|CONGESTIONTONE|/congestion/"	$WORKDIR/extensions_account.tmp
+	if [ -z "$congestiontone" ] ; then
+		congestiontone=congestion
 	fi
 
 	# load cbbs settings if enabled
@@ -642,6 +640,7 @@ create_extensions_account()
 	sed -i "s/|MAX_RETRIES|/$cbbs_maxretry/"	$WORKDIR/extensions_account.tmp
 	sed -i "s/|RETRYTIME|/$cbbs_retrytime/"		$WORKDIR/extensions_account.tmp
 	sed -i "s/|WAITTIME|/$cbbs_waittime/"		$WORKDIR/extensions_account.tmp
+	sed -i "s/|CONGESTIONTONE|/$congestiontone/"	$WORKDIR/extensions_account.tmp
 
 	# Confifure call forwarding if enabled
 	if [ -n "$callforward_enabled" -a "$callforward_enabled" = "1" ] ; then
