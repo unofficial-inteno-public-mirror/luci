@@ -754,6 +754,10 @@ configure_brcm()
 	config_get dtmfmode SIP dtmfmode
 	config_get dialoutmsec BRCM dialoutmsec
 
+	if [ -z "$dialoutmsec" ] ; then
+		dialoutmsec=2000
+	fi
+
 	sed -i "s/|COUNTRY|/$country/"				$WORKDIR/brcm.tmp
 	sed -i "s/|JBENABLE|/$jbenable/"			$WORKDIR/brcm.tmp
 	sed -i "s/|JBFORCE|/$jbforce/"				$WORKDIR/brcm.tmp
