@@ -1,4 +1,10 @@
+local dsp = require "luci.dispatcher"
+
 m = Map ("voice_client", translate("Voice Settings"))
+function m.on_before_apply(self)
+	redirect = dsp.build_url("admin/system/reboot")
+	luci.http.redirect(redirect)
+end
 
 brcm = m:section(TypedSection, "brcm_advanced")
 brcm.anonymous = true
@@ -30,7 +36,7 @@ countries = {	AUS = "AUSTRALIA",
 		ARE = "UNITED ARAB EMIRATES",
 		T57 = "CFG TR57" }
 
-country = brcm:option(ListValue, 'country', 'Locale selection')
+country = brcm:option(ListValue, 'country', 'Locale selection', 'A restart is required for country changes to take effect')
 for k,v in pairs(countries) do
 	country:value(k, v)
 end
