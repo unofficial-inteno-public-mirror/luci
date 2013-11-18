@@ -98,7 +98,6 @@ dtmfmode.default = "compatibility"
 
 defaultexpiry = sip:option(Value, 'defaultexpiry', "Register Interval", "Time in seconds between registration attempts");
 defaultexpiry.default = 300
-defaultexpiry.optional = true
 function defaultexpiry.validate(self, value, section)
 	if datatypes.min(value,1) then
 		return value
