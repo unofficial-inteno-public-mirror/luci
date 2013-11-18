@@ -474,7 +474,7 @@ if guser == "admin" then
 	function p.remove() end
 	function p.validate(self, value, section)
 		-- check if selected interface is used by a bridge
-		if not net:is_floating() and ifname_multi:formvalue(section) then
+		if not net:is_floating() and ifname_multi and ifname_multi:formvalue(section) then
 			local ifn = ifname_multi:formvalue(section)
 			local there, intface, netname, ifname, typ, adv
 			m.uci:foreach("network", "interface",
