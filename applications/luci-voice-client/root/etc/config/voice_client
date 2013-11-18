@@ -104,6 +104,7 @@ config 'brcm_advanced' 'BRCM'
 	option 'genericplc' 'yes'
 	option 'dtmfcompatibility' '1'
 	option 'dialoutmsec' '2000'
+	option 'cw_enable' 'yes'
 
 config 'features' 'features'
 	option 'cbbs_enabled' '1'

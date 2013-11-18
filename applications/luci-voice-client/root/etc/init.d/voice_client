@@ -745,6 +745,7 @@ configure_brcm()
 	local jbimpl
 	local dtmfcompatibility
 	local dialoutmsec
+	local cw_enable
 
 	config_get country BRCM country
 	config_get jbenable BRCM jbenable
@@ -753,9 +754,14 @@ configure_brcm()
 	config_get jbimpl BRCM jbimpl
 	config_get dtmfmode SIP dtmfmode
 	config_get dialoutmsec BRCM dialoutmsec
+	config_get cw_enable BRCM cw_enable
 
 	if [ -z "$dialoutmsec" ] ; then
 		dialoutmsec=2000
+	fi
+
+	if [ -z "$cw_enable" ] ; then
+		cw_enable=yes
 	fi
 
 	sed -i "s/|COUNTRY|/$country/"				$WORKDIR/brcm.tmp
@@ -771,6 +777,7 @@ configure_brcm()
 		dtmfcompatibility="0"
 	fi
 	sed -i "s/|DTMFCOMPATIBILITY|/$dtmfcompatibility/"      $WORKDIR/brcm.tmp
+	sed -i "s/|CW_ENABLE|/$cw_enable/"			$WORKDIR/brcm.tmp
 }
 
 #
