@@ -41,8 +41,8 @@ tos_text=|TOS_TEXT|		; Sets TOS for RTP text packets. Recommended = af41
 tlsenable=|TLSENABLE|
 tlsbindaddr=0.0.0.0
 tlsdontverifyserver=no
-tlscipher=DES-CBC3-SHA
-tlsclientmethod=tlsv1
+tlscipher=|TLSCIPHER|
+tlsclientmethod=|TLSCLIENTMETHOD|
 tlscafile=/etc/asterisk/ssl/ca.pem
 
 #include sip_registrations.conf

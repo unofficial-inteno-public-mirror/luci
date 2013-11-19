@@ -17,13 +17,21 @@
     along with luci-pbx.  If not, see <http://www.gnu.org/licenses/>.
 ]]--
 
-m = Map ("voice_client", translate("Trusted Certificate Authorities"),
-"Allows specification of trusted SSL certificate authorities (issuers). Issuer certificates should be in PEM-format. <br>Paste the full certificate including '-----BEGIN CERTIFICATE-----' and '-----END CERTIFICATE-----' below.")
+m = Map ("voice_client", "SSL")
 
-s = m:section(TypedSection, "ca")
-s.anonymous = true
+ssl = m:section(TypedSection, "sip_advanced", "")
+ssl.anonymous = true
 
-ca = s:option(Value, 'ca', '')
+version = ssl:option(ListValue, "ssl_version", "Version")
+version:value("tlsv1", "TLS v1")
+version:value("sslv3", "SSL v3")
+version:value("sslv2", "SSL v2")
+version.default = "tlsv1"
+
+cipher = ssl:option(Value, "ssl_cipher", "Cipher string")
+cipher.default = "DES-CBC3-SHA"
+
+ca = ssl:option(Value, 'ca', "Trusted CA", "Issuer certificates in PEM-format. Paste the full certificate including '-----BEGIN CERTIFICATE-----' and '-----END CERTIFICATE-----'.")
 ca.template = "cbi/tvalue"
 ca.rows = 20
 
