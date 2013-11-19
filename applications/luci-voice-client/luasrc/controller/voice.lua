@@ -38,7 +38,8 @@ function index()
 			entry({user, "services", "voice", "voice_brcm"},	cbi("voice_brcm"),	"Lines",		3)
 			entry({user, "services", "voice", "voice_advanced"},	cbi("voice_advanced"),	"Advanced Settings",	4)
 			entry({user, "services", "voice", "voice_dialplan"},	cbi("voice_dialplan"),	"Dialplan",		5)
-			entry({user, "services", "voice", "voice_log"},	cbi("voice_log"),	"Call Log",		6).leaf = true
+			entry({user, "services", "voice", "voice_ca"},		cbi("voice_ca"),	"Certificate Authorithies",	6)
+			entry({user, "services", "voice", "voice_log"},	cbi("voice_log"),	"Call Log",			7).leaf = true
 			entry({user, "status", "voice"},			cbi("voice_status"),	"SIP Registration",	80)
 		end
 	end
