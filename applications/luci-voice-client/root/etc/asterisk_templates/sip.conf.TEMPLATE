@@ -43,6 +43,7 @@ tlsbindaddr=0.0.0.0
 tlsdontverifyserver=no
 tlscipher=DES-CBC3-SHA
 tlsclientmethod=tlsv1
+tlscafile=/etc/asterisk/ssl/ca.pem
 
 #include sip_registrations.conf
 
