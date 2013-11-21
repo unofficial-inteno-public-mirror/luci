@@ -19,6 +19,7 @@ end
 timelist = s:option(ListValue, "interval", translate("Update weekly or daily"))
 timelist:value("weekly", translate("Weekly"))
 timelist:value("daily", translate("Daily"))
+timelist:value("hourly", translate("Hourly"))
 backup=s:option(Button, "getprov", translate("Export file"),translate("Dump running config into a tar archive that can be used for IUP Provisioning"))
 
 
@@ -33,8 +34,8 @@ local reader = ltn12_popen(backup_cmd)
 		luci.ltn12.pump.all(reader, luci.http.write)	
 end
 s2 = m:section(NamedSection,"configserver","server",translate ("Main Provisioning Server"), translate("If added will override DHCP Discover Provisioning"))
+s2.anonymous=true
 
-s2.addremove = true
 --s2.template = "cbi/tblsection"
 
 enaser = s2:option(Flag, "enabled", translate("Enabled"))
@@ -42,12 +43,18 @@ enaser.enabled = "on"
 enaser.disabled = "off"
 enaser.rmempt = false
 
+reboot = s2:option(Flag, "reboot", translate("Reboot"),translate("Reboot after settings config usualy needed for network settings to work properly"))
+reboot.default="on"
+reboot.enabled = "on"
+reboot.disabled = "off"
+reboot.rmempt = false
+
 url = s2:option(Value, "url", translate("URL"))
 --function url:validate(value)
 --	return value:match("([fh][t][tp]?[ps]://[.]+)")
 --end
 
-deckey = s2:option(Value, "deckey", translate("Decryption Key"), translate("If not entered, DES Key will be used instead"))
+deckey = s2:option(Value, "deckey", translate("Decryption Key"), translate("If not entered, Default onboard DES Key will be used instead"))
 deckey.rmempty = true;
 deckey.password = true;
 
@@ -62,6 +69,16 @@ enaiup.disabled = "off"
 enaiup.rmempt = false
 
 
+software = m:section(NamedSection,"uppgradeserver","software",translate ("Software Update Config"))
+software.anonymous=true
+ enab=software:option(Flag, "enabled", translate("Enabled"))
+  enab.default = "off"
+ enab.enabled = "on"
+ enab.disabled = "off" 
+ default=software:option(Flag, "defaultreset", translate("Defaultreset"),translate("Will remove any configuration set on the device and set it to software default"))
+ default.enabled = "on"
+ default.disabled = "off"
+ software:option(Value, "url", translate("Software URL"))   
 
 
 s3 = m:section(TypedSection, "subconfig", translate("Sub Configs"))
@@ -78,6 +95,8 @@ ena = s3:option(Flag, "enabled", translate("Enabled"))
 ena.enabled = "on"
 ena.disabled = "off"
 ena.rmempt = false
+  
+        
 
 
 function ltn12_popen(command)
