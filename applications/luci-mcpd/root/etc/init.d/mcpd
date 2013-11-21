@@ -55,6 +55,9 @@ start() {
         done
         sed  -i "s/igmp-proxy-interfaces.*/igmp-proxy-interfaces $proxdevs/"  /tmp/mcpd.conf
         echo "igmp-mcast-interfaces $proxdevs" >> /tmp/mcpd.conf
+        for pdev in $proxdevs; do
+        	ifconfig $pdev allmulti
+        done
 
         sed  -i "s/igmp-snooping-interfaces.*/igmp-snooping-interfaces $igmp_snooping_interfaces/"  /tmp/mcpd.conf
         for snpif in $igmp_snooping_interfaces; do
