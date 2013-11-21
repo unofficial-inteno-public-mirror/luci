@@ -1002,7 +1002,8 @@ for slot=1,4 do
 
 	function wepkey.write(self, section, value)
 		if value and (#value == 5 or #value == 13) then
-			value = "s:" .. value
+			--value = "s:" .. value
+			value = value
 		end
 		return Value.write(self, section, value)
 	end
