@@ -1,5 +1,1 @@
 register => |USER|:|SECRET||AUTHUSER|@|ACCOUNT||PORT|/|CONTACT_USER|
-; terminate call after five minutes without data
-rtpholdtimeout=300
-rtptimeout=300
-
