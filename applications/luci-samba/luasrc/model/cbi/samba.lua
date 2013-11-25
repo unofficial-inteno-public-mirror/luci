@@ -77,7 +77,7 @@ for i, dev in ipairs(devices) do
 		local usbinfo=fs.readfile("/proc/scsi/usb-storage/%s" % scsiid:match("%d"))
 		size[dev] = s and math.floor(s / 2048)
 		if dev:match("^/mnt/sd%w%d$") then
-			if usbinfo:match("Vendor: [%w%s%d.,]*\n") and usbinfo:match("Product: [%w%s%d.,]*\n") then
+			if usbinfo and usbinfo:match("Vendor: [%w%s%d.,]*\n") and usbinfo:match("Product: [%w%s%d.,]*\n") then
 				pth:value(dev, translate(usbinfo:match("Vendor: [%w%s%d.,]*\n").." "..usbinfo:match("Product: [%w%s%d.,]*\n").." size :"..size[dev].."Mb"))
 			else
 				pth:value(dev, translate(dev.." size :"..size[dev].."Mb"))
