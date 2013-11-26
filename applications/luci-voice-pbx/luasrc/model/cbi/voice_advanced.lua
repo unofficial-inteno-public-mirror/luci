@@ -19,22 +19,6 @@
 
 local datatypes = require("luci.cbi.datatypes")
 
--- Read line counts from driver
-lineInfo = luci.sys.exec("/usr/bin/brcminfo")
-lines = string.split(lineInfo, "\n")
-if #lines == 5 then
-	dectInfo = lines[1]
-	dectCount = tonumber(dectInfo:match("%d+"))
-	fxsInfo = lines[2]
-	fxsCount = tonumber(fxsInfo:match("%d+"))
-	allInfo = lines[4]
-	allCount = tonumber(allInfo:match("%d+"))
-else
-	dectCount = 0
-	fxsCount = 0
-	allCount = 0
-end
-
 m = Map ("voice_pbx", translate("Advanced settings"))
 
 -- SIP common settings --------------------------------------------------------
@@ -104,6 +88,9 @@ function defaultexpiry.validate(self, value, section)
 	end
 	return nil, "Register Interval must be at least 1 second"
 end
+
+realm = sip:option(Value, 'realm', "Realm", "Realm for digest authentication, set this to your host name or domain name");
+localnet = sip:option(DynamicList, 'localnet', "Localnet", "Network addresses that are considered inside of the NATted network");
 
 advanced_register_settings = m.uci.get("voice_pbx", "features", "advanced_register_settings") == "1"
 if advanced_register_settings then
@@ -293,111 +280,5 @@ if m.uci.get("voice_pbx", "features", "cbbs_enabled") == "1" then
 		return nil, "CBBS wait time must be in range 15-300 seconds"
 	end
 end
-
--- BRCM advanced common settings ----------------------------------------------
-brcm = m:section(TypedSection, "brcm_advanced", "Advanced Line settings")
-brcm.anonymous = true
-
-jbenable = brcm:option(Flag, "jbenable", "Enable Jitter Buffer")
-jbenable.disabled = "no"
-jbenable.enabled = "yes"
-
-jbforce = brcm:option(Flag, "jbforce", "Force Jitter Buffer")
-jbforce:depends("jbenable", "yes")
-jbforce.disabled = "no"
-jbforce.enabled = "yes"
-
-jbimpl = brcm:option(ListValue, "jbimpl", "Jitter Buffer implementation")
-jbimpl:depends("jbenable", "yes")
-jbimpl:value("fixed", "Fixed")
-jbimpl:value("adaptive", "Adaptive")
-
-jbmaxsize = brcm:option(Value, "jbmaxsize", "Maximum Jitter Buffer size, ms")
-jbmaxsize.default = "500"
-jbmaxsize:depends("jbenable", "yes")
-function jbmaxsize.validate(self, value, section)
-	if datatypes.uinteger(value) then
-		return value
-	end
-	return nil, "Maximum Jitter Buffer size must be a positive number of milliseconds"
-end
-
-plc = brcm:option(Flag, "genericplc", "Enable Packet Loss Concealment")
-plc:depends("jbenable", "yes")
-plc.disabled = "no"
-plc.enabled = "yes"
-
-dialoutmsec = brcm:option(Value, "dialoutmsec", "Inter-digit timeout")
-function dialoutmsec.validate(self, value, section)
-	if datatypes.uinteger(value) then
-		return value
-	end
-	return nil, "Inter-digit timeout must be a positive number of milliseconds"
-end
-
--- BRCM advanced line settings ----------------------------------------------
-
-line = m:section(TypedSection, "brcm_line")
-line.template  = "cbi/tblsection"
-line.anonymous = true
-
--- Only show configuration for lines that actually exist
-function line.filter(self, section)
-	line_number = tonumber(section:match("%d+"))
-	return line_number < allCount
-end
-
--- Show line title
-title = line:option(DummyValue, "name", "Line")
-
-ptime = line:option(ListValue, "ptime", "Preferred ptime")
-ptime:value("5", "5")
-ptime:value("10", "10")
-ptime:value("20", "20")
-ptime:value("30", "30")
-ptime:value("40", "40")
-ptime.default = "20"
-
-ecan = line:option(Flag, "echo_cancel", "Echo cancellation")
-ecan.rmempty = false
-
-vad = line:option(ListValue, "vad", "Voice Activity Detection")
-vad:value(0, "Off")
-vad:value(1, "Transparent")
-vad:value(2, "Conservative")
-vad:value(3, "Aggressive")
-vad.default = 0
-
-noise = line:option(ListValue, "noise", "Comfort Noise Generation")
-noise:value(0, "Off")
-noise:value(1, "White noise")
-noise:value(2, "Hot noise")
-noise:value(3, "Spectrum estimate")
-noise.default = 0
-
-txgain = line:option(Value, "txgain", "Tx Gain", "Between -96 and 32 dB")
-txgain.default = 0
-function txgain.validate(self, value, section)
-	if datatypes.range(value,-96,32) then
-		return value
-	end
-	return nil, "Tx Gain must be between -96 and 32 dB"
-end
-
-rxgain = line:option(Value, "rxgain", "Rx Gain", "Between -96 and 32 dB")
-rxgain.default = 0
-function rxgain.validate(self, value, section)
-	if datatypes.range(value,-96,32) then
-		return value
-	end
-	return nil, "Rx Gain must be between -96 and 32 dB"
-end
-
--- jmin = line:option(Value, 'jitter_min', 'Jitter min')
--- jmin.datatype = "integer"
--- jmax = line:option(Value, 'jitter_max', 'Jitter max')
--- jmax.datatype = "integer"
--- jtarg = line:option(Value, 'jitter_target', 'Jitter target')
--- jtarg.datatype = "integer"
 
 return m

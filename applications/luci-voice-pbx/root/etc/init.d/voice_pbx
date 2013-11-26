@@ -222,6 +222,8 @@ configure_sip()
 	local tos_audio
 	local tos_video
 	local tos_text
+	local realm
+	local localnet
 
 	config_get useragent $1 useragent
 	config_get externhost $1 externhost
@@ -239,6 +241,8 @@ configure_sip()
 	config_get tos_audio $1 tos_audio
 	config_get tos_video $1 tos_video
 	config_get tos_text $1 tos_text
+	config_get realm $1 realm
+	config_get localnet $1 localnet
 
 	[ -z "$useragent" ] && useragent="$USERAGENT"
 
@@ -287,7 +291,6 @@ configure_sip()
 		sed -i "s/|REMOTEHOLD|/$remotehold/g"					$WORKDIR/sip.tmp
 	fi
 
-
 	# Set Differentiated Services values (optional)
 	if [ -z "$tos_sip" ] ; then
 		sed -i "s/tos_sip=|TOS_SIP|/;tos_sip=/g"	$WORKDIR/sip.tmp
@@ -314,13 +317,26 @@ configure_sip()
 	fi
 
 	# Set RTP port range
-	
 	sed -i "s/|RTPSTART|/$rtpstart/"		$WORKDIR/rtp.tmp
 	sed -i "s/|RTPEND|/$rtpend/"			$WORKDIR/rtp.tmp
 
 	# Set blind transfer key
 	cp $TMPL_FEATURES				$WORKDIR/features.tmp
 	sed -i "s/|BLINDXFER|/$(escape_sed_substitution $blindxfer)/"		$WORKDIR/features.tmp
+
+	#Set realm
+	if [ -z "$realm" ] ; then
+		realm=asterisk
+	fi
+	sed -i "s/|REALM|/$(escape_sed_substitution $realm)/g"		$WORKDIR/sip.tmp
+
+	#Add localnets
+	if [ -n "$localnet" ] ; then
+		for i in $localnet ; do
+			echo "Adding localnet $i"
+			echo "localnet=$i" >> $WORKDIR/sip.tmp
+		done
+	fi
 }
 
 # Get password from existing sip_providers config file
