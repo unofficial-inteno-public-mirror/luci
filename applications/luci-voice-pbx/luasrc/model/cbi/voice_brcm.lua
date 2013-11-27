@@ -42,11 +42,27 @@ exten = s:option(Value, "extension", "Extension")
 exten.default = default_extension..default_extension..default_extension..default_extension
 default_extension = default_extension + 1
 function exten.validate(self, value, section)
-	if datatypes.phonedigit(value) then
-		return value
-	else
+	if not datatypes.phonedigit(value) then
 		return nil, value .. " is not a valid extension"
 	end
+
+	retval = value
+	errmsg = nil
+
+	m.uci:foreach("voice_pbx", "brcm_line",
+		function(s1)
+			if s1['.name'] == section then
+				return
+			end
+			if tonumber(s1['.name']:match("%d+")) < allCount then
+				if s1.extension == value then
+					retval = nil
+					errmsg = "Extension "..value.." is already used for Line "..s1.name
+				end
+			end
+		end)
+
+	return retval, errmsg
 end
 
 -- Show SIP account selection
