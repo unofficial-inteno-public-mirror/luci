@@ -1,0 +1,69 @@
+#!/bin/sh /etc/rc.common
+
+START=15
+
+. /lib/functions.sh
+
+get_port_no() {
+	local ports="0 1 2 3 4 5 6 7"
+	local port="$1"
+	local ifname
+
+	for p in $ports; do
+		ifname="$(ethswctl getifname $p | awk '{print$NF}')"
+		if [ "$ifname" == "$port" ]; then
+			echo "$p"
+			break
+		fi
+	done
+}
+
+set_port_speed() {
+	local port="$1"
+	local speed="$2"
+	local portno
+
+	case "$speed" in
+		1000*)
+			portno=$(get_port_no $port)
+			echo PORTNO is $portno > /dev/console
+			case "$speed" in
+				1000FD) ethswctl -c phymode -p $portno -y 1000 -z 1 ;;
+				1000HD) ethswctl -c phymode -p $portno -y 1000 -z 0 ;;
+			esac
+		;;
+		10*)
+			ethctl $port media-type $speed
+		;;
+		*)
+			ethctl $port media-type auto
+		;;
+	esac
+}
+
+configure_ethports() {
+	config_get eth0 "$1" eth0
+	set_port_speed eth0 $eth0
+	
+	config_get eth1 "$1" eth1
+	set_port_speed eth1 $eth1
+	
+	config_get eth2 "$1" eth2
+	set_port_speed eth2 $eth2
+	
+	config_get eth3 "$1" eth3
+	set_port_speed eth3 $eth3
+	
+	config_get eth4 "$1" eth4
+	set_port_speed eth4 $eth4
+}
+
+start() {
+	config_load ports
+	config_foreach configure_ethports ethports
+}
+
+restart() {
+        start
+}
+
