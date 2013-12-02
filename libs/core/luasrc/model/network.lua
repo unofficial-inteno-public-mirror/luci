@@ -1221,7 +1221,9 @@ function interface.type(self)
 	elseif _tunnel[self.ifname] then
 		return "tunnel"
 	elseif self.ifname:match("^eth%d.1$") then
-		return "ethernetwan"	
+		return "ethernetwan"
+	elseif self.ifname:match("^wwan%d$") then
+		return "wwan"
 	elseif self.ifname:match("^atm%d.1$")  then
 		return "adsl"
 	elseif self.ifname:match("^ptm%d.1$") then
@@ -1318,7 +1320,9 @@ function interface.get_type_i18n(self)
 	elseif x == "adsl" then
 		return lng.translate("ADSL")	
 	elseif x == "ethernetwan" then
-		return lng.translate("Ethernet WAN")	
+		return lng.translate("Ethernet WAN")
+	elseif x == "wwan" then
+		return lng.translate("Wireless WAN")
 	else 
 		return lng.translate("Ethernet Adapter")
 	end
