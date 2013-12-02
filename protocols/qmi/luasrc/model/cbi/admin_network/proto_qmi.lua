@@ -13,8 +13,21 @@ You may obtain a copy of the License at
 local map, section, net = ...
 local ifc = net:get_interface()
 
+local apn, pincode, username, password
 local hostname, accept_ra, send_rs
 local bcast, defaultroute, peerdns, dns, metric, clientid, vendorclass
+
+apn = section:taboption("general", Value, "apn", translate("APN"))
+
+
+pincode = section:taboption("general", Value, "pincode", translate("PIN"))
+
+
+username = section:taboption("general", Value, "username", translate("PAP/CHAP username"))
+
+
+password = section:taboption("general", Value, "password", translate("PAP/CHAP password"))
+password.password = true
 
 
 hostname = section:taboption("general", Value, "hostname",

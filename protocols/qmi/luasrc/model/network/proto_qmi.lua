@@ -7,7 +7,7 @@ for _, p in ipairs({"qmi"}) do
 
 	function proto.get_i18n(self)
 		if p == "qmi" then
-			return luci.i18n.translate("QMI")
+			return luci.i18n.translate("LTE")
 		end
 	end
 
@@ -17,7 +17,7 @@ for _, p in ipairs({"qmi"}) do
 
 	function proto.is_installed(self)
 		if p == "qmi" then
-			return (nixio.fs.glob("/lib/netifd/proto/qmi.sh")() ~= nil)
+			return (nixio.fs.glob("/usr/lib/libqmi-glib.so")() ~= nil)
 		end
 	end
 

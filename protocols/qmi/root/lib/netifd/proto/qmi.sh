@@ -186,7 +186,7 @@ proto_qmi_setup() {
 	uci_revert_state network $config auto
 	
 	local CDCDEV
-	CDCDEV=/dev/$(basename $(ls /sys/class/net/${iface}/device/usbmisc/cdc-wdm* -d)) || {
+	CDCDEV=/dev/$(basename $(ls /sys/class/net/${iface}/device/usb/cdc-wdm* -d)) || {
 		CDCDEV="$device"
 		proto_qmi_log daemon.err "Control device not found, using network.${config}.device: $CDCDEV"
 		return 1
