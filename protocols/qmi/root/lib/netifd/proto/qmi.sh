@@ -17,7 +17,7 @@
 # Copyright (C) 2012 André Valentin / MarcanT GmbH <avalentin@marcant.net>
 
 . /lib/functions.sh
-. /lib/netifd/netifd-proto.sh
+. ../netifd-proto.sh
 init_proto "$@"
 
 proto_qmi_init_config() {
