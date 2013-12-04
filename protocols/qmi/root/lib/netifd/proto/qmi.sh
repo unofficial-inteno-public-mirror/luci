@@ -281,7 +281,7 @@ proto_qmi_setup() {
 	proto_export "INTERFACE=$config"
 	proto_run_command "$config" udhcpc \
 		-p /var/run/udhcpc-$iface.pid \
-		-s /lib/netifd/dhcp-qmi.script \
+		-s /lib/netifd/dhcp.script \
 		-f -t 0 -i "$iface" \
 		-x lease:60 \
 		${ipaddr:-r $ipaddr} \

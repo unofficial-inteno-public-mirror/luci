@@ -261,6 +261,10 @@ You may obtain a copy of the License at
 
 						si.innerHTML = String.format('<img src="<%=resource%>/icons/adsl.png" />');
 					}
+					else if (ifc.Wname.search("qmi") != "-1")
+					{
+						si.innerHTML = String.format('<img src="<%=resource%>/icons/wwan.png" />');
+					}					
 					else
 					{
 						si.innerHTML = String.format('<img src="<%=resource%>/icons/ethernetwan.png" />');
