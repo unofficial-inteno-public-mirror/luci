@@ -125,6 +125,8 @@ function l2name (self, ifname)
 				l2name = s.name
 			end
 		end)
+	elseif ifname:match("^wwan%d") then
+		l2name = "WWAN"
 	elseif ifname:match("br-") or ifname:match("pppo") then
 		local vif = self:Wname(ifname)
 		if vif:match("^atm%d.1$")  then
