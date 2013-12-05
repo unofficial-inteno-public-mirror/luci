@@ -11,9 +11,15 @@ for _, p in ipairs({"qmi"}) do
 		end
 	end
 
-	function proto.ifname(self)
-		return p .. "-" .. self.sid
-	end
+--	function proto.ifname(self)
+--		return "wwan0"
+--	end
+	
+	function proto.opkg_package(self)
+		if p == "qmi" then
+			return "libqmi"
+		end
+	end	
 
 	function proto.is_installed(self)
 		if p == "qmi" then
@@ -21,29 +27,29 @@ for _, p in ipairs({"qmi"}) do
 		end
 	end
 
-	function proto.is_floating(self)
-		return (p ~= "qmi")
-	end
+--	function proto.is_floating(self)
+--		return (p ~= "qmi")
+--	end
 
-	function proto.is_qmi(self)
-		return true
-	end
+--	function proto.is_qmi(self)
+--		return true
+--	end
 
-	function proto.get_interfaces(self)
-		if self:is_floating() then
-			return nil
-		else
-			return netmod.protocol.get_interfaces(self)
-		end
-	end
+--	function proto.get_interfaces(self)
+--		if self:is_floating() then
+--			return nil
+--		else
+--			return netmod.protocol.get_interfaces(self)
+--		end
+--	end
 
-	function proto.contains_interface(self, ifc)
-		if self:is_floating() then
-			return (netmod:ifnameof(ifc) == self:ifname())
-		else
-			return netmod.protocol.contains_interface(self, ifc)
-		end
-	end
+--	function proto.contains_interface(self, ifc)
+--		if self:is_floating() then
+--			return (netmod:ifnameof(ifc) == self:ifname())
+--		else
+--			return netmod.protocol.contains_interface(self, ifc)
+--		end
+--	end
 
-	netmod:register_pattern_virtual("^%s-%%w" % p)
+--	netmod:register_pattern_virtual("^%s-%%w" % p)
 end
