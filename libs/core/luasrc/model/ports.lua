@@ -78,10 +78,16 @@ function Wname (self, ifname)
 				end
 			end
 		end
-	elseif ifname:match("pppo") then
+	elseif ifname:match("pppo") or ifname:match("qmi") then
 		local _ubus
 		local _ubuscache = { }
-		local newif = ifname:sub(7)
+		local newif
+
+		if ifname:match("pppo") then
+			newif = ifname:sub(7)
+		else
+			newif = ifname:sub(5)
+		end
 
 		_ubus = bus.connect()
 		_ubuscache[newif] = _ubus:call("network.interface", "status", { interface = newif })

@@ -25,7 +25,7 @@ for _, p in ipairs({"qmi"}) do
 		return (p ~= "qmi")
 	end
 
-	function proto.is_virtual(self)
+	function proto.is_qmi(self)
 		return true
 	end
 

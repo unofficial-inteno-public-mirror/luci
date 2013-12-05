@@ -1007,6 +1007,10 @@ function protocol.is_floating(self)
 	return false
 end
 
+function protocol.is_qmi(self)
+	return false
+end
+
 function protocol.is_empty(self)
 	if self:is_floating() then
 		return false
@@ -1066,7 +1070,7 @@ function protocol.get_interface(self)
 	elseif self:is_bridge() then
 		_bridge["br-" .. self.sid] = true
 		return interface("br-" .. self.sid, self)
-	elseif self:is_anywan() then
+	elseif self:is_anywan() or self:is_qmi() then
 		return interface(self:_ubus("device") or " ")
 	else
 		local ifn = nil
