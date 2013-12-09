@@ -11,7 +11,7 @@
 		basemac = sysinfo.basemac:upper()
 	end
 	local wl = {
-		ssid = luci.sys.exec("wlctl -i wl0 ssid | awk '{print$NF}' | sed 's/\"//g'"),
+		ssid = luci.sys.exec("uci get wireless.@wifi-iface[0].ssid"),
 		version = luci.sys.exec("wlctl -i wl0 ver | awk '{print$NF}'"),
 		status = luci.sys.exec("wlctl -i wl0 isup"),
 		mac = luci.sys.exec("wlctl -i wl0 cur_etheraddr | awk '{print$2}'")
