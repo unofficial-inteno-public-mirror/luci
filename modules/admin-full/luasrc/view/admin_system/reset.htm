@@ -1,0 +1,33 @@
+<%#
+LuCI - Lua Configuration Interface
+Copyright 2008 Steven Barth <steven@midlink.org>
+Copyright 2008 Jo-Philipp Wich <xm@leipzig.freifunk.net>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+	http://www.apache.org/licenses/LICENSE-2.0
+
+$Id: flashops.htm 7798 2011-10-26 23:43:04Z jow $
+
+-%>
+
+<%+header%>
+
+<h2><a id="content" name="content"><%:Factory Reset%></a></h2>
+
+<fieldset class="cbi-section">
+	<form method="post" action="<%=REQUEST_URI%>" enctype="multipart/form-data">
+		<div class="cbi-section-node">
+			<div class="cbi-value cbi-value-last">
+				<label class="cbi-value-title"><%:Reset to defaults%>:</label>
+				<div class="cbi-value-field">
+					<input onclick="return confirm('<%:Really reset all changes?%>')" class="cbi-button cbi-button-reset" type="submit" name="reset" value="<%:Perform reset%>" />
+				</div>
+			</div>
+		</div>
+	</form>
+</fieldset>
+
+<%+footer%>

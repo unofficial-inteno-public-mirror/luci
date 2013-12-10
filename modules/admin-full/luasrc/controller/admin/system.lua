@@ -17,6 +17,7 @@ module("luci.controller.admin.system", package.seeall)
 
 function index()
 	local users = { "admin", "support", "user" }
+	local reset_avail = os.execute([[grep '"rootfs_data"' /proc/mtd >/dev/null 2>&1]]) == 0
 
 	for k, user in pairs(users) do
 		entry({user, "system"}, alias(user, "system", "system"), _("System"), 30).index = true
@@ -36,7 +37,10 @@ function index()
 
 		if user ~= "user" then
 			entry({user, "system", "flashops"}, call("action_flashops"), _("Backup / Flash Firmware"), 70)
-			entry({user, "system", "flashops", "backupfiles"}, form("admin_system/backupfiles"))
+			entry({user, "system", "flashops", "backupfiles"}, form("admin_system/backupfiles"))		
+		elseif reset_avail then
+			entry({user, "system", "reset"}, call("action_reset"), _("Factory Reset"), 89)
+			
 		end
 
 		entry({user, "system", "reboot"}, call("action_reboot"), _("Reboot"), 90)
@@ -56,6 +60,22 @@ function action_clock_status()
 
 	luci.http.prepare_content("application/json")
 	luci.http.write_json({ timestring = os.date("%c") })
+end
+
+function action_reset()
+	if luci.http.formvalue("reset") then
+		--
+		-- Reset system
+		--
+		luci.template.render("admin_system/applyreboot", {
+			title = luci.i18n.translate("Erasing..."),
+			msg   = luci.i18n.translate("The system is erasing the configuration partition now and will reboot itself when finished."),
+			addr  = "192.168.1.1"
+		})
+		fork_exec("killall dropbear uhttpd; sleep 1; mtd -r erase rootfs_data")
+	else
+		luci.template.render("admin_system/reset", { })
+	end
 end
 
 function action_flashops()
