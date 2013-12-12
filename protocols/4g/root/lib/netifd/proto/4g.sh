@@ -43,7 +43,7 @@ proto_4g_setup() {
 		;;
 		ncm)
 			[ -n "$pincode" ] && echo $pincode | gcom -d $ttydev
-			gcom -d $ttydev -s /etc/gcom/ncmconnection.gcom
+			USE_APN="$apn" gcom -d $ttydev -s /etc/gcom/ncmconnection.gcom
 		;;
 		qmi)
 			local qmidev=/dev/$(basename $(ls /sys/class/net/${iface}/device/usb/cdc-wdm* -d))
@@ -58,7 +58,7 @@ proto_4g_setup() {
 				fi
 			}
 			#qmicli -d $CDCDEV --wds-start-network="$apn" --client-no-release-cid
-			qmi-network -d $CDCDEV start
+			qmi-network $CDCDEV start
 		;;		
 	esac
 	
@@ -97,7 +97,7 @@ proto_4g_teardown() {
 		qmi)
 			local qmidev=/dev/$(basename $(ls /sys/class/net/${iface}/device/usb/cdc-wdm* -d))
 			local CDCDEV="${cdcdev:-$qmidev}"		
-			qmi-network -d $CDCDEV stop
+			qmi-network $CDCDEV stop
 		;;		
 	esac
 	proto_kill_command "$interface"

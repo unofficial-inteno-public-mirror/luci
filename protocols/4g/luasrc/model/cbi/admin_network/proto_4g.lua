@@ -21,9 +21,9 @@ local bcast, defaultroute, peerdns, dns, metric, clientid, vendorclass
 service = section:taboption("general", ListValue, "service", translate("Service Type"))
 service:value("", translate("-- Please choose --"))
 service:value("ecm", translate("Ethernet Control Model"))
-service:value("eem", translate("Ethernet Emulation Model"))
+--service:value("eem", translate("Ethernet Emulation Model"))
 service:value("ncm", translate("Network Control Model"))
-service:value("mbim", translate("Mobile Broadband Interface Model"))
+--service:value("mbim", translate("Mobile Broadband Interface Model"))
 service:value("qmi", "Qualcomm MSM Interface")
 
 
