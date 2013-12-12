@@ -7,7 +7,8 @@ init_proto "$@"
 
 proto_4g_init_config() {
 	proto_config_add_string "service"
-	proto_config_add_string "device"	
+	proto_config_add_string "cdcdev"
+	proto_config_add_string "ttydev"
 	proto_config_add_string "ipaddr"
 	proto_config_add_string "netmask"
 	proto_config_add_string "hostname"
@@ -30,8 +31,8 @@ proto_4g_init_config() {
 proto_4g_setup() {
 	local config="$1"
 	local iface="$2"
-	local service device ipaddr hostname clientid vendorid broadcast reqopts apn username password pincode auto lte_apn_use lte_apn lte_username lte_password
-	json_get_vars service device ipaddr hostname clientid vendorid broadcast reqopts apn username password pincode auto data lte_apn_use lte_apn lte_username lte_password
+	local service cdcdev ttydev ipaddr hostname clientid vendorid broadcast reqopts apn username password pincode auto lte_apn_use lte_apn lte_username lte_password
+	json_get_vars service cdcdev ttydev ipaddr hostname clientid vendorid broadcast reqopts apn username password pincode auto data lte_apn_use lte_apn lte_username lte_password
 	
 	case "$service" in
 		ecm)
@@ -41,13 +42,12 @@ proto_4g_setup() {
 		mbim)
 		;;
 		ncm)
-			[ -n "$pincode" ] && echo $pincode | gcom -d $device
-			gcom -d $device -s /etc/gcom/ncmconnection.gcom
+			[ -n "$pincode" ] && echo $pincode | gcom -d $ttydev
+			gcom -d $ttydev -s /etc/gcom/ncmconnection.gcom
 		;;
 		qmi)
 			local qmidev=/dev/$(basename $(ls /sys/class/net/${iface}/device/usb/cdc-wdm* -d))
-			local CDCDEV="{$device:-$qmidev}"
-			# Check PIN
+			local CDCDEV="${cdcdev:-$qmidev}"
 			[ -n "$pincode" ] && {
 				set -o pipefail
 				if ! qmicli -d $CDCDEV "--dms-uim-verify-pin=PIN,${pincode}" 2>&1; then
@@ -56,7 +56,8 @@ proto_4g_setup() {
 					proto_block_restart "$interface"
 					return 1
 				fi
-			}			
+			}
+			#qmicli -d $CDCDEV --wds-start-network="$apn" --client-no-release-cid
 			qmi-network -d $CDCDEV start
 		;;		
 	esac
@@ -76,10 +77,12 @@ proto_4g_setup() {
 proto_4g_teardown() {
 	local interface="$1"
 	local iface="$2"
+	local service cdcdev ttydev
 
         config_load network
         config_get service $interface service
-        config_get device $interface device        
+        config_get cdcdev $interface cdcdev
+        config_get ttydev $interface ttydev        
 	
 	case "$service" in
 		ecm)
@@ -89,10 +92,12 @@ proto_4g_teardown() {
 		mbim)
 		;;
 		ncm)
-			USE_DISCONNECT=1 gcom -d $device -s /etc/gcom/ncmconnection.gcom
+			USE_DISCONNECT=1 gcom -d $ttydev -s /etc/gcom/ncmconnection.gcom
 		;;
 		qmi)
-			qmi-network -d /dev/cdc-wdm0 stop
+			local qmidev=/dev/$(basename $(ls /sys/class/net/${iface}/device/usb/cdc-wdm* -d))
+			local CDCDEV="${cdcdev:-$qmidev}"		
+			qmi-network -d $CDCDEV stop
 		;;		
 	esac
 	proto_kill_command "$interface"

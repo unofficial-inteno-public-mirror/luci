@@ -18,7 +18,7 @@ local hostname, accept_ra, send_rs
 local bcast, defaultroute, peerdns, dns, metric, clientid, vendorclass
 
 
-service = section:taboption("general", Value, "service", translate("Service Type"))
+service = section:taboption("general", ListValue, "service", translate("Service Type"))
 service:value("", translate("-- Please choose --"))
 service:value("ecm", translate("Ethernet Control Model"))
 service:value("eem", translate("Ethernet Emulation Model"))
@@ -26,27 +26,31 @@ service:value("ncm", translate("Network Control Model"))
 service:value("mbim", translate("Mobile Broadband Interface Model"))
 service:value("qmi", "Qualcomm MSM Interface")
 
-device = section:taboption("general", Value, "device", translate("Communication device"))
-device.rmempty = false
-device:depends("service", "ncm")
-device:depends("service", "qmi")
 
-local ttydev_suggestions = nixio.fs.glob("/dev/tty[A,U]*")
+cdcdev = section:taboption("general", Value, "cdcdev", translate("Communication device"))
+cdcdev.rmempty = false
+cdcdev:depends("service", "qmi")
+cdcdev:value("", translate("-- Please choose --"))
+
 local cdcdev_suggestions = nixio.fs.glob("/dev/cdc-wdm*")
-
-device:value("", translate("-- Please choose --"))
-
-if ttydev_suggestions then
-	local tty
-	for tty in ttydev_suggestions do
-		device:value(tty)
-	end
-end
-
 if cdcdev_suggestions then
 	local cdc
 	for cdc in cdcdev_suggestions do
-		device:value(cdc)
+		cdcdev:value(cdc)
+	end
+end
+
+
+ttydev = section:taboption("general", Value, "ttydev", translate("Modem device"))
+ttydev.rmempty = false
+ttydev:depends("service", "ncm")
+ttydev:value("", translate("-- Please choose --"))
+
+local ttydev_suggestions = nixio.fs.glob("/dev/tty[A,U]*")
+if ttydev_suggestions then
+	local tty
+	for tty in ttydev_suggestions do
+		ttydev:value(tty)
 	end
 end
 
