@@ -17,6 +17,40 @@ local apn, pincode, username, password
 local hostname, accept_ra, send_rs
 local bcast, defaultroute, peerdns, dns, metric, clientid, vendorclass
 
+
+service = section:taboption("general", Value, "service", translate("Service Type"))
+service:value("", translate("-- Please choose --"))
+service:value("ecm", translate("Ethernet Control Model"))
+service:value("eem", translate("Ethernet Emulation Model"))
+service:value("ncm", translate("Network Control Model"))
+service:value("mbim", translate("Mobile Broadband Interface Model"))
+service:value("qmi", "Qualcomm MSM Interface")
+
+device = section:taboption("general", Value, "device", translate("Communication device"))
+device.rmempty = false
+device:depends("service", "ncm")
+device:depends("service", "qmi")
+
+local ttydev_suggestions = nixio.fs.glob("/dev/tty[A,U]*")
+local cdcdev_suggestions = nixio.fs.glob("/dev/cdc-wdm*")
+
+device:value("", translate("-- Please choose --"))
+
+if ttydev_suggestions then
+	local tty
+	for tty in ttydev_suggestions do
+		device:value(tty)
+	end
+end
+
+if cdcdev_suggestions then
+	local cdc
+	for cdc in cdcdev_suggestions do
+		device:value(cdc)
+	end
+end
+
+
 apn = section:taboption("general", Value, "apn", translate("APN"))
 
 
