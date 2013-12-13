@@ -350,13 +350,13 @@ end
 -- Show line title
 title = line:option(DummyValue, "name", "Line")
 
-ptime = line:option(ListValue, "ptime", "Preferred ptime")
-ptime:value("5", "5")
-ptime:value("10", "10")
-ptime:value("20", "20")
-ptime:value("30", "30")
-ptime:value("40", "40")
-ptime.default = "20"
+--ptime = line:option(ListValue, "ptime", "Preferred ptime")
+--ptime:value("5", "5")
+--ptime:value("10", "10")
+--ptime:value("20", "20")
+--ptime:value("30", "30")
+--ptime:value("40", "40")
+--ptime.default = "20"
 
 ecan = line:option(Flag, "echo_cancel", "Echo cancellation")
 ecan.rmempty = false

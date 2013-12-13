@@ -129,7 +129,7 @@ i = 0
 for a, b in pairs(codecs) do
 	if i == 0 then
 		codec = s:option(ListValue, "codec"..i, "Preferred codecs")
-		codec.default = "alaw"
+		codec.default = "alaw"		
 	else
 		codec = s:option(ListValue, "codec"..i, "&nbsp;")
 		codec.default = "-"
@@ -141,8 +141,38 @@ for a, b in pairs(codecs) do
 		codec:value(k, v)
 	end
 	codec:value("-", "-")
+
 	i = i + 1
 end
+
+ptimes = {
+	ulaw = {min = 10, max = 150, default = 20, increment = 10},
+	alaw = {min = 10, max = 150, default = 20, increment = 10},
+	g729 = {min = 10, max = 230, default = 20, increment = 10},
+	g723 = {min = 30, max = 300, default = 30, increment = 30},
+	g726 = {min = 10, max = 300, default = 20, increment = 10}
+}
+
+for a, b in pairs(codecs) do
+	ptime = s:option(ListValue, "ptime_"..a, b.." packetization")
+	min = ptimes[a]["min"]
+	max = ptimes[a]["max"]
+	inc = ptimes[a]["increment"]
+	def = ptimes[a]["default"]
+	for period = min,max,inc do
+		ptime:value(period, period.." ms")
+	end
+
+	i = 0
+	for k, v in pairs(codecs) do
+		ptime:depends("codec"..i, a)
+		i = i + 1
+	end
+
+	ptime.default = def
+end
+
+autoframing = s:option(Flag, "autoframing", "Autoframing", "Negotiate packetization at call establishment")
 
 fax = s:option(Flag, "is_fax", "Use as Fax", "Indicate that this SIP account will be used for a fax machine. This will force some settings to enable inband fax.")
 fax.default = 0

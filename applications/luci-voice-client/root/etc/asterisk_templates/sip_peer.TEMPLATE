@@ -13,6 +13,7 @@ nat		= yes
 context		= incoming_calls
 port=|PORT|
 outboundproxy=|OUTBOUNDPROXY||OUTBOUNDPROXYPORT|
+autoframing	= |AUTOFRAMING|
 disallow	= all
 |ALLOW|
 

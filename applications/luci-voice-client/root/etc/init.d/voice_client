@@ -179,6 +179,28 @@ read_codecs()
 	echo $codec_allow
 }
 
+read_codecs_ptime()
+{
+	local codec_allow=""
+	local codec
+	local ptime
+
+	for i in 0 1 2 3 4 5; do
+		config_get codec "$1" "codec$i"
+		if [ "$codec" == "-" ] || [ -z "$codec" ]; then
+			break
+		fi
+
+		config_get ptime "$1" "ptime_$codec"
+		if [ -z "$ptime" ] ; then
+			continue
+		fi
+
+		codec_allow=$codec_allow"allow = $codec:$ptime\\n"
+	done
+	echo $codec_allow
+}
+
 # read lines that should receive incoming calls from
 # a SIP account.
 # returns a list of lines, formatted to replace a tag with sed
@@ -381,6 +403,7 @@ configure_sip_account()
 	local authuser
 	local secret
 	local is_fax
+	local autoframing
 
 	config_get enabled $1 enabled
 	config_get domain $1 domain
@@ -392,6 +415,7 @@ configure_sip_account()
 	config_get authuser $1 authuser
 	config_get secret $1 secret
 	config_get is_fax $1 is_fax
+	config_get autoframing $1 autoframing
 
 	if [ -z "$enabled" -o "$enabled" = "0" ] ; then
 		return
@@ -456,8 +480,14 @@ configure_sip_account()
 	if [ -z "$is_fax" -o "$is_fax" = "1" ] ; then
 		sed -i "s/|ALLOW|/allow = ulaw\nallow = alaw/"	$WORKDIR/sip_peer.tmp
 	else
-		sed -i "s/|ALLOW|/$(read_codecs $1)/"		$WORKDIR/sip_peer.tmp
+		sed -i "s/|ALLOW|/$(read_codecs_ptime $1)/"		$WORKDIR/sip_peer.tmp
 	fi
+
+	# Autoframing
+	if [ -z "$autoframing" ] ; then
+		autoframing=0
+	fi
+	sed -i "s/|AUTOFRAMING|/$autoframing/"			$WORKDIR/sip_peer.tmp
 
 	# Add account configuration to the temp file containing all account configs.
 	cat $WORKDIR/sip_peer.tmp >> $WORKDIR/sip_peers.tmp
@@ -787,7 +817,6 @@ configure_brcm_line()
 {
 	echo "Configuring BRCM line $1"
 	local sip_account
-	local ptime
 	local silence
 	local ecan
 	local noise
@@ -799,7 +828,6 @@ configure_brcm_line()
 	local rxgain
 
 	config_get sip_account $1 sip_account
-	config_get ptime $1 ptime
 	config_get silence $1 vad
 	config_get ecan $1 echo_cancel
 	config_get noise $1 noise
@@ -818,7 +846,6 @@ configure_brcm_line()
 	cp $TMPL_BRCM_LINE $WORKDIR/brcm_line.tmp
 	sed -i "s/|SECTION|/$1/"				$WORKDIR/brcm_line.tmp
 	sed -i "s/|CONTEXT|/$sip_account/g"			$WORKDIR/brcm_line.tmp
-	sed -i "s/|PERIOD|/$ptime/"				$WORKDIR/brcm_line.tmp
 	sed -i "s/|SILENCE|/$silence/"				$WORKDIR/brcm_line.tmp
 	sed -i "s/|ECHOCANCEL|/$ecan/"				$WORKDIR/brcm_line.tmp
 	sed -i "s/|COMFORTNOISE|/$noise/"			$WORKDIR/brcm_line.tmp

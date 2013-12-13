@@ -13,6 +13,6 @@ echocancel=|ECHOCANCEL|
 silence=|SILENCE|
 context=|CONTEXT|
 context_direct=|CONTEXT|-direct
-period=|PERIOD|
+period=20
 |ALLOW|
 
