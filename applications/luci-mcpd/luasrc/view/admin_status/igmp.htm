@@ -35,6 +35,9 @@
 					<th class="cbi-section-table-cell"><%:WAN-TCI%></th>
 					<th class="cbi-section-table-cell"><%:Group%></th>
 					<th class="cbi-section-table-cell"><%:Mode%></th>
+					<% if router.kernel ~= "2.6.30" then %>
+						<th class="cbi-section-table-cell"><%:DNAT Group%></th>
+					<%end%>
 					<th class="cbi-section-table-cell"><%:Source%></th>
 					<th class="cbi-section-table-cell"><%:Reporter%></th>
 					<th class="cbi-section-table-cell"><%:Timeout%></th>
@@ -63,8 +66,8 @@
 					<%end%>
 				<%else%>
 					<% for line in luci.util.execi("cat /proc/net/igmp_snooping | grep 'br-' | grep -v 'snooping' | grep -v 'reporter'") do %>
-						<% local bridge, device, srcdev, tags, lantci, wantci, group, mode, source, reporter, timeout, index
-						= line:match("(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)") %>
+						<% local bridge, device, srcdev, tags, lantci, wantci, group, mode, dnat, source, reporter, timeout, index
+						= line:match("(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)") %>
 
 						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
 								<td class="cbi-value-field"><%=bridge%></td>
@@ -75,6 +78,7 @@
 								<td class="cbi-value-field"><%=hextodec(wantci)%></td>
 								<td class="cbi-value-field"><%=hextoip(group)%></td>
 								<td class="cbi-value-field"><%=mode%></td>
+								<td class="cbi-value-field"><%=hextoip(dnat)%></td>
 								<td class="cbi-value-field"><%=hextoip(source)%></td>
 								<td class="cbi-value-field"><%=hextoip(reporter)%></td>
 								<td class="cbi-value-field"><%=timeout%></td>
