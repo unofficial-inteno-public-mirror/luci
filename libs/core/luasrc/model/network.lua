@@ -1788,7 +1788,7 @@ function wifinet.bitrate(self)
 end
 
 function wifinet.channel(self)
-	return sys.exec("wlctl -i %q channel | grep current | awk '{print$4}'" %self:ifname()) + 0
+	return sys.exec("wlctl -i %q channel | grep mac | awk '{print$4}'" %self:ifname()) + 0
 end
 
 function wifinet.signal(self)
