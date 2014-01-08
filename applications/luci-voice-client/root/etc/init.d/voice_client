@@ -139,6 +139,11 @@ assemble_and_copy_config()
 	else
 		cp $TMPL_EXTENSIONS_EXTRA		$WORKDIR/extensions_extra.conf
 	fi
+	
+	# Carry over old certificate authorities
+	if [ -e "$ASTERISKDIR/ssl/ca.pem" ] ; then
+		cp $ASTERISKDIR/ssl/ca.pem	$WORKDIR/ssl/ca.pem
+	fi
 
 	# Create config files from the temporary files we have built
 	mv $WORKDIR/sip.tmp			$WORKDIR/sip.conf
@@ -279,6 +284,8 @@ configure_sip()
 	config_get tos_audio $1 tos_audio
 	config_get tos_video $1 tos_video
 	config_get tos_text $1 tos_text
+	config_get tls_cipher $1 tls_cipher
+	config_get tls_version $1 tls_version
 
 	[ -z "$useragent" ] && useragent="$USERAGENT"
 
@@ -355,6 +362,7 @@ configure_sip()
 
 	# Enable TLS if used by a sip_service_provider
 	local tlsenable="no"
+	local tlstransport=""
 	local type="sip_service_provider"
 	for section in ${CONFIG_SECTIONS}; do
 		local transport
@@ -363,11 +371,32 @@ configure_sip()
 		config_get transport $section transport
 		if [ "$transport" == "tls" ] ; then
 			tlsenable="yes"
+			tlstransport=",tls"
 			break
 		fi
 	done
 	sed -i "s/|TLSENABLE|/$tlsenable/"		$WORKDIR/sip.tmp
+	sed -i "s/|TLSTRANSPORT|/$tlstransport/"	$WORKDIR/sip.tmp
+	sed -i "s/|TLSCIPHER|/$tls_cipher/"		$WORKDIR/sip.tmp
+	sed -i "s/|TLSCLIENTMETHOD|/$tls_version/"	$WORKDIR/sip.tmp
 
+	# Enable TCP if used by a sip_service_provider
+	local tcpenable="no"
+	local tcptransport=""
+	for section in ${CONFIG_SECTIONS}; do
+		local transport
+		config_get cfgtype "$section" TYPE
+		[ -n "$type" -a "x$cfgtype" != "x$type" ] && continue
+		config_get transport $section transport
+		if [ "$transport" == "tcp" ] ; then
+			tcpenable="yes"
+			tcptransport=",tcp"
+			break
+		fi
+	done
+	sed -i "s/|TCPENABLE|/$tcpenable/"		$WORKDIR/sip.tmp
+	sed -i "s/|TCPTRANSPORT|/$tcptransport/"	$WORKDIR/sip.tmp
+	
 	# Set RTP port range
 	
 	sed -i "s/|RTPSTART|/$rtpstart/"		$WORKDIR/rtp.tmp
@@ -925,6 +954,7 @@ set_line_name()
 
 start() {
 	mkdir -p $WORKDIR
+	mkdir -p $WORKDIR/ssl
 	# Load config file
 	config_load voice_client
 
