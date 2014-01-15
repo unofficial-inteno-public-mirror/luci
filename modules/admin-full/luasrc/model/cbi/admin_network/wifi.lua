@@ -116,7 +116,9 @@ s.addremove = false
 s:tab("general", translate("General Setup"))
 s:tab("macfilter", translate("MAC-Filter"))
 s:tab("advanced", translate("Advanced Settings"))
+if guser ~= "user" then
 s:tab("antenna", translate("Antenna Selection"))
+end
 --s:tab("bridge", translate("Wireless Bridge"))
 if guser == "admin" then
 s:tab("anyfi", translate("Anyfi"))
@@ -411,11 +413,12 @@ if hwtype == "broadcom" then
 	ch:value("157/80", detailed_name("157"), {band="a", bandwidth="80"})
 	ch:value("161/80", detailed_name("161"), {band="a", bandwidth="80"})
 
-	timer = s:taboption("advanced", Value, "scantimer", translate("Auto Channel Timer"), "min")
-	timer:depends("channel", "auto")
-	timer.default = 10
-	timer.rmempty = true;
+--	timer = s:taboption("advanced", Value, "scantimer", translate("Auto Channel Timer"), "min")
+--	timer:depends("channel", "auto")
+--	timer.default = 10
+--	timer.rmempty = true;
 
+if guser ~= "user" then
 	rifs = s:taboption("advanced", ListValue, "rifs", translate("RIFS"))
 	rifs:depends("hwmode", "auto")
 	rifs:depends("hwmode", "11n")
@@ -434,6 +437,7 @@ if hwtype == "broadcom" then
 --	obss:depends("bandwidth", "40")
 --	obss:depends("bandwidth", "80")
 --	obss:value("1", "Enable")
+end
 
 --[[
 	nrate = s:taboption("advanced", ListValue, "nrate", translate("Rate"))
@@ -548,6 +552,7 @@ if hwtype == "broadcom" then
 	rxcps:value("0", "Disable")	
 	rxcps:value("1", "Enable")
 
+if guser ~= "user" then
 	rxcpsqt = s:taboption("advanced", Value, "rxchainps_qt", translate("RX Chain Power Save Quite Time"))
 	rxcpsqt.default = 10
 	rxcpspps = s:taboption("advanced", Value, "rxchainps_pps", translate("RX Chain Power Save PPS"))
@@ -572,6 +577,7 @@ if hwtype == "broadcom" then
 	sm:value("1", "Loose interpretation of 11h spec")
 	sm:value("2", "Strict interpretation of 11h spec")
 	sm:value("3", "Disable 11h and enable 11d")
+end
 
 	pwr = s:taboption("advanced", ListValue, "txpower", translate("Transmit Power"))
 	pwr:value("10", "10%")
@@ -600,6 +606,7 @@ if hwtype == "broadcom" then
 	wa:value("1", "Enable")
 	wa:value("0", "Disable")
 
+if guser ~= "user" then
 	if wdev:antenna().txant then
 		ant1 = s:taboption("antenna", ListValue, "txantenna", translate("Transmitter Antenna"))
 		ant1.widget = "radio"
@@ -619,6 +626,7 @@ if hwtype == "broadcom" then
 		ant2:value("1", translate("Antenna 2"))
 		ant2.default = "3"
 	end
+end
 
 --	wdsmode = s:taboption("bridge", ListValue, "wdsmode", translate("WDS Mode"), "Selecting Automatic WDS mode will dynamically grant WDS membership to anyone")
 --	wdsmode:value("0", translate("Manual"))
