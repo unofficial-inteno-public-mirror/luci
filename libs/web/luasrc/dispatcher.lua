@@ -31,6 +31,7 @@ local init = require "luci.init"
 local util = require "luci.util"
 local http = require "luci.http"
 local nixio = require "nixio", require "nixio.util"
+local bus = require "ubus"
 
 module("luci.dispatcher", package.seeall)
 context = util.threadlocal()
@@ -155,8 +156,29 @@ function authenticator.htmlauth(validator, accs, default)
 
 	local vuser = (user == "admin" or user == "support" or user == "user")
 	local userip = luci.http.getenv("REMOTE_ADDR")
+	local lansupport = false
 
-	if user and validator(user, pass) and userip then
+	if user == "support" then
+		local _ubus
+		local _ubuscache = { }
+		local i = 1
+		local ip
+
+		_ubus = bus.connect()
+		_ubuscache["clients"] = _ubus:call("router", "clients", { })
+		_ubus:close()
+
+		while _ubuscache["clients"][i] do
+		        ip = _ubuscache["clients"][i]["ipaddr"]
+		        if ip and ip == userip then
+				lansupport = true
+				break
+		        end
+		        i = i + 1
+		end
+	end
+
+	if not lansupport and user and validator(user, pass) and userip then
 		luci.sys.exec("logger -t HTTP login succeeded for %s from %s" %{user, userip})
 		return user
 	elseif vuser and userip then
