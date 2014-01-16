@@ -40,6 +40,20 @@ proto_4g_setup() {
 		eem)
 		;;
 		mbim)
+			local mbimdev=/dev/$(basename $(ls /sys/class/net/${iface}/device/usb/cdc-wdm* -d))
+			local CDCDEV="${cdcdev:-$mbimdev}"
+			[ -n "$pincode" ] && {
+				if ! mbimcli -d $CDCDEV --query-pin-state | grep "unlocked" >/dev/null; then
+					set -o pipefail
+					if ! mbimcli -d $CDCDEV "--enter-pin=${pincode}" 2>&1; then
+						mbimcli -d $CDCDEV --query-pin-state
+						proto_notify_error "$config" PIN_FAILED
+						proto_block_restart "$interface"
+						return 1
+					fi
+				fi
+			}
+			APN="$apn" mbim-network $CDCDEV start
 		;;
 		ncm)
 			[ -n "$pincode" ] && echo $pincode | gcom -d $ttydev
@@ -57,8 +71,7 @@ proto_4g_setup() {
 					return 1
 				fi
 			}
-			#qmicli -d $CDCDEV --wds-start-network="$apn" --client-no-release-cid
-			qmi-network $CDCDEV start
+			APN="$apn" qmi-network $CDCDEV start
 		;;		
 	esac
 	
@@ -90,6 +103,9 @@ proto_4g_teardown() {
 		eem)
 		;;
 		mbim)
+			local mbimdev=/dev/$(basename $(ls /sys/class/net/${iface}/device/usb/cdc-wdm* -d))
+			local CDCDEV="${cdcdev:-$mbimdev}"
+			mbim-network $CDCDEV stop
 		;;
 		ncm)
 			USE_DISCONNECT=1 gcom -d $ttydev -s /etc/gcom/ncmconnection.gcom
