@@ -270,7 +270,7 @@ if hwtype == "broadcom" then
 		band:value("a", translate("5GHz"))
 	end
 
-	bw = s:taboption("advanced", ListValue, "bandwidth", translate("Bandwidth"))
+	bw = s:taboption("advanced", ListValue, "bandwidth", translate("Bandwidth"), translate("will be ignored if channel is set to auto."))
 	bw:value("20", "20MHz")
 	bw:value("40", "40MHz")
 	if wdev:hwmodes().ac then
