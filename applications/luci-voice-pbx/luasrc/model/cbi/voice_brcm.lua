@@ -66,15 +66,15 @@ function exten.validate(self, value, section)
 end
 
 -- Show SIP account selection
-sip_account = s:option(ListValue, "sip_account", "Call out on SIP account")
+sip_provider = s:option(ListValue, "sip_provider", "Call out using SIP provider")
 m.uci:foreach("voice_pbx", "sip_service_provider",
 	function(s1)
 		if s1.enabled == "1" then
-			sip_account:value(s1['.name'], s1.name)
+			sip_provider:value(s1['.name'], s1.name)
 		end
 	end)
-sip_account:value("-", "-")
-sip_account.default = "-"
+sip_provider:value("-", "-")
+sip_provider.default = "-"
 
 -- BRCM advanced common settings ----------------------------------------------
 brcm = m:section(TypedSection, "brcm_advanced", "Advanced settings")

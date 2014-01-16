@@ -58,7 +58,7 @@ TMPL_BRCM_LINE=$TEMPLATEDIR/brcm_line.TEMPLATE
 # Escape special characters in a string that is being passed to sed
 escape_sed_substitution()
 {
-	echo $1 | sed -e 's/[\/&]/\\&/g'
+	echo "$@" | sed -e 's/[\/&]/\\&/g'
 }
 
 # Gets rid of any config files from $ASTERISKDIR not found in $WORKDIR.
@@ -533,8 +533,16 @@ configure_sip_user()
 	fi
 
 	#If no sip_provider is configured, use local_extensions context
+	local provider_enabled
+	local provider_user
 	if [ "$sip_provider" == "-" ] ; then
 		sip_provider="local_extensions"
+	else
+		config_get provider_enabled $sip_provider enabled
+		config_get provider_user $sip_provider user
+		if [ -z "$provider_enabled" -o "$provider_enabled" = "0" -o -z "$provider_user" ] ; then
+			sip_provider="local_extensions"
+		fi
 	fi
 
 	#Use dynamic host as default
@@ -918,10 +926,18 @@ configure_brcm_line()
 	config_get rxgain $1 rxgain
 
 	#If line is configured with no sip_provider, use local_extensions context
+	local provider_enabled
+	local provider_user
 	if [ "$sip_provider" == "-" ] ; then
 		sip_provider="local_extensions"
 	else
-		codecs=$(read_codecs $sip_provider)
+		config_get provider_enabled $sip_provider enabled
+		config_get provider_user $sip_provider user
+		if [ -z "$provider_enabled" -o "$provider_enabled" = "0" -o -z "$provider_user" ] ; then
+			sip_provider="local_extensions"
+		else
+			codecs=$(read_codecs $sip_provider)
+		fi
 	fi
 
 	if [ -z "$is_fax" ] || [ "$is_fax" == "1" ] || [ -z "$codecs" ] ; then

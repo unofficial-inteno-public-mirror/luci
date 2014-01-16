@@ -1,7 +1,3 @@
-#include sip_registrations.conf
-#include sip_providers.conf
-#include sip_users.conf
-
 [general]
 context=default
 allowoverlap=yes
@@ -40,3 +36,6 @@ tos_audio=|TOS_AUDIO|		; Sets TOS for RTP audio packets. Recommended = ef
 tos_video=|TOS_VIDEO|		; Sets TOS for RTP video packets. Recommended = af41
 tos_text=|TOS_TEXT|		; Sets TOS for RTP text packets. Recommended = af41
 
+#include sip_registrations.conf
+#include sip_providers.conf
+#include sip_users.conf
