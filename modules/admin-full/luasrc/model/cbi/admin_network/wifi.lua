@@ -413,12 +413,12 @@ if hwtype == "broadcom" then
 	ch:value("157/80", detailed_name("157"), {band="a", bandwidth="80"})
 	ch:value("161/80", detailed_name("161"), {band="a", bandwidth="80"})
 
---	timer = s:taboption("advanced", Value, "scantimer", translate("Auto Channel Timer"), "min")
---	timer:depends("channel", "auto")
---	timer.default = 10
---	timer.rmempty = true;
-
 if guser ~= "user" then
+	timer = s:taboption("advanced", Value, "scantimer", translate("Auto Channel Timer"), "min")
+	timer:depends("channel", "auto")
+	timer.default = 15
+	timer.rmempty = true;
+
 	rifs = s:taboption("advanced", ListValue, "rifs", translate("RIFS"))
 	rifs:depends("hwmode", "auto")
 	rifs:depends("hwmode", "11n")
