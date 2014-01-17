@@ -35,6 +35,8 @@ function startspt(self, opts) -- Start speed test
 	elseif theinterface() == "ADSL" then
 		dpack, upack = sys.exec("uci get speedtest.@packetsize[-1].adsl"):match("(%d+)/(%d+)") or 25,1
 	elseif theinterface() == "WWAN" then
+		dpack, upack = sys.exec("uci get speedtest.@packetsize[-1].wwan"):match("(%d+)/(%d+)") or 25,5
+	elseif theinterface() == "3G" then
 		dpack, upack = sys.exec("uci get speedtest.@packetsize[-1].wwan"):match("(%d+)/(%d+)") or 10,2
 	end
 
@@ -65,7 +67,8 @@ function theinterface(self) -- Decide the Interface
 	local vdsl = tonumber(sys.exec("cat /var/state/layer2_interface | grep 'vdsl' | grep -c 'up'"))
 	local adsl = tonumber(sys.exec("cat /var/state/layer2_interface | grep 'adsl' | grep -c 'up'"))
 	local wan = tonumber(sys.exec("route -n | grep 'UG' | tail -1 | egrep -c 'eth|br-'"))
-	local wwan = tonumber(sys.exec("route -n | grep 'UG' | tail -1 | egrep -c 'wwan|3g'"))
+	local wwan = tonumber(sys.exec("route -n | grep 'UG' | tail -1 | egrep -c 'wwan'"))
+	local g3 = tonumber(sys.exec("route -n | grep 'UG' | tail -1 | egrep -c '3g'"))
 
 	if vdsl > 0 then
 		return "VDSL"
@@ -75,6 +78,8 @@ function theinterface(self) -- Decide the Interface
 		return "WAN"	
 	elseif wwan > 0 then
 		return "WWAN"
+	elseif g3 > 0 then
+		return "3G"
 	else
 		return "NONE"
 	end

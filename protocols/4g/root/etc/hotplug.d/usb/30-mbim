@@ -1,0 +1,30 @@
+#!/bin/sh
+
+local usb_dir uVid uPid uMa uPr uSe bConf
+
+sanitize() {
+	sed -e 's/[[:space:]]\+$//; s/[[:space:]]\+/_/g' "$@"
+}
+
+find_usb_attrs() {
+	usb_dir="/sys/$DEVPATH"
+	[ -f "$usb_dir/idVendor" ] || usb_dir="${usb_dir%/*}"
+
+	uVid=$(cat "$usb_dir/idVendor")
+	uPid=$(cat "$usb_dir/idProduct")
+	uMa=$(sanitize "$usb_dir/manufacturer")
+	uPr=$(sanitize "$usb_dir/product")
+	uSe=$(sanitize "$usb_dir/serial")
+	bConf=$(cat "$usb_dir/bConfigurationValue")
+}
+
+convert_to_mbim() {
+	if [ "$uVid:$uPid" == "12d1:1f16" ]; then
+		[ "$bConf" == "2" ] || echo 2 > $usb_dir/bConfigurationValue
+	fi
+}
+
+if [ "$ACTION" = add ]; then
+	find_usb_attrs
+	convert_to_mbim "$uVid:$uPid"
+fi
