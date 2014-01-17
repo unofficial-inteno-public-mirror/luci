@@ -172,36 +172,10 @@ read_lines()
 	local call_lines
 	config_get call_lines $1 call_lines
 	for i in $call_lines ; do
-		lines=$lines"BRCM\/$i\&"
+		lines=$lines"$i&"
 	done
+	lines=$(escape_sed_substitution $lines)
 	echo "${lines%??}"
-}
-
-# Read BRCM lines that should receive incoming calls for a SIP Provider.
-# Append line number to SIP user (second argument) to create a contact string.
-# This string (user_XYZ) will then be used as extension in:
-# "register => user[:secret[:authuser]]@host[:port][/extension]"
-format_sip_contact()
-{
-	local contact_line_suffix
-	config_get contact_line_suffix SIP contact_line_suffix
-
-	if [ "$contact_line_suffix" != "1" ] ; then
-		echo $2
-		return
-	fi
-
-	local lines=""
-	local call_lines
-	config_get call_lines $1 call_lines
-	for i in $call_lines ; do
-		lines=$lines"$i"
-	done
-	if [ -n "$lines" ]; then
-		lines="_$lines"
-	fi
-	lines=$2$lines	
-	echo $lines
 }
 
 configure_sip()
@@ -473,7 +447,7 @@ configure_sip_provider()
 	else
 		sed -i "s/|PORT|//"			$WORKDIR/sip_reg.tmp
 	fi
-	sed -i "s/|CONTACT_USER|/$(format_sip_contact $1 $user)/g"	$WORKDIR/sip_reg.tmp
+	sed -i "s/|CONTACT_USER|/$user/g"	$WORKDIR/sip_reg.tmp
 
 	# Add SIP Provider registration info to temp file containing all SIP Provider registrations
 	cat $WORKDIR/sip_reg.tmp >> $WORKDIR/sip_registrations.tmp
@@ -557,7 +531,7 @@ configure_sip_user()
 
 	echo "Configuring SIP User $user"
 	cp "$TMPL_SIPUSER" "$WORKDIR/sip_user.tmp"
-
+	
 	# Construct a sip peer entry for user
 	sed -i "s/|NAME|/$(escape_sed_substitution $name)/g"		$WORKDIR/sip_user.tmp
 	sed -i "s/|EXTENSION|/$extension/g"				$WORKDIR/sip_user.tmp
@@ -778,7 +752,7 @@ configure_extensions_provider()
 
 	# create tempfile for incoming context
 	cp $TMPL_EXTENSIONS_INCOMING_LINE				$WORKDIR/extensions_incoming_line.tmp
-	sed -i "s/|CONTACT_USER|/$(format_sip_contact $1 $user)/g"	$WORKDIR/extensions_incoming_line.tmp
+	sed -i "s/|CONTACT_USER|/$user/g"	$WORKDIR/extensions_incoming_line.tmp
 	sed -i "s/|LINES|/$incoming_lines/"				$WORKDIR/extensions_incoming_line.tmp
 	cat $WORKDIR/extensions_incoming_line.tmp >>			$WORKDIR/extensions_incoming.tmp
 	rm -f								$WORKDIR/extensions_incoming_line.tmp

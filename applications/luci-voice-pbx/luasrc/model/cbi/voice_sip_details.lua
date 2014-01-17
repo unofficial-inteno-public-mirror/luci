@@ -90,14 +90,21 @@ lines = s:option(MultiValue, "call_lines", "Incoming calls to")
 line_nr = 0
 -- DECT
 for i = 1, dectCount do
-	lines:value(line_nr, "DECT " .. i)
+	lines:value("BRCM/" .. line_nr, "DECT " .. i)
 	line_nr = line_nr + 1
 end
 -- FXS
 for i = 1, fxsCount do
-	lines:value(line_nr, "Tel " .. i)
+	lines:value("BRCM/" .. line_nr, "Tel " .. i)
 	line_nr = line_nr + 1
 end
+-- SIP users
+m.uci:foreach("voice_pbx", "sip_user",
+        function(s1)
+                lines:value("SIP/" .. s1['user'], s1['name'])
+                line_nr = line_nr + 1
+        end
+)
 
 domain = s:option(Value, 'domain', 'SIP domain name')
 function domain.validate(self, value, section)

@@ -140,15 +140,29 @@ function l.cfgvalue(self, section)
 	if l then
 		lines = string.split(l, " ")
 		for i,l in ipairs(lines) do
-			lineId = tonumber(l:match("%d+"))
+			info = string.split(l, "/")
 			if i > 1 then
 				v = v .. ", "
 			end
-			if (lineId < dectCount) then
-				v = v .. "DECT " .. l + 1
+			if (info[1] == "SIP") then
+				m.uci:foreach("voice_pbx", "sip_user",
+					function(s1)
+						if (s1['user'] == info[2]) then
+							v = v .. s1['name']
+							return
+						end
+					end
+				)	
 			else
-				v = v .. "Tel " .. l - dectCount + 1
+				lineId = tonumber(info[2]:match("%d+"))
+			
+				if (lineId < dectCount) then
+					v = v .. "DECT " .. lineId + 1
+				else
+					v = v .. "Tel " .. lineId - dectCount + 1
+				end
 			end
+				
 		end
 	end
 	return v
