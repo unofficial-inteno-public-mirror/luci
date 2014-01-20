@@ -34,6 +34,7 @@ start() {
                 json_get_var device device
 		case "$device" in
 			br-*)
+				bridged=1
 				proxbridge="$device"
 				json_load "$(devstatus $device)"
 				_i=1
@@ -63,9 +64,7 @@ start() {
 				# enable port snooping on the bridge
                                 /usr/sbin/brctl enableportsnooping $snpif "$igmp_snooping_enable"
 
-				if [ "$snpif" == "$proxbridge" ]; then
-					bridged=1
-				else
+				if [ "$snpif" != "$proxbridge" ]; then
 					routed=1
 					json_load "$(devstatus $snpif)"
 					_i=1
