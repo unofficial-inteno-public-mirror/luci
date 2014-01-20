@@ -28,7 +28,7 @@ service:value("qmi", "Qualcomm MSM Interface")
 
 
 cdcdev = section:taboption("general", Value, "cdcdev", translate("Communication device"))
-cdcdev.rmempty = false
+cdcdev.rmempty = true
 cdcdev:depends("service", "mbim")
 cdcdev:depends("service", "qmi")
 cdcdev:value("", translate("-- Please choose --"))
@@ -39,6 +39,11 @@ if cdcdev_suggestions then
 	for cdc in cdcdev_suggestions do
 		cdcdev:value(cdc)
 	end
+end
+
+function cdcdev.write(self, section, value)
+	self.map:set(section, "ttydev", "")
+	self.map:set(section, "cdcdev", value)
 end
 
 
@@ -53,6 +58,11 @@ if ttydev_suggestions then
 	for tty in ttydev_suggestions do
 		ttydev:value(tty)
 	end
+end
+
+function ttydev.write(self, section, value)
+	self.map:set(section, "cdcdev", "")
+	self.map:set(section, "ttydev", value)
 end
 
 
