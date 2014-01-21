@@ -153,7 +153,7 @@ function l.cfgvalue(self, section)
 						end
 					end
 				)	
-			else
+			elseif (info[1] == "BRCM") then
 				lineId = tonumber(info[2]:match("%d+"))
 			
 				if (lineId < dectCount) then
