@@ -184,7 +184,7 @@ function authenticator.htmlauth(validator, accs, default)
 	elseif vuser and userip then
 		luci.sys.exec("logger -t HTTP login failed for %s from %s, wrong password" %{user, userip})
 	elseif user and userip then
-		luci.sys.exec("logger -t HTTP login failed for %s from %s, wrong username" %{user, userip})
+		luci.sys.exec("logger -t HTTP login failed from %s, wrong username" %{userip})
 	end
 
 	require("luci.i18n")
