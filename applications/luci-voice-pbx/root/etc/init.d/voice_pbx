@@ -34,6 +34,7 @@ TMPL_EXTENSIONS_INCOMING=$TEMPLATEDIR/extensions_incoming.TEMPLATE
 TMPL_EXTENSIONS_INCOMING_LINE=$TEMPLATEDIR/extensions_incoming_line.TEMPLATE
 TMPL_EXTENSIONS_LOCAL=$TEMPLATEDIR/extensions_local.TEMPLATE
 TMPL_EXTENSIONS_DIRECT=$TEMPLATEDIR/extensions_direct.TEMPLATE
+TMPL_EXTENSIONS_DIALTONE=$TEMPLATEDIR/extensions_dialtone.TEMPLATE
 
 TMPL_SIP=$TEMPLATEDIR/sip.conf.TEMPLATE
 TMPL_SIPPROVIDER=$TEMPLATEDIR/sip_provider.TEMPLATE
@@ -932,9 +933,22 @@ configure_brcm_line()
 	sed -i "s/|TXGAIN|/$txgain/"				$WORKDIR/brcm_line.tmp
 	sed -i "s/|RXGAIN|/$rxgain/"				$WORKDIR/brcm_line.tmp
 	sed -i "s/|ALLOW|/$codecs/"				$WORKDIR/brcm_line.tmp
+	sed -i "s/|DIALTONE_EXTENSION_HINT|/$1/"		$WORKDIR/brcm_line.tmp
 
 	cat $WORKDIR/brcm_line.tmp >>				$WORKDIR/brcm.tmp
 	rm -f							$WORKDIR/brcm_line.tmp
+}
+
+#Create an extension "hint" to allow dialtone to be set according to sip provider reg status
+create_extensions_dialtone()
+{
+	local sip_account
+	config_get sip_account $1 sip_account
+
+	#If line is configured with a sip account, setup dialtone extension
+	if [ -n "$sip_account" -a "$sip_account" != "-" ] ; then
+		echo "exten => $1,hint,SIP/$sip_account" >>	$WORKDIR/extensions_dialtone.tmp
+	fi
 }
 
 # Makes sure the ownership of specified directories is proper.
@@ -990,6 +1004,7 @@ start() {
 	cp $TMPL_EXTENSIONS		$WORKDIR/extensions.tmp
 	cp $TMPL_EXTENSIONS_INCOMING	$WORKDIR/extensions_incoming.tmp
 	cp $TMPL_EXTENSIONS_LOCAL	$WORKDIR/extensions_local.tmp
+	cp $TMPL_EXTENSIONS_DIALTONE	$WORKDIR/extensions_dialtone.tmp
 	cp $TMPL_SIP			$WORKDIR/sip.tmp
 	cp $TMPL_RTP			$WORKDIR/rtp.tmp
 	cp $TMPL_BRCM			$WORKDIR/brcm.tmp
@@ -1025,14 +1040,17 @@ start() {
 	configure_brcm
 	config_foreach configure_brcm_line brcm_line
 	config_foreach configure_brcm_line_extension brcm_line
+	config_foreach create_extensions_dialtone brcm_line
 	configure_codecs
 
 	#########################
 	# Finish up configuration
 	#########################
 	cat $WORKDIR/extensions_incoming.tmp >> $WORKDIR/extensions.tmp
+	cat $WORKDIR/extensions_dialtone.tmp >> $WORKDIR/extensions.tmp
 	cat $WORKDIR/extensions_local.tmp >> $WORKDIR/extensions.tmp
 	rm -f $WORKDIR/extensions_incoming.tmp
+	rm -f $WORKDIR/extensions_dialtone.tmp
 	rm -f $WORKDIR/extensions_local.tmp
 	assemble_and_copy_config
 	pbx_fix_ownership

@@ -52,6 +52,7 @@ TMPL_EXTENSIONS_INCOMING=$TEMPLATEDIR/extensions_incoming.TEMPLATE
 TMPL_EXTENSIONS_INCOMING_LINE=$TEMPLATEDIR/extensions_incoming_line.TEMPLATE
 TMPL_EXTENSIONS_LOCAL=$TEMPLATEDIR/extensions_local.TEMPLATE
 TMPL_EXTENSIONS_DIRECT=$TEMPLATEDIR/extensions_direct.TEMPLATE
+TMPL_EXTENSIONS_DIALTONE=$TEMPLATEDIR/extensions_dialtone.TEMPLATE
 
 TMPL_SIP=$TEMPLATEDIR/sip.conf.TEMPLATE
 TMPL_SIPPEER=$TEMPLATEDIR/sip_peer.TEMPLATE
@@ -165,7 +166,6 @@ assemble_and_copy_config()
 	# Get rid of the working directory
 	rm -rf $WORKDIR
 }
-
 
 # read configured codecs for a Line section
 # returns a list of found codecs, formatted to replace a tag with sed
@@ -891,17 +891,18 @@ configure_brcm_line()
 	fi
 
 	cp $TMPL_BRCM_LINE $WORKDIR/brcm_line.tmp
-	sed -i "s/|SECTION|/$1/"				$WORKDIR/brcm_line.tmp
-	sed -i "s/|CONTEXT|/$sip_account/g"			$WORKDIR/brcm_line.tmp
-	sed -i "s/|SILENCE|/$silence/"				$WORKDIR/brcm_line.tmp
-	sed -i "s/|ECHOCANCEL|/$ecan/"				$WORKDIR/brcm_line.tmp
-	sed -i "s/|COMFORTNOISE|/$noise/"			$WORKDIR/brcm_line.tmp
-	sed -i "s/|JITTERFIXED|/$jitter_fixed/"			$WORKDIR/brcm_line.tmp
-	sed -i "s/|JITTERMIN|/$jitter_min/"			$WORKDIR/brcm_line.tmp
-	sed -i "s/|JITTERMAX|/$jitter_max/"			$WORKDIR/brcm_line.tmp
-	sed -i "s/|JITTERTARGET|/$jitter_target/"		$WORKDIR/brcm_line.tmp
-	sed -i "s/|TXGAIN|/$txgain/"				$WORKDIR/brcm_line.tmp
-	sed -i "s/|RXGAIN|/$rxgain/"				$WORKDIR/brcm_line.tmp	
+	sed -i "s/|SECTION|/$1/"					$WORKDIR/brcm_line.tmp
+	sed -i "s/|CONTEXT|/$sip_account/g"				$WORKDIR/brcm_line.tmp
+	sed -i "s/|SILENCE|/$silence/"					$WORKDIR/brcm_line.tmp
+	sed -i "s/|ECHOCANCEL|/$ecan/"					$WORKDIR/brcm_line.tmp
+	sed -i "s/|COMFORTNOISE|/$noise/"				$WORKDIR/brcm_line.tmp
+	sed -i "s/|JITTERFIXED|/$jitter_fixed/"				$WORKDIR/brcm_line.tmp
+	sed -i "s/|JITTERMIN|/$jitter_min/"				$WORKDIR/brcm_line.tmp
+	sed -i "s/|JITTERMAX|/$jitter_max/"				$WORKDIR/brcm_line.tmp
+	sed -i "s/|JITTERTARGET|/$jitter_target/"			$WORKDIR/brcm_line.tmp
+	sed -i "s/|TXGAIN|/$txgain/"					$WORKDIR/brcm_line.tmp
+	sed -i "s/|RXGAIN|/$rxgain/"					$WORKDIR/brcm_line.tmp
+	sed -i "s/|DIALTONE_EXTENSION_HINT|/$1/"			$WORKDIR/brcm_line.tmp
 
 	#Configure BRCM line with codecs according to the SIP line settings
 	local is_fax
@@ -914,6 +915,18 @@ configure_brcm_line()
 
 	cat $WORKDIR/brcm_line.tmp >>				$WORKDIR/brcm.tmp
 	rm -f							$WORKDIR/brcm_line.tmp
+}
+
+#Create an extension "hint" to allow dialtone to be set according to sip provider reg status
+create_extensions_dialtone()
+{
+	local sip_account
+	config_get sip_account $1 sip_account
+
+	#If line is configured with a sip account, setup dialtone extension
+	if [ -n "$sip_account" -a "$sip_account" != "-" ] ; then
+		echo "exten => $1,hint,SIP/$sip_account" >>	$WORKDIR/extensions_dialtone.tmp
+	fi
 }
 
 # Makes sure the ownership of specified directories is proper.
@@ -969,13 +982,17 @@ start() {
 	#########################
 	cp $TMPL_EXTENSIONS		$WORKDIR/extensions.tmp
 	cp $TMPL_EXTENSIONS_INCOMING	$WORKDIR/extensions_incoming.tmp
+	cp $TMPL_EXTENSIONS_DIALTONE	$WORKDIR/extensions_dialtone.tmp
 	cp $TMPL_EXTENSIONS_LOCAL	$WORKDIR/extensions_local.tmp
 	create_extensions
 	config_foreach create_extensions_account sip_service_provider
+	config_foreach create_extensions_dialtone brcm_line
 	create_extensions_local
 	cat $WORKDIR/extensions_incoming.tmp >> $WORKDIR/extensions.tmp
+	cat $WORKDIR/extensions_dialtone.tmp >> $WORKDIR/extensions.tmp
 	cat $WORKDIR/extensions_local.tmp >> $WORKDIR/extensions.tmp
 	rm -f $WORKDIR/extensions_incoming.tmp
+	rm -f $WORKDIR/extensions_dialtone.tmp
 	rm -f $WORKDIR/extensions_local.tmp
 
 	####################
