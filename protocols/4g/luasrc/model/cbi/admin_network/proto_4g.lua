@@ -34,22 +34,23 @@ if nfs.access(usbnets, "r") then
 				break
 			else
 				local uNo, uBr, uVid, uPid, vendor, product, mdmtyp, netdev, comdev = ln:match("(%S+):(%S+) (%S+):(%S+) (%S+) (%S+) (%S+) (%S+) (%S+)")
-				--dongle:value(mdmtyp..":"..comdev..":"..netdev, vendor.." "..product)
-				dongle:value(uVid..":"..uPid..":"..mdmtyp, vendor.." "..product)
+				dongle:value(mdmtyp..":"..comdev..":"..netdev, vendor.." "..product)
+				--dongle:value(uVid..":"..uPid..":"..mdmtyp, vendor.." "..product)
 			end
 		end
 		fd:close()
 	end
 end
 
---function dongle.write(self, section, value)
---	local mdmtyp, comdev, netdev = value:match("(%S+):(%S+):(%S+)")
---	if netdev then
---		self.map:set(section, "service", mdmtyp)
---		self.map:set(section, "comdev", "/dev/"..comdev)
---		self.map:set(section, "ifname", netdev)
---	end
---end
+function dongle.write(self, section, value)
+	local mdmtyp, comdev, netdev = value:match("(%S+):(%S+):(%S+)")
+	if netdev then
+		self.map:set(section, "modem", value)
+		self.map:set(section, "service", mdmtyp)
+		self.map:set(section, "comdev", "/dev/"..comdev)
+		self.map:set(section, "ifname", netdev)
+	end
+end
 
 
 apn = section:taboption("general", Value, "apn", translate("APN"))

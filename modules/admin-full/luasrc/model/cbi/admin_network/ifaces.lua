@@ -283,6 +283,7 @@ if guser == "admin" then
 end
 
 
+if net:proto() ~= "4g" then
 if not net:is_virtual() then
 	br = s:taboption("physical", ListValue, "type", translate("Set as"))
 	br:value("", "standalone interface")
@@ -433,6 +434,7 @@ if not net:is_virtual() then
 	ifname_anywan.cfgvalue = ifname_single.cfgvalue
 	ifname_anywan.write = ifname_single.write
 end
+end
 
 
 if has_firewall then
@@ -469,6 +471,7 @@ if has_firewall then
 	end
 end
 
+if net:proto() ~= "4g" then
 if guser == "admin" then
 	function p.write() end
 	function p.remove() end
@@ -523,6 +526,7 @@ if guser == "admin" then
 		end
 		return value
 	end
+end
 end
 
 

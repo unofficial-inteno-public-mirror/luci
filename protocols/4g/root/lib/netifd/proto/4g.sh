@@ -31,20 +31,14 @@ proto_4g_init_config() {
 proto_4g_setup() {
 	local config="$1"
 	local iface="$2"
-	local uVid uPid dongle
 	local modem service comdev ipaddr hostname clientid vendorid broadcast reqopts apn username password pincode auto lte_apn_use lte_apn lte_username lte_password
 	json_get_vars modem service comdev ipaddr hostname clientid vendorid broadcast reqopts apn username password pincode auto data lte_apn_use lte_apn lte_username lte_password
 
-	if [ -n "$modem" ]; then
-		uVid=$(echo $modem | cut -d':' -f1)
-		uPid=$(echo $modem | cut -d':' -f2)
-		service=$(echo $modem | cut -d':' -f3)
-		dongle=$(cat /var/usbnets | grep $uVid | grep $uPid | grep $service)
-		iface=$(echo $dongle | awk '{print$6}')
-		comdev=$(echo $dongle | awk '{print$7}')
-	fi
-
-	echo UP IFACE $iface COMDEV $comdev SERVICE $service > /dev/console
+#	if [ -n "$modem" ]; then
+#		service=$(echo $modem | cut -d':' -f1)
+#		comdev=$(echo $modem | cut -d':' -f2)
+#		iface=$(echo $modem | cut -d':' -f3)
+#	fi
 	
 	case "$service" in
 		ecm)
@@ -103,23 +97,17 @@ proto_4g_teardown() {
 	local interface="$1"
 	local iface="$2"
 	local modem service comdev
-	local uVid uPid dongle
 
         config_load network
-	config_get modem $interface modem
         config_get service $interface service
         config_get comdev $interface comdev
 
-	if [ -n "$modem" ]; then
-		uVid=$(echo $modem | cut -d':' -f1)
-		uPid=$(echo $modem | cut -d':' -f2)
-		service=$(echo $modem | cut -d':' -f3)
-		dongle=$(cat /var/usbnets | grep $uVid | grep $uPid | grep $service)
-		iface=$(echo $dongle | awk '{print$6}')
-		comdev=$(echo $dongle | awk '{print$7}')
-	fi
-
-	echo DOWN IFACE $iface COMDEV $comdev SERVICE $service > /dev/console
+#	config_get modem $interface modem
+#	if [ -n "$modem" ]; then
+#		service=$(echo $modem | cut -d':' -f1)
+#		comdev=$(echo $modem | cut -d':' -f2)
+#		iface=$(echo $modem | cut -d':' -f3)
+#	fi
 	
 	case "$service" in
 		ecm)
