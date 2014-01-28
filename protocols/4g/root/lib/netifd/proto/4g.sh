@@ -6,9 +6,9 @@ INCLUDE_ONLY=1
 init_proto "$@"
 
 proto_4g_init_config() {
+	proto_config_add_string "modem"
 	proto_config_add_string "service"
-	proto_config_add_string "cdcdev"
-	proto_config_add_string "ttydev"
+	proto_config_add_string "comdev"
 	proto_config_add_string "ipaddr"
 	proto_config_add_string "netmask"
 	proto_config_add_string "hostname"
@@ -31,8 +31,20 @@ proto_4g_init_config() {
 proto_4g_setup() {
 	local config="$1"
 	local iface="$2"
-	local service cdcdev ttydev ipaddr hostname clientid vendorid broadcast reqopts apn username password pincode auto lte_apn_use lte_apn lte_username lte_password
-	json_get_vars service cdcdev ttydev ipaddr hostname clientid vendorid broadcast reqopts apn username password pincode auto data lte_apn_use lte_apn lte_username lte_password
+	local uVid uPid dongle
+	local modem service comdev ipaddr hostname clientid vendorid broadcast reqopts apn username password pincode auto lte_apn_use lte_apn lte_username lte_password
+	json_get_vars modem service comdev ipaddr hostname clientid vendorid broadcast reqopts apn username password pincode auto data lte_apn_use lte_apn lte_username lte_password
+
+	if [ -n "$modem" ]; then
+		uVid=$(echo $modem | cut -d':' -f1)
+		uPid=$(echo $modem | cut -d':' -f2)
+		service=$(echo $modem | cut -d':' -f3)
+		dongle=$(cat /var/usbnets | grep $uVid | grep $uPid | grep $service)
+		iface=$(echo $dongle | awk '{print$6}')
+		comdev=$(echo $dongle | awk '{print$7}')
+	fi
+
+	echo UP IFACE $iface COMDEV $comdev SERVICE $service > /dev/console
 	
 	case "$service" in
 		ecm)
@@ -41,37 +53,37 @@ proto_4g_setup() {
 		;;
 		mbim)
 			local mbimdev=/dev/$(basename $(ls /sys/class/net/${iface}/device/usb/cdc-wdm* -d))
-			local CDCDEV="${cdcdev:-$mbimdev}"
+			local comdev="${comdev:-$mbimdev}"
 			[ -n "$pincode" ] && {
-				if ! mbimcli -d $CDCDEV --query-pin-state | grep "unlocked" >/dev/null; then
+				if ! mbimcli -d $comdev --query-pin-state | grep "unlocked" >/dev/null; then
 					set -o pipefail
-					if ! mbimcli -d $CDCDEV "--enter-pin=${pincode}" 2>&1; then
-						mbimcli -d $CDCDEV --query-pin-state
+					if ! mbimcli -d $comdev "--enter-pin=${pincode}" 2>&1; then
+						mbimcli -d $comdev --query-pin-state
 						proto_notify_error "$config" PIN_FAILED
 						proto_block_restart "$interface"
 						return 1
 					fi
 				fi
 			}
-			APN="$apn" mbim-network $CDCDEV start
+			APN="$apn" mbim-network $comdev start
 		;;
 		ncm)
-			[ -n "$pincode" ] && echo $pincode | gcom -d $ttydev
-			USE_APN="$apn" gcom -d $ttydev -s /etc/gcom/ncmconnection.gcom
+			[ -n "$pincode" ] && echo $pincode | gcom -d $comdev
+			USE_APN="$apn" gcom -d $comdev -s /etc/gcom/ncmconnection.gcom
 		;;
 		qmi)
 			local qmidev=/dev/$(basename $(ls /sys/class/net/${iface}/device/usb/cdc-wdm* -d))
-			local CDCDEV="${cdcdev:-$qmidev}"
+			local comdev="${comdev:-$qmidev}"
 			[ -n "$pincode" ] && {
 				set -o pipefail
-				if ! qmicli -d $CDCDEV "--dms-uim-verify-pin=PIN,${pincode}" 2>&1; then
-					qmicli -d $CDCDEV --dms-uim-get-pin-status
+				if ! qmicli -d $comdev "--dms-uim-verify-pin=PIN,${pincode}" 2>&1; then
+					qmicli -d $comdev --dms-uim-get-pin-status
 					proto_notify_error "$config" PIN_FAILED
 					proto_block_restart "$interface"
 					return 1
 				fi
 			}
-			APN="$apn" qmi-network $CDCDEV start
+			APN="$apn" qmi-network $comdev start
 		;;		
 	esac
 	
@@ -90,12 +102,24 @@ proto_4g_setup() {
 proto_4g_teardown() {
 	local interface="$1"
 	local iface="$2"
-	local service cdcdev ttydev
+	local modem service comdev
+	local uVid uPid dongle
 
         config_load network
+	config_get modem $interface modem
         config_get service $interface service
-        config_get cdcdev $interface cdcdev
-        config_get ttydev $interface ttydev        
+        config_get comdev $interface comdev
+
+	if [ -n "$modem" ]; then
+		uVid=$(echo $modem | cut -d':' -f1)
+		uPid=$(echo $modem | cut -d':' -f2)
+		service=$(echo $modem | cut -d':' -f3)
+		dongle=$(cat /var/usbnets | grep $uVid | grep $uPid | grep $service)
+		iface=$(echo $dongle | awk '{print$6}')
+		comdev=$(echo $dongle | awk '{print$7}')
+	fi
+
+	echo DOWN IFACE $iface COMDEV $comdev SERVICE $service > /dev/console
 	
 	case "$service" in
 		ecm)
@@ -104,16 +128,16 @@ proto_4g_teardown() {
 		;;
 		mbim)
 			local mbimdev=/dev/$(basename $(ls /sys/class/net/${iface}/device/usb/cdc-wdm* -d))
-			local CDCDEV="${cdcdev:-$mbimdev}"
-			mbim-network $CDCDEV stop
+			local comdev="${comdev:-$mbimdev}"
+			mbim-network $comdev stop
 		;;
 		ncm)
-			USE_DISCONNECT=1 gcom -d $ttydev -s /etc/gcom/ncmconnection.gcom
+			USE_DISCONNECT=1 gcom -d $comdev -s /etc/gcom/ncmconnection.gcom
 		;;
 		qmi)
 			local qmidev=/dev/$(basename $(ls /sys/class/net/${iface}/device/usb/cdc-wdm* -d))
-			local CDCDEV="${cdcdev:-$qmidev}"		
-			qmi-network $CDCDEV stop
+			local comdev="${comdev:-$qmidev}"
+			qmi-network $comdev stop
 		;;		
 	esac
 	proto_kill_command "$interface"

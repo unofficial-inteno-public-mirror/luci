@@ -10,6 +10,8 @@ You may obtain a copy of the License at
 	http://www.apache.org/licenses/LICENSE-2.0
 ]]--
 
+local nfs = require "nixio.fs"
+
 local map, section, net = ...
 local ifc = net:get_interface()
 
@@ -18,52 +20,36 @@ local hostname, accept_ra, send_rs
 local bcast, defaultroute, peerdns, dns, metric, clientid, vendorclass
 
 
-service = section:taboption("general", ListValue, "service", translate("Service Type"))
-service:value("", translate("-- Please choose --"))
---service:value("ecm", translate("Ethernet Control Model"))
---service:value("eem", translate("Ethernet Emulation Model"))
-service:value("ncm", translate("Network Control Model"))
-service:value("mbim", translate("Mobile Broadband Interface Model"))
-service:value("qmi", "Qualcomm MSM Interface")
+dongle = section:taboption("general", ListValue, "modem", translate("LTE Modem"))
+dongle.rmempty = false
+dongle:value("", translate("-- Please Choose --"))
 
-
-cdcdev = section:taboption("general", Value, "cdcdev", translate("Communication device"))
-cdcdev.rmempty = true
-cdcdev:depends("service", "mbim")
-cdcdev:depends("service", "qmi")
-cdcdev:value("", translate("-- Please choose --"))
-
-local cdcdev_suggestions = nixio.fs.glob("/dev/cdc-wdm*")
-if cdcdev_suggestions then
-	local cdc
-	for cdc in cdcdev_suggestions do
-		cdcdev:value(cdc)
+local usbnets = "/var/usbnets"
+if nfs.access(usbnets, "r") then
+	local fd = io.open(usbnets, "r")
+	if fd then
+		while true do
+			local ln = fd:read("*l")
+			if not ln then
+				break
+			else
+				local uNo, uBr, uVid, uPid, vendor, product, mdmtyp, netdev, comdev = ln:match("(%S+):(%S+) (%S+):(%S+) (%S+) (%S+) (%S+) (%S+) (%S+)")
+				--dongle:value(mdmtyp..":"..comdev..":"..netdev, vendor.." "..product)
+				dongle:value(uVid..":"..uPid..":"..mdmtyp, vendor.." "..product)
+			end
+		end
+		fd:close()
 	end
 end
 
-function cdcdev.write(self, section, value)
-	self.map:set(section, "ttydev", "")
-	self.map:set(section, "cdcdev", value)
-end
-
-
-ttydev = section:taboption("general", Value, "ttydev", translate("Modem device"))
-ttydev.rmempty = false
-ttydev:depends("service", "ncm")
-ttydev:value("", translate("-- Please choose --"))
-
-local ttydev_suggestions = nixio.fs.glob("/dev/tty[A,U]*")
-if ttydev_suggestions then
-	local tty
-	for tty in ttydev_suggestions do
-		ttydev:value(tty)
-	end
-end
-
-function ttydev.write(self, section, value)
-	self.map:set(section, "cdcdev", "")
-	self.map:set(section, "ttydev", value)
-end
+--function dongle.write(self, section, value)
+--	local mdmtyp, comdev, netdev = value:match("(%S+):(%S+):(%S+)")
+--	if netdev then
+--		self.map:set(section, "service", mdmtyp)
+--		self.map:set(section, "comdev", "/dev/"..comdev)
+--		self.map:set(section, "ifname", netdev)
+--	end
+--end
 
 
 apn = section:taboption("general", Value, "apn", translate("APN"))

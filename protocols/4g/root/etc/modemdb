@@ -12,7 +12,8 @@
 2001:7d03	mbim
 12d1:14ac	qmi
 12d1:140c	qmi
-12d1:1506	qmi
+12d1:1506	qmi	HUAWEIE		E398
+12d1:1506	ncm	HUAWEIE		E3276
 12d1:14d2	qmi
 12d1:1c07	ncm
 12d1:1436	ecm
@@ -49,14 +50,14 @@
 12d1:157a	mbim
 12d1:157b	mbim
 12d1:157f	mbim
-12d1:1f16	mbim
+12d1:1f16	mbim	Vodafone	K5150
 12d1:1404	qmi
 19f2:1700	ecm	
 1410:b001	qmi
 1527:1000	ecm
 0b3c:c005	qmi
 0f3d:68a2	qmi
-1199:68a2	qmi
+1199:68a2	qmi	SierraWireless	M7710
 1349:1100	qmi
 1349:1200	qmi	
 1199:683c	qmi
