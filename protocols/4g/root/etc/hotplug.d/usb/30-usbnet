@@ -48,9 +48,6 @@ case "$usbbr" in
 	*:*) usbbr=$(echo $DEVPATH | cut -d'/' -f6) ;;
 esac
 
-echo USBNO $usbno:$usbbr > /dev/console
-
-
 find_usb_attrs
 if [ "$ACTION" = add ]; then
 	convert_to_mbim "$uVid:$uPid"
