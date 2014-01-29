@@ -33,13 +33,13 @@ if nfs.access(usbnets, "r") then
 			if not ln then
 				break
 			else
-				local uNo, uBr, uVid, uPid, netdev, comdev, mdmtyp, vendor, product = ln:match("(%S+):(%S+) (%S+):(%S+) (%S+) (%S+) (%S+) (%S+) (%S+)")
-				if vendor and product and mdmtyp then
+				local uNo, uBr, uVid, uPid, uMa, uPr, netdev, comdev, mdmtyp, vendor, product = ln:match("(%S+):(%S+) (%S+):(%S+) (%S+) (%S+) (%S+) (%S+) (%S+) (%S+) (%S+)")
+				if vendor and product then
 					dongle:value(mdmtyp..":"..comdev..":"..netdev, vendor.." "..product)
 				else
-					uNo, uBr, uVid, uPid, netdev, comdev, mdmtyp, vendor, product = ln:match("(%S+):(%S+) (%S+):(%S+) (%S+) (%S+) (%S+)")
-					if mdmtyp then
-						dongle:value(mdmtyp..":"..comdev..":"..netdev)
+					uNo, uBr, uVid, uPid, uMa, uPr, netdev, comdev, mdmtyp = ln:match("(%S+):(%S+) (%S+):(%S+) (%S+) (%S+) (%S+) (%S+) (%S+)")
+					if uMa and uPr then
+						dongle:value(mdmtyp..":"..comdev..":"..netdev, uMa.." "..uPr)
 					end
 				end
 				--dongle:value(uVid..":"..uPid..":"..mdmtyp, vendor.." "..product)
