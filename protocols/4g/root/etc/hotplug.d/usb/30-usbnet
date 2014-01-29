@@ -54,7 +54,7 @@ if [ "$ACTION" = add ]; then
 	if [ -n "$uVid" ] && [ -n "$uPid" ] && [ -n "$mdmtyp" ] && [ -n "$netdev" ] && [ -n "$comdev" ]; then
 		if [ -n "$usbno" ] && [ -n "$usbbr" ]; then
 			sed -i "/$usbno:$usbbr/ d" /var/usbnets
-			echo $usbno:$usbbr $uVid:$uPid $vendor $product $mdmtyp $netdev $comdev >> /var/usbnets
+			echo $usbno:$usbbr $uVid:$uPid $netdev $comdev $mdmtyp $vendor $product >> /var/usbnets
 		fi
 	fi
 fi
