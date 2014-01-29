@@ -70,8 +70,8 @@ local _, p
 for _, p in ipairs(nw:get_protocols()) do
 	if p:is_installed() then
 		newproto:value(p:proto(), p:get_i18n())
-		if not p:is_virtual()  then netbridge:depends("_netproto", p:proto()) end
-		if not p:is_floating() then
+		if not p:is_virtual()  and not p:is_semivirtual() then netbridge:depends("_netproto", p:proto()) end
+		if not p:is_floating() and not p:is_semifloating() then
 			sifname:depends({ _bridge = "",  _netproto = p:proto()})
 			mifname:depends({ _bridge = "1", _netproto = p:proto()})
 			aifname:depends({ _bridge = "2", _netproto = p:proto()})
@@ -89,7 +89,7 @@ function newproto.validate(self, value, section)
 	end
 
 	local proto = nw:get_protocol(value)
-	if proto and not proto:is_floating() then
+	if proto and not proto:is_floating() and not proto:is_semifloating() then
 		local br = (netbridge:formvalue(section) == "1")
 		local al = (netbridge:formvalue(section) == "2")
 		local mw = (netbridge:formvalue(section) == "3")

@@ -1007,6 +1007,14 @@ function protocol.is_floating(self)
 	return false
 end
 
+function protocol.is_semivirtual(self)
+	return false
+end
+
+function protocol.is_semifloating(self)
+	return false
+end
+
 function protocol.is_empty(self)
 	if self:is_floating() then
 		return false

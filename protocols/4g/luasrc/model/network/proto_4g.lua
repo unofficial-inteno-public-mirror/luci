@@ -16,4 +16,12 @@ for _, p in ipairs({"4g"}) do
 			return (nixio.fs.glob("/lib/netifd/proto/4g.sh")() ~= nil)
 		end
 	end
+
+	function proto.is_semivirtual(self)
+		return true
+	end
+
+	function proto.is_semifloating(self)
+		return true
+	end
 end

@@ -176,7 +176,7 @@ st = s:taboption("general", DummyValue, "__status", translate("Status"))
 
 local function set_status()
 	-- if current network is empty, print a warning
-	if not net:is_floating() and net:is_empty() then
+	if not net:is_floating() and not net:is_semifloating() and net:is_empty() then
 		st.template = "cbi/dvalue"
 		st.network  = nil
 		st.value    = translate("There is no device assigned yet, please attach a network device in the \"Physical Settings\" tab")
@@ -283,7 +283,7 @@ if guser == "admin" then
 end
 
 
-if net:proto() ~= "4g" then
+if not net:is_semivirtual() and not net:is_semifloating() then
 if not net:is_virtual() then
 	br = s:taboption("physical", ListValue, "type", translate("Set as"))
 	br:value("", "standalone interface")
@@ -471,7 +471,7 @@ if has_firewall then
 	end
 end
 
-if net:proto() ~= "4g" then
+if not net:is_semifloating() then
 if guser == "admin" then
 	function p.write() end
 	function p.remove() end
