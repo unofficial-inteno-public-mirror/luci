@@ -7,7 +7,7 @@ for _, p in ipairs({"4g"}) do
 
 	function proto.get_i18n(self)
 		if p == "4g" then
-			return luci.i18n.translate("LTE")
+			return luci.i18n.translate("LTE/HSPA+")
 		end
 	end
 

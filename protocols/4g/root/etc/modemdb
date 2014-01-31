@@ -12,14 +12,15 @@
 2001:7d03	mbim
 12d1:14ac	qmi
 12d1:140c	qmi
-12d1:1506	qmi	Huaweie		E398
-12d1:1506	ncm	Huaweie		E3276
+12d1:1506	qmi	Huawei		E367/398
+12d1:1506	ncm	Huawei		E3276
 12d1:14d2	qmi
 12d1:1c07	ncm
 12d1:1436	ecm
 12d1:14c9	qmi
 12d1:14db	ecm
 12d1:151d	mbim
+12d1:151e	qmi	Huawei		E353
 12d1:1c1e	ncm
 12d1:150c	qmi
 12d1:150f	qmi
