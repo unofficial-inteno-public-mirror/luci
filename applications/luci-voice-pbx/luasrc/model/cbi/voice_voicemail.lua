@@ -20,15 +20,15 @@
 -- http://luci.subsignal.org/trac/browser/luci/trunk/applications/luci-radvd/luasrc/model/cbi/radvd.lua?rev=6
 local ds = require "luci.dispatcher"
 
-m = Map ("voice_pbx", "SIP Users")
-s = m:section(TypedSection, "sip_user")
+m = Map ("voice_pbx", "Voice Mail")
+s = m:section(TypedSection, "mailbox")
 s.template  = "cbi/tblsection"
 s.anonymous = true
 s.addremove = true
-s.extedit = ds.build_url("admin/services/voice/voice_sip_users/%s")
+s.extedit = ds.build_url("admin/services/voice/voice_voicemail/%s")
 
 section_count = 0
-m.uci:foreach("voice_pbx", "sip_user",
+m.uci:foreach("voice_pbx", "mailbox",
 	function(s1)
 		section_count = section_count + 1
 	end
@@ -37,20 +37,20 @@ m.uci:foreach("voice_pbx", "sip_user",
 -- Find the lowest free section number
 function get_new_section_number()
 	local section_nr = 0
-	while m.uci:get("voice_pbx", "sip_user" .. section_nr) do
+	while m.uci:get("voice_pbx", "mailbox" .. section_nr) do
 		section_nr = section_nr + 1
 	end
 	return section_nr
 end
 
--- This function is called when a new account should be created i.e. when
+-- This function is called when a new mailbox should be configured i.e. when
 -- user presses the "Add" button. We create a new section,
 -- and proceed to detailed editor.
 function s.create(self, section)
 	if section_count < 8 then
 		section_number = get_new_section_number()
-		data = { name = "New SIP user" }
-		newAccount = m.uci:section("voice_pbx", "sip_user", "sip_user" .. section_number, data)
+		data = {}
+		newAccount = m.uci:section("voice_pbx", "mailbox", "mailbox" .. section_number , data)
 		luci.http.redirect(s.extedit % newAccount)
 	end
 end
@@ -60,14 +60,35 @@ function s.remove(self, section)
 	TypedSection.remove(self, section)
 end
 
-account_name = s:option(DummyValue, "name", "SIP User")
+account_name = s:option(DummyValue, "user", "User")
+function account_name.cfgvalue(self, section)
+	local v = "-"
+	local l = Value.cfgvalue(self, section)
+	m.uci:foreach("voice_pbx", "brcm_line",
+		function(s1)
+			if s1['.name'] == l then
+				v = s1['name']
+			end
+		end
+	)
+	m.uci:foreach("voice_pbx", "sip_user",
+		function(s1)
+			if s1['.name'] == l then
+				v = s1['name']
+			end
+		end
+	)
+	return v
+end
 
-e = s:option(Flag, "enabled", "Account Enabled")
+e = s:option(Flag, "enabled", "Mailbox Enabled")
 e.default = 0
 
-s:option(DummyValue, "user", "Username")
+-- Settings -------------------------------------------------------------------
+voicemail = m:section(TypedSection, "voicemail", "Settings")
+voicemail.anonymous = true
 
-s:option(DummyValue, "extension", "Extension")
-s:option(DummyValue, "host", "Host")
+extension = voicemail:option(Value, "extension", "Voice mail extension")
+extension.default = "6500"
 
 return m
