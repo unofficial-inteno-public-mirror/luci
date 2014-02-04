@@ -137,8 +137,8 @@ config 'sip_service_provider' 'sip0'
 	option 'cbbs_waittime' '30'
 	option 'is_fax' '0'
 
+config voicemail 'voicemail'
+	option extension '6500'
 
-
-
-
-
+config language 'language'
+	option voice_pack ''

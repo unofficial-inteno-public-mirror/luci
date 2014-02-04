@@ -1053,6 +1053,70 @@ configure_voicemail()
 	echo "exten => $extension,n,VoiceMailMain(@default)"	>> $WORKDIR/extensions_local.tmp
 }
 
+configure_language()
+{
+	local voice_pack
+	config_get voice_pack language voice_pack
+	
+	if [ -f $voice_pack ]; then
+		# Move voice-pack to /usr/lib/asterisk
+		echo "Found new voice-pack"
+		path="/usr/lib/asterisk"
+		mv $voice_pack $path
+		filename=$(basename $voice_pack)
+		echo "Verifying voice-pack"
+		# Check if valid gzip archive
+		gunzip -t $path/$filename 2>/dev/null
+		if [ $? -ne 0 ] ; then
+			# Corrupt file or not a gzip archive
+			echo "Corrupt or incorrectly compressed voice-pack"
+			# Remove it
+			rm $path/$filename
+			return
+		fi
+		# Decompress
+		mv $path/$filename $path/voicepack.tar.gz
+		gunzip -f $path/voicepack.tar.gz 2>/dev/null
+		if [ $? -ne 0 ] ; then
+			# Decompress failed
+			rm $path/voicepack.tar.gz
+			return
+		fi
+		# Make sure the tarball contains just a directory named sounds
+		valid=1
+		listing=$(mktemp)
+		tar -tf $path/voicepack.tar > $listing 2>/dev/null
+		if [ $? -ne 0 ] ; then
+			# Something went wrong
+			echo "Voice-pack not a compressed tarball"
+			rm $path/voicepack.tar
+			return
+		fi
+		while read i
+		do
+			# Each file in listing should start with 'sounds/'
+			if [ $(echo $i | sed 's/sounds\///') = $i ] ; then
+				valid=0
+				break
+			fi
+		done < $listing
+		rm -f $listing
+		if [ $valid -eq 0 ] ; then
+			echo "Invalid voice-pack"
+			rm $path/voicepack.tar
+			return
+		fi
+		# Remove existing voice-pack
+		echo "Permanently removing old voice-pack"
+		rm -rf $path/sounds
+		# Unpack
+		echo "Installing voice-pack"
+		tar -xf $path/voicepack.tar 2>/dev/null
+		# Clean-up
+		rm -f voicepack.tar voicepack.tar.gz
+	fi
+}
+
 #Create an extension "hint" to allow dialtone to be set according to sip provider reg status
 create_extensions_dialtone()
 {
@@ -1163,6 +1227,11 @@ start() {
 	###########################
 	configure_voicemail
 	config_foreach configure_mailbox mailbox
+
+	###########
+	# Language
+	###########
+	configure_language
 
 	#########################
 	# Finish up configuration

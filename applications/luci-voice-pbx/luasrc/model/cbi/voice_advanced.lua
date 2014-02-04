@@ -281,4 +281,9 @@ if m.uci.get("voice_pbx", "features", "cbbs_enabled") == "1" then
 	end
 end
 
+s = m:section(TypedSection, "language", "Language", "Upload sound files to be used for various voice services")
+s.anonymous = true
+s.addremove = false
+upload = s:option(FileUpload, 'voice_pack', 'Voice-pack', "The voice-pack must contain a single directory named <strong>sounds</strong> and compressed as <strong>tar.gz</strong>")
+
 return m
