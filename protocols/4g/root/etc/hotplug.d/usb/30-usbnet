@@ -17,9 +17,9 @@ find_usb_attrs() {
 	uSe=$(sanitize "$usb_dir/serial")
 	bNumConfs=$(cat "$usb_dir/bNumConfigurations")
 	bConf=$(cat "$usb_dir/bConfigurationValue")
-	netdev=$(find $usb_dir -name wwan* | awk -F'/' '{print$NF}' | tail -1)
-	cdcdev=$(find $usb_dir -name cdc-wdm* | awk -F'/' '{print$NF}' | tail -1)
-	ttydev=$(ls $(find $usb_dir -name tty | tail -1) | tail -1)
+	netdev=$(find $usb_dir -name wwan* | awk -F'/' '{print$NF}' | head -2 | tail -1)
+	cdcdev=$(find $usb_dir -name cdc-wdm* | awk -F'/' '{print$NF}' | head -2 | tail -1)
+	ttydev=$(ls $(find $usb_dir -name tty | head -2 | tail -1) | tail -1)
 	if [ -n "$cdcdev" ]; then
 		comdev=$cdcdev
 		mdmtyp=$(grep $uVid:$uPid /etc/modemdb | grep 'qmi\|mbim' | awk '{print$2}' | head -1)

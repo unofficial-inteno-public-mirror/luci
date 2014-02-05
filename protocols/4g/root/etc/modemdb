@@ -59,6 +59,7 @@
 0b3c:c005	qmi
 0f3d:68a2	qmi
 1199:68a2	qmi	SierraWireless	M7710
+1199:68c0	qmi	SierraWireless	M7304
 1349:1100	qmi
 1349:1200	qmi	
 1199:683c	qmi

@@ -69,12 +69,14 @@ proto_4g_setup() {
 			local qmidev=/dev/$(basename $(ls /sys/class/net/${iface}/device/usb/cdc-wdm* -d))
 			local comdev="${comdev:-$qmidev}"
 			[ -n "$pincode" ] && {
-				set -o pipefail
-				if ! qmicli -d $comdev "--dms-uim-verify-pin=PIN,${pincode}" 2>&1; then
-					qmicli -d $comdev --dms-uim-get-pin-status
-					proto_notify_error "$config" PIN_FAILED
-					proto_block_restart "$interface"
-					return 1
+				if ! qmicli -d $comdev --dms-uim-get-pin-status | grep "enabled-verified" >/dev/null; then
+					set -o pipefail
+					if ! qmicli -d $comdev "--dms-uim-verify-pin=PIN,${pincode}" 2>&1; then
+						qmicli -d $comdev --dms-uim-get-pin-status
+						proto_notify_error "$config" PIN_FAILED
+						proto_block_restart "$interface"
+						return 1
+					fi
 				fi
 			}
 			APN="$apn" qmi-network $comdev start
