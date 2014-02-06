@@ -43,6 +43,7 @@ TMPL_SIPREG=$TEMPLATEDIR/sip_registration.TEMPLATE
 TMPL_SIPREGSEC=$TEMPLATEDIR/sip_registration_voicesec.TEMPLATE
 TMPL_SIPUSER=$TEMPLATEDIR/sip_user.TEMPLATE
 TMPL_RTP=$TEMPLATEDIR/rtp.conf.TEMPLATE
+TMPL_STUN=$TEMPLATEDIR/res_stun_monitor.conf.TEMPLATE
 
 TMPL_VOICEMAIL=$TEMPLATEDIR/voicemail.conf.TEMPLATE
 TMPL_VOICEMAIL_MAILBOX=$TEMPLATEDIR/voicemail_mailbox.TEMPLATE
@@ -136,6 +137,7 @@ assemble_and_copy_config()
 	mv $WORKDIR/extensions.tmp		$WORKDIR/extensions.conf
 	mv $WORKDIR/codecs.tmp			$WORKDIR/codecs.conf
 	mv $WORKDIR/rtp.tmp			$WORKDIR/rtp.conf
+	mv $WORKDIR/res_stun_monitor.tmp	$WORKDIR/res_stun_monitor.conf
 	mv $WORKDIR/features.tmp		$WORKDIR/features.conf
 	mv $WORKDIR/voicemail.tmp		$WORKDIR/voicemail.conf
 
@@ -203,6 +205,7 @@ configure_sip()
 	local tos_text
 	local realm
 	local localnet
+	local stun_server
 
 	config_get useragent $1 useragent
 	config_get externhost $1 externhost
@@ -222,6 +225,7 @@ configure_sip()
 	config_get tos_text $1 tos_text
 	config_get realm $1 realm
 	config_get localnet $1 localnet
+	config_get stun_server $1 stun_server
 
 	[ -z "$useragent" ] && useragent="$USERAGENT"
 
@@ -316,6 +320,9 @@ configure_sip()
 			echo "localnet=$i" >> $WORKDIR/sip.tmp
 		done
 	fi
+
+	# STUN server
+	sed -i "s/|SERVER|/$stun_server/"	$WORKDIR/res_stun_monitor.tmp
 }
 
 # Get password from existing sip_providers config file
@@ -1185,6 +1192,7 @@ start() {
 	cp $TMPL_EXTENSIONS_DIALTONE	$WORKDIR/extensions_dialtone.tmp
 	cp $TMPL_SIP			$WORKDIR/sip.tmp
 	cp $TMPL_RTP			$WORKDIR/rtp.tmp
+	cp $TMPL_STUN			$WORKDIR/res_stun_monitor.tmp
 	cp $TMPL_BRCM			$WORKDIR/brcm.tmp
 	cp $TMPL_CODECS			$WORKDIR/codecs.tmp
 	cp $TMPL_VOICEMAIL		$WORKDIR/voicemail.tmp

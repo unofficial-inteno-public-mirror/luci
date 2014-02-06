@@ -90,6 +90,7 @@ function defaultexpiry.validate(self, value, section)
 end
 
 realm = sip:option(Value, 'realm', "Realm", "Realm for digest authentication, set this to your host name or domain name");
+stun = sip:option(Value, 'stun_server', "STUN server", "Leave empty to disable the STUN monitor")
 localnet = sip:option(DynamicList, 'localnet', "Localnet", "Network addresses that are considered inside of the NATted network");
 
 advanced_register_settings = m.uci.get("voice_pbx", "features", "advanced_register_settings") == "1"

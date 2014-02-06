@@ -98,6 +98,7 @@ config 'sip_advanced' 'SIP'
 	list 'localnet' '192.168.0.0/255.255.0.0'
 	list 'localnet' '10.0.0.0/255.0.0.0'
 	list 'localnet' '172.16.0.0/12'
+	option 'stun_server' ''
 
 config 'brcm_advanced' 'BRCM'
 	option 'country' 'SWE'
