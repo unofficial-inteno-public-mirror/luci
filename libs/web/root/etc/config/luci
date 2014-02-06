@@ -7,6 +7,7 @@ config extern flash_keep
 	option uci 		"/etc/config/"
 	option dropbear "/etc/dropbear/"
 	option openvpn	"/etc/openvpn/"
+	option ipsec	"/etc/ipsec.*"
 	option passwd	"/etc/passwd"
 	option opkg		"/etc/opkg.conf"
 	option firewall	"/etc/firewall.user"
