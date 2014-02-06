@@ -18,27 +18,45 @@ get_port_no() {
 	done
 }
 
+get_current_speed() {
+	local port="$1"
+	local media="$(ethctl $port media-type 2>&1)"
+	if echo $media | grep "Auto-negotiation enabled" >/dev/null; then
+		echo "auto"
+	elif echo $media | grep "100 mbps, full-duplex" >/dev/null; then
+		echo "100FD"
+	elif echo $media | grep "100 mbps, half-duplex" >/dev/null; then
+		echo "100HD"
+	elif echo $media | grep "10 mbps, full-duplex" >/dev/null; then
+		echo "10FD"
+	elif echo $media | grep "10 mbps, half-duplex" >/dev/null; then
+		echo "10HD"
+	fi
+}
+
 set_port_speed() {
 	local port="$1"
 	local speed="$2"
+	local curspeed=$(get_current_speed $port)
 	local portno
 
-	case "$speed" in
-		1000*)
-			portno=$(get_port_no $port)
-			echo PORTNO is $portno > /dev/console
-			case "$speed" in
-				1000FD) ethswctl -c phymode -p $portno -y 1000 -z 1 ;;
-				1000HD) ethswctl -c phymode -p $portno -y 1000 -z 0 ;;
-			esac
-		;;
-		10*)
-			ethctl $port media-type $speed
-		;;
-		*)
-			ethctl $port media-type auto
-		;;
-	esac
+	if [ "$speed" != "$curspeed" ]; then
+		case "$speed" in
+			1000*)
+				portno=$(get_port_no $port)
+				case "$speed" in
+					1000FD) ethswctl -c phymode -p $portno -y 1000 -z 1 ;;
+					1000HD) ethswctl -c phymode -p $portno -y 1000 -z 0 ;;
+				esac
+			;;
+			10*)
+				ethctl $port media-type $speed
+			;;
+			*)
+				ethctl $port media-type auto
+			;;
+		esac
+	fi
 }
 
 configure_ethports() {
