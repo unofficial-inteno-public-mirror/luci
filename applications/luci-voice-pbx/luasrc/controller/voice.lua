@@ -22,10 +22,16 @@ function index()
 			entry({user, "services", "voice", "voice_brcm"},	cbi("voice_brcm"),	"Lines",		4)
 			entry({user, "services", "voice", "voice_advanced"},	cbi("voice_advanced"),	"Advanced Settings",	5)
 			entry({user, "services", "voice", "voice_dialplan"},	cbi("voice_dialplan"),	"Dialplan",		6)
-			entry({user, "services", "voice", "voice_log"},	cbi("voice_log"),	"Call Log",		7)
+
 			entry({user, "services", "voice", "voice_voicemail"},
 				arcombine(cbi("voice_voicemail"), cbi("voice_mailbox_details")),
-				_("Voice Mail"), 8).leaf = true
+				_("Voice Mail"), 7).leaf = true
+
+			entry({user, "services", "voice", "voice_queues"},
+				arcombine(cbi("voice_queues"), cbi("voice_queue_details")),
+				_("Call Queues"), 8).leaf = true
+
+			entry({user, "services", "voice", "voice_log"},	cbi("voice_log"),	"Call Log",		99)
 			entry({user, "status", "voice"},			cbi("voice_status"),	"SIP Registration",	80)
 		end
 	end
