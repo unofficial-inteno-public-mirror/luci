@@ -12,15 +12,15 @@ You may obtain a copy of the License at
 -- http://luci.subsignal.org/trac/browser/luci/trunk/applications/luci-radvd/luasrc/model/cbi/radvd.lua?rev=6
 local ds = require "luci.dispatcher"
 
-m = Map ("voice_pbx", "Call Queues")
-s = m:section(TypedSection, "queue")
+m = Map ("voice_pbx", "Interactive Voice Response")
+s = m:section(TypedSection, "ivr")
 s.template = "voice_pbx/tblsection_refresh"
 s.anonymous = true
 s.addremove = true
-s.extedit = ds.build_url("admin/services/voice/voice_queues/%s")
+s.extedit = ds.build_url("admin/services/voice/voice_ivr/%s")
 
 section_count = 0
-m.uci:foreach("voice_pbx", "queue",
+m.uci:foreach("voice_pbx", "ivr",
 	function(s1)
 		section_count = section_count + 1
 	end
@@ -29,7 +29,7 @@ m.uci:foreach("voice_pbx", "queue",
 -- Find the lowest free section number
 function get_new_section_number()
 	local section_nr = 0
-	while m.uci:get("voice_pbx", "queue" .. section_nr) do
+	while m.uci:get("voice_pbx", "ivr" .. section_nr) do
 		section_nr = section_nr + 1
 	end
 	return section_nr
@@ -40,8 +40,8 @@ end
 -- proceed to detailed editor.
 function s.create(self, section)
 	section_nr = get_new_section_number()
-	data = { name = "Untitled Call Queue" }
-	newQueue = m.uci:section("voice_pbx", "queue", "queue" .. section_nr, data)
+	data = { name = "Untitled IVR" }
+	newQueue = m.uci:section("voice_pbx", "ivr", "ivr" .. section_nr, data)
 	luci.http.redirect(s.extedit % newQueue)
 end
 
@@ -50,7 +50,7 @@ function s.remove(self, section)
 	TypedSection.remove(self, section)
 end
 
-queue_name = s:option(DummyValue, "name", "Queue")
+queue_name = s:option(DummyValue, "name", "IVR")
 
 extension = s:option(DummyValue, "extension", "Extension")
 

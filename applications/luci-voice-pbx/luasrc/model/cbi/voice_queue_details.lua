@@ -14,6 +14,23 @@ local dsp = require "luci.dispatcher"
 
 arg[1] = arg[1] or ""
 
+-- Read line counts from driver
+lineInfo = luci.sys.exec("/usr/bin/brcminfo")
+lines = string.split(lineInfo, "\n")
+line_nr = 0
+if #lines == 5 then
+	dectInfo = lines[1]
+	dectCount = tonumber(dectInfo:match("%d+"))
+	fxsInfo = lines[2]
+	fxsCount = tonumber(fxsInfo:match("%d+"))
+	allInfo = lines[4]
+	allCount = tonumber(allInfo:match("%d"))
+else
+	dectCount = 0
+	fxsCount = 0
+	allCount = 0
+end
+
 -- Create a map and a section
 m = Map("voice_pbx", "Call Queue")
 m.redirect = dsp.build_url("admin/services/voice/voice_queues")
@@ -34,7 +51,7 @@ else
 	end
 end
 
-s:option(Value, "name", "Name", "Name of this queue")
+s:option(Value, "name", "Name", "Display name")
 
 -- Enabled checkbox
 e = s:option(Flag, "enabled", "Queue Enabled")
@@ -73,6 +90,21 @@ strategy:value("random", "Ring random")
 strategy:value("rrmemory", "Round Robin")
 strategy:value("linear", "Ring members in order specified")
 
-s:option(DynamicList, "member", "Queue members", "Define which members will be part of this queue")
+-- Create and populate dropdowns with available queue members
+members = s:option(MultiValue, "members", "Queue members")
+lineCount = 0
+m.uci:foreach("voice_pbx", "brcm_line",
+	function(s1)
+		if lineCount < allCount then
+			members:value(s1['.name'], s1['name'])
+		end
+		lineCount = lineCount + 1
+	end
+)
+m.uci:foreach("voice_pbx", "sip_user",
+	function(s1)
+		members:value(s1['.name'], s1['name'])
+	end
+)
 
 return m

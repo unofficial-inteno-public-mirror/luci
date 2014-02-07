@@ -31,6 +31,14 @@ function index()
 				arcombine(cbi("voice_queues"), cbi("voice_queue_details")),
 				_("Call Queues"), 8).leaf = true
 
+			entry({user, "services", "voice", "voice_ivr"},
+				arcombine(cbi("voice_ivr"), cbi("voice_ivr_details")),
+				_("IVR"), 9).leaf = true
+
+			entry({user, "services", "voice", "voice_ivr_details"},
+				arcombine(cbi("voice_ivr_details"), cbi("voice_tone_selection"))
+				).leaf = true
+
 			entry({user, "services", "voice", "voice_log"},	cbi("voice_log"),	"Call Log",		99)
 			entry({user, "status", "voice"},			cbi("voice_status"),	"SIP Registration",	80)
 		end
