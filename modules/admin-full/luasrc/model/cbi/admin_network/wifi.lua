@@ -966,11 +966,17 @@ wpakey.datatype = "wpakey"
 wpakey.rmempty = true
 wpakey.password = true
 
+net_reauth = s:taboption("encryption", Value, "net_reauth", translate("Network Re-auth Interval"))
+net_reauth:depends({encryption="wpa"})
+net_reauth:depends({encryption="wpa2"})
+net_reauth:depends({encryption="wpamixedwpa2"})
+net_reauth.default = 36000
+
 gtk = s:taboption("encryption", Value, "gtk_rekey", translate("WPA Group Rekey Interval"))
 gtk:depends({encryption="psk"})
 gtk:depends({encryption="psk2"})
 gtk:depends({encryption="pskmixedpsk2"})
-gtk.default = 3600
+gtk.default = 0
 
 wpakey.cfgvalue = function(self, section, value)
 	local key = m.uci:get("wireless", section, "key")
