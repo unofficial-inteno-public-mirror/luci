@@ -14,23 +14,7 @@ $Id: forward-details.lua 8962 2012-08-09 10:03:32Z jow $
 
 local datatypes = require("luci.cbi.datatypes")
 local dsp = require "luci.dispatcher"
-
--- Read line counts from driver
-lineInfo = luci.sys.exec("/usr/bin/brcminfo")
-lines = string.split(lineInfo, "\n")
-line_nr = 0
-if #lines == 5 then
-	dectInfo = lines[1]
-	dectCount = tonumber(dectInfo:match("%d+"))
-	fxsInfo = lines[2]
-	fxsCount = tonumber(fxsInfo:match("%d+"))
-	allInfo = lines[4]
-	allCount = tonumber(allInfo:match("%d"))
-else
-	dectCount = 0
-	fxsCount = 0
-	allCount = 0
-end
+local vc = require "luci.model.cbi.voice.common"
 
 arg[1] = arg[1] or ""
 
@@ -53,25 +37,6 @@ function user_has_mailbox(user)
 	return v
 end
 
-function user_to_name(user)
-	name = ""
-	m.uci.foreach("voice_pbx", "brcm_line",
-		function(s1)
-			if s1['.name'] == user then
-				name = s1['name']
-			end
-		end
-	)
-	m.uci.foreach("voice_pbx", "sip_user",
-		function(s1)
-			if s1['.name'] == user then
-				name = s1['name']
-			end
-		end
-	)
-	return name
-end
-
 create_new = false
 -- Set page title, or redirect if we have nothing to edit
 if m.uci:get("voice_pbx", arg[1]) ~= "mailbox" then
@@ -83,28 +48,17 @@ else
 	if create_new then
 		m.title = "New Mailbox"
 	else
-		m.title = "Edit Mailbox of " .. user_to_name(m.uci:get("voice_pbx", arg[1], "user"))
+		m.title = "Edit Mailbox of " .. vc.user2name(m.uci:get("voice_pbx", arg[1], "user"))
 	end
 end
 
 -- Create and populate dropdown with available users
 if create_new then
 	user = s:option(ListValue, "user", "User")
-	m.uci:foreach("voice_pbx", "brcm_line",
-		function(s1)
-			-- Only show lines that actually exist
-			line_number = tonumber(s1['.name']:match("%d+"))
-			if line_number < allCount then
-				if not user_has_mailbox(s1['.name']) then
-					user:value(s1['.name'], s1['name'])
-				end
-			end
-		end
-	)
-	m.uci:foreach("voice_pbx", "sip_user",
-		function(s1)
-			if not user_has_mailbox(s1['.name']) then
-				user:value(s1['.name'], s1['name'])
+	vc.foreach_user({'brcm', 'sip'},
+		function(v)
+			if not user_has_mailbox(v['.name']) then
+				user:value(v['.name'], v['name'])
 			end
 		end
 	)

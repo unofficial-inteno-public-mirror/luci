@@ -14,6 +14,7 @@ $Id: forward-details.lua 8962 2012-08-09 10:03:32Z jow $
 
 local datatypes = require("luci.cbi.datatypes")
 local dsp = require "luci.dispatcher"
+local vc = require "luci.model.cbi.voice.common"
 
 arg[1] = arg[1] or ""
 
@@ -48,25 +49,7 @@ s:option(Value, "name", "Name", "Display name used in Caller Id")
 -- Extension, must be unique
 extension = s:option(Value, "extension", "Extension", "Extension for this user")
 function extension.validate(self, value, section)
-	if not datatypes.phonedigit(value) then
-		return nil, value .. " is not a valid extension"
-	end
-
-	retval = value
-	errmsg = nil
-
-	m.uci:foreach("voice_pbx", "sip_user",
-		function(s1)
-			if s1['.name'] == section then
-				return
-			end
-			if s1.extension == value then
-				retval = nil
-				errmsg = "Extension "..value.." is already used for SIP User "..s1.name
-			end
-		end)
-
-	return retval, errmsg
+	return vc.validate_extension(value, arg[1])
 end
 
 -- Create a set of checkboxes for lines to call

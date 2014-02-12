@@ -19,22 +19,7 @@
 
 -- http://luci.subsignal.org/trac/browser/luci/trunk/applications/luci-radvd/luasrc/model/cbi/radvd.lua?rev=6
 local ds = require "luci.dispatcher"
-
--- Check line counts
-lineInfo = luci.sys.exec("/usr/bin/brcminfo")
-lines = string.split(lineInfo, "\n")
-if #lines == 5 then
-	dectInfo = lines[1]
-	dectCount = tonumber(dectInfo:match("%d+"))
-	fxsInfo = lines[2]
-	fxsCount = tonumber(fxsInfo:match("%d+"))
-	allInfo = lines[4]
-	allCount = tonumber(allInfo:match("%d+"))
-else
-	dectCount = 0
-	fxsCount = 0
-	allCount = 0
-end
+local vc = require "luci.model.cbi.voice.common"
 
 m = Map ("voice_pbx", "SIP Service Providers")
 s = m:section(TypedSection, "sip_service_provider")
@@ -74,24 +59,14 @@ end
 -- Called when an account is being deleted
 -- Check that account is not in use before allowing deletion
 function s.remove(self, section)
-	m.uci:foreach("voice_pbx", "brcm_line",
-		function(s1)
-			line_name = s1['.name']
-			if s1.sip_account == section then
-				m.uci:set("voice_pbx", line_name, "sip_account", "-")
+	vc.foreach_user({'brcm', 'sip'},
+		function(v)
+			name = v['.name']
+			if v.sip_account == section then
+				m.uci:set("voice_pbx", name, "sip_account", "-")
 			end
 		end
 	)
-
-	m.uci:foreach("voice_pbx", "sip_user",
-		function(s1)
-			user_name = s1['.name']
-			if s1.sip_account == section then
-				m.uci:set("voice_pbx", user_name, "sip_account", "-")
-			end
-		end
-	)
-
 	TypedSection.remove(self, section)
 end
 
@@ -104,20 +79,11 @@ function parse_enabled(self, section)
 	local fvalue = self:formvalue(section)
                                                                                                                                          
 	if not fvalue then
-		m.uci:foreach("voice_pbx", "brcm_line",
-			function(s1)
-				line_name = s1['.name']
-				if s1.sip_account == section then
-					m.uci:set("voice_pbx", line_name, "sip_account", "-")
-				end
-			end
-		)
-
-		m.uci:foreach("voice_pbx", "sip_user",
-			function(s1)
-				user_name = s1['.name']
-				if s1.sip_account == section then
-					m.uci:set("voice_pbx", user_name, "sip_account", "-")
+		vc.foreach_user({'brcm', 'sip'},
+			function(v)
+				name = v['.name']
+				if v.sip_account == section then
+					m.uci:set("voice_pbx", name, "sip_account", "-")
 				end
 			end
 		)
@@ -145,14 +111,14 @@ function l.cfgvalue(self, section)
 				v = v .. ", "
 			end
 			if (info[1] == "SIP") then
-				m.uci:foreach("voice_pbx", "sip_user",
+				vc.foreach_user({'sip'},
 					function(s1)
 						if (s1['user'] == info[2]) then
 							v = v .. s1['name']
 							return
 						end
 					end
-				)	
+				)
 			elseif (info[1] == "BRCM") then
 				lineId = tonumber(info[2]:match("%d+"))
 			

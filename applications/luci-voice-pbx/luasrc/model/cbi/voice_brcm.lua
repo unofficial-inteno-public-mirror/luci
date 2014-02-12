@@ -3,23 +3,7 @@ Configuration of physical lines (FXS and DECT)
 ]]--
 
 local datatypes = require("luci.cbi.datatypes")
-
--- Read line counts from driver
-lineInfo = luci.sys.exec("/usr/bin/brcminfo")
-lines = string.split(lineInfo, "\n")
-line_nr = 0
-if #lines == 5 then
-	dectInfo = lines[1]
-	dectCount = tonumber(dectInfo:match("%d+"))
-	fxsInfo = lines[2]
-	fxsCount = tonumber(fxsInfo:match("%d+"))
-	allInfo = lines[4]
-	allCount = tonumber(allInfo:match("%d"))
-else
-	dectCount = 0
-	fxsCount = 0
-	allCount = 0
-end
+local vc = require "luci.model.cbi.voice.common"
 
 default_extension = 0
 
@@ -42,27 +26,7 @@ exten = s:option(Value, "extension", "Extension")
 exten.default = default_extension..default_extension..default_extension..default_extension
 default_extension = default_extension + 1
 function exten.validate(self, value, section)
-	if not datatypes.phonedigit(value) then
-		return nil, value .. " is not a valid extension"
-	end
-
-	retval = value
-	errmsg = nil
-
-	m.uci:foreach("voice_pbx", "brcm_line",
-		function(s1)
-			if s1['.name'] == section then
-				return
-			end
-			if tonumber(s1['.name']:match("%d+")) < allCount then
-				if s1.extension == value then
-					retval = nil
-					errmsg = "Extension "..value.." is already used for Line "..s1.name
-				end
-			end
-		end)
-
-	return retval, errmsg
+	return vc.validate_extension(value, section)
 end
 
 -- Show SIP account selection

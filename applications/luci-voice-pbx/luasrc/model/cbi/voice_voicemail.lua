@@ -19,6 +19,7 @@
 
 -- http://luci.subsignal.org/trac/browser/luci/trunk/applications/luci-radvd/luasrc/model/cbi/radvd.lua?rev=6
 local ds = require "luci.dispatcher"
+local vc = require "luci.model.cbi.voice.common"
 
 m = Map ("voice_pbx", "Voice Mail")
 s = m:section(TypedSection, "mailbox")
@@ -62,22 +63,10 @@ end
 
 account_name = s:option(DummyValue, "user", "User")
 function account_name.cfgvalue(self, section)
-	local v = "-"
-	local l = Value.cfgvalue(self, section)
-	m.uci:foreach("voice_pbx", "brcm_line",
-		function(s1)
-			if s1['.name'] == l then
-				v = s1['name']
-			end
-		end
-	)
-	m.uci:foreach("voice_pbx", "sip_user",
-		function(s1)
-			if s1['.name'] == l then
-				v = s1['name']
-			end
-		end
-	)
+	local v = vc.user2name(Value.cfgvalue(self, section))
+	if v:len() == 0 then
+		v = "-"
+	end
 	return v
 end
 
@@ -90,5 +79,8 @@ voicemail.anonymous = true
 
 extension = voicemail:option(Value, "extension", "Voice mail extension")
 extension.default = "6500"
+function extension.validate(self, value, section)
+	return vc.validate_extension(value)
+end
 
 return m

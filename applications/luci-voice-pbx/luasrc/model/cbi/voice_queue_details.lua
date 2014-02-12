@@ -11,25 +11,9 @@ You may obtain a copy of the License at
 
 local datatypes = require("luci.cbi.datatypes")
 local dsp = require "luci.dispatcher"
+local vc = require "luci.model.cbi.voice.common"
 
 arg[1] = arg[1] or ""
-
--- Read line counts from driver
-lineInfo = luci.sys.exec("/usr/bin/brcminfo")
-lines = string.split(lineInfo, "\n")
-line_nr = 0
-if #lines == 5 then
-	dectInfo = lines[1]
-	dectCount = tonumber(dectInfo:match("%d+"))
-	fxsInfo = lines[2]
-	fxsCount = tonumber(fxsInfo:match("%d+"))
-	allInfo = lines[4]
-	allCount = tonumber(allInfo:match("%d"))
-else
-	dectCount = 0
-	fxsCount = 0
-	allCount = 0
-end
 
 -- Create a map and a section
 m = Map("voice_pbx", "Call Queue")
@@ -60,25 +44,7 @@ e.default = 0
 -- Extension, must be unique (useful to transfer a call to the queue)
 extension = s:option(Value, "extension", "Extension", "Extension to call this queue")
 function extension.validate(self, value, section)
-	if not datatypes.phonedigit(value) then
-		return nil, value .. " is not a valid extension"
-	end
-
-	retval = value
-	errmsg = nil
-
-	m.uci:foreach("voice_pbx", "sip_user",
-		function(s1)
-			if s1['.name'] == section then
-				return
-			end
-			if s1.extension == value then
-				retval = nil
-				errmsg = "Extension "..value.." is already used for SIP User "..s1.name
-			end
-		end)
-
-	return retval, errmsg
+	return vc.validate_extension(value, section)
 end
 
 -- Create dropdown to choose queue strategy
@@ -93,17 +59,10 @@ strategy:value("linear", "Ring members in order specified")
 -- Create and populate dropdowns with available queue members
 members = s:option(MultiValue, "members", "Queue members")
 lineCount = 0
-m.uci:foreach("voice_pbx", "brcm_line",
-	function(s1)
-		if lineCount < allCount then
-			members:value(s1['.name'], s1['name'])
-		end
-		lineCount = lineCount + 1
-	end
-)
-m.uci:foreach("voice_pbx", "sip_user",
-	function(s1)
-		members:value(s1['.name'], s1['name'])
+
+vc.foreach_user({'brcm', 'sip'},
+	function(v)
+		members:value(v['.name'], v['name'])
 	end
 )
 

@@ -11,25 +11,9 @@ You may obtain a copy of the License at
 local ds = require "luci.dispatcher"
 local datatypes = require("luci.cbi.datatypes")
 local dsp = require "luci.dispatcher"
+local vc = require "luci.model.cbi.voice.common"
 
 arg[1] = arg[1] or ""
-
--- Read line counts from driver
-lineInfo = luci.sys.exec("/usr/bin/brcminfo")
-lines = string.split(lineInfo, "\n")
-line_nr = 0
-if #lines == 5 then
-	dectInfo = lines[1]
-	dectCount = tonumber(dectInfo:match("%d+"))
-	fxsInfo = lines[2]
-	fxsCount = tonumber(fxsInfo:match("%d+"))
-	allInfo = lines[4]
-	allCount = tonumber(allInfo:match("%d"))
-else
-	dectCount = 0
-	fxsCount = 0
-	allCount = 0
-end
 
 -- Create a map and a section
 m = Map("voice_pbx", "IVR")
@@ -56,10 +40,7 @@ s:option(Value, "name", "Name", "Display name")
 -- Extension, must be unique (useful to transfer a call to the queue)
 extension = s:option(Value, "extension", "Extension", "Extension to call this IVR")
 function extension.validate(self, value, section)
-	if not datatypes.phonedigit(value) then
-		return nil, value .. " is not a valid extension"
-	end
-	return value
+	return vc.validate_extension(value, m.uci:get("voice_pbx", arg[1], 'user'))
 end
 
 -- Enabled checkbox
@@ -100,7 +81,10 @@ end
 
 s:option(DummyValue, "number", "Number")
 s:option(Flag, "enabled", "Enabled")
-s:option(DummyValue, "user", "User")
-
+user = s:option(DummyValue, "user", "User")
+function user.cfgvalue(self, section)
+	t = Value.cfgvalue(self, section)
+	return vc.user2name(t)
+end
 
 return m

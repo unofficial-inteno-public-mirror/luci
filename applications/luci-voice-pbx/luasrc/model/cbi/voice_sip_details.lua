@@ -13,23 +13,7 @@ $Id: forward-details.lua 8962 2012-08-09 10:03:32Z jow $
 ]]--
 
 local datatypes = require("luci.cbi.datatypes")
-
--- Check line counts
-lineInfo = luci.sys.exec("/usr/bin/brcminfo")
-lines = string.split(lineInfo, "\n")
-if #lines == 5 then
-	dectInfo = lines[1]
-	dectCount = tonumber(dectInfo:match("%d+"))
-	fxsInfo = lines[2]
-	fxsCount = tonumber(fxsInfo:match("%d+"))
-	allInfo = lines[4]
-	allCount = tonumber(allInfo:match("%d+"))
-else
-	dectCount = 0
-	fxsCount = 0
-	allCount = 0
-end
-
+local vc = require "luci.model.cbi.voice.common"
 
 -- Parse function for enabled Flags, change sip_account setting for lines using a disabled account
 function parse_enabled(self, section)
@@ -37,20 +21,11 @@ function parse_enabled(self, section)
 	local fvalue = self:formvalue(section)
 
 	if not fvalue then
-		m.uci:foreach("voice_pbx", "brcm_line",
-			function(s1)
-				line_name = s1['.name']
-				if s1.sip_account == section then
-					m.uci:set("voice_pbx", line_name, "sip_account", "-")
-				end
-			end
-		)
-
-		m.uci:foreach("voice_pbx", "sip_user",
-			function(s1)
-				user_name = s1['.name']
-				if s1.sip_account == section then
-					m.uci:set("voice_pbx", user_name, "sip_account", "-")
+		vc.foreach_user({'brcm', 'sip'},
+			function(v)
+				name = v['.name']
+				if v.sip_account == section then
+					m.uci:set("voice_pbx", name, "sip_account", "-")
 				end
 			end
 		)
