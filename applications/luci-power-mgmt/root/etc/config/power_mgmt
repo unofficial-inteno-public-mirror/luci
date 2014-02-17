@@ -1,7 +1,7 @@
 config power_mgmt 'power_mgmt'
 	option cpuspeed '256'
 	option cpur4kwait '1'
-	option sr '0'
+	option sr '1'
 	option ethapd '1'
 	option eee '1'
 	option avs 'stopped'
