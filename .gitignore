@@ -4,3 +4,4 @@ dist/
 *.so
 *.swp
 /docs
+build/po2lmo
