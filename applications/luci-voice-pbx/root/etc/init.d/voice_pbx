@@ -48,6 +48,9 @@ TMPL_STUN=$TEMPLATEDIR/res_stun_monitor.conf.TEMPLATE
 TMPL_VOICEMAIL=$TEMPLATEDIR/voicemail.conf.TEMPLATE
 TMPL_VOICEMAIL_MAILBOX=$TEMPLATEDIR/voicemail_mailbox.TEMPLATE
 
+TMPL_QUEUES=$TEMPLATEDIR/queues.conf.TEMPLATE
+TMPL_QUEUE=$TEMPLATEDIR/queue.TEMPLATE
+
 TMPL_ASTERISK=$TEMPLATEDIR/asterisk.conf.TEMPLATE
 TMPL_INDICATIONS=$TEMPLATEDIR/indications.conf.TEMPLATE
 TMPL_LOGGER=$TEMPLATEDIR/logger.conf.TEMPLATE
@@ -140,6 +143,7 @@ assemble_and_copy_config()
 	mv $WORKDIR/features.tmp		$WORKDIR/features.conf
 	mv $WORKDIR/voicemail.tmp		$WORKDIR/voicemail.conf
         mv $WORKDIR/logger.tmp			$WORKDIR/logger.conf
+	mv $WORKDIR/queues.tmp			$WORKDIR/queues.conf
 
 	# At this point, $WORKDIR should contain a complete, working config.
 	clean_up_asterisk_config_dir
@@ -639,6 +643,57 @@ configure_ivr()
 	# Clean-up
 	rm -f $tmp1
 	rm -f $tmp2
+}
+
+#
+# Configure Call Queue
+#
+configure_queue()
+{
+	local name enabled strategy extension members
+
+	config_get name $1 name
+	config_get enabled $1 enabled
+	config_get strategy $1 strategy
+	config_get extension $1 extension
+	config_get members $1 members
+
+	if [ -z "$enabled" -o "$enabled" = "0" ] ; then
+		continue
+	fi
+
+	echo "Configuring Call Queue $name"
+
+	echo "exten => $extension,1,Answer()"			>> $WORKDIR/extensions_local.tmp
+	echo "exten => $extension,n,Background(dir-welcome)"	>> $WORKDIR/extensions_local.tmp
+	echo "exten => $extension,n,Queue($1)"			>> $WORKDIR/extensions_local.tmp
+
+	
+	cp "$TMPL_QUEUE" "$WORKDIR/queue.tmp"
+	sed -i "s/|SECTION|/$1/g"				$WORKDIR/queue.tmp
+	sed -i "s/|STRATEGY|/$strategy/g"			$WORKDIR/queue.tmp
+
+	for member in $(echo $members | tr " ")
+	do
+		local out=""
+		re='^[0-9]+$'
+		num=${member#brcm}
+		if [ -z "${num##[0-9]*}" ] ; then
+			out="BRCM/$num"
+		else
+			local sip_user
+			config_get sip_user $member user
+			if ! [ -z $sip_user ] ; then
+				out="SIP/$sip_user"
+			fi
+		fi
+		if ! [ -z $out ] ; then
+			echo "member => $out"			>> $WORKDIR/queue.tmp
+		fi
+	done
+
+	cat $WORKDIR/queue.tmp					>> $WORKDIR/queues.tmp
+	rm -f							$WORKDIR/queue.tmp
 }
 
 #
@@ -1364,6 +1419,11 @@ start() {
 	# IVR 
 	######
 	config_foreach configure_ivr ivr
+
+	##############
+	# Call Queues
+	##############
+	config_foreach configure_queue queue
 
 	###########
 	# Language
