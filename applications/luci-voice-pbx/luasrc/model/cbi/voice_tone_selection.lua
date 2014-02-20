@@ -17,7 +17,8 @@ arg[1] = arg[1] or ""
 
 -- Create a map and a section
 m = Map("voice_pbx", "Tone Selection")
-m.redirect = dsp.build_url("admin/services/voice/voice_ivr")
+owner = m.uci:get("voice_pbx", arg[1], "owner") or ""
+m.redirect = dsp.build_url("admin/services/voice/voice_ivr/" .. owner)
 s = m:section(NamedSection, arg[1], "ivr")
 s.anonymous = true
 s.addremove = false

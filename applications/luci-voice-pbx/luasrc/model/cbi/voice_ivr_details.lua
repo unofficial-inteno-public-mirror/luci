@@ -50,6 +50,13 @@ e.default = 0
 sound_file = s:option(Value, "sound_file", "Sound", "Sound file played back when someone calls the IVR")
 
 s = m:section(TypedSection, "tone_selection", "Tone Selections")
+function s.filter(self, section)
+        owner = m.uci:get("voice_pbx", section, 'owner')
+	if owner == arg[1] then
+		return true
+	end
+        return false
+end
 s.template = "cbi/tblsection"
 s.anonymous = true
 s.addremove = true
@@ -69,7 +76,7 @@ end
 -- and proceed to detailed editor.
 function s.create(self, section)
 	section_number = get_new_section_number()
-	data = {}
+	data = { owner = arg[1] }
 	newSelection = m.uci:section("voice_pbx", "tone_selection", "tone_selection" .. section_number , data)
 	luci.http.redirect(s.extedit % newSelection)
 end
