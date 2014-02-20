@@ -573,6 +573,75 @@ mailbox_check_enabled()
 }
 
 #
+# Configure IVR
+#
+configure_ivr()
+{
+	local name
+	local enabled
+	local extension
+	local sound_file
+
+	config_get name $1 name
+	config_get enabled $1 enabled
+	config_get extension $1 extension
+	config_get sound_file $1 sound_file
+
+	if [ -z "$enabled" -o "$enabled" = "0" ] ; then
+		return
+	fi
+	
+	echo "Configuring IVR $name"
+
+	tmp1=$(mktemp)
+	tmp2=$(mktemp)
+
+	# Find all tone selections belonging to the IVR being configured
+	local section cfgtype
+	[ -z "$CONFIG_SECTIONS" ] && return 0
+	for section in ${CONFIG_SECTIONS}; do
+		config_get cfgtype "$section" TYPE
+		[ -n "tone_selection" -a "x$cfgtype" != "xtone_selection" ] && continue
+		local ts_owner ts_enabled ts_user ts_number ts_extension
+
+		config_get ts_owner $section owner
+		config_get ts_enabled $section enabled
+		config_get ts_user $section user
+		config_get ts_number $section number
+
+		if [ "$ts_owner" = "$1" ] ; then
+			if [ -z "$ts_enabled" -o "$ts_enabled" = "0" ] ; then
+				continue
+			fi
+
+			config_get ts_extension $ts_user extension
+			if [ -z "$ts_extension" ] ; then
+				echo "User $ts_user has no extension"
+				continue
+			fi
+			echo "exten => $extension,n,Gotoif(\$[\"\${digit}\"=\"$ts_number\"]?call-$ts_user)"	>> $tmp1
+			echo "exten => $extension,n(call-$ts_user),Goto(local_extensions,$ts_extension,1)"	>> $tmp2
+			echo "exten => $extension,n,Goto(done)"							>> $tmp2
+		fi
+	done
+
+	echo "exten => $extension,1(welcome),Playback($sound_file)"			>> $WORKDIR/extensions_local.tmp
+	echo "exten => $extension,n,Set(digit=0)"					>> $WORKDIR/extensions_local.tmp
+	echo "exten => $extension,n(start),NoOp()"					>> $WORKDIR/extensions_local.tmp
+	cat $tmp1									>> $WORKDIR/extensions_local.tmp
+	echo "exten => $extension,n(collect),Read(digit,,1)"				>> $WORKDIR/extensions_local.tmp
+	echo "exten => $extension,n,SayDigits(\${digit})"				>> $WORKDIR/extensions_local.tmp
+	echo "exten => $extension,n,Goto(start)"					>> $WORKDIR/extensions_local.tmp
+	cat $tmp2									>> $WORKDIR/extensions_local.tmp
+	echo "exten => $extension,n(done),NoOp()"					>> $WORKDIR/extensions_local.tmp
+	echo "exten => $extension,n,Goto(welcome)"					>> $WORKDIR/extensions_local.tmp
+
+	# Clean-up
+	rm -f $tmp1
+	rm -f $tmp2
+}
+
+#
 # Configure SIP user
 #
 configure_sip_user()
@@ -1290,6 +1359,11 @@ start() {
 	###########################
 	configure_voicemail
 	config_foreach configure_mailbox mailbox
+
+	######
+	# IVR 
+	######
+	config_foreach configure_ivr ivr
 
 	###########
 	# Language

@@ -40,7 +40,7 @@ s:option(Value, "name", "Name", "Display name")
 -- Extension, must be unique (useful to transfer a call to the queue)
 extension = s:option(Value, "extension", "Extension", "Extension to call this IVR")
 function extension.validate(self, value, section)
-	return vc.validate_extension(value, m.uci:get("voice_pbx", arg[1], 'user'))
+	return vc.validate_extension(value, arg[1])
 end
 
 -- Enabled checkbox
