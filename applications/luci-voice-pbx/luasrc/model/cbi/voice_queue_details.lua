@@ -37,6 +37,13 @@ end
 
 s:option(Value, "name", "Name", "Display name")
 
+opening_hours = s:option(ListValue, "opening_hours_profile", "Opening Hours Profile")
+m.uci:foreach("voice_pbx", "opening_hours_profile",
+	function(v)
+		opening_hours:value(v['.name'], v['name'])
+	end
+)
+
 -- Enabled checkbox
 e = s:option(Flag, "enabled", "Queue Enabled")
 e.default = 0

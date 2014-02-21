@@ -37,6 +37,13 @@ end
 
 s:option(Value, "name", "Name", "Display name")
 
+opening_hours = s:option(ListValue, "opening_hours_profile", "Opening Hours Profile")
+m.uci:foreach("voice_pbx", "opening_hours_profile",
+	function(v)
+		opening_hours:value(v['.name'], v['name'])
+	end
+)
+
 -- Extension, must be unique (useful to transfer a call to the queue)
 extension = s:option(Value, "extension", "Extension", "Extension to call this IVR")
 function extension.validate(self, value, section)
