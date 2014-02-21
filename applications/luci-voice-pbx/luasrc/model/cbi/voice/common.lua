@@ -88,6 +88,15 @@ function common.user2name(user)
 		function(v)
 			if v['.name'] == user then
 				name = v['name']
+				return false
+			end
+		end
+	)
+	m.uci:foreach("voice_pbx", "sip_service_provider",
+		function(v)
+			if v['.name'] == user then
+				name = v['name']
+				return false
 			end
 		end
 	)

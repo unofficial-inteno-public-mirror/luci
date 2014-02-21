@@ -48,7 +48,7 @@ else
 	if create_new then
 		m.title = "New Mailbox"
 	else
-		m.title = "Edit Mailbox of " .. vc.user2name(m.uci:get("voice_pbx", arg[1], "user"))
+		m.title = "Edit Mailbox"
 	end
 end
 
@@ -62,6 +62,18 @@ if create_new then
 			end
 		end
 	)
+	m.uci:foreach("voice_pbx", "sip_service_provider",
+		function(v)
+			if not user_has_mailbox(v['.name']) then
+				user:value(v['.name'], v['name'])
+			end
+		end
+	)
+else
+	user = s:option(DummyValue, "user", "User")
+	function user.cfgvalue(self, section)
+		return vc.user2name(m.uci:get("voice_pbx", arg[1], "user"))
+	end
 end
 
 pin = s:option(Value, "pin", "PIN", "Enter a new PIN code for accessing the mailbox.\

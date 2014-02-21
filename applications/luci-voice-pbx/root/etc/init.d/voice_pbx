@@ -529,8 +529,14 @@ configure_mailbox()
 	config_get pin $1 pin
 	config_get enabled $1 enabled
 	config_get user $1 user
-	
-	config_get extension $user extension
+
+	local cfgtype	
+	config_get cfgtype "$user" TYPE
+	if [ "$cfgtype" == "sip_service_provider" ] ; then
+		config_get extension $user user
+	else
+		config_get extension $user extension
+	fi
 
 	if [ -z "$pin" ] ; then
 		pin=$(restore_pin $extension)

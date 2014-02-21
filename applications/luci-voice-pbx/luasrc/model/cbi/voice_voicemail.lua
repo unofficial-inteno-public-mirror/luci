@@ -21,12 +21,13 @@
 local ds = require "luci.dispatcher"
 local vc = require "luci.model.cbi.voice.common"
 
+-- Voice Mail for SIP providers
 m = Map ("voice_pbx", "Voice Mail")
-s = m:section(TypedSection, "mailbox")
-s.template  = "cbi/tblsection"
-s.anonymous = true
-s.addremove = true
-s.extedit = ds.build_url("admin/services/voice/voice_voicemail/%s")
+s1 = m:section(TypedSection, "mailbox")
+s1.template  = "cbi/tblsection"
+s1.anonymous = true
+s1.addremove = true
+s1.extedit = ds.build_url("admin/services/voice/voice_voicemail/%s")
 
 section_count = 0
 m.uci:foreach("voice_pbx", "mailbox",
@@ -47,21 +48,19 @@ end
 -- This function is called when a new mailbox should be configured i.e. when
 -- user presses the "Add" button. We create a new section,
 -- and proceed to detailed editor.
-function s.create(self, section)
-	if section_count < 8 then
-		section_number = get_new_section_number()
-		data = {}
-		newAccount = m.uci:section("voice_pbx", "mailbox", "mailbox" .. section_number , data)
-		luci.http.redirect(s.extedit % newAccount)
-	end
+function s1.create(self, section)
+	section_number = get_new_section_number()
+	data = {}
+	newAccount = m.uci:section("voice_pbx", "mailbox", "mailbox" .. section_number , data)
+	luci.http.redirect(s1.extedit % newAccount)
 end
 
 -- Called when an account is being deleted
-function s.remove(self, section)
+function s1.remove(self, section)
 	TypedSection.remove(self, section)
 end
 
-account_name = s:option(DummyValue, "user", "User")
+account_name = s1:option(DummyValue, "user", "User")
 function account_name.cfgvalue(self, section)
 	local v = vc.user2name(Value.cfgvalue(self, section))
 	if v:len() == 0 then
@@ -70,7 +69,7 @@ function account_name.cfgvalue(self, section)
 	return v
 end
 
-e = s:option(Flag, "enabled", "Mailbox Enabled")
+e = s1:option(Flag, "enabled", "Mailbox Enabled")
 e.default = 0
 
 -- Settings -------------------------------------------------------------------
