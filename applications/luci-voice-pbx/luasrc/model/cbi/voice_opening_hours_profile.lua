@@ -78,6 +78,6 @@ s:option(Value, "name", "Name")
 s:option(Value, "time_range", "Time Range")
 s:option(Value, "days_of_week", "Days of Week")
 s:option(Value, "days_of_month", "Days of Month")
-s:option(Value, "monhs", "Month")
+s:option(Value, "months", "Month")
 
 return m

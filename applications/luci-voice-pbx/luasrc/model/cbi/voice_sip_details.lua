@@ -60,8 +60,15 @@ e = s:option(Flag, "enabled", "Account Enabled")
 e.default = 0
 e.parse = parse_enabled
 
+target = s:option(ListValue, "target", "Incoming calls to")
+target:value('direct', 'Direct')
+target:value('queue', 'Queue')
+target:value('ivr', 'IVR')
+target.default = 'direct'
+
 -- Create a set of checkboxes for lines to call
-lines = s:option(MultiValue, "call_lines", "Incoming calls to")
+lines = s:option(MultiValue, "call_lines", "&nbsp;")
+lines:depends('target', 'direct')
 line_nr = 0
 -- DECT
 for i = 1, dectCount do
@@ -74,11 +81,26 @@ for i = 1, fxsCount do
 	line_nr = line_nr + 1
 end
 -- SIP users
-m.uci:foreach("voice_pbx", "sip_user",
-        function(s1)
-                lines:value("SIP/" .. s1['user'], s1['name'])
-                line_nr = line_nr + 1
+vc.foreach_user({'sip'},
+        function(v)
+                lines:value("SIP/" .. v['user'], v['name'])
         end
+)
+
+queue = s:option(ListValue, "call_queue", "&nbsp;")
+queue:depends('target', 'queue')
+m.uci:foreach("voice_pbx", "queue",
+	function(v)
+		queue:value(v['.name'], v['name'])
+	end
+)
+
+ivr = s:option(ListValue, "call_ivr", "&nbsp;")
+ivr:depends('target', 'ivr')
+m.uci:foreach("voice_pbx", "ivr",
+	function(v)
+		ivr:value(v['.name'], v['name'])
+	end
 )
 
 domain = s:option(Value, 'domain', 'SIP domain name')

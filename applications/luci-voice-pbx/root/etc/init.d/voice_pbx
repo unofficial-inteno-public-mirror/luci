@@ -975,15 +975,75 @@ configure_extensions_provider()
 		rm -f								$WORKDIR/extensions_direct.tmp
 	fi
 
-	# read a list of lines that should be dialled on incoming calls
-	incoming_lines=$(read_lines $1)
-
 	# create tempfile for incoming context
-	cp $TMPL_EXTENSIONS_INCOMING_LINE				$WORKDIR/extensions_incoming_line.tmp
-	sed -i "s/|CONTACT_USER|/$user/g"	$WORKDIR/extensions_incoming_line.tmp
-	sed -i "s/|LINES|/$incoming_lines/"				$WORKDIR/extensions_incoming_line.tmp
-	cat $WORKDIR/extensions_incoming_line.tmp >>			$WORKDIR/extensions_incoming.tmp
-	rm -f								$WORKDIR/extensions_incoming_line.tmp
+	tmp=$(mktemp)
+	local call_lines call_ivr call_queue oh_profile extension
+	echo "exten => $user,1,Set(__TRANSFER_CONTEXT=transfer_\${CHANNEL(peername)})" >>	$tmp
+	config_get call_lines $1 call_lines
+	config_get call_queue $1 call_queue
+	config_get call_ivr $1 call_ivr
+	if ! [ -z $call_lines ] ; then
+		# read a list of lines that should be dialled on incoming calls
+		incoming_lines=$(read_lines $1)
+		echo "exten => $user,n,Dial($incoming_lines,,tF(hangup,h,2))" >>		$tmp
+	fi
+	if ! [ -z $call_queue ] ; then
+		# Get opening hours profile
+		config_get oh_profile $call_queue opening_hours_profile
+		config_get extension $call_queue extension
+	fi
+	if ! [ -z $call_ivr ] ; then
+		# Get opening hours profile
+		config_get oh_profile $call_ivr opening_hours_profile
+		config_get extension $call_ivr extension
+	fi
+	if ! [ -z $oh_profile ] ; then
+		local invert label
+		config_get invert $oh_profile invert
+		if [ "$invert" == "1" ] ; then
+			label="closed"
+		else
+			label="open"
+		fi
+		# Find all timespans belonging to the opening hours profile
+	        local section cfgtype
+	        [ -z "$CONFIG_SECTIONS" ] && return 0
+	        for section in ${CONFIG_SECTIONS}; do
+	                config_get cfgtype "$section" TYPE
+	                [ -n "timespan" -a "x$cfgtype" != "xtimespan" ] && continue
+	                local owner
+	
+	                config_get owner $section owner
+	                if [ "$owner" == "$oh_profile" ] ; then
+	                        local tr dow dom months
+	                        config_get tr $section time_range
+	                        config_get dow $section days_of_week
+	                        config_get dom $section days_of_month
+	                        config_get months $section months
+	
+	                        echo "exten => $user,n,GotoIfTime($tr,$dow,$dom,$months,/usr/share/zoneinfo/CET?$label)" >> $tmp
+	                fi
+	        done
+		if [ "$invert" == "0" ] ; then
+			echo "exten => $user,n,Goto(closed)" >>					$tmp
+		fi
+
+	fi
+	
+	# Connect call during opening hours	
+	echo "exten => $user,n(open),Goto(local_extensions,$extension,1)" >>			$tmp
+	# Goto voicemail after hours
+	echo "exten => $user,n(closed),NoOp()" >> 						$tmp
+
+	# Check if voicemail is enabled
+	local has_voicemail
+	has_voicemail=$(mailbox_check_enabled $1)
+	if [ "$has_voicemail" = "1" ] ; then
+		echo "exten => $user,n,VoiceMail($user,u)" >>					$tmp
+	fi
+	echo "exten => $user,n,Hangup()" >>							$tmp
+	cat $tmp >>										$WORKDIR/extensions_incoming.tmp
+	rm -f											$tmp
 }
 
 #
