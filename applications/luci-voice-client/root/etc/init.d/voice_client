@@ -198,6 +198,7 @@ read_codecs_ptime()
 
 		config_get ptime "$1" "ptime_$codec"
 		if [ -z "$ptime" ] ; then
+			codec_allow=$codec_allow"allow = $codec\\n"
 			continue
 		fi
 
