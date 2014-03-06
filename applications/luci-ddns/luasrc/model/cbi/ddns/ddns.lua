@@ -24,7 +24,35 @@ s = m:section(TypedSection, "service", "")
 s.addremove = true
 s.anonymous = false
 
-s:option(Flag, "enabled", translate("Enable"))
+
+function kill_ddns_process(service)
+	local fd = io.open("/var/run/dynamic_dns/%s.pid" %service, "r")
+	if fd then
+		local old_pid = fd:read("*l")
+		fd:close()
+
+		local test_match = luci.sys.exec("ps | grep \"^[\t ]*%s\"" %old_pid)
+		if test_match then
+			luci.sys.exec("kill %s" %old_pid)
+			luci.sys.exec("rm -f /var/run/dynamic_dns/%s.*" %service)
+		end
+	end
+end
+
+function s.remove(self, section)
+	m.uci:delete("ddns", section)
+	kill_ddns_process(section)
+end
+
+en = s:option(Flag, "enabled", translate("Enable"))
+en.rmempty = false
+
+function en.write(self, section, value)
+	if value ~= "1" then
+		kill_ddns_process(section)
+	end
+	m.uci:set("ddns", section, "enabled", value)
+end
 
 svc = s:option(ListValue, "service_name", translate("Service"))
 svc.rmempty = false
@@ -82,6 +110,22 @@ local pw = s:option(Value, "password", translate("Password"))
 pw.rmempty = true
 pw.password = true
 
+
+local uci = require("luci.model.uci").cursor()
+waniface = s:option(ListValue, "interface", translate("WAN Interface"))
+waniface.rmempty = false
+waniface.default = "wan"
+uci:foreach("network", "interface",
+	function (section)
+		local ifc = section[".name"]
+		local islan = section["is_lan"]
+		local typ = section["type"]
+		if typ ~= "alias" and islan ~= "1" then
+			waniface:value(ifc)
+		end
+	end)
+
+--[[
 require("luci.tools.webadmin")
 
 local src = s:option(ListValue, "ip_source",
@@ -107,7 +151,7 @@ local web = s:option(Value, "ip_url", translate("URL"))
 web:depends("ip_source", "web")
 web.default = "http://checkip.dyndns.com/"
 web.rmempty = true
-
+]]--
 
 local ci = s:option(Value, "check_interval", translate("Check for changed IP every")) 
 ci.datatype = "and(uinteger,min(1))" 
