@@ -4,7 +4,7 @@ include /lib/network
 
 START=99
 STOP=10
-MCPD_BIN="/usr/sbin/mcpd"
+MCPD_BIN="mcpd"
 
 start() {
 	local igmp_snooping_enable
@@ -24,7 +24,7 @@ start() {
 
 	# disable port snooping on all bridges
 	for br in $(brctl show | grep 'br-' | awk '{print$1}' | tr '\n' ' '); do
-		/usr/sbin/brctl enableportsnooping $br 0
+		brctl enableportsnooping $br 0
 	done
 
 	grep igmp /etc/config/mcpd | awk '{print $2 $3}' | sed -e "s/[\'\"]/ /g" | tr "_" "-" > /var/mcpd.conf
