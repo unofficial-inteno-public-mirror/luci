@@ -1130,9 +1130,12 @@ create_extensions_dialtone()
 	local sip_account
 	config_get sip_account $1 sip_account
 
-	#If line is configured with a sip account, setup dialtone extension
+	#If line is configured with an active sip account, setup dialtone extension
 	if [ -n "$sip_account" -a "$sip_account" != "-" ] ; then
-		echo "exten => $1,hint,SIP/$sip_account" >>	$WORKDIR/extensions_dialtone.tmp
+		config_get enabled $sip_account enabled
+		if [ -n "$enabled" -a "$enabled" = "1" ] ; then
+			echo "exten => $1,hint,SIP/$sip_account" >>     $WORKDIR/extensions_dialtone.tmp
+		fi
 	fi
 }
 
