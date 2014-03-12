@@ -874,6 +874,8 @@ configure_brcm_line()
 	local jitter_target
 	local txgain
 	local rxgain
+	local autodial
+	local autodial_timeout
 
 	config_get sip_account $1 sip_account
 	config_get silence $1 vad
@@ -885,10 +887,18 @@ configure_brcm_line()
 	config_get jitter_target $1 jitter_target
 	config_get txgain $1 txgain
 	config_get rxgain $1 rxgain
+	config_get autodial $1 autodial
+	config_get autodial_timeout $1 autodial_timeout
 
 	#If line is configured with no sip_account, use local_extensions context
 	if [ "$sip_account" == "-" ] ; then
 		sip_account="local_extensions"
+	fi
+
+	#If autodial timeout is not set, use 60 seconds.
+	#(even if it does trigger, it will do nothing unless a autodial nr is configured)
+	if [ -z "$autodial_timeout" ] ; then
+		autodial_timeout=60000
 	fi
 
 	cp $TMPL_BRCM_LINE $WORKDIR/brcm_line.tmp
@@ -904,6 +914,8 @@ configure_brcm_line()
 	sed -i "s/|TXGAIN|/$txgain/"					$WORKDIR/brcm_line.tmp
 	sed -i "s/|RXGAIN|/$rxgain/"					$WORKDIR/brcm_line.tmp
 	sed -i "s/|DIALTONE_EXTENSION_HINT|/$1/"			$WORKDIR/brcm_line.tmp
+	sed -i "s/|AUTODIAL|/$autodial/"				$WORKDIR/brcm_line.tmp
+	sed -i "s/|AUTODIAL_TIMEOUT|/$autodial_timeout/"		$WORKDIR/brcm_line.tmp
 
 	#Configure BRCM line with codecs according to the SIP line settings
 	local is_fax

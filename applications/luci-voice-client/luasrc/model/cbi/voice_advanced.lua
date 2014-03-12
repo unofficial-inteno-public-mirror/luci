@@ -400,4 +400,31 @@ end
 -- jtarg = line:option(Value, 'jitter_target', 'Jitter target')
 -- jtarg.datatype = "integer"
 
+
+-- Hotline (autodial) settings per-line -------------------------------------
+hotline = m:section(TypedSection, "brcm_line", "Hotline settings", "Automatically dial a predetermined number after a delay, if user has not pressed any button(s). Leave empty to disable.")
+hotline.template = "cbi/tblsection"
+hotline.anonymous = true
+function hotline.filter(self, section)
+	line_number = tonumber(section:match("%d+"))
+	return line_number < allCount
+end
+t = hotline:option(DummyValue, "name", "Line")
+autodial = hotline:option(Value, "autodial", "Hotline number")
+function autodial.validate(self, value, section)
+	if datatypes.phonedigit(value) then
+		return value
+	else
+		return nil, value .. " is not a valid number"
+	end
+end
+
+autodial_timeout = hotline:option(Value, "autodial_timeout", "Hotline delay (milliseconds)")
+function autodial_timeout.validate(self, value, section)
+	if datatypes.uinteger(value) then
+		return value
+	end
+	return nil, "Hotline delay must be a positive number of milliseconds"
+end
+
 return m

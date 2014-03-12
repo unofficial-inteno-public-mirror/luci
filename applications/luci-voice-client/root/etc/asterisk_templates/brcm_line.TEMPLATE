@@ -1,7 +1,8 @@
 [|SECTION|]
 ;language=|LANGUAGE|
 ;callerid=|CALLERID|
-;autodial=|AUTODIAL|
+autodial=|AUTODIAL|
+autodial_timeoutmsec=|AUTODIAL_TIMEOUT|
 ;jitter_fixed=|JITTERFIXED|
 ;jitter_min=|JITTERMIN|
 ;jitter_max=|JITTERMAX|
