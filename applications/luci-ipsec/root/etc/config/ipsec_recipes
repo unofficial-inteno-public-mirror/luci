@@ -3,6 +3,28 @@
 config ipsec_recipe blank
 	option _shortdesc		"Empty/Unconfigured"
 
+config ipsec_recipe ipv4_subnet_subnet
+	option _shortdesc		"Subnet-to-Subnet, IPv4, Shared secret"
+	option ikelifetime		"8h"
+	option pfs			"no"
+	option keyingtries		"3"
+	option auto			"add"
+	option keylife			"1h"
+	option authby			"secret"
+	option phase2			"esp"
+	list ike			"aes256-sha1;modp1024"
+	option phase2alg		"aes256-sha1;modp1024"
+	option keyexchange 		"ike" 
+	option auto			"add"
+	option connaddrfamily		"ipv4"
+	option leftid			"@local_id"
+	option left			"%defaultroute"
+	list leftsubnets		"192.168.1.0/24"
+	option rightid			"@remote_id"
+	option right			"1.2.3.4"
+	option type 			"tunnel"
+	list rightsubnets		"192.168.140.0/24"
+
 config ipsec_recipe ipv6_host_host
 	option _shortdesc		"Host-to-Host, IPv6, RSA keys"
 	option connaddrfamily		"ipv6"
