@@ -16,6 +16,7 @@ function index()
 		page = entry({user, "services", "dect", "reg_start"}, call("reg_start"))
 		page = entry({user, "services", "dect", "delete_hset"}, call("delete_hset"))
 		page = entry({user, "services", "dect", "ping_hset"}, call("ping_hset"))
+		page = entry({user, "services", "dect", "switch_plug"}, call("switch_plug"))
 	end
 end
 
@@ -35,6 +36,14 @@ end
 function ping_hset(opts)
 	 local handset = luci.http.formvalue("handset")
 	 local rv = luci.sys.exec("/usr/bin/dect -p " .. handset)
+	 
+	 luci.http.write(rv)
+end
+
+
+function switch_plug(opts)
+	 local handset = luci.http.formvalue("plug")
+	 local rv = luci.sys.exec("/usr/bin/dect -z " .. handset)
 	 
 	 luci.http.write(rv)
 end

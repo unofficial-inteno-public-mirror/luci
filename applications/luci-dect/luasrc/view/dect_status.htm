@@ -150,7 +150,7 @@
       buttonnode.setAttribute('type','button');
       buttonnode.setAttribute('name', h.handset);
       buttonnode.setAttribute('value', 'switch');
-      buttonnode.onclick=function(){ping_hset(this.name)};
+      buttonnode.onclick=function(){switch_plug(this.name)};
       cell4.appendChild(buttonnode);
       
       var deletenode= document.createElement('input');
@@ -263,6 +263,46 @@
       xmlhttp.open("GET","<%=luci.dispatcher.build_url("admin/services/dect/ping_hset/")%>?handset=" + handset,true);
       xmlhttp.send();
   }
+
+  var plug_state = 0
+
+  function switch_plug(plug) {
+
+      //var table=document.getElementById("ule_status_table");
+      //var row = handset_get_row(table, handset);
+//      row.cells[2].innerHTML = "ping start";
+
+      var xmlhttp;
+      if (window.XMLHttpRequest)
+      {// code for IE7+, Firefox, Chrome, Opera, Safari
+	  xmlhttp=new XMLHttpRequest();
+      }
+      else
+      {// code for IE6, IE5
+	  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+      }
+      xmlhttp.onreadystatechange=function()
+      {
+	  if (xmlhttp.readyState==4 && xmlhttp.status==200)
+	  {
+
+	      
+	  }
+      }
+      
+      if (plug_state == 1) {
+	  var state = 0 
+	  plug_state = 0
+      } else {
+	  var state = 1 
+	  plug_state = 1
+      }
+
+	  
+      xmlhttp.open("GET","<%=luci.dispatcher.build_url("admin/services/dect/switch_plug/")%>?plug=" + state,true);
+      xmlhttp.send();
+  }
+
 
   
   // Polling background thread
