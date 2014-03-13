@@ -124,13 +124,58 @@
   }
 
 
+  function table_add_ule(table, h) {
+
+      var i;
+      
+      for (i = 1; i < table.rows.length; i++) {
+	  var hst=table.rows[i].cells[0].innerHTML;
+	  
+	  if (hst > h.handset)
+	      break;
+      }
+
+      var row=table.insertRow(i);
+      var cell1=row.insertCell(-1);
+      var cell2=row.insertCell(-1);
+      var cell3=row.insertCell(-1);
+      var cell4=row.insertCell(-1);
+      var cell5=row.insertCell(-1);
+      
+      cell1.innerHTML=h.handset;
+      cell2.innerHTML=h.rfpi;
+      cell3.innerHTML=h.present;
+      
+      var buttonnode= document.createElement('input');
+      buttonnode.setAttribute('type','button');
+      buttonnode.setAttribute('name', h.handset);
+      buttonnode.setAttribute('value', 'switch');
+      buttonnode.onclick=function(){ping_hset(this.name)};
+      cell4.appendChild(buttonnode);
+      
+      var deletenode= document.createElement('input');
+      deletenode.setAttribute('type','button');
+      deletenode.setAttribute('name', h.handset);
+      deletenode.setAttribute('value','delete');
+      deletenode.onclick=function(){delete_hset(this.name)};
+      cell5.appendChild(deletenode);
+
+  }
+
+
   function add_new_rows(table, handsets) {
 
       for (var i = 0; i < handsets.length; i++) {
-	  if(table_has_handset(table, handsets[i]) == false)
-	     table_add_handset(table, handsets[i]);
-      }
+	  if(table_has_handset(table, handsets[i]) == false) {
+
+	      if (handsets[i] < 7)  {
+		  table_add_handset(table, handsets[i]);
+	      } else {
+		  table_add_ule(table, handsets[i]);
+	      }
+	  }
       
+      }
   }
 
 
@@ -230,17 +275,27 @@
 	       } else if (rm.innerHTML != "Enabling...") {
 		   rm.innerHTML = "Disabled";
 	       }
-	       
-	       var table=document.getElementById("dect_status_table");
-	       
-	       // Delete missing rows
-	       delete_missing_rows(table, st.handsets);
-	       
-	       // Add new rows
-	       add_new_rows(table, st.handsets);
 
-	       // Update existing rows
-	       update_state(table, st.handsets);
+	       // Update phones	       
+	       var phones=document.getElementById("dect_status_table");
+
+	       delete_missing_rows(phones, st.handsets);
+	       
+	       add_new_rows(phones, st.handsets);
+
+	       update_state(phones, st.handsets);
+
+
+	       // Update ULE
+	       var ule=document.getElementById("ule_status_table");
+
+	       delete_missing_rows(ule, st.ule);
+	       
+	       add_new_rows(ule, st.ule);
+
+	       update_state(ule, st.ule);
+
+	       
 
 	   }
 	  );
@@ -272,7 +327,7 @@
 </fieldset>
 
 <fieldset class="cbi-section">
-	<legend>Dect Status</legend>
+	<legend>DECT Telephones</legend>
 	<table class="cbi-section-table" style="fixed" id="dect_status_table">
 	  <tr class="cbi-section-table-titles">
 	    <th class="cbi-section-table-cell" style="width:120px">Handset</th>
@@ -287,6 +342,22 @@
 	</table>
 </fieldset>
 
+
+<fieldset class="cbi-section">
+	<legend>ULE Smartplugs</legend>
+	<table class="cbi-section-table" style="fixed" id="ule_status_table">
+	  <tr class="cbi-section-table-titles">
+	    <th class="cbi-section-table-cell" style="width:120px">Device</th>
+	    <th class="cbi-section-table-cell" style="width:120px">RFPI</th>
+	    <th class="cbi-section-table-cell" style="width:120px">State</th>
+	    <th class="cbi-section-table-cell" style="width:120px">Switch</th>
+	    <th class="cbi-section-table-cell" style="width:120px">Delete</th>
+	  </tr>
+	  <!-- <tr class="cbi-section-table-row"> -->
+	  <!--   <td colspan="5" id="hset1"><em><br />Collecting data...</em></td> -->
+	  <!-- </tr> -->
+	</table>
+</fieldset>
 
 
 </body>
