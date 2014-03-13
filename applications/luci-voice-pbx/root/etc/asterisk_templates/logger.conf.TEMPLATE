@@ -3,5 +3,6 @@ queue_log = no
 event_log = no
 
 [logfiles]
-console => notice,warning,error
-messages => error
+console => |CONSOLE|
+messages => |MESSAGES|
+syslog.|SYSLOG_FACILITY| => |SYSLOG|

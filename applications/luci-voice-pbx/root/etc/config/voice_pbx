@@ -143,3 +143,9 @@ config voicemail 'voicemail'
 
 config language 'language'
 	option voice_pack ''
+
+config log 'LOG'
+	option console 'notice,warning,error'
+	option messages 'error'
+	option syslog_facility 'local0'
+	option syslog ''

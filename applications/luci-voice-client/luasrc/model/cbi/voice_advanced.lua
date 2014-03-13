@@ -430,4 +430,36 @@ function autodial_timeout.validate(self, value, section)
 	return nil, "Hotline delay must be a positive number of milliseconds"
 end
 
+-- Log settings
+log = m:section(TypedSection, "log", "Log settings")
+log.anonymous = true
+log_options = {"console", "messages", "syslog"}
+log_descriptions = {"Output to Asterisk console", "Output to file /var/log/asterisk/messages", ""}
+for i, option in ipairs(log_options) do
+	local title = option:gsub("^%l", string.upper)
+	local description = log_descriptions[i]
+	
+	log_destination = log:option(MultiValue, option, title, description)
+	log_destination.widget = "select"
+	log_destination:value("debug", "Debug")
+	log_destination:value("notice", "Notice")
+	log_destination:value("warning", "Warning")
+	log_destination:value("error", "Error")
+	log_destination:value("verbose", "Verbose")
+	log_destination:value("dtmf", "DTMF")
+	log_destination:value("fax", "Fax")
+	log_destination.delimiter = ","
+end
+
+syslog_facility = log:option(ListValue, "syslog_facility", "Syslog facility")
+syslog_facility:value("user")
+syslog_facility:value("local0")
+syslog_facility:value("local1")
+syslog_facility:value("local2")
+syslog_facility:value("local3")
+syslog_facility:value("local4")
+syslog_facility:value("local5")
+syslog_facility:value("local6")
+syslog_facility:value("local7")
+
 return m

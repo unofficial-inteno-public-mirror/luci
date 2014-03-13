@@ -115,7 +115,6 @@ assemble_and_copy_config()
 	# Copy the template files which we don't edit.
 	cp $TMPL_ASTERISK		$WORKDIR/asterisk.conf
 	cp $TMPL_INDICATIONS		$WORKDIR/indications.conf
-        cp $TMPL_LOGGER			$WORKDIR/logger.conf
 	cp $TMPL_MANAGER		$WORKDIR/manager.conf
 	cp $TMPL_MODULES		$WORKDIR/modules.conf
 	cp $TMPL_EXTENSIONS_MACRO	$WORKDIR/extensions_macro.conf
@@ -140,6 +139,7 @@ assemble_and_copy_config()
 	mv $WORKDIR/res_stun_monitor.tmp	$WORKDIR/res_stun_monitor.conf
 	mv $WORKDIR/features.tmp		$WORKDIR/features.conf
 	mv $WORKDIR/voicemail.tmp		$WORKDIR/voicemail.conf
+        mv $WORKDIR/logger.tmp			$WORKDIR/logger.conf
 
 	# At this point, $WORKDIR should contain a complete, working config.
 	clean_up_asterisk_config_dir
@@ -1175,6 +1175,44 @@ set_line_name()
 	fi
 }
 
+#
+# Configure settings for logger (console, messages, syslog)
+#
+configure_logger()
+{
+	echo "Configuring logger"
+	local console
+	local messages
+	local syslog
+	local syslog_facility
+	
+	config_get console LOG console
+	config_get messages LOG messages
+	config_get syslog LOG syslog
+	config_get syslog_facility LOG syslog_facility
+
+	if [ -z "$console" ] ; then
+		console="notice,warning,errpr" 
+	fi
+
+	if [ -z "$messages" ] ; then
+		messages="error"
+	fi
+
+	if [ -z "$syslog" ] ; then
+		syslog=""
+	fi
+
+	if [ -z "$syslog_facility" ] ; then
+		syslog_facility="local0"
+	fi
+
+	sed -i "s/|CONSOLE|/$console/"			$WORKDIR/logger.tmp
+	sed -i "s/|MESSAGES|/$messages/"		$WORKDIR/logger.tmp
+	sed -i "s/|SYSLOG|/$syslog/"			$WORKDIR/logger.tmp
+	sed -i "s/|SYSLOG_FACILITY|/$syslog_facility/"	$WORKDIR/logger.tmp
+}
+
 start() {
 	mkdir -p $WORKDIR
 	# Load config file
@@ -1243,6 +1281,12 @@ start() {
 	# Language
 	###########
 	configure_language
+
+	####################
+	# Log configuration
+	####################
+	cp $TMPL_LOGGER $WORKDIR/logger.tmp
+	configure_logger
 
 	#########################
 	# Finish up configuration
