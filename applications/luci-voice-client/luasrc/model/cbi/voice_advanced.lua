@@ -165,6 +165,9 @@ congestiontone:value("congestion", "congestion")
 congestiontone:value("info", "info")
 congestiontone.optional = true
 
+stun = sip:option(Value, 'stun_server', "STUN server", "Leave empty to disable the STUN monitor")
+stun.optional = true
+
 -- Fixed length numbers
 s = m:section(TypedSection, "sip_service_provider", "Fixed length number series")
 s.template  = "cbi/tblsection"

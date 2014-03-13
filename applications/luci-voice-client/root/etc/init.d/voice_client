@@ -60,6 +60,7 @@ TMPL_SIPPEERSEC=$TEMPLATEDIR/sip_peer_voicesec.TEMPLATE
 TMPL_SIPREG=$TEMPLATEDIR/sip_registration.TEMPLATE
 TMPL_SIPREGSEC=$TEMPLATEDIR/sip_registration_voicesec.TEMPLATE
 TMPL_RTP=$TEMPLATEDIR/rtp.conf.TEMPLATE
+TMPL_STUN=$TEMPLATEDIR/res_stun_monitor.conf.TEMPLATE
 
 TMPL_ASTERISK=$TEMPLATEDIR/asterisk.conf.TEMPLATE
 TMPL_INDICATIONS=$TEMPLATEDIR/indications.conf.TEMPLATE
@@ -154,6 +155,7 @@ assemble_and_copy_config()
 	mv $WORKDIR/extensions.tmp		$WORKDIR/extensions.conf
 	mv $WORKDIR/codecs.tmp			$WORKDIR/codecs.conf
 	mv $WORKDIR/rtp.tmp			$WORKDIR/rtp.conf
+	mv $WORKDIR/res_stun_monitor.tmp	$WORKDIR/res_stun_monitor.conf
 	mv $WORKDIR/features.tmp		$WORKDIR/features.conf
 
 	# At this point, $WORKDIR should contain a complete, working config.
@@ -268,6 +270,7 @@ configure_sip()
 	local tos_audio
 	local tos_video
 	local tos_text
+	local stun_server
 
 	config_get useragent $1 useragent
 	config_get externhost $1 externhost
@@ -287,6 +290,7 @@ configure_sip()
 	config_get tos_text $1 tos_text
 	config_get tls_cipher $1 tls_cipher
 	config_get tls_version $1 tls_version
+	config_get stun_server $1 stun_server
 
 	[ -z "$useragent" ] && useragent="$USERAGENT"
 
@@ -406,6 +410,9 @@ configure_sip()
 	# Set blind transfer key
 	cp $TMPL_FEATURES				$WORKDIR/features.tmp
 	sed -i "s/|BLINDXFER|/$(escape_sed_substitution $blindxfer)/"		$WORKDIR/features.tmp
+
+	# STUN server
+	sed -i "s/|SERVER|/$stun_server/"	$WORKDIR/res_stun_monitor.tmp
 }
 
 # Get password from existing sip_peers config file
@@ -1018,6 +1025,7 @@ start() {
 	touch $WORKDIR/sip_peers.tmp
 	touch $WORKDIR/sip_registrations.tmp
 	cp $TMPL_RTP $WORKDIR/rtp.tmp
+	cp $TMPL_STUN $WORKDIR/res_stun_monitor.tmp
 	touch $WORKDIR/features.tmp
 
 	config_foreach configure_sip sip_advanced
