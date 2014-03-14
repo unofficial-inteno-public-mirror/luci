@@ -1127,14 +1127,14 @@ configure_language()
 #Create an extension "hint" to allow dialtone to be set according to sip provider reg status
 create_extensions_dialtone()
 {
-	local sip_account
-	config_get sip_account $1 sip_account
+	local sip_provider
+	config_get sip_provider $1 sip_provider
 
 	#If line is configured with an active sip account, setup dialtone extension
-	if [ -n "$sip_account" -a "$sip_account" != "-" ] ; then
-		config_get enabled $sip_account enabled
+	if [ -n "$sip_provider" -a "$sip_provider" != "-" ] ; then
+		config_get enabled $sip_provider enabled
 		if [ -n "$enabled" -a "$enabled" = "1" ] ; then
-			echo "exten => $1,hint,SIP/$sip_account" >>     $WORKDIR/extensions_dialtone.tmp
+			echo "exten => $1,hint,SIP/$sip_provider" >>     $WORKDIR/extensions_dialtone.tmp
 		fi
 	fi
 }
