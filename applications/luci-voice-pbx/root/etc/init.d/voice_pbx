@@ -1064,7 +1064,11 @@ configure_language()
 {
 	local voice_pack
 	config_get voice_pack language voice_pack
-	
+
+	if [ -z "$voice_pack" ] ; then
+		return
+	fi
+
 	if [ -f $voice_pack ]; then
 		# Move voice-pack to /usr/lib/asterisk
 		echo "Found new voice-pack"
