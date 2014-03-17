@@ -168,7 +168,7 @@
       for (var i = 0; i < handsets.length; i++) {
 	  if(table_has_handset(table, handsets[i]) == false) {
 
-	      if (handsets[i] < 7)  {
+	      if (handsets[i].handset < 7)  {
 		  table_add_handset(table, handsets[i]);
 	      } else {
 		  table_add_ule(table, handsets[i]);
