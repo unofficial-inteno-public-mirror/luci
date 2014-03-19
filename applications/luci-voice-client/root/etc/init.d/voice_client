@@ -1005,7 +1005,7 @@ configure_logger()
 	config_get syslog_facility LOG syslog_facility
 
 	if [ -z "$console" ] ; then
-		console="notice,warning,errpr" 
+		console="notice,warning,error" 
 	fi
 
 	if [ -z "$messages" ] ; then
