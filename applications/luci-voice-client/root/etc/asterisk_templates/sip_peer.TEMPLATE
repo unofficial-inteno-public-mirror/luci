@@ -14,6 +14,7 @@ context		= incoming_calls
 port=|PORT|
 transport	= |TRANSPORT|
 outboundproxy=|OUTBOUNDPROXY||OUTBOUNDPROXYPORT|
+registered_extension = |CONTACT_USER|
 autoframing	= |AUTOFRAMING|
 disallow	= all
 |ALLOW|

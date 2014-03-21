@@ -466,6 +466,9 @@ configure_sip_provider()
 		sed -i "s/|ALLOW|/$(read_codecs $1)/"		$WORKDIR/sip_provider.tmp
 	fi
 
+	# Set registered extension so that incoming calls match the correct peer                     
+	sed -i "s/|CONTACT_USER|/$user/g"			$WORKDIR/sip_provider.tmp 
+
 	# Add SIP Provider configuration to the temp file containing all SIP Provider configs.
 	cat $WORKDIR/sip_provider.tmp >> $WORKDIR/sip_providers.tmp
 

@@ -543,6 +543,9 @@ configure_sip_account()
 	fi
 	sed -i "s/|AUTOFRAMING|/$autoframing/"			$WORKDIR/sip_peer.tmp
 
+	# Set registered extension so that incoming calls match the correct peer                     
+	sed -i "s/|CONTACT_USER|/$(format_sip_contact $1 $user)/g"      $WORKDIR/sip_peer.tmp 
+
 	# Add account configuration to the temp file containing all account configs.
 	cat $WORKDIR/sip_peer.tmp >> $WORKDIR/sip_peers.tmp
 

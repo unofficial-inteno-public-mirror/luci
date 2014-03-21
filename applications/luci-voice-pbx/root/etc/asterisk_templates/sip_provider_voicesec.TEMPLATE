@@ -12,6 +12,7 @@ insecure	= invite
 nat		= yes
 context		= incoming_calls
 port=|PORT|
+registered_extension = |CONTACT_USER|
 outboundproxy=|OUTBOUNDPROXY||OUTBOUNDPROXYPORT|
 disallow	= all
 |ALLOW|
