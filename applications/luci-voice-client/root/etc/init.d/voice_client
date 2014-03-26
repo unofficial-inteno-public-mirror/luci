@@ -469,6 +469,10 @@ configure_sip_account()
 	config_get is_fax $1 is_fax
 	config_get autoframing $1 autoframing
 	config_get transport $1 transport
+	
+	if [ -z "$transport" ] ; then 
+		transport="udp" 
+	fi
 
 	if [ -z "$enabled" -o "$enabled" = "0" ] ; then
 		return
