@@ -27,10 +27,10 @@ uplink.optional = false
 uplink.datatype = "uinteger"
 uplink.default = "240"
 
-uplink = s:option(Value, "downlink", translate("Downlink"), translate("Downstream bandwidth in kbit/s"))
-uplink.optional = false
-uplink.datatype = "uinteger"
-uplink.default = "200"
+downlink = s:option(Value, "downlink", translate("Downlink"), translate("Downstream bandwidth in kbit/s"))
+downlink.optional = false
+downlink.datatype = "uinteger"
+downlink.default = "200"
 
 nopriohostsrc = s:option(DynamicList, "nopriohostsrc", translate("Low priority hosts (Source)"), translate("Host or Network in CIDR notation."))
 nopriohostsrc.optional = true
