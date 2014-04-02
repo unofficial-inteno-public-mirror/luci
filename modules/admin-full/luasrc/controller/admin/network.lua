@@ -150,11 +150,13 @@ function index()
 				page.order  = 40
 			end
 
-			if nixio.fs.access("/etc/config/6relayd") then
-				page = node(user, "network", "ipv6")
-				page.target = cbi("admin_network/ipv6")
-				page.title  = _("IPv6 RA and DHCPv6")
-				page.order  = 45
+			if user ~= "user" then
+				if nixio.fs.access("/etc/config/6relayd") then
+					page = node(user, "network", "ipv6")
+					page.target = cbi("admin_network/ipv6")
+					page.title  = _("IPv6 RA and DHCPv6")
+					page.order  = 45
+				end
 			end
 
 			page  = node(user, "network", "routes")
