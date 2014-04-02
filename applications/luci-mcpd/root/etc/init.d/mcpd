@@ -3,8 +3,11 @@
 include /lib/network
 
 START=99
-STOP=10
-MCPD_BIN="mcpd"
+
+SERVICE_DAEMONIZE=1
+SERVICE_WRITE_PID=1
+
+MCPD_BIN=/usr/sbin/mcpd
 
 start() {
 	local igmp_snooping_enable
@@ -91,11 +94,10 @@ start() {
 		echo "igmp-bridged-routed 1" >> /tmp/mcpd.conf
 	fi
 
-        start-stop-daemon -S -x $MCPD_BIN -p /var/run/mcpd.pid -m -b 
+	service_start $MCPD_BIN
 }
 
 stop() {
-        start-stop-daemon -K -q -n ${MCPD_BIN##*/} -p /var/run/mcpd.pid -s TERM
-        rm -f /var/run/mcpd.pid
+	service_stop $MCPD_BIN
 }
 
