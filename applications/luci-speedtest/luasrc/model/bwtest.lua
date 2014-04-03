@@ -35,9 +35,9 @@ function startspt(self, opts) -- Start speed test
 	elseif theinterface() == "ADSL" then
 		dpack, upack = sys.exec("uci get speedtest.@packetsize[-1].adsl"):match("(%d+)/(%d+)") or 25,1
 	elseif theinterface() == "WWAN" then
-		dpack, upack = sys.exec("uci get speedtest.@packetsize[-1].wwan"):match("(%d+)/(%d+)") or 25,5
+		dpack, upack = sys.exec("uci get speedtest.@packetsize[-1].wwan"):match("(%d+)/(%d+)") or 50,25
 	elseif theinterface() == "3G" then
-		dpack, upack = sys.exec("uci get speedtest.@packetsize[-1].wwan"):match("(%d+)/(%d+)") or 10,2
+		dpack, upack = sys.exec("uci get speedtest.@packetsize[-1].3g"):match("(%d+)/(%d+)") or 10,2
 	end
 
 	if dpack and upack then
