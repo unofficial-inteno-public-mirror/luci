@@ -13,6 +13,7 @@ $Id: dhcp.lua 9623 2013-01-18 14:08:37Z jow $
 ]]--
 
 local sys = require "luci.sys"
+local guser = luci.dispatcher.context.path[1]
 
 m = Map("dhcp", translate("DHCP and DNS"),
 	translate("Dnsmasq is a combined <abbr title=\"Dynamic Host Configuration Protocol" ..
@@ -25,9 +26,22 @@ s.anonymous = true
 s.addremove = false
 
 s:tab("general", translate("General Settings"))
+if guser ~= "user" then
 s:tab("files", translate("Resolv and Hosts Files"))
 s:tab("advanced", translate("Advanced Settings"))
+end -- guser ~= user --
 
+
+s:taboption("general", Value, "domain",
+	translate("Local domain"),
+	translate("Local domain suffix appended to DHCP names and hosts file entries"))
+
+s:taboption("general", Flag, "logqueries",
+	translate("Log queries"),
+	translate("Write received DNS requests to syslog")).optional = true
+
+
+if guser ~= "user" then
 s:taboption("advanced", Flag, "domainneeded",
 	translate("Domain required"),
 	translate("Don't forward <abbr title=\"Domain Name System\">DNS</abbr>-Requests without " ..
@@ -83,10 +97,6 @@ s:taboption("advanced", Value, "local",
 	translate("Local server"),
 	translate("Local domain specification. Names matching this domain are never forwared and resolved from DHCP or hosts files only"))
 
-s:taboption("general", Value, "domain",
-	translate("Local domain"),
-	translate("Local domain suffix appended to DHCP names and hosts file entries"))
-
 s:taboption("advanced", Flag, "expandhosts",
 	translate("Expand hosts"),
 	translate("Add local domain suffix to names served from hosts files"))
@@ -106,11 +116,6 @@ bn = s:taboption("advanced", DynamicList, "bogusnxdomain", translate("Bogus NX D
 
 bn.optional = true
 bn.placeholder = "67.215.65.132"
-
-
-s:taboption("general", Flag, "logqueries",
-	translate("Log queries"),
-	translate("Write received DNS requests to syslog")).optional = true
 
 df = s:taboption("advanced", DynamicList, "server", translate("DNS forwardings"),
 	translate("List of <abbr title=\"Domain Name System\">DNS</abbr> " ..
@@ -188,7 +193,7 @@ cq = s:taboption("advanced", Value, "dnsforwardmax",
 cq.optional = true
 cq.datatype = "uinteger"
 cq.placeholder = 150
-
+end -- guser ~= user --
 
 
 m:section(SimpleSection).template = "admin_network/lease_status"
