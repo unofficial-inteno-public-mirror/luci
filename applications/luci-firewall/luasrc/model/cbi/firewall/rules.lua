@@ -15,6 +15,9 @@ You may obtain a copy of the License at
 local ds = require "luci.dispatcher"
 local ft = require "luci.tools.firewall"
 
+local guser = luci.dispatcher.context.path[1]
+local enduser = (guser == "user")
+
 m = Map("firewall",
 	translate("Firewall - Traffic Rules"),
 	translate("Traffic rules define policies for packets traveling between \
@@ -180,7 +183,9 @@ function target.cfgvalue(self, s)
 end
 
 ft.opt_enabled(s, Flag, translate("Enable")).width = "1%"
-
+if not enduser then
+	ft.opt_hidden(s, Flag, translate("Hide")).width = "1%"
+end
 
 --
 -- SNAT
@@ -264,6 +269,8 @@ function snat.cfgvalue(self, s)
 end
 
 ft.opt_enabled(s, Flag, translate("Enable")).width = "1%"
-
+if not enduser then
+	ft.opt_hidden(s, Flag, translate("Hide")).width = "1%"
+end
 
 return m

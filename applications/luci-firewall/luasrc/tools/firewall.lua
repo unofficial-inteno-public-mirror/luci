@@ -263,6 +263,36 @@ function opt_enabled(s, t, ...)
 	end
 end
 
+function opt_hidden(s, t, ...)
+	if t == luci.cbi.Button then
+		local o = s:option(t, "__hidden")
+		function o.render(self, section)
+			if self.map:get(section, "hidden") == "1" then
+				self.title      = tr("Rule is hidden")
+				self.inputtitle = tr("Expose")
+				self.inputstyle = "reset"
+			else
+				self.title      = tr("Rule is exposed")
+				self.inputtitle = tr("Hide")
+				self.inputstyle = "apply"
+			end
+			t.render(self, section)
+		end
+		function o.write(self, section, value)
+			if self.map:get(section, "hidden") == "1" then
+				self.map:del(section, "hidden")
+			else
+				self.map:set(section, "hidden", "1")
+			end
+		end
+		return o
+	else
+		local o = s:option(t, "hidden", ...)
+		o.default = "0"
+		return o
+	end
+end
+
 function opt_name(s, t, ...)
 	local o = s:option(t, "name", ...)
 
