@@ -4,6 +4,8 @@
 	local utl = require "luci.util"
 	local nwm = require "luci.model.network".init()
 
+	local guser = luci.dispatcher.context.path[1]
+
 	local net, iface
 	local networks = nwm:get_networks()
 	local value = self:formvalue(section)
@@ -24,7 +26,7 @@
 	<% for _, net in ipairs(networks) do
 	       if (net:name() ~= "loopback") and
 		      (net:name() ~= self.exclude) and
-		      (not self.novirtual or not net:is_virtual())
+		      (not self.novirtual or not net:is_virtual()) and (guser ~= "user" or net:is_lan())
 		   then %>
 	<li style="padding:0.25em 0">
 		<input class="cbi-input-<%=self.widget or "radio"%>" onclick="cbi_d_update(this.id)" onchange="cbi_d_update(this.id)"<%=
@@ -49,7 +51,7 @@
 	</li>
 	<% end end %>
 
-	<% if not self.nocreate then %>
+	<% if guser ~= "user" and not self.nocreate then %>
 	<li style="padding:0.25em 0">
 		<input class="cbi-input-<%=self.widget or "radio"%>" onclick="cbi_d_update(this.id)" onchange="cbi_d_update(this.id)"<%=attr("type", self.widget or "radio") .. attr("id", cbid .. "_new") .. attr("name", cbid) .. attr("value", "-") .. ifattr(not value and self.widget ~= "checkbox", "checked", "checked")%> /> &#160;
 		<div style="padding:0.5em; display:inline">

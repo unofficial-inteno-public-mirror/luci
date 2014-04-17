@@ -983,6 +983,10 @@ function protocol.dns6addrs(self)
 	return dns
 end
 
+function protocol.is_lan(self)
+	return (self:_get("is_lan") == "1")
+end
+
 function protocol.is_bridge(self)
 	return (not self:is_virtual() and self:type() == "bridge")
 end
