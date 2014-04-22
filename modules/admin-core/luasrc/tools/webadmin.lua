@@ -18,6 +18,8 @@ local uci = require("luci.model.uci")
 require("luci.sys")
 require("luci.ip")
 
+local guser = luci.dispatcher.context.path[1]
+
 function byte_format(byte)
 	local suff = {"B", "KB", "MB", "GB", "TB"}
 	for i=1, 5 do
@@ -109,7 +111,29 @@ function cbi_add_networks(field)
 			end
 		end
 	)
-	field.titleref = luci.dispatcher.build_url("admin", "network", "network")
+	field.titleref = luci.dispatcher.build_url(guser, "network", "network")
+end
+
+function cbi_add_wan_networks(field)
+	uci.cursor():foreach("network", "interface",
+		function (section)
+			if section[".name"] ~= "loopback" and section.is_lan ~= "1" then
+				field:value(section[".name"])
+			end
+		end
+	)
+	field.titleref = luci.dispatcher.build_url(guser, "network", "network")
+end
+
+function cbi_add_lan_networks(field)
+	uci.cursor():foreach("network", "interface",
+		function (section)
+			if section[".name"] ~= "loopback" and section.is_lan == "1" then
+				field:value(section[".name"])
+			end
+		end
+	)
+	field.titleref = luci.dispatcher.build_url(guser, "network", "network")
 end
 
 function cbi_add_knownips(field)

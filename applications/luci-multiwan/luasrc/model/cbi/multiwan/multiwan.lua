@@ -145,7 +145,7 @@ s = m:section(NamedSection, "config", "", "")
 s.addremove = false
 
 default_route = s:option(ListValue, "default_route", translate("Default Route"))
-luci.tools.webadmin.cbi_add_networks(default_route)
+luci.tools.webadmin.cbi_add_wan_networks(default_route)
 default_route:value("fastbalancer", translate("Load Balancer(Performance)"))
 default_route:value("balancer", translate("Load Balancer(Compatibility)"))
 default_route.default = "balancer"
