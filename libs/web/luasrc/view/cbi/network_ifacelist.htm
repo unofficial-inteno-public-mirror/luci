@@ -31,6 +31,21 @@
 			end
 		end
 	end
+
+	function iface_is_type_wan(ifname)
+		return (ifname:match("^atm") or ifname:match("^ptm") or ifname:match("^eth%d.") or ifname:match("^wwan"))
+	end
+
+	function iface_is_at_wan(ifname)
+		local intf
+		if ifname:match("^@") then
+			intf = ifname:sub(2)
+			if not net:is_local_network(intf) then
+				return true
+			end
+		end
+		return false
+	end
 -%>
 
 <input type="hidden" name="<%=cbeid%>" value="1" />
@@ -39,7 +54,8 @@
 	     local link = iface:adminlink()
          if (not self.nobridges  or not iface:is_bridge()) and
 		    (not self.noinactive or iface:is_up()) and
-		    iface:name() ~= self.exclude
+		    iface:name() ~= self.exclude and
+		    (guser ~= "user" or not (iface_is_type_wan(iface:name()) or iface_is_at_wan(iface:name())))
 		 then %>
 	<li>
 		<input class="cbi-input-<%=self.widget or "radio"%>" onclick="cbi_d_update(this.id)" onchange="cbi_d_update(this.id)"<%=

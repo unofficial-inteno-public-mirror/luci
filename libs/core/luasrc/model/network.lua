@@ -370,6 +370,13 @@ function get_networks(self)
 	return nets
 end
 
+function is_local_network(self, n)
+	if n and _uci_real:get("network", n, "is_lan") == "1" then
+		return true
+	end
+	return false
+end
+
 function del_network(self, n)
 	local d = _uci_real:delete("dhcp", n)
 	local r = _uci_real:delete("network", n)
