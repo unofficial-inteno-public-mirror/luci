@@ -930,6 +930,8 @@ configure_brcm_line()
 	sed -i "s/|DIALTONE_EXTENSION_HINT|/$1/"			$WORKDIR/brcm_line.tmp
 	sed -i "s/|AUTODIAL|/$autodial/"				$WORKDIR/brcm_line.tmp
 	sed -i "s/|AUTODIAL_TIMEOUT|/$autodial_timeout/"		$WORKDIR/brcm_line.tmp
+	sed -i "s/|DTMFRELAY|/$dtmfmode/"      				$WORKDIR/brcm_line.tmp
+
 
 	#Configure BRCM line with codecs according to the SIP line settings
 	local is_fax
