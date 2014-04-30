@@ -25,9 +25,10 @@ function index()
 		entry({user, "status", "routes"}, template("admin_status/routes"), _("Routes"), 3)
 		entry({user, "status", "syslog"}, call("action_syslog"), _("System Log"), 4)
 		entry({user, "status", "dmesg"}, call("action_dmesg"), _("Kernel Log"), 5)
-		entry({user, "status", "processes"}, cbi("admin_status/processes"), _("Processes"), 6)
+		entry({user, "status", "tr069log"}, call("action_tr069log"), _("TR-069 Log"), 10)
+		entry({user, "status", "processes"}, cbi("admin_status/processes"), _("Processes"), 20)
 
-		entry({user, "status", "realtime"}, alias(user, "status", "realtime", "load"), _("Realtime Graphs"), 7)
+		entry({user, "status", "realtime"}, alias(user, "status", "realtime", "load"), _("Realtime Graphs"), 30)
 
 		entry({user, "status", "realtime", "load"}, template("admin_status/load"), _("Load"), 1).leaf = true
 		entry({user, "status", "realtime", "load_status"}, call("action_load")).leaf = true
@@ -53,6 +54,17 @@ end
 function action_dmesg()
 	local dmesg = luci.sys.dmesg()
 	luci.template.render("admin_status/dmesg", {dmesg=dmesg})
+end
+
+function action_tr069log()
+	--local tr069log = io.popen("cat /var/log/cwmpd.log 2>/dev/null")
+	--local tr069log = ltn12_popen("cat /var/log/cwmpd.log 2>/dev/null")
+	local tr069log = luci.sys.exec("cat /var/log/cwmpd.log 2>/dev/null")
+	if tr069log:len() < 5 then
+		tr069log = "Logging off"
+	end
+
+	luci.template.render("admin_status/tr069log", {tr069log=tr069log})
 end
 
 function action_iptables()
