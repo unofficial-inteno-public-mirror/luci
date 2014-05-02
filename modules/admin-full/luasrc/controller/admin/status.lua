@@ -57,11 +57,9 @@ function action_dmesg()
 end
 
 function action_tr069log()
-	--local tr069log = io.popen("cat /var/log/cwmpd.log 2>/dev/null")
-	--local tr069log = ltn12_popen("cat /var/log/cwmpd.log 2>/dev/null")
 	local tr069log = luci.sys.exec("cat /var/log/cwmpd.log 2>/dev/null")
 	if tr069log:len() < 5 then
-		tr069log = "Logging off"
+		tr069log = "TR-069 log not available"
 	end
 
 	luci.template.render("admin_status/tr069log", {tr069log=tr069log})
