@@ -19,13 +19,17 @@ function index()
 	local users = { "admin", "support", "user" }
 
 	for k, user in pairs(users) do
+
 		entry({user, "status"}, alias(user, "status", "overview"), _("Status"), 20).index = true
 		entry({user, "status", "overview"}, template("admin_status/index"), _("Overview"), 1)
 		entry({user, "status", "iptables"}, call("action_iptables"), _("Firewall"), 2).leaf = true
 		entry({user, "status", "routes"}, template("admin_status/routes"), _("Routes"), 3)
-		entry({user, "status", "syslog"}, call("action_syslog"), _("System Log"), 4)
-		entry({user, "status", "dmesg"}, call("action_dmesg"), _("Kernel Log"), 5)
-		entry({user, "status", "tr069log"}, call("action_tr069log"), _("TR-069 Log"), 10)
+
+		entry({user, "status", "logs"}, call("action_syslog"), _("Logs"), 4).subindex = true
+		entry({user, "status", "logs", "syslog"}, call("action_syslog"), _("System Log"), 4)
+		entry({user, "status", "logs", "dmesg"}, call("action_dmesg"), _("Kernel Log"), 5)
+		entry({user, "status", "logs", "tr069log"}, call("action_tr069log"), _("TR-069 Log"), 10)
+
 		entry({user, "status", "processes"}, cbi("admin_status/processes"), _("Processes"), 20)
 
 		entry({user, "status", "realtime"}, alias(user, "status", "realtime", "load"), _("Realtime Graphs"), 30)
