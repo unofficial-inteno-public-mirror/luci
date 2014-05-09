@@ -136,13 +136,13 @@ remotehold.enabled = "yes"
 contact_line_suffix = sip:option(Flag, 'contact_line_suffix', "Line suffix in contact header", "Add a suffix indicating which lines are called to the sip contact header")
 contact_line_suffix.optional = true
 
-blindxfer = sip:option(Value, 'blindxfer', "Blind Transfer", "Key combination to initiate blind transfer of call")
-function blindxfer.validate(self, value, section)
-	if datatypes.phonedigit(value) then
-		return value
-	end
-	return nil, "Not a valid key for Blind Transfer"
-end
+--blindxfer = sip:option(Value, 'blindxfer', "Blind Transfer", "Key combination to initiate blind transfer of call")
+--function blindxfer.validate(self, value, section)
+--	if datatypes.phonedigit(value) then
+--		return value
+--	end
+--	return nil, "Not a valid key for Blind Transfer"
+--end
 
 tos_sip = sip:option(Value, 'tos_sip', "SIP DiffServ", "Differentiated services/TOS for SIP data. Recommended value: cs3")
 tos_sip.default = "cs3"
