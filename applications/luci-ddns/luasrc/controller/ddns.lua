@@ -20,10 +20,13 @@ function index()
 		return
 	end
 	
+	local users = { "admin", "support", "user" }
 	local page
 
-	page = entry({"admin", "services", "ddns"}, cbi("ddns/ddns"), _("Dynamic DNS"), 60)
-	page.dependent = true
+	for k, user in pairs(users) do
+		page = entry({user, "services", "ddns"}, cbi("ddns/ddns"), _("Dynamic DNS"), 60)
+		page.dependent = true
+	end
 
 	page = entry({"mini", "network", "ddns"}, cbi("ddns/ddns", {autoapply=true}), _("Dynamic DNS"), 60)
 	page.dependent = true
