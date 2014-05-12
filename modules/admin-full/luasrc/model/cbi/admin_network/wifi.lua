@@ -923,6 +923,22 @@ if hwtype == "broadcom" then
 	encr:value("wpamixedwpa2", "WPA-EAP/WPA2-EAP Mixed Mode", {mode="ap"})
 end
 
+encr.write = function(self, section, value)
+	if not value then
+		return nil
+	end
+	self.map.uci:set("wireless", section, "encryption", value)
+	if value:match("^none$") or value:match("^wpa") then
+		self.map.uci:delete("wireless", section, "key")
+	end
+	if not value:match("wep") then
+		self.map.uci:delete("wireless", section, "key1")
+		self.map.uci:delete("wireless", section, "key2")
+		self.map.uci:delete("wireless", section, "key3")
+		self.map.uci:delete("wireless", section, "key4")
+	end
+end
+
 radius_server = s:taboption("encryption", Value, "radius_server", translate("Radius-Authentication-Server"))
 radius_server:depends({mode="ap", encryption="wpa"})
 radius_server:depends({mode="ap", encryption="wpa2"})
@@ -954,6 +970,18 @@ radius_secret:depends({mode="ap-wds", encryption="wpamixedwpa2"})
 radius_secret.rmempty = true
 radius_secret.password = true
 
+function default_wpa_key()
+	local fd = io.open("/proc/nvram/WpaKey")
+	if fd then
+		local wpa_key = fd:read("*l")
+		fd:close()
+		if #wpa_key >= 8 then
+			return wpa_key
+		end
+	end
+	return "1234567890"
+end
+
 wpakey = s:taboption("encryption", Value, "_wpa_key", translate("Key"))
 wpakey:depends("encryption", "psk")
 wpakey:depends("encryption", "psk2")
@@ -962,6 +990,7 @@ wpakey:depends("encryption", "psk-mixed")
 wpakey.datatype = "wpakey"
 wpakey.rmempty = true
 wpakey.password = true
+wpakey.default = default_wpa_key()
 
 net_reauth = s:taboption("encryption", Value, "net_reauth", translate("Network Re-auth Interval"))
 net_reauth:depends({encryption="wpa"})
@@ -986,6 +1015,22 @@ end
 wpakey.write = function(self, section, value)
 	self.map.uci:set("wireless", section, "key", value)
 	self.map.uci:delete("wireless", section, "key1")
+	self.map.uci:delete("wireless", section, "key2")
+	self.map.uci:delete("wireless", section, "key3")
+	self.map.uci:delete("wireless", section, "key4")
+end
+
+wpakey.remove = function(self, section, value)
+	local enc = self.map.uci:get("wireless", section, "encryption")
+	if enc:match("^psk") then
+		local oldkey = self.map.uci:get("wireless", section, "key")
+		if oldkey and #oldkey >= 8 then
+			self.map.uci:set("wireless", section, "key", oldkey)
+		else
+			self.map.uci:set("wireless", section, "key", default_wpa_key())
+		end
+	end
+	return nil
 end
 
 
@@ -1009,6 +1054,14 @@ wepslot.write = function(self, section, value)
 	self.map.uci:set("wireless", section, "key", value)
 end
 
+function default_wep_key(slot)
+	local wep_key = ""
+	for wep=1,10 do
+		wep_key = wep_key .. "%d" %slot
+	end
+	return wep_key
+end
+
 local slot
 for slot=1,4 do
 	wepkey = s:taboption("encryption", Value, "key" .. slot, translatef("Key #%d", slot))
@@ -1017,6 +1070,21 @@ for slot=1,4 do
 	wepkey.datatype = "wepkey"
 	wepkey.rmempty = true
 	wepkey.password = true
+	wepkey.default = default_wep_key(slot)
+
+	function wepkey.remove(self, section, value)
+		local enc = self.map.uci:get("wireless", section, "encryption")
+		local key = "key%d" %slot
+		if enc:match("^wep") then
+			local oldkey = self.map.uci:get("wireless", section, key)
+			if oldkey and #oldkey >= 10 then
+				self.map.uci:set("wireless", section, key, oldkey)
+			else
+				self.map.uci:set("wireless", section, key, default_wep_key(slot))
+			end
+		end
+		return nil
+	end
 
 	function wepkey.write(self, section, value)
 		if value and (#value == 5 or #value == 13) then
