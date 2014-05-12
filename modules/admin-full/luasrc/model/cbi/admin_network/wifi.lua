@@ -734,13 +734,6 @@ s:tab("anyfi", translate("Anyfi.net"))
 
 ssid = s:taboption("general", Value, "ssid", translate("<abbr title=\"Extended Service Set Identifier\">ESSID</abbr>"))
 
-function ssid.validate(self, value, section)
-	if value:match(" ") then
-		return nil, "Invalid character(s) in SSID"
-	end
-	return value
-end
-
 mode = s:taboption("general", ListValue, "mode", translate("Mode"))
 mode.override_values = true
 mode:value("ap", translate("Access Point"))
