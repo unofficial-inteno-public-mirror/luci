@@ -354,6 +354,7 @@ local function _clients(what, callback)
 	local _ubus
 	local _ubuscache = { }
 	local i = 1
+	local clntno = "client-%d" %i
 
 	local function _add(i, ...)
 		local k = select(i, ...)
@@ -370,14 +371,15 @@ local function _clients(what, callback)
         _ubuscache["clients"] = _ubus:call("router", "clients", { })
         _ubus:close()
 
-        while _ubuscache["clients"][i] do
-                ip = _ubuscache["clients"][i]["ipaddr"]
-                mac = _ubuscache["clients"][i]["macaddr"]
-                name = _ubuscache["clients"][i]["hostname"]
+        while _ubuscache["clients"][clntno] do
+                ip = _ubuscache["clients"][clntno]["ipaddr"]
+                mac = _ubuscache["clients"][clntno]["macaddr"]
+                name = _ubuscache["clients"][clntno]["hostname"]
                 if ip and mac then
                 	_add(what, mac:upper(), ip, nil, (name ~= "*" and name ~= "") and name)
                 end
                 i = i + 1
+		clntno = "client-%d" %i
         end
 
 	for _, e in luci.util.kspairs(hosts) do
