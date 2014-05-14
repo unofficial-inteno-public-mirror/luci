@@ -16,9 +16,6 @@ msgstr ""
 msgid "Allow guests"
 msgstr "Allow guests"
 
-msgid "Allow system users to reach their home directories via network shares"
-msgstr "Allow system users to reach their home directories via network shares"
-
 msgid "Allowed users"
 msgstr "Allowed users"
 
@@ -28,20 +25,20 @@ msgstr "Create mask"
 msgid "Description"
 msgstr "Description"
 
+msgid "Device"
+msgstr ""
+
+msgid "Directory"
+msgstr ""
+
 msgid "Directory mask"
 msgstr "Directory mask"
 
-msgid "Edit Template"
-msgstr "Edit template"
-
-msgid "Edit the template that is used for generating the samba configuration."
-msgstr "Edit the template that is used for generating the Samba configuration."
-
-msgid "General Settings"
-msgstr "General settings"
-
 msgid "Hostname"
 msgstr "Hostname"
+
+msgid "Interfaces"
+msgstr ""
 
 msgid "Mask for new directories"
 msgstr "Mask for new directories"
@@ -55,28 +52,58 @@ msgstr "Name"
 msgid "Network Shares"
 msgstr "Network Shares"
 
-msgid "Path"
-msgstr "Path"
+msgid "Password"
+msgstr ""
 
 msgid "Read-only"
 msgstr "Read-only"
 
-msgid "Share home-directories"
-msgstr "Share home-directories"
+msgid "Samba Users"
+msgstr ""
 
 msgid "Shared Directories"
 msgstr "Shared Directories"
 
-msgid ""
-"This is the content of the file '/etc/samba/smb.conf.template' from which "
-"your samba configuration will be generated. Values enclosed by pipe symbols "
-"('|') should not be changed. They get their values from the 'General "
-"Settings' tab."
+msgid "User Name"
 msgstr ""
-"This is the content of the file '/etc/samba/smb.conf.template' from which "
-"your Samba configuration will be generated. Values enclosed by pipe symbols "
-"('|') should not be changed. They get their values from the 'General "
-"settings' tab."
 
 msgid "Workgroup"
 msgstr "Workgroup"
+
+msgid ""
+"the interface(s) samba will listen on; samba will not start if no interface "
+"is selected"
+msgstr ""
+
+#~ msgid ""
+#~ "Allow system users to reach their home directories via network shares"
+#~ msgstr ""
+#~ "Allow system users to reach their home directories via network shares"
+
+#~ msgid "Edit Template"
+#~ msgstr "Edit template"
+
+#~ msgid ""
+#~ "Edit the template that is used for generating the samba configuration."
+#~ msgstr ""
+#~ "Edit the template that is used for generating the Samba configuration."
+
+#~ msgid "General Settings"
+#~ msgstr "General settings"
+
+#~ msgid "Path"
+#~ msgstr "Path"
+
+#~ msgid "Share home-directories"
+#~ msgstr "Share home-directories"
+
+#~ msgid ""
+#~ "This is the content of the file '/etc/samba/smb.conf.template' from which "
+#~ "your samba configuration will be generated. Values enclosed by pipe "
+#~ "symbols ('|') should not be changed. They get their values from the "
+#~ "'General Settings' tab."
+#~ msgstr ""
+#~ "This is the content of the file '/etc/samba/smb.conf.template' from which "
+#~ "your Samba configuration will be generated. Values enclosed by pipe "
+#~ "symbols ('|') should not be changed. They get their values from the "
+#~ "'General settings' tab."

@@ -11,110 +11,96 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Pootle 2.0.4\n"
 
-msgid "Attempts Before WAN Failover"
+msgid "Port Management"
 msgstr ""
 
-msgid "Attempts Before WAN Recovery"
+msgid "eth0 (%s)"
 msgstr ""
 
-msgid "Auto"
-msgstr "自動"
-
-msgid "Collecting data..."
+msgid "eth1 (%s)"
 msgstr ""
 
-msgid ""
-"Configure rules for directing outbound traffic through specified WAN Uplinks."
+msgid "eth2 (%s)"
 msgstr ""
 
-msgid "DNS Server(s)"
-msgstr "DNSサーバー"
-
-msgid "Default Route"
-msgstr "デフォルトルート"
-
-msgid "Destination Address"
-msgstr "宛先アドレス"
-
-msgid "Disable"
-msgstr "無効"
-
-msgid "Enable"
-msgstr "有効"
-
-msgid "Failing"
+msgid "eth3 (%s)"
 msgstr ""
 
-msgid "Failover Traffic Destination"
+msgid "eth4 (%s)"
 msgstr ""
 
-msgid "Health Monitor ICMP Host(s)"
-msgstr "ヘルスモニタ ICMP宛先"
+#~ msgid "Auto"
+#~ msgstr "自動"
 
-msgid "Health Monitor ICMP Timeout"
-msgstr "ヘルスモニタ ICMP タイムアウト"
+#~ msgid "DNS Server(s)"
+#~ msgstr "DNSサーバー"
 
-msgid "Health Monitor Interval"
-msgstr "ヘルスモニタ更新間隔"
+#~ msgid "Default Route"
+#~ msgstr "デフォルトルート"
 
-msgid ""
-"Health Monitor detects and corrects network changes and failed connections."
-msgstr "ヘルスモニタは、ネットワークの変更及び接続失敗の検出と調整を行います。"
+#~ msgid "Destination Address"
+#~ msgstr "宛先アドレス"
 
-msgid "KO"
-msgstr ""
+#~ msgid "Disable"
+#~ msgstr "無効"
 
-msgid "Load Balancer Distribution"
-msgstr "ロードバランサ ディストリビューション"
+#~ msgid "Enable"
+#~ msgstr "有効"
 
-msgid "Load Balancer(Compatibility)"
-msgstr "ロードバランサ (互換性)"
+#~ msgid "Health Monitor ICMP Host(s)"
+#~ msgstr "ヘルスモニタ ICMP宛先"
 
-msgid "Load Balancer(Performance)"
-msgstr "ロードバランサ (パフォーマンス)"
+#~ msgid "Health Monitor ICMP Timeout"
+#~ msgstr "ヘルスモニタ ICMP タイムアウト"
 
-msgid "Multi-WAN"
-msgstr "Multi-WAN"
+#~ msgid "Health Monitor Interval"
+#~ msgstr "ヘルスモニタ更新間隔"
 
-msgid "Multi-WAN Status"
-msgstr ""
+#~ msgid ""
+#~ "Health Monitor detects and corrects network changes and failed "
+#~ "connections."
+#~ msgstr ""
+#~ "ヘルスモニタは、ネットワークの変更及び接続失敗の検出と調整を行います。"
 
-msgid "Multi-WAN Traffic Rules"
-msgstr "Multi-WAN トラフィック・ルール"
+#~ msgid "Load Balancer Distribution"
+#~ msgstr "ロードバランサ ディストリビューション"
 
-msgid ""
-"Multi-WAN allows for the use of multiple uplinks for load balancing and "
-"failover."
-msgstr ""
-"Multi-WANを用いることで、複数の上りリンクを使用してロードバランサとフェイル"
-"オーバー機能を使用することができます。"
+#~ msgid "Load Balancer(Compatibility)"
+#~ msgstr "ロードバランサ (互換性)"
 
-msgid "None"
-msgstr "なし"
+#~ msgid "Load Balancer(Performance)"
+#~ msgstr "ロードバランサ (パフォーマンス)"
 
-msgid "OK"
-msgstr ""
+#~ msgid "Multi-WAN"
+#~ msgstr "Multi-WAN"
 
-msgid "Ports"
-msgstr "ポート"
+#~ msgid "Multi-WAN Traffic Rules"
+#~ msgstr "Multi-WAN トラフィック・ルール"
 
-msgid "Protocol"
-msgstr "プロトコル"
+#~ msgid ""
+#~ "Multi-WAN allows for the use of multiple uplinks for load balancing and "
+#~ "failover."
+#~ msgstr ""
+#~ "Multi-WANを用いることで、複数の上りリンクを使用してロードバランサとフェイ"
+#~ "ルオーバー機能を使用することができます。"
 
-msgid "Recovering"
-msgstr ""
+#~ msgid "None"
+#~ msgstr "なし"
 
-msgid "Source Address"
-msgstr "送信元アドレス"
+#~ msgid "Ports"
+#~ msgstr "ポート"
 
-msgid "Unknown"
-msgstr ""
+#~ msgid "Protocol"
+#~ msgstr "プロトコル"
 
-msgid "WAN Interfaces"
-msgstr "WAN インターフェースリスト"
+#~ msgid "Source Address"
+#~ msgstr "送信元アドレス"
 
-msgid "WAN Uplink"
-msgstr "WAN アップリンク"
+#~ msgid "WAN Interfaces"
+#~ msgstr "WAN インターフェースリスト"
 
-msgid "all"
-msgstr "全て"
+#~ msgid "WAN Uplink"
+#~ msgstr "WAN アップリンク"
+
+#~ msgid "all"
+#~ msgstr "全て"

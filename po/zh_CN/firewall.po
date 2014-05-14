@@ -159,6 +159,9 @@ msgstr "来自 %s 位于 %s 带源 %s 并且 %s"
 msgid "General Settings"
 msgstr "基本设置"
 
+msgid "Hide"
+msgstr ""
+
 msgid "IPv4"
 msgstr "IPv4"
 
@@ -476,6 +479,9 @@ msgstr "丢弃"
 
 msgid "reject"
 msgstr "拒绝"
+
+msgid "traffic"
+msgstr ""
 
 #~ msgid "Destination"
 #~ msgstr "目标"

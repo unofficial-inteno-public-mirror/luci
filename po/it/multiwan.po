@@ -11,114 +11,134 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Pootle 2.0.6\n"
 
-msgid "Attempts Before WAN Failover"
-msgstr "Tentativi su WAN prima del Failover"
-
-msgid "Attempts Before WAN Recovery"
-msgstr "Tentativi su WAN prima del Recovery"
-
-msgid "Auto"
-msgstr "Auto"
-
-msgid "Collecting data..."
-msgstr "Raccolta di dati..."
-
-msgid ""
-"Configure rules for directing outbound traffic through specified WAN Uplinks."
+msgid "Port Management"
 msgstr ""
-"Configura le regole per inviare direttamente in uscita il traffico su una "
-"uplink Wan specifico."
 
-msgid "DNS Server(s)"
-msgstr "DNS Server(s)"
-
-msgid "Default Route"
-msgstr "Default Route"
-
-msgid "Destination Address"
-msgstr "Indirizzo di destinazione"
-
-msgid "Disable"
-msgstr "Disable"
-
-msgid "Enable"
-msgstr "Enable"
-
-msgid "Failing"
-msgstr "Fallimento"
-
-msgid "Failover Traffic Destination"
-msgstr "Destinazione del traffico in failover"
-
-msgid "Health Monitor ICMP Host(s)"
-msgstr "Health Monitor ICMP Host(s)"
-
-msgid "Health Monitor ICMP Timeout"
-msgstr "Health Monitor ICMP Timeout"
-
-msgid "Health Monitor Interval"
-msgstr "Health Monitor Interval"
-
-msgid ""
-"Health Monitor detects and corrects network changes and failed connections."
+msgid "eth0 (%s)"
 msgstr ""
-"L'health monitor monitora e identifica i cambiamenti e la manca di "
-"connessioni."
 
-msgid "KO"
-msgstr "KO"
-
-msgid "Load Balancer Distribution"
-msgstr "Bilanciamento del carico"
-
-msgid "Load Balancer(Compatibility)"
-msgstr "Carica Bilanciatore (Compatibilità)"
-
-msgid "Load Balancer(Performance)"
-msgstr "Carica Bilanciatore (Performance)"
-
-msgid "Multi-WAN"
-msgstr "Multi-WAN"
-
-msgid "Multi-WAN Status"
-msgstr "Stato Multi-WAN"
-
-msgid "Multi-WAN Traffic Rules"
-msgstr "Regole del Traffico Multi-WAN"
-
-msgid ""
-"Multi-WAN allows for the use of multiple uplinks for load balancing and "
-"failover."
+msgid "eth1 (%s)"
 msgstr ""
-"Multi-WAN permette di usare uplink multipi per il bilanciamento del carico e "
-"la ridondanza da failover."
 
-msgid "None"
-msgstr "None"
+msgid "eth2 (%s)"
+msgstr ""
 
-msgid "OK"
-msgstr "OK"
+msgid "eth3 (%s)"
+msgstr ""
 
-msgid "Ports"
-msgstr "Porte"
+msgid "eth4 (%s)"
+msgstr ""
 
-msgid "Protocol"
-msgstr "Protocollo"
+#~ msgid "Attempts Before WAN Failover"
+#~ msgstr "Tentativi su WAN prima del Failover"
 
-msgid "Recovering"
-msgstr "Recupero"
+#~ msgid "Attempts Before WAN Recovery"
+#~ msgstr "Tentativi su WAN prima del Recovery"
 
-msgid "Source Address"
-msgstr "Indirizzo sorgente"
+#~ msgid "Auto"
+#~ msgstr "Auto"
 
-msgid "Unknown"
-msgstr "Sconosciuto"
+#~ msgid "Collecting data..."
+#~ msgstr "Raccolta di dati..."
 
-msgid "WAN Interfaces"
-msgstr "Interfaccia WAN"
+#~ msgid ""
+#~ "Configure rules for directing outbound traffic through specified WAN "
+#~ "Uplinks."
+#~ msgstr ""
+#~ "Configura le regole per inviare direttamente in uscita il traffico su una "
+#~ "uplink Wan specifico."
 
-msgid "WAN Uplink"
-msgstr "Collegamento ascendente WAN"
+#~ msgid "DNS Server(s)"
+#~ msgstr "DNS Server(s)"
 
-msgid "all"
-msgstr "all"
+#~ msgid "Default Route"
+#~ msgstr "Default Route"
+
+#~ msgid "Destination Address"
+#~ msgstr "Indirizzo di destinazione"
+
+#~ msgid "Disable"
+#~ msgstr "Disable"
+
+#~ msgid "Enable"
+#~ msgstr "Enable"
+
+#~ msgid "Failing"
+#~ msgstr "Fallimento"
+
+#~ msgid "Failover Traffic Destination"
+#~ msgstr "Destinazione del traffico in failover"
+
+#~ msgid "Health Monitor ICMP Host(s)"
+#~ msgstr "Health Monitor ICMP Host(s)"
+
+#~ msgid "Health Monitor ICMP Timeout"
+#~ msgstr "Health Monitor ICMP Timeout"
+
+#~ msgid "Health Monitor Interval"
+#~ msgstr "Health Monitor Interval"
+
+#~ msgid ""
+#~ "Health Monitor detects and corrects network changes and failed "
+#~ "connections."
+#~ msgstr ""
+#~ "L'health monitor monitora e identifica i cambiamenti e la manca di "
+#~ "connessioni."
+
+#~ msgid "KO"
+#~ msgstr "KO"
+
+#~ msgid "Load Balancer Distribution"
+#~ msgstr "Bilanciamento del carico"
+
+#~ msgid "Load Balancer(Compatibility)"
+#~ msgstr "Carica Bilanciatore (Compatibilità)"
+
+#~ msgid "Load Balancer(Performance)"
+#~ msgstr "Carica Bilanciatore (Performance)"
+
+#~ msgid "Multi-WAN"
+#~ msgstr "Multi-WAN"
+
+#~ msgid "Multi-WAN Status"
+#~ msgstr "Stato Multi-WAN"
+
+#~ msgid "Multi-WAN Traffic Rules"
+#~ msgstr "Regole del Traffico Multi-WAN"
+
+#~ msgid ""
+#~ "Multi-WAN allows for the use of multiple uplinks for load balancing and "
+#~ "failover."
+#~ msgstr ""
+#~ "Multi-WAN permette di usare uplink multipi per il bilanciamento del "
+#~ "carico e la ridondanza da failover."
+
+#~ msgid "None"
+#~ msgstr "None"
+
+#~ msgid "OK"
+#~ msgstr "OK"
+
+#~ msgid "Ports"
+#~ msgstr "Porte"
+
+#~ msgid "Protocol"
+#~ msgstr "Protocollo"
+
+#~ msgid "Recovering"
+#~ msgstr "Recupero"
+
+#~ msgid "Source Address"
+#~ msgstr "Indirizzo sorgente"
+
+#~ msgid "Unknown"
+#~ msgstr "Sconosciuto"
+
+#~ msgid "WAN Interfaces"
+#~ msgstr "Interfaccia WAN"
+
+#~ msgid "WAN Uplink"
+#~ msgstr "Collegamento ascendente WAN"
+
+#~ msgid "all"
+#~ msgstr "all"

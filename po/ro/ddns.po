@@ -38,9 +38,6 @@ msgstr ""
 msgid "Enable"
 msgstr "Activeaza"
 
-msgid "Event interface"
-msgstr ""
-
 msgid "Force update every"
 msgstr "Forteaza actualizarea la fiecare"
 
@@ -56,9 +53,6 @@ msgstr "Interfata"
 msgid "Network"
 msgstr "Retea"
 
-msgid "On which interface up should start the ddns script process."
-msgstr "Pe care interfata trebuie sa porneasca scriptul ddns"
-
 msgid "Password"
 msgstr "Parola"
 
@@ -73,6 +67,9 @@ msgstr "URL"
 
 msgid "Username"
 msgstr "Utilizator"
+
+msgid "WAN Interface"
+msgstr ""
 
 msgid "custom"
 msgstr "particularizat"
@@ -90,3 +87,6 @@ msgstr "minut(e)"
 
 msgid "network"
 msgstr "retea"
+
+#~ msgid "On which interface up should start the ddns script process."
+#~ msgstr "Pe care interfata trebuie sa porneasca scriptul ddns"

@@ -77,6 +77,9 @@ msgstr "Erweiterte Protokollierung aktivieren"
 msgid "Enable secure mode"
 msgstr "Sicheren Modus aktivieren"
 
+msgid "External Interface"
+msgstr ""
+
 msgid "External Port"
 msgstr "Externer Port"
 
@@ -85,6 +88,9 @@ msgstr "Externe Ports"
 
 msgid "General Settings"
 msgstr "Allgemeine Einstellungen"
+
+msgid "Internal Interface"
+msgstr ""
 
 msgid "Internal addresses"
 msgstr "Interne Adressen"
@@ -126,13 +132,6 @@ msgid "UPNP"
 msgstr "UPnP"
 
 msgid ""
-"UPNP allows clients in the local network to automatically configure the "
-"router."
-msgstr ""
-"UPnP ermöglicht die automatische Konfiguration des Routers durch Clients im "
-"lokalen Netzwerk."
-
-msgid ""
 "UPnP allows clients in the local network to automatically configure the "
 "router."
 msgstr ""
@@ -151,8 +150,15 @@ msgstr "Uplink"
 msgid "Value in KByte/s, informational only"
 msgstr "Wert in Kilobyte/s, nur informativ"
 
-msgid "enable"
-msgstr "aktivieren"
+#~ msgid ""
+#~ "UPNP allows clients in the local network to automatically configure the "
+#~ "router."
+#~ msgstr ""
+#~ "UPnP ermöglicht die automatische Konfiguration des Routers durch Clients "
+#~ "im lokalen Netzwerk."
+
+#~ msgid "enable"
+#~ msgstr "aktivieren"
 
 #~ msgid "Enable NAT-PMP"
 #~ msgstr "NAT-PMP aktivieren"

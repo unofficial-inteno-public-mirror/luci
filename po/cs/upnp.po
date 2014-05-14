@@ -75,6 +75,9 @@ msgstr "Povolit přídavné logování"
 msgid "Enable secure mode"
 msgstr "Povolit bezpečný režim"
 
+msgid "External Interface"
+msgstr ""
+
 msgid "External Port"
 msgstr "Vnější port"
 
@@ -83,6 +86,9 @@ msgstr "Vnější porty"
 
 msgid "General Settings"
 msgstr "Obecné nastavení"
+
+msgid "Internal Interface"
+msgstr ""
 
 msgid "Internal addresses"
 msgstr "Vnitřní adresy"
@@ -124,12 +130,6 @@ msgid "UPNP"
 msgstr "UPNP"
 
 msgid ""
-"UPNP allows clients in the local network to automatically configure the "
-"router."
-msgstr ""
-"UPnP umožňuje klientům v místní síti automaticky nakonfigurovat router."
-
-msgid ""
 "UPnP allows clients in the local network to automatically configure the "
 "router."
 msgstr ""
@@ -147,5 +147,11 @@ msgstr "Uplink"
 msgid "Value in KByte/s, informational only"
 msgstr "Pouze informační hodnoty (v KByte/s)"
 
-msgid "enable"
-msgstr "povolit"
+#~ msgid ""
+#~ "UPNP allows clients in the local network to automatically configure the "
+#~ "router."
+#~ msgstr ""
+#~ "UPnP umožňuje klientům v místní síti automaticky nakonfigurovat router."
+
+#~ msgid "enable"
+#~ msgstr "povolit"

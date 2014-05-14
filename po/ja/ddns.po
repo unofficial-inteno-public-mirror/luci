@@ -35,9 +35,6 @@ msgstr ""
 msgid "Enable"
 msgstr "有効"
 
-msgid "Event interface"
-msgstr ""
-
 msgid "Force update every"
 msgstr "強制的にアップデートを行う間隔"
 
@@ -53,9 +50,6 @@ msgstr "インターフェース"
 msgid "Network"
 msgstr "ネットワーク"
 
-msgid "On which interface up should start the ddns script process."
-msgstr ""
-
 msgid "Password"
 msgstr "パスワード"
 
@@ -70,6 +64,9 @@ msgstr "URL"
 
 msgid "Username"
 msgstr "ユーザー名"
+
+msgid "WAN Interface"
+msgstr ""
 
 msgid "custom"
 msgstr "手動設定"

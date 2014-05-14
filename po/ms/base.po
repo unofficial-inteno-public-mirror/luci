@@ -13,6 +13,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Translate Toolkit 1.1.1\n"
 
+msgid "%s %s used by '%s'"
+msgstr ""
+
+msgid "%s is disabled"
+msgstr ""
+
+msgid "%s is enabled"
+msgstr ""
+
+msgid "%s password successfully changed!"
+msgstr ""
+
 msgid "(%d minute window, %d second interval)"
 msgstr ""
 
@@ -28,25 +40,113 @@ msgstr "(tiada interface dipasang)"
 msgid "-- Additional Field --"
 msgstr "-- Gelanggang Tambahan --"
 
+msgid "-- Please Choose --"
+msgstr ""
+
 msgid "-- Please choose --"
 msgstr "-- Sila pilih --"
 
 msgid "-- custom --"
 msgstr "-- memperibadi --"
 
+msgid "1"
+msgstr ""
+
 msgid "1 Minute Load:"
+msgstr ""
+
+msgid "10"
+msgstr ""
+
+msgid "11"
+msgstr ""
+
+msgid "12"
+msgstr ""
+
+msgid "12a"
+msgstr ""
+
+msgid "12b"
+msgstr ""
+
+msgid "13"
 msgstr ""
 
 msgid "15 Minute Load:"
 msgstr ""
 
-msgid "40MHz 2nd channel above"
+msgid "17a"
 msgstr ""
 
-msgid "40MHz 2nd channel below"
+msgid "2"
+msgstr ""
+
+msgid "2.4GHz"
+msgstr ""
+
+msgid "3"
+msgstr ""
+
+msgid "4"
+msgstr ""
+
+msgid "5"
 msgstr ""
 
 msgid "5 Minute Load:"
+msgstr ""
+
+msgid "5GHz"
+msgstr ""
+
+msgid "6"
+msgstr ""
+
+msgid "6rd interface"
+msgstr ""
+
+msgid "6rd interface to be configured from DHCP"
+msgstr ""
+
+msgid ""
+"6relayd is a daemon for serving and relaying IPv6 management protocols to "
+"configure clients and downstream routers. It provides server services for "
+"RA, stateless and stateful DHCPv6, prefix delegation and can be used to "
+"relay RA, DHCPv6 and NDP between routed (non-bridged) interfaces in case no "
+"delegated prefixes are available."
+msgstr ""
+
+msgid "7"
+msgstr ""
+
+msgid "8"
+msgstr ""
+
+msgid "802.11"
+msgstr ""
+
+msgid "802.1Q Bridges"
+msgstr ""
+
+msgid ""
+"802.1Q bridges expose encapsulated ethernet in vlan connections as virtual "
+"Linux network interfaces which can be used in interface creations"
+msgstr ""
+
+msgid "8a"
+msgstr ""
+
+msgid "8b"
+msgstr ""
+
+msgid "8c"
+msgstr ""
+
+msgid "8d"
+msgstr ""
+
+msgid "9"
 msgstr ""
 
 msgid "<abbr title=\"Basic Service Set Identifier\">BSSID</abbr>"
@@ -109,11 +209,24 @@ msgstr ""
 msgid "<abbr title='Pairwise: %s / Group: %s'>%s - %s</abbr>"
 msgstr ""
 
-msgid "APN"
+msgid ""
+"A comma separated string of Fully Qualified Domain Names or IP addresses"
 msgstr ""
 
-msgid "AR Support"
-msgstr "AR-Penyokong"
+msgid "ADSL"
+msgstr ""
+
+msgid "ADSL Version"
+msgstr ""
+
+msgid "ADSL2"
+msgstr ""
+
+msgid "ADSL2+"
+msgstr ""
+
+msgid "APN"
+msgstr ""
 
 msgid "ARP retry threshold"
 msgstr ""
@@ -121,10 +234,19 @@ msgstr ""
 msgid "ATM Bridges"
 msgstr ""
 
+msgid "ATM Device"
+msgstr ""
+
 msgid "ATM Virtual Channel Identifier (VCI)"
 msgstr ""
 
+msgid "ATM Virtual Channel Identifier (VCI): [32-65535]"
+msgstr ""
+
 msgid "ATM Virtual Path Identifier (VPI)"
+msgstr ""
+
+msgid "ATM Virtual Path Identifier (VPI): [0-255]"
 msgstr ""
 
 msgid ""
@@ -133,10 +255,12 @@ msgid ""
 "to dial into the provider network."
 msgstr ""
 
-msgid "ATM device number"
+msgid ""
+"ATM bridges expose encapsulated ethernet in AAL5 connections as virtual "
+"Linux network interfaces which can be used in interface creations"
 msgstr ""
 
-msgid "Accept router advertisements"
+msgid "ATM device number"
 msgstr ""
 
 msgid "Access Concentrator"
@@ -169,6 +293,9 @@ msgstr ""
 msgid "Active DHCPv6 Leases"
 msgstr ""
 
+msgid "Active IP Connections"
+msgstr ""
+
 msgid "Ad-Hoc"
 msgstr "Ad-Hoc"
 
@@ -195,12 +322,6 @@ msgstr "Pentadbiran"
 
 msgid "Advanced Settings"
 msgstr "Tetapan Lanjutan"
-
-msgid "Advertise IPv6 on network"
-msgstr ""
-
-msgid "Advertised network ID"
-msgstr ""
 
 msgid "Alert"
 msgstr ""
@@ -230,15 +351,28 @@ msgid ""
 "Allow upstream responses in the 127.0.0.0/8 range, e.g. for RBL services"
 msgstr ""
 
-msgid "Allowed range is 1 to 65535"
+msgid "Always announce default router"
 msgstr ""
 
-msgid ""
-"Always use 40MHz channels even if the secondary channel overlaps. Using this "
-"option does not comply with IEEE 802.11n-2009!"
+msgid "Always announce local DNS"
 msgstr ""
 
 msgid "An additional network will be created if you leave this unchecked."
+msgstr ""
+
+msgid "AnnexL"
+msgstr ""
+
+msgid "AnnexM"
+msgstr ""
+
+msgid "Announce a custom DNS-server instead of the local one."
+msgstr ""
+
+msgid "Announce as default router even if no public prefix is available."
+msgstr ""
+
+msgid "Announce the local router as DNS server even in relay mode."
 msgstr ""
 
 msgid "Antenna 1"
@@ -247,10 +381,13 @@ msgstr "Antena 1"
 msgid "Antenna 2"
 msgstr "Antena 2"
 
-msgid "Antenna Configuration"
+msgid "Antenna Selection"
 msgstr ""
 
 msgid "Any zone"
+msgstr ""
+
+msgid "Anyfi.net"
 msgstr ""
 
 msgid "Apply"
@@ -259,17 +396,25 @@ msgstr "Melaksanakan"
 msgid "Applying changes"
 msgstr "Melaksanakan perubahan"
 
+msgid ""
+"Assign a part of given length of every public IPv6-prefix to this interface"
+msgstr ""
+
 msgid "Assign interfaces..."
 msgstr ""
 
-msgid "Associated Stations"
-msgstr "Associated Stesen"
+msgid ""
+"Assign prefix parts using this hexadecimal subprefix ID for this interface."
+msgstr ""
+
+msgid "Assign this interface as LAN"
+msgstr ""
 
 msgid "Atheros 802.11%s Wireless Controller"
 msgstr ""
 
-msgid "Authentication"
-msgstr "Authentifizierung"
+msgid "Auth Key"
+msgstr ""
 
 msgid "Authoritative"
 msgstr "Pengesahan"
@@ -277,13 +422,16 @@ msgstr "Pengesahan"
 msgid "Authorization Required"
 msgstr "Otorisasi Diperlukan"
 
+msgid "Auto"
+msgstr ""
+
+msgid "Auto Channel Timer"
+msgstr ""
+
 msgid "Auto Refresh"
 msgstr ""
 
-msgid "Available"
-msgstr "Boleh didapati"
-
-msgid "Available packages"
+msgid "Automatic"
 msgstr ""
 
 msgid "Average:"
@@ -307,9 +455,6 @@ msgstr "Kembali ke ikhtisar"
 msgid "Back to scan results"
 msgstr "Kembali ke keputusan scan"
 
-msgid "Background Scan"
-msgstr "Latar Belakang Scan"
-
 msgid "Backup / Flash Firmware"
 msgstr ""
 
@@ -322,6 +467,18 @@ msgstr ""
 msgid "Bad address specified!"
 msgstr ""
 
+msgid "Band"
+msgstr ""
+
+msgid "Bandwidth"
+msgstr ""
+
+msgid "Basic Rate"
+msgstr ""
+
+msgid "Beacon Interval"
+msgstr ""
+
 msgid ""
 "Below is the determined list of files to backup. It consists of changed "
 "configuration files marked by opkg, essential base files and the user "
@@ -331,14 +488,20 @@ msgstr ""
 msgid "Bitrate"
 msgstr ""
 
+msgid "Bitswap"
+msgstr ""
+
+msgid "Board Model"
+msgstr ""
+
 msgid "Bogus NX Domain Override"
+msgstr ""
+
+msgid "Brcm Version"
 msgstr ""
 
 msgid "Bridge"
 msgstr "Bridge"
-
-msgid "Bridge interfaces"
-msgstr "Antara Muka Bridge"
 
 msgid "Bridge unit number"
 msgstr ""
@@ -358,7 +521,19 @@ msgstr ""
 msgid "Buttons"
 msgstr "Butang"
 
+msgid "CBR"
+msgstr ""
+
+msgid "CFE Version"
+msgstr ""
+
+msgid "CPE Info"
+msgstr ""
+
 msgid "CPU"
+msgstr ""
+
+msgid "CPU Usage"
 msgstr ""
 
 msgid "CPU usage (%)"
@@ -370,8 +545,17 @@ msgstr ""
 msgid "Cancel"
 msgstr "Batal"
 
+msgid "Capabilities"
+msgstr ""
+
+msgid "Ceiling"
+msgstr ""
+
 msgid "Chain"
 msgstr "Rantai"
+
+msgid "Change Password"
+msgstr ""
 
 msgid "Changes"
 msgstr "Laman"
@@ -379,14 +563,8 @@ msgstr "Laman"
 msgid "Changes applied."
 msgstr "Laman diterapkan."
 
-msgid "Changes the administrator password for accessing the device"
-msgstr ""
-
 msgid "Channel"
 msgstr "Saluran"
-
-msgid "Check"
-msgstr ""
 
 msgid "Checksum"
 msgstr "Jumlah disemak "
@@ -398,9 +576,7 @@ msgid ""
 "interface to it."
 msgstr "Pilih zon firewall yang anda ingin tetapkan untuk antar muka ini."
 
-msgid ""
-"Choose the network(s) you want to attach to this wireless interface or fill "
-"out the <em>create</em> field to define a new network."
+msgid "Choose the network(s) you want to attach to this wireless interface%s"
 msgstr ""
 
 msgid "Cipher"
@@ -436,9 +612,6 @@ msgstr "Perintah"
 msgid "Common Configuration"
 msgstr ""
 
-msgid "Compression"
-msgstr "Mampatan"
-
 msgid "Configuration"
 msgstr "Konfigurasi"
 
@@ -448,7 +621,10 @@ msgstr ""
 msgid "Configuration files will be kept."
 msgstr ""
 
-msgid "Configures this mount as overlay storage for block-extroot"
+msgid "Configure your Ethernet WAN connection"
+msgstr ""
+
+msgid "Configure your VLAN connection"
 msgstr ""
 
 msgid "Confirmation"
@@ -463,14 +639,20 @@ msgstr ""
 msgid "Connection Limit"
 msgstr "Sambungan Batas"
 
+msgid "Connection Test"
+msgstr ""
+
 msgid "Connections"
+msgstr ""
+
+msgid "Controller"
 msgstr ""
 
 msgid "Country"
 msgstr ""
 
-msgid "Country Code"
-msgstr "Kod negara"
+msgid "Cover the following bridge"
+msgstr ""
 
 msgid "Cover the following interface"
 msgstr ""
@@ -484,16 +666,13 @@ msgstr "Buat / Menetapkan dinding api-zon"
 msgid "Create Interface"
 msgstr ""
 
-msgid "Create a bridge over multiple interfaces"
-msgstr ""
-
 msgid "Critical"
 msgstr ""
 
 msgid "Cron Log Level"
 msgstr ""
 
-msgid "Custom Interface"
+msgid "Custom delegated IPv6-prefix"
 msgstr ""
 
 msgid ""
@@ -501,7 +680,10 @@ msgid ""
 "\">LED</abbr>s if possible."
 msgstr "Mengkustomisasi perilaku peranti LED jika mungkin."
 
-msgid "DHCP Leases"
+msgid "DES Key"
+msgstr ""
+
+msgid "DHCP Clients"
 msgstr ""
 
 msgid "DHCP Server"
@@ -519,10 +701,46 @@ msgstr "DHCP-Pilihan"
 msgid "DHCPv6 Leases"
 msgstr ""
 
+msgid "DHCPv6 client"
+msgstr ""
+
+msgid "DHCPv6-Mode"
+msgstr ""
+
+msgid "DHCPv6-Service"
+msgstr ""
+
 msgid "DNS"
 msgstr ""
 
 msgid "DNS forwardings"
+msgstr ""
+
+msgid "DS-Lite AFTR address"
+msgstr ""
+
+msgid "DSL"
+msgstr ""
+
+msgid "DSL Annex"
+msgstr ""
+
+msgid "DSL Downstream Link Rate"
+msgstr ""
+
+msgid "DSL Latency Path0"
+msgstr ""
+
+msgid "DSL Latency Path1"
+msgstr ""
+
+msgid "DSL Latency Path1&2"
+msgstr ""
+
+msgid "DSL Upstream Link Rate"
+msgstr ""
+
+msgid "DTIM Interval"
 msgstr ""
 
 msgid "DUID"
@@ -531,7 +749,7 @@ msgstr ""
 msgid "Debug"
 msgstr ""
 
-msgid "Default %d"
+msgid "Decide what ethernet port should be used for WAN services"
 msgstr ""
 
 msgid "Default gateway"
@@ -557,9 +775,6 @@ msgstr ""
 
 msgid "Delete this network"
 msgstr ""
-
-msgid "Description"
-msgstr "Keterangan"
 
 msgid "Design"
 msgstr "Disain"
@@ -590,8 +805,8 @@ msgstr ""
 msgid "Disable DNS setup"
 msgstr ""
 
-msgid "Disable HW-Beacon timer"
-msgstr "Mematikan pemasa HW-Beacon"
+msgid "Disable WMM Advertise"
+msgstr ""
 
 msgid "Disabled"
 msgstr ""
@@ -599,17 +814,8 @@ msgstr ""
 msgid "Discard upstream RFC1918 responses"
 msgstr ""
 
-msgid "Displaying only packages containing"
-msgstr ""
-
 msgid "Distance Optimization"
 msgstr "Jarak Optimasi"
-
-msgid "Distance to farthest network member in meters."
-msgstr "Jarak ke rangkaian terjauh ahli dalam meter."
-
-msgid "Diversity"
-msgstr "Keanekaragaman"
 
 # Nur für NAT-Firewalls?
 msgid ""
@@ -632,9 +838,6 @@ msgstr ""
 msgid "Do not forward reverse lookups for local networks"
 msgstr ""
 
-msgid "Do not send probe responses"
-msgstr "Jangan menghantar jawapan penyelidikan"
-
 msgid "Domain required"
 msgstr "Domain diperlukan"
 
@@ -646,10 +849,16 @@ msgid ""
 "<abbr title=\"Domain Name System\">DNS</abbr>-Name"
 msgstr "Jangan hantar permintaan DNS tanpa nama DNS"
 
-msgid "Download and install package"
-msgstr "Turun dan memasang pakej"
+msgid "Downlink"
+msgstr ""
 
 msgid "Download backup"
+msgstr ""
+
+msgid "Download logs"
+msgstr ""
+
+msgid "Downstream Rate"
 msgstr ""
 
 msgid "Dropbear Instance"
@@ -661,6 +870,9 @@ msgid ""
 msgstr ""
 "Dropbear menawarkan SSH kulit rangkaian aksesdan pelayan yang terintegrasi."
 
+msgid "Dual-Stack Lite (RFC6333)"
+msgstr ""
+
 msgid "Dynamic <abbr title=\"Dynamic Host Configuration Protocol\">DHCP</abbr>"
 msgstr "Dinamik DHCP"
 
@@ -671,9 +883,6 @@ msgid ""
 "Dynamically allocate DHCP addresses for clients. If disabled, only clients "
 "having static leases will be served."
 msgstr ""
-
-msgid "EAP-Method"
-msgstr "EAP-Kaedah"
 
 msgid "Edit"
 msgstr "Sunting"
@@ -693,6 +902,9 @@ msgstr ""
 msgid "Enable <abbr title=\"Spanning Tree Protocol\">STP</abbr>"
 msgstr "Mengaktifkan <abbr title=\"Spanning Tree Protocol\">STP</abbr>"
 
+msgid "Enable Anyfi.net"
+msgstr ""
+
 msgid "Enable HE.net dynamic endpoint update"
 msgstr ""
 
@@ -702,22 +914,19 @@ msgstr ""
 msgid "Enable Jumbo Frame passthrough"
 msgstr ""
 
-msgid "Enable NTP client"
-msgstr ""
-
-msgid "Enable TFTP server"
-msgstr ""
-
 msgid "Enable VLAN functionality"
+msgstr ""
+
+msgid "Enable WPS Push Button"
+msgstr ""
+
+msgid "Enable builtin NTP server"
 msgstr ""
 
 msgid "Enable learning and aging"
 msgstr ""
 
-msgid "Enable this mount"
-msgstr ""
-
-msgid "Enable this swap"
+msgid "Enable remote access to this wireless network"
 msgstr ""
 
 msgid "Enable/Disable"
@@ -735,6 +944,18 @@ msgstr ""
 msgid "Encryption"
 msgstr "Enkripsi"
 
+msgid "Enter 802.1P Priority [0-7]:"
+msgstr ""
+
+msgid "Enter 802.1Q VLAN ID [0-4094]:"
+msgstr ""
+
+msgid "Enter if device will be used in a bridge"
+msgstr ""
+
+msgid "EoA"
+msgstr ""
+
 msgid "Erasing..."
 msgstr ""
 
@@ -746,6 +967,12 @@ msgstr "Ethernet Adapter"
 
 msgid "Ethernet Switch"
 msgstr "Ethernet Beralih"
+
+msgid "Ethernet WAN"
+msgstr ""
+
+msgid "Ethernet WAN Interface"
+msgstr ""
 
 msgid "Expand hosts"
 msgstr ""
@@ -763,20 +990,14 @@ msgstr ""
 msgid "External system log server port"
 msgstr ""
 
-msgid "Fast Frames"
-msgstr "Frame Cepat"
+msgid "Factory Reset"
+msgstr ""
+
+msgid "Fallback to relay"
+msgstr ""
 
 msgid "File"
 msgstr ""
-
-msgid "Filename of the boot image advertised to clients"
-msgstr ""
-
-msgid "Filesystem"
-msgstr "Fail Sistem"
-
-msgid "Filter"
-msgstr "Penapis"
 
 msgid "Filter private"
 msgstr "Penapis swasta"
@@ -784,11 +1005,8 @@ msgstr "Penapis swasta"
 msgid "Filter useless"
 msgstr "Penapis tak berguna"
 
-msgid "Find and join network"
+msgid "Find networks for channel analysis"
 msgstr ""
-
-msgid "Find package"
-msgstr "Cari pakej"
 
 msgid "Finish"
 msgstr "Selesai"
@@ -801,9 +1019,6 @@ msgstr "Tetapan Firewall"
 
 msgid "Firewall Status"
 msgstr "Status Firewall"
-
-msgid "Firmware Version"
-msgstr ""
 
 msgid "Fixed source port for outbound DNS queries"
 msgstr ""
@@ -826,11 +1041,11 @@ msgstr ""
 msgid "Flashing..."
 msgstr ""
 
+msgid "Floor"
+msgstr ""
+
 msgid "Force"
 msgstr "Paksa"
-
-msgid "Force 40MHz mode"
-msgstr ""
 
 msgid "Force CCMP (AES)"
 msgstr ""
@@ -862,11 +1077,11 @@ msgstr "Bingkai Meletup"
 msgid "Free"
 msgstr ""
 
-msgid "Free space"
+msgid "G.Dmt"
 msgstr ""
 
-msgid "Frequency Hopping"
-msgstr "Melompat Frekuensi"
+msgid "G.lite"
+msgstr ""
 
 msgid "GHz"
 msgstr ""
@@ -892,7 +1107,13 @@ msgstr ""
 msgid "Generic 802.11%s Wireless Controller"
 msgstr ""
 
-msgid "Given password confirmation did not match, password not changed!"
+msgid "Get all system logs"
+msgstr ""
+
+msgid "Given %s password confirmation did not match, %s password not changed!"
+msgstr ""
+
+msgid "Global network options"
 msgstr ""
 
 msgid "Go to password configuration..."
@@ -905,12 +1126,6 @@ msgid "HE.net password"
 msgstr ""
 
 msgid "HE.net user ID"
-msgstr ""
-
-msgid "HT capabilities"
-msgstr ""
-
-msgid "HT mode"
 msgstr ""
 
 msgid "Handler"
@@ -934,8 +1149,26 @@ msgstr ""
 msgid "Hermes 802.11b Wireless Controller"
 msgstr ""
 
+msgid ""
+"Hide <abbr title=\"Extended Service Set Identifier\"> Peak Cell Rate: [cells/"
+"s]</abbr>"
+msgstr ""
+
 msgid "Hide <abbr title=\"Extended Service Set Identifier\">ESSID</abbr>"
 msgstr "Menyembunyikan ESSID"
+
+msgid ""
+"Hide <abbr title=\"Extended Service Set Identifier\">Maximum Burst Size: "
+"[cells]</abbr>"
+msgstr ""
+
+msgid ""
+"Hide <abbr title=\"Extended Service Set Identifier\">Sustainable Cell Rate: "
+"[cells/s]</abbr>"
+msgstr ""
+
+msgid "High Priority (Preemption)"
+msgstr ""
 
 msgid "Host entries"
 msgstr "Entri host"
@@ -955,8 +1188,17 @@ msgstr ""
 msgid "Hostnames"
 msgstr "Nama Host"
 
+msgid "IOP Version"
+msgstr ""
+
 msgid "IP address"
 msgstr "Alamat IP"
+
+msgid "IPTV"
+msgstr ""
+
+msgid "IPoA"
+msgstr ""
 
 msgid "IPv4"
 msgstr ""
@@ -997,10 +1239,22 @@ msgstr "Konfigurasi IPv6"
 msgid "IPv6 Firewall"
 msgstr ""
 
+msgid "IPv6 RA and DHCPv6"
+msgstr ""
+
+msgid "IPv6 ULA-Prefix"
+msgstr ""
+
 msgid "IPv6 WAN Status"
 msgstr ""
 
 msgid "IPv6 address"
+msgstr ""
+
+msgid "IPv6 assignment hint"
+msgstr ""
+
+msgid "IPv6 assignment length"
 msgstr ""
 
 msgid "IPv6 gateway"
@@ -1015,6 +1269,9 @@ msgstr ""
 msgid "IPv6 prefix length"
 msgstr ""
 
+msgid "IPv6 routed prefix"
+msgstr ""
+
 msgid "IPv6-Address"
 msgstr ""
 
@@ -1027,36 +1284,11 @@ msgstr ""
 msgid "IPv6-over-IPv4 (6to4)"
 msgstr ""
 
-msgid "Identity"
-msgstr "Identiti"
-
-msgid ""
-"If specified, mount the device by its UUID instead of a fixed device node"
-msgstr ""
-
-msgid ""
-"If specified, mount the device by the partition label instead of a fixed "
-"device node"
-msgstr ""
-
 msgid "If unchecked, no default route is configured"
 msgstr ""
 
 msgid "If unchecked, the advertised DNS server addresses are ignored"
 msgstr ""
-
-msgid ""
-"If your physical memory is insufficient unused data can be temporarily "
-"swapped to a swap-device resulting in a higher amount of usable <abbr title="
-"\"Random Access Memory\">RAM</abbr>. Be aware that swapping data is a very "
-"slow process as the swap-device cannot be accessed with the high datarates "
-"of the <abbr title=\"Random Access Memory\">RAM</abbr>."
-msgstr ""
-"Jika memori fizikal anda tidak cukup data yang boleh digunakan sementara "
-"menukar ke peranti-penukar yang dihasilkan dalam jumlah RAM berguna yang "
-"lebih tinggi. Berhati-hatilah bahawa penukaran data adalah proses yang "
-"sangat lambat kerana peranti-penukar tidak boleh diakses dengan datarates "
-"yang tinggi pada RAM."
 
 msgid "Ignore Hosts files"
 msgstr ""
@@ -1088,8 +1320,8 @@ msgstr ""
 msgid "Initscripts"
 msgstr ""
 
-msgid "Install"
-msgstr "Memasang"
+msgid "Install iputils-traceroute6 for IPv6 traceroute"
+msgstr ""
 
 msgid "Install package %q"
 msgstr ""
@@ -1097,13 +1329,16 @@ msgstr ""
 msgid "Install protocol extensions..."
 msgstr ""
 
-msgid "Installed packages"
-msgstr ""
-
 msgid "Interface"
 msgstr "Interface"
 
+msgid "Interface Base"
+msgstr ""
+
 msgid "Interface Configuration"
+msgstr ""
+
+msgid "Interface Name"
 msgstr ""
 
 msgid "Interface Overview"
@@ -1124,10 +1359,19 @@ msgstr ""
 msgid "Interface shut down"
 msgstr ""
 
+msgid "Interface-ID"
+msgstr ""
+
 msgid "Interfaces"
 msgstr "Interface"
 
+msgid "Interfaces to provide services on or to relay services to."
+msgstr ""
+
 msgid "Internal Server Error"
+msgstr ""
+
+msgid "Internet"
 msgstr ""
 
 msgid "Invalid"
@@ -1186,6 +1430,12 @@ msgstr ""
 msgid "L2TP Server"
 msgstr ""
 
+msgid "LAN"
+msgstr ""
+
+msgid "LAN MAC"
+msgstr ""
+
 msgid "LCP echo failure threshold"
 msgstr ""
 
@@ -1195,13 +1445,28 @@ msgstr ""
 msgid "LLC"
 msgstr ""
 
-msgid "Label"
+msgid "LLC/ENCAPSULATION"
+msgstr ""
+
+msgid "LLC/SNAP-Bridging"
+msgstr ""
+
+msgid "LLC/SNAP-ROUTING"
+msgstr ""
+
+msgid "LTE Modem"
+msgstr ""
+
+msgid "LTE/HSPA+"
 msgstr ""
 
 msgid "Language"
 msgstr "Bahasa"
 
 msgid "Language and Style"
+msgstr ""
+
+msgid "Layer 2 Interface"
 msgstr ""
 
 msgid "Lease validity time"
@@ -1250,9 +1515,6 @@ msgstr ""
 
 msgid "Load"
 msgstr "Load"
-
-msgid "Load Average"
-msgstr ""
 
 msgid "Loading"
 msgstr ""
@@ -1309,6 +1571,9 @@ msgstr "Login"
 msgid "Logout"
 msgstr "Logout"
 
+msgid "Logs"
+msgstr ""
+
 msgid "Lowest leased address as offset from the network address."
 msgstr ""
 
@@ -1327,14 +1592,20 @@ msgstr "Senarai MAC"
 msgid "MB/s"
 msgstr ""
 
-msgid "MHz"
+msgid "MPAAL Group Precedence"
 msgstr ""
 
 msgid "MTU"
 msgstr ""
 
-msgid "Maximum Rate"
-msgstr "Rate Maksimum"
+msgid "Manual"
+msgstr ""
+
+msgid "Master Interface"
+msgstr ""
+
+msgid "Maximum Client"
+msgstr ""
 
 msgid "Maximum allowed number of active DHCP leases"
 msgstr ""
@@ -1367,9 +1638,6 @@ msgstr "Penggunaan Memori (%)"
 msgid "Metric"
 msgstr "Metrik"
 
-msgid "Minimum Rate"
-msgstr "Rate Minimum"
-
 #, fuzzy
 msgid "Minimum hold time"
 msgstr "Memegang masa minimum"
@@ -1386,39 +1654,11 @@ msgstr "Alat modem"
 msgid "Modem init timeout"
 msgstr ""
 
+msgid "Modulation"
+msgstr ""
+
 msgid "Monitor"
 msgstr "Monitor"
-
-msgid "Mount Entry"
-msgstr ""
-
-msgid "Mount Point"
-msgstr "Mount Point"
-
-msgid "Mount Points"
-msgstr "Mount Points"
-
-msgid "Mount Points - Mount Entry"
-msgstr ""
-
-msgid "Mount Points - Swap Entry"
-msgstr ""
-
-msgid ""
-"Mount Points define at which point a memory device will be attached to the "
-"filesystem"
-msgstr ""
-"Mount Points menentukan di mana titik peranti memori akan melekat pada fail "
-"sistem"
-
-msgid "Mount options"
-msgstr ""
-
-msgid "Mount point"
-msgstr ""
-
-msgid "Mounted file systems"
-msgstr "Mounted fail sistems"
 
 msgid "Move down"
 msgstr ""
@@ -1426,14 +1666,11 @@ msgstr ""
 msgid "Move up"
 msgstr ""
 
-msgid "Multicast Rate"
-msgstr "Multicast Rate"
-
 msgid "Multicast address"
 msgstr ""
 
-msgid "NAS ID"
-msgstr "NAS ID"
+msgid "NDP-Proxy"
+msgstr ""
 
 msgid "NTP server candidates"
 msgstr ""
@@ -1456,10 +1693,10 @@ msgstr ""
 msgid "Network"
 msgstr "Rangkaian"
 
-msgid "Network Utilities"
+msgid "Network Re-auth Interval"
 msgstr ""
 
-msgid "Network boot image"
+msgid "Network Utilities"
 msgstr ""
 
 msgid "Network without interfaces."
@@ -1489,9 +1726,6 @@ msgstr ""
 msgid "No network name specified"
 msgstr ""
 
-msgid "No package lists available"
-msgstr ""
-
 msgid "No password set!"
 msgstr ""
 
@@ -1507,19 +1741,22 @@ msgstr "Kebisingan"
 msgid "Noise:"
 msgstr ""
 
+msgid "Non Realtime VBR"
+msgstr ""
+
 msgid "None"
 msgstr ""
 
 msgid "Normal"
 msgstr ""
 
+msgid "Normal Priority"
+msgstr ""
+
 msgid "Not Found"
 msgstr ""
 
 msgid "Not associated"
-msgstr ""
-
-msgid "Not connected"
 msgstr ""
 
 msgid "Note: Configuration files will be erased."
@@ -1531,28 +1768,17 @@ msgstr ""
 msgid "Nslookup"
 msgstr ""
 
-msgid "OK"
-msgstr "Baik"
+msgid "Number of Running Processes"
+msgstr ""
 
-msgid "OPKG-Configuration"
-msgstr "OPKG-Konfigurasi"
+msgid "OBSS Co-Existence"
+msgstr ""
 
 msgid "Off-State Delay"
 msgstr ""
 
-msgid ""
-"On this page you can configure the network interfaces. You can bridge "
-"several interfaces by ticking the \"bridge interfaces\" field and enter the "
-"names of several network interfaces separated by spaces. You can also use "
-"<abbr title=\"Virtual Local Area Network\">VLAN</abbr> notation "
-"<samp>INTERFACE.VLANNR</samp> (<abbr title=\"for example\">e.g.</abbr>: "
-"<samp>eth0.1</samp>)."
+msgid "On this page you can configure the network interfaces."
 msgstr ""
-"Pada halaman ini anda boleh mengkonfigurasi antara muka rangkaian. Anda "
-"boleh menjembatani beberapa antara muka dengan menanda jambatan antara muka "
-"gelanggang dan masukkan beberapa nama antara muka rangkaian dipisahkan "
-"dengan ruang. Anda juga boleh menggunakan antara muka VLAN notasi. Seperti "
-"eth0.1."
 
 msgid "On-State Delay"
 msgstr ""
@@ -1567,6 +1793,9 @@ msgid "One or more required fields have no value!"
 msgstr ""
 
 msgid "Open list..."
+msgstr ""
+
+msgid "OpenWrt Version"
 msgstr ""
 
 msgid "Option changed"
@@ -1587,13 +1816,13 @@ msgstr "Keluar"
 msgid "Outbound:"
 msgstr ""
 
-msgid "Outdoor Channels"
-msgstr "Saluran Outdoor"
-
 msgid "Override MAC address"
 msgstr ""
 
 msgid "Override MTU"
+msgstr ""
+
+msgid "Override announced DNS-server"
 msgstr ""
 
 msgid "Override the gateway in DHCP responses"
@@ -1628,6 +1857,9 @@ msgstr ""
 msgid "PPP"
 msgstr ""
 
+msgid "PPPoA"
+msgstr ""
+
 msgid "PPPoA Encapsulation"
 msgstr "Pengkapsulan PPPoA"
 
@@ -1640,14 +1872,16 @@ msgstr ""
 msgid "PPtP"
 msgstr ""
 
-msgid "Package libiwinfo required!"
+msgid "PTM Bridges"
 msgstr ""
 
-msgid "Package lists are older than 24 hours"
+msgid "PTM Device"
 msgstr ""
 
-msgid "Package name"
-msgstr "Nama pakej"
+msgid ""
+"PTM bridges expose encapsulated ethernet in ptm connections as virtual Linux "
+"network interfaces which can be used in interface creations"
+msgstr ""
 
 msgid "Packets"
 msgstr "Paket"
@@ -1660,21 +1894,6 @@ msgstr "Kata laluan"
 
 msgid "Password authentication"
 msgstr "Kata laluan pengesahan"
-
-msgid "Password of Private Key"
-msgstr "Kata Laluan Kunci Swasta"
-
-msgid "Password successfully changed!"
-msgstr ""
-
-msgid "Path to CA-Certificate"
-msgstr "Path ke CA-Sijil"
-
-msgid "Path to Client-Certificate"
-msgstr ""
-
-msgid "Path to Private Key"
-msgstr "Path ke Kunci Swasta"
 
 msgid "Path to executable which handles the button event"
 msgstr "Path ke eksekusi yang mengendalikan acara butang"
@@ -1718,6 +1937,9 @@ msgstr ""
 msgid "Port %d is untagged in multiple VLANs!"
 msgstr ""
 
+msgid "Port Status"
+msgstr ""
+
 msgid "Port status:"
 msgstr ""
 
@@ -1753,38 +1975,41 @@ msgstr ""
 msgid "Protocol support is not installed"
 msgstr ""
 
-msgid "Provide NTP server"
-msgstr ""
-
 msgid "Provide new network"
 msgstr ""
 
-msgid "Pseudo Ad-Hoc (ahdemo)"
-msgstr "Pseudo Ad-Hoc (ahdemo)"
+msgid "Public prefix routed to this device for distribution to clients."
+msgstr ""
 
 msgid "Quality"
 msgstr ""
 
-msgid "RTS/CTS Threshold"
-msgstr "RTS/CTS-Ambang"
+msgid "RIFS"
+msgstr ""
+
+msgid "RIFS Advertisement"
+msgstr ""
+
+msgid "RSSI (dBm)"
+msgstr ""
+
+msgid "RTS Threshold"
+msgstr ""
 
 # Ein / Aus, eingehend / ausgehend?
 msgid "RX"
 msgstr "RX"
 
-msgid "RX Rate"
+msgid "RX Chain Power Save"
+msgstr ""
+
+msgid "RX Chain Power Save PPS"
+msgstr ""
+
+msgid "RX Chain Power Save Quite Time"
 msgstr ""
 
 msgid "RaLink 802.11%s Wireless Controller"
-msgstr ""
-
-msgid "Radius-Accounting-Port"
-msgstr ""
-
-msgid "Radius-Accounting-Secret"
-msgstr ""
-
-msgid "Radius-Accounting-Server"
 msgstr ""
 
 msgid "Radius-Authentication-Port"
@@ -1796,10 +2021,8 @@ msgstr ""
 msgid "Radius-Authentication-Server"
 msgstr ""
 
-msgid ""
-"Read <code>/etc/ethers</code> to configure the <abbr title=\"Dynamic Host "
-"Configuration Protocol\">DHCP</abbr>-Server"
-msgstr "Baca /etc/ethers untuk mengkonfigurasikan DHCP-Server"
+msgid "Rate"
+msgstr ""
 
 msgid ""
 "Really delete this interface? The deletion cannot be undone!\\nYou might "
@@ -1839,6 +2062,9 @@ msgstr ""
 msgid "Realtime Traffic"
 msgstr ""
 
+msgid "Realtime VBR"
+msgstr ""
+
 msgid "Realtime Wireless"
 msgstr ""
 
@@ -1869,9 +2095,6 @@ msgstr ""
 msgid "References"
 msgstr "Rujukan"
 
-msgid "Regulatory Domain"
-msgstr "Peraturan Domain"
-
 msgid "Relay"
 msgstr ""
 
@@ -1882,6 +2105,11 @@ msgid "Relay between networks"
 msgstr ""
 
 msgid "Relay bridge"
+msgstr ""
+
+msgid ""
+"Relay services from master to server interfaces when there is no public "
+"prefix available."
 msgstr ""
 
 msgid "Remote IPv4 address"
@@ -1896,7 +2124,18 @@ msgstr "Ulangi scan"
 msgid "Replace entry"
 msgstr "Tukar entri"
 
+msgid ""
+"Replace the running firmware. Check \"Keep settings\" to retain the current "
+"configuration."
+msgstr ""
+
 msgid "Replace wireless configuration"
+msgstr ""
+
+msgid "Request IPv6-address"
+msgstr ""
+
+msgid "Request IPv6-prefix of length"
 msgstr ""
 
 msgid "Required for certain ISPs, e.g. Charter with DOCSIS 3"
@@ -1932,10 +2171,10 @@ msgstr ""
 msgid "Revert"
 msgstr "Kembali"
 
-msgid "Root"
+msgid "Router Advertisement-Service"
 msgstr ""
 
-msgid "Root directory for files served via TFTP"
+msgid "Router MAC Address"
 msgstr ""
 
 msgid "Router Model"
@@ -1944,7 +2183,7 @@ msgstr ""
 msgid "Router Name"
 msgstr ""
 
-msgid "Router Password"
+msgid "Router S/N"
 msgstr ""
 
 msgid "Routes"
@@ -1960,10 +2199,7 @@ msgstr ""
 msgid "Rule #"
 msgstr "Peraturan #"
 
-msgid "Run a filesystem check before mounting the device"
-msgstr ""
-
-msgid "Run filesystem check"
+msgid "SRA"
 msgstr ""
 
 msgid "SSH Access"
@@ -1996,24 +2232,39 @@ msgstr ""
 msgid "Section removed"
 msgstr ""
 
-msgid "See \"mount\" manpage for details"
-msgstr "Rujuk \"mount\" laman manual untuk detail"
+msgid "Select DSL Latency Path0"
+msgstr ""
+
+msgid "Select DSL Latency Path1"
+msgstr ""
+
+msgid "Select DSL Link Type (EoA is for PPPoE, IPoE, and Bridge.)"
+msgstr ""
+
+msgid "Select IP QoS Scheduler Algorithm"
+msgstr ""
+
+msgid "Select PTM Priority"
+msgstr ""
 
 msgid ""
 "Send LCP echo requests at the given interval in seconds, only effective in "
 "conjunction with failure threshold"
 msgstr ""
 
-msgid "Send router solicitations"
-msgstr ""
-
 msgid "Separate Clients"
 msgstr "Pisahkan Pelanggan"
 
-msgid "Separate WDS"
-msgstr "Pisahkan WDS"
+msgid "Serial No"
+msgstr ""
 
 msgid "Server Settings"
+msgstr ""
+
+msgid "Service Category"
+msgstr ""
+
+msgid "Service Interfaces"
 msgstr ""
 
 msgid "Service Name"
@@ -2024,6 +2275,9 @@ msgstr ""
 
 msgid "Services"
 msgstr "Perkhidmatan"
+
+msgid "Set as"
+msgstr ""
 
 msgid "Setup DHCP Server"
 msgstr ""
@@ -2061,9 +2315,6 @@ msgstr "Skip ke navigation"
 msgid "Slot time"
 msgstr "Slot masa"
 
-msgid "Software"
-msgstr "Perisian"
-
 msgid "Some fields are invalid, cannot save values!"
 msgstr ""
 
@@ -2075,8 +2326,8 @@ msgstr ""
 
 msgid ""
 "Sorry, there is no sysupgrade support present, a new firmware image must be "
-"flashed manually. Please refer to the OpenWrt wiki for device specific "
-"install instructions."
+"flashed manually. Please consult your operator for device specific install "
+"instructions."
 msgstr ""
 
 msgid "Sort"
@@ -2085,20 +2336,14 @@ msgstr ""
 msgid "Source"
 msgstr "Sumber"
 
-msgid "Specifies the advertised preferred prefix lifetime in seconds"
-msgstr ""
-
-msgid "Specifies the advertised valid prefix lifetime in seconds"
-msgstr ""
-
 #, fuzzy
 msgid "Specifies the button state to handle"
 msgstr "Menentukan state butang untuk melaku"
 
-msgid "Specifies the directory the device is attached to"
+msgid "Specifies the listening port of this <em>Dropbear</em> instance"
 msgstr ""
 
-msgid "Specifies the listening port of this <em>Dropbear</em> instance"
+msgid "Specifies the master interface for services that are relayed."
 msgstr ""
 
 msgid ""
@@ -2135,9 +2380,6 @@ msgstr "Statische Einträge"
 msgid "Static Routes"
 msgstr "Laluan Statik"
 
-msgid "Static WDS"
-msgstr ""
-
 msgid "Static address"
 msgstr ""
 
@@ -2147,10 +2389,20 @@ msgid ""
 "configurations where only hosts with a corresponding lease are served."
 msgstr ""
 
+msgid ""
+"Static leases are used to assign fixed IPv6 Interface-IDs to clients. "
+"Interface-IDs are appended to available prefixes to form IPv6-addresses. (e."
+"g. a prefix of 2001:db80::/64 combined with Interface-ID 123456 will form "
+"the address 2001:db80::12:3456)"
+msgstr ""
+
 msgid "Status"
 msgstr "Status"
 
 msgid "Stop"
+msgstr ""
+
+msgid "Strict Priority Precedence"
 msgstr ""
 
 msgid "Strict order"
@@ -2159,7 +2411,7 @@ msgstr "Order Ketat"
 msgid "Submit"
 msgstr "Menyerahkan"
 
-msgid "Swap Entry"
+msgid "Swap"
 msgstr ""
 
 msgid "Switch"
@@ -2192,21 +2444,18 @@ msgstr ""
 msgid "System log buffer size"
 msgstr ""
 
+msgid "T.1413"
+msgstr ""
+
 msgid "TCP:"
 msgstr ""
 
-msgid "TFTP Settings"
-msgstr ""
-
-msgid "TFTP server root"
+msgid "TR-069 Log"
 msgstr ""
 
 # same as RX
 msgid "TX"
 msgstr "TX"
-
-msgid "TX Rate"
-msgstr ""
 
 msgid "Table"
 msgstr "Meja"
@@ -2218,16 +2467,10 @@ msgid "Terminate"
 msgstr "Menamatkan"
 
 msgid ""
-"The <em>Device Configuration</em> section covers physical settings of the "
-"radio hardware such as channel, transmit power or antenna selection which is "
-"shared among all defined wireless networks (if the radio hardware is multi-"
-"SSID capable). Per network settings like encryption or operation mode are "
-"grouped in the <em>Interface Configuration</em>."
-msgstr ""
-
-msgid ""
-"The <em>libiwinfo-lua</em> package is not installed. You must install this "
-"component for working wireless configuration!"
+"The <em>Device Configuration</em> section covers settings which are shared "
+"among all defined wireless networks (if the radio hardware is multi-SSID "
+"capable). Per network settings like encryption or operation mode are grouped "
+"in the <em>Interface Configuration</em>."
 msgstr ""
 
 msgid ""
@@ -2240,17 +2483,6 @@ msgid ""
 msgstr ""
 "Karakter yang diizinkan adalah: <code>A-Z</code>, <code>a-z</code>, "
 "<code>0-9</code> dan <code>_</code>"
-
-msgid ""
-"The device file of the memory or partition (<abbr title=\"for example\">e.g."
-"</abbr> <code>/dev/sda1</code>)"
-msgstr "Fail peranti memori atau partisyen, (contohnya: /dev/sda)"
-
-msgid ""
-"The filesystem that was used to format the memory (<abbr title=\"for example"
-"\">e.g.</abbr> <samp><abbr title=\"Third Extended Filesystem\">ext3</abbr></"
-"samp>)"
-msgstr "Failsistem yang digunakan untuk memformat memori (contohnya: ext3)"
 
 msgid ""
 "The flash image was uploaded. Below is the checksum and file size listed, "
@@ -2288,12 +2520,22 @@ msgid "The length of the IPv6 prefix in bits"
 msgstr ""
 
 msgid ""
+"The maximum percentage of available spectrum and backhaul that mobile users "
+"are allowed to consume"
+msgstr ""
+
+msgid ""
 "The network ports on this device can be combined to several <abbr title="
 "\"Virtual Local Area Network\">VLAN</abbr>s in which computers can "
 "communicate directly with each other. <abbr title=\"Virtual Local Area "
 "Network\">VLAN</abbr>s are often used to separate different network "
 "segments. Often there is by default one Uplink port for a connection to the "
 "next greater network like the internet and other ports for a local network."
+msgstr ""
+
+msgid ""
+"The percentage of available spectrum and backhaul that mobile users are "
+"allowed to consume even if there is competition with the primary user"
 msgstr ""
 
 msgid "The selected protocol needs a device assigned"
@@ -2316,11 +2558,26 @@ msgstr ""
 "bergantung pada tetapan anda."
 
 msgid ""
+"The total downstream bandwidth available on the WAN connection, in bits per "
+"second"
+msgstr ""
+
+msgid ""
+"The total upstream bandwidth available on the WAN connection, in bits per "
+"second"
+msgstr ""
+
+msgid ""
 "The uploaded image file does not contain a supported format. Make sure that "
 "you choose the generic image format for your platform."
 msgstr ""
 "Format Fail gambar yang diupload tidak disokongkan. Pastikan anda memilih "
 "fail format gambar yang generik untuk platform anda."
+
+msgid ""
+"The uploaded image file has larger size than the partition spared for file "
+"system."
+msgstr ""
 
 msgid "There are no active leases."
 msgstr ""
@@ -2371,6 +2628,10 @@ msgid ""
 "abbr> in the local network"
 msgstr "Ini adalah DHCP hanya dalam rangkaian tempatan."
 
+msgid ""
+"This is the prefix routed to you by the tunnel broker for use by clients"
+msgstr ""
+
 msgid "This is the system crontab in which scheduled tasks can be defined."
 msgstr ""
 "Ini adalah crontab sistem di mana tugas-tugas yang dijadualkan boleh "
@@ -2379,13 +2640,6 @@ msgstr ""
 msgid ""
 "This is usually the address of the nearest PoP operated by the tunnel broker"
 msgstr ""
-
-msgid ""
-"This list gives an overview over currently running system processes and "
-"their status."
-msgstr ""
-"Senarai ini memberikan gambaran lebih pada proses sistem yang sedang "
-"berjalan dan statusnya."
 
 msgid "This page allows the configuration of custom button actions"
 msgstr "Laman ini membolehkan konfigurasi butang tindakan peribadi"
@@ -2424,9 +2678,6 @@ msgstr "Lalu lintas"
 msgid "Transfer"
 msgstr "Pemindahan"
 
-msgid "Transmission Rate"
-msgstr "Kelajuan Penghantaran"
-
 msgid "Transmit"
 msgstr "Pancar"
 
@@ -2448,8 +2699,17 @@ msgstr ""
 msgid "Tunnel Interface"
 msgstr ""
 
-msgid "Turbo Mode"
-msgstr "Mod Turbo"
+msgid "Tunnel Link"
+msgstr ""
+
+msgid "Turn Off"
+msgstr ""
+
+msgid "Turn On"
+msgstr ""
+
+msgid "Turn off wireless radio"
+msgstr ""
 
 msgid "Tx-Power"
 msgstr ""
@@ -2457,7 +2717,16 @@ msgstr ""
 msgid "Type"
 msgstr "Jenis"
 
+msgid "UBR With PCR"
+msgstr ""
+
+msgid "UBR Without PCR"
+msgstr ""
+
 msgid "UDP:"
+msgstr ""
+
+msgid "ULA-preference compatibility"
 msgstr ""
 
 msgid "UMTS only"
@@ -2466,10 +2735,13 @@ msgstr ""
 msgid "UMTS/GPRS/EV-DO"
 msgstr ""
 
-msgid "USB Device"
+msgid "US0"
 msgstr ""
 
-msgid "UUID"
+msgid "USB"
+msgstr ""
+
+msgid "USB Device"
 msgstr ""
 
 msgid "Unable to dispatch"
@@ -2478,7 +2750,7 @@ msgstr ""
 msgid "Unknown"
 msgstr ""
 
-msgid "Unknown Error, password not changed!"
+msgid "Unknown Error, %s password not changed!"
 msgstr ""
 
 msgid "Unmanaged"
@@ -2490,13 +2762,7 @@ msgstr "Perubahan yang belum disimpan"
 msgid "Unsupported protocol type."
 msgstr ""
 
-msgid "Update lists"
-msgstr ""
-
-msgid ""
-"Upload a sysupgrade-compatible image here to replace the running firmware. "
-"Check \"Keep settings\" to retain the current configuration (requires an "
-"OpenWrt compatible firmware image)."
+msgid "Uplink"
 msgstr ""
 
 msgid "Upload archive..."
@@ -2505,11 +2771,11 @@ msgstr ""
 msgid "Uploaded File"
 msgstr "Uploaded Fail"
 
+msgid "Upstream Rate"
+msgstr ""
+
 msgid "Uptime"
 msgstr "Masa Aktif"
-
-msgid "Use <code>/etc/ethers</code>"
-msgstr "Guna /etc/ethers"
 
 msgid "Use DHCP gateway"
 msgstr ""
@@ -2517,16 +2783,10 @@ msgstr ""
 msgid "Use DNS servers advertised by peer"
 msgstr ""
 
-msgid "Use ISO/IEC 3166 alpha2 country codes."
-msgstr ""
-
 msgid "Use MTU on tunnel interface"
 msgstr ""
 
 msgid "Use TTL on tunnel interface"
-msgstr ""
-
-msgid "Use as root filesystem"
 msgstr ""
 
 msgid "Use broadcast flag"
@@ -2541,10 +2801,13 @@ msgstr ""
 msgid "Use gateway metric"
 msgstr ""
 
-msgid "Use preferred lifetime"
+msgid "Use routing table"
 msgstr ""
 
-msgid "Use routing table"
+msgid ""
+"Use the <em>Add</em> Button to add a new lease entry. The <em>DUID</em> "
+"indentifies the host, the <em>Interface-ID</em> specifies the ID to use in "
+"addresses."
 msgstr ""
 
 msgid ""
@@ -2554,12 +2817,6 @@ msgid ""
 "requesting host."
 msgstr ""
 
-msgid "Use valid lifetime"
-msgstr ""
-
-msgid "Used"
-msgstr "Diguna"
-
 msgid "Used Key Slot"
 msgstr ""
 
@@ -2568,6 +2825,21 @@ msgstr "Username"
 
 msgid "VC-Mux"
 msgstr ""
+
+msgid "VC/MUX"
+msgstr ""
+
+msgid "VDSL"
+msgstr ""
+
+msgid "VDSL Profile"
+msgstr ""
+
+msgid "VDSL2"
+msgstr ""
+
+msgid "VLAN"
+msgstr "VLAN"
 
 msgid "VLAN Interface"
 msgstr ""
@@ -2587,11 +2859,17 @@ msgstr ""
 msgid "Verify"
 msgstr ""
 
-msgid "Version"
-msgstr "Versi"
-
 msgid "WDS"
 msgstr "WDS"
+
+msgid "WDS Connection List"
+msgstr ""
+
+msgid "WDS Link Detection Timeout"
+msgstr ""
+
+msgid "WDS Mode"
+msgstr ""
 
 msgid "WEP Open System"
 msgstr ""
@@ -2602,18 +2880,32 @@ msgstr ""
 msgid "WEP passphrase"
 msgstr ""
 
+msgid "WLAN MAC"
+msgstr ""
+
+msgid "WLAN Status"
+msgstr ""
+
+msgid "WLAN Version"
+msgstr ""
+
+msgid "WMM APSD"
+msgstr ""
+
 msgid "WMM Mode"
 msgstr "WMM Mod"
 
-msgid "WPA passphrase"
+msgid "WMM No Acknowledgement"
 msgstr ""
 
-msgid ""
-"WPA-Encryption requires wpa_supplicant (for client mode) or hostapd (for AP "
-"and ad-hoc mode) to be installed."
+msgid "WPA Group Rekey Interval"
 msgstr ""
-"WPA-Enkripsi memerlukan pemohan wpa (untuk mod pelanggan) atau hostapd "
-"(untuk AP dan mod ad-hoc) yang akan dipasangkan."
+
+msgid "WPA Key"
+msgstr ""
+
+msgid "WPA passphrase"
+msgstr ""
 
 msgid "Waiting for changes to be applied..."
 msgstr ""
@@ -2627,8 +2919,8 @@ msgstr ""
 msgid "Warning: There are unsaved changes that will be lost while rebooting!"
 msgstr "Amaran: Ada perubahan yang belum disimpan akan hilang saat reboot!"
 
-msgid "Wifi"
-msgstr "Wifi"
+msgid "Weighted Fair Queuing"
+msgstr ""
 
 msgid "Wireless"
 msgstr ""
@@ -2636,25 +2928,34 @@ msgstr ""
 msgid "Wireless Adapter"
 msgstr "Adapter Wayarles"
 
+msgid "Wireless Bridge"
+msgstr ""
+
+msgid "Wireless Clients"
+msgstr ""
+
 msgid "Wireless Network"
 msgstr "Rangkaian Wayarles"
+
+msgid "Wireless Networks"
+msgstr ""
 
 msgid "Wireless Overview"
 msgstr "Gambaran keseluruhan Wayarles"
 
+msgid "Wireless SSID"
+msgstr ""
+
 msgid "Wireless Security"
 msgstr "Keselamatan WLAN"
+
+msgid "Wireless WAN"
+msgstr ""
 
 msgid "Wireless is disabled or not associated"
 msgstr ""
 
 msgid "Wireless is restarting..."
-msgstr ""
-
-msgid "Wireless network is disabled"
-msgstr ""
-
-msgid "Wireless network is enabled"
 msgstr ""
 
 msgid "Wireless restarted"
@@ -2663,11 +2964,11 @@ msgstr ""
 msgid "Wireless shut down"
 msgstr ""
 
-msgid "Write received DNS requests to syslog"
+msgid "Work around IPv6 address-selection issues of some devices."
 msgstr ""
 
-msgid "XR Support"
-msgstr "Sokongan XR"
+msgid "Write received DNS requests to syslog"
+msgstr ""
 
 msgid ""
 "You can enable or disable installed init scripts here. Changes will applied "
@@ -2685,6 +2986,9 @@ msgstr ""
 msgid "auto"
 msgstr "auto"
 
+msgid "automatic"
+msgstr "automatik"
+
 msgid "baseT"
 msgstr ""
 
@@ -2694,17 +2998,14 @@ msgstr ""
 msgid "create:"
 msgstr ""
 
-msgid "creates a bridge over specified interface(s)"
-msgstr "mencipta jambatan di antara muka tertentu"
-
 msgid "dB"
 msgstr ""
 
 msgid "dBm"
 msgstr ""
 
-msgid "disable"
-msgstr "mematikan"
+msgid "disabled"
+msgstr ""
 
 msgid "expired"
 msgstr ""
@@ -2713,6 +3014,12 @@ msgid ""
 "file where given <abbr title=\"Dynamic Host Configuration Protocol\">DHCP</"
 "abbr>-leases will be stored"
 msgstr "fail dimana DHCP-sewa akan disimpan"
+
+msgid "for IPTV connection test"
+msgstr ""
+
+msgid "for Internet connection test"
+msgstr ""
 
 msgid "forward"
 msgstr ""
@@ -2735,7 +3042,7 @@ msgstr "jika target itu ialah rangkaian"
 msgid "input"
 msgstr ""
 
-msgid "kB"
+msgid "iopsys Version"
 msgstr ""
 
 msgid "kB/s"
@@ -2747,14 +3054,8 @@ msgstr ""
 msgid "local <abbr title=\"Domain Name System\">DNS</abbr> file"
 msgstr "Fail DNS tempatan"
 
-msgid "no"
-msgstr ""
-
 msgid "no link"
 msgstr ""
-
-msgid "none"
-msgstr "tidak ada"
 
 msgid "off"
 msgstr ""
@@ -2765,7 +3066,25 @@ msgstr ""
 msgid "open"
 msgstr ""
 
+msgid "or"
+msgstr ""
+
+msgid "relay mode"
+msgstr ""
+
 msgid "routed"
+msgstr ""
+
+msgid "server mode"
+msgstr ""
+
+msgid "stateful-only"
+msgstr ""
+
+msgid "stateless"
+msgstr ""
+
+msgid "stateless + stateful"
 msgstr ""
 
 msgid "tagged"
@@ -2786,11 +3105,237 @@ msgstr "Tidak dirinci -atau- buat:"
 msgid "untagged"
 msgstr ""
 
-msgid "yes"
+msgid "will be ignored if channel is set to auto."
+msgstr ""
+
+msgid "xDSL Line settings and profiles"
+msgstr ""
+
+msgid "xDSL Settings"
 msgstr ""
 
 msgid "« Back"
 msgstr "« Kembali"
+
+#~ msgid "AR Support"
+#~ msgstr "AR-Penyokong"
+
+#~ msgid "Associated Stations"
+#~ msgstr "Associated Stesen"
+
+#~ msgid "Authentication"
+#~ msgstr "Authentifizierung"
+
+#~ msgid "Available"
+#~ msgstr "Boleh didapati"
+
+#~ msgid "Background Scan"
+#~ msgstr "Latar Belakang Scan"
+
+#~ msgid "Bridge interfaces"
+#~ msgstr "Antara Muka Bridge"
+
+#~ msgid "Compression"
+#~ msgstr "Mampatan"
+
+#~ msgid "Country Code"
+#~ msgstr "Kod negara"
+
+#~ msgid "Description"
+#~ msgstr "Keterangan"
+
+#~ msgid "Disable HW-Beacon timer"
+#~ msgstr "Mematikan pemasa HW-Beacon"
+
+#~ msgid "Distance to farthest network member in meters."
+#~ msgstr "Jarak ke rangkaian terjauh ahli dalam meter."
+
+#~ msgid "Diversity"
+#~ msgstr "Keanekaragaman"
+
+#~ msgid "Do not send probe responses"
+#~ msgstr "Jangan menghantar jawapan penyelidikan"
+
+#~ msgid "Download and install package"
+#~ msgstr "Turun dan memasang pakej"
+
+#~ msgid "EAP-Method"
+#~ msgstr "EAP-Kaedah"
+
+#~ msgid "Fast Frames"
+#~ msgstr "Frame Cepat"
+
+#~ msgid "Filesystem"
+#~ msgstr "Fail Sistem"
+
+#~ msgid "Filter"
+#~ msgstr "Penapis"
+
+#~ msgid "Find package"
+#~ msgstr "Cari pakej"
+
+#~ msgid "Frequency Hopping"
+#~ msgstr "Melompat Frekuensi"
+
+#~ msgid "Identity"
+#~ msgstr "Identiti"
+
+#~ msgid ""
+#~ "If your physical memory is insufficient unused data can be temporarily "
+#~ "swapped to a swap-device resulting in a higher amount of usable <abbr "
+#~ "title=\"Random Access Memory\">RAM</abbr>. Be aware that swapping data is "
+#~ "a very slow process as the swap-device cannot be accessed with the high "
+#~ "datarates of the <abbr title=\"Random Access Memory\">RAM</abbr>."
+#~ msgstr ""
+#~ "Jika memori fizikal anda tidak cukup data yang boleh digunakan sementara "
+#~ "menukar ke peranti-penukar yang dihasilkan dalam jumlah RAM berguna yang "
+#~ "lebih tinggi. Berhati-hatilah bahawa penukaran data adalah proses yang "
+#~ "sangat lambat kerana peranti-penukar tidak boleh diakses dengan datarates "
+#~ "yang tinggi pada RAM."
+
+#~ msgid "Install"
+#~ msgstr "Memasang"
+
+#~ msgid "Maximum Rate"
+#~ msgstr "Rate Maksimum"
+
+#~ msgid "Minimum Rate"
+#~ msgstr "Rate Minimum"
+
+#~ msgid "Mount Point"
+#~ msgstr "Mount Point"
+
+#~ msgid "Mount Points"
+#~ msgstr "Mount Points"
+
+#~ msgid ""
+#~ "Mount Points define at which point a memory device will be attached to "
+#~ "the filesystem"
+#~ msgstr ""
+#~ "Mount Points menentukan di mana titik peranti memori akan melekat pada "
+#~ "fail sistem"
+
+#~ msgid "Mounted file systems"
+#~ msgstr "Mounted fail sistems"
+
+#~ msgid "Multicast Rate"
+#~ msgstr "Multicast Rate"
+
+#~ msgid "NAS ID"
+#~ msgstr "NAS ID"
+
+#~ msgid "OK"
+#~ msgstr "Baik"
+
+#~ msgid "OPKG-Configuration"
+#~ msgstr "OPKG-Konfigurasi"
+
+#~ msgid ""
+#~ "On this page you can configure the network interfaces. You can bridge "
+#~ "several interfaces by ticking the \"bridge interfaces\" field and enter "
+#~ "the names of several network interfaces separated by spaces. You can also "
+#~ "use <abbr title=\"Virtual Local Area Network\">VLAN</abbr> notation "
+#~ "<samp>INTERFACE.VLANNR</samp> (<abbr title=\"for example\">e.g.</abbr>: "
+#~ "<samp>eth0.1</samp>)."
+#~ msgstr ""
+#~ "Pada halaman ini anda boleh mengkonfigurasi antara muka rangkaian. Anda "
+#~ "boleh menjembatani beberapa antara muka dengan menanda jambatan antara "
+#~ "muka gelanggang dan masukkan beberapa nama antara muka rangkaian "
+#~ "dipisahkan dengan ruang. Anda juga boleh menggunakan antara muka VLAN "
+#~ "notasi. Seperti eth0.1."
+
+#~ msgid "Outdoor Channels"
+#~ msgstr "Saluran Outdoor"
+
+#~ msgid "Package name"
+#~ msgstr "Nama pakej"
+
+#~ msgid "Password of Private Key"
+#~ msgstr "Kata Laluan Kunci Swasta"
+
+#~ msgid "Path to CA-Certificate"
+#~ msgstr "Path ke CA-Sijil"
+
+#~ msgid "Path to Private Key"
+#~ msgstr "Path ke Kunci Swasta"
+
+#~ msgid "Pseudo Ad-Hoc (ahdemo)"
+#~ msgstr "Pseudo Ad-Hoc (ahdemo)"
+
+#~ msgid "RTS/CTS Threshold"
+#~ msgstr "RTS/CTS-Ambang"
+
+#~ msgid ""
+#~ "Read <code>/etc/ethers</code> to configure the <abbr title=\"Dynamic Host "
+#~ "Configuration Protocol\">DHCP</abbr>-Server"
+#~ msgstr "Baca /etc/ethers untuk mengkonfigurasikan DHCP-Server"
+
+#~ msgid "Regulatory Domain"
+#~ msgstr "Peraturan Domain"
+
+#~ msgid "See \"mount\" manpage for details"
+#~ msgstr "Rujuk \"mount\" laman manual untuk detail"
+
+#~ msgid "Separate WDS"
+#~ msgstr "Pisahkan WDS"
+
+#~ msgid "Software"
+#~ msgstr "Perisian"
+
+#~ msgid ""
+#~ "The device file of the memory or partition (<abbr title=\"for example\">e."
+#~ "g.</abbr> <code>/dev/sda1</code>)"
+#~ msgstr "Fail peranti memori atau partisyen, (contohnya: /dev/sda)"
+
+#~ msgid ""
+#~ "The filesystem that was used to format the memory (<abbr title=\"for "
+#~ "example\">e.g.</abbr> <samp><abbr title=\"Third Extended Filesystem"
+#~ "\">ext3</abbr></samp>)"
+#~ msgstr "Failsistem yang digunakan untuk memformat memori (contohnya: ext3)"
+
+#~ msgid ""
+#~ "This list gives an overview over currently running system processes and "
+#~ "their status."
+#~ msgstr ""
+#~ "Senarai ini memberikan gambaran lebih pada proses sistem yang sedang "
+#~ "berjalan dan statusnya."
+
+#~ msgid "Transmission Rate"
+#~ msgstr "Kelajuan Penghantaran"
+
+#~ msgid "Turbo Mode"
+#~ msgstr "Mod Turbo"
+
+#~ msgid "Use <code>/etc/ethers</code>"
+#~ msgstr "Guna /etc/ethers"
+
+#~ msgid "Used"
+#~ msgstr "Diguna"
+
+#~ msgid "Version"
+#~ msgstr "Versi"
+
+#~ msgid ""
+#~ "WPA-Encryption requires wpa_supplicant (for client mode) or hostapd (for "
+#~ "AP and ad-hoc mode) to be installed."
+#~ msgstr ""
+#~ "WPA-Enkripsi memerlukan pemohan wpa (untuk mod pelanggan) atau hostapd "
+#~ "(untuk AP dan mod ad-hoc) yang akan dipasangkan."
+
+#~ msgid "Wifi"
+#~ msgstr "Wifi"
+
+#~ msgid "XR Support"
+#~ msgstr "Sokongan XR"
+
+#~ msgid "creates a bridge over specified interface(s)"
+#~ msgstr "mencipta jambatan di antara muka tertentu"
+
+#~ msgid "disable"
+#~ msgstr "mematikan"
+
+#~ msgid "none"
+#~ msgstr "tidak ada"
 
 #~ msgid "Active Leases"
 #~ msgstr "Penyewaan Aktif"
@@ -3200,9 +3745,6 @@ msgstr "« Kembali"
 #~ msgid "Unknown Error"
 #~ msgstr "Kesalahan tidak diketahui"
 
-#~ msgid "VLAN"
-#~ msgstr "VLAN"
-
 #~ msgid "defaults to <code>/etc/httpd.conf</code>"
 #~ msgstr "defaultnya <code>/etc/httpd.conf</code>"
 
@@ -3509,9 +4051,6 @@ msgstr "« Kembali"
 
 #~ msgid "adds domain names to hostentries in the resolv file"
 #~ msgstr "Menambah nama domain ke hostentries di resolv fail"
-
-#~ msgid "automatic"
-#~ msgstr "automatik"
 
 #~ msgid "automatically reconnect"
 #~ msgstr "menyambung semula secara automatik"

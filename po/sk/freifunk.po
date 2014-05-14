@@ -1,10 +1,11 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: PACKAGE VERSION\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
@@ -81,6 +82,9 @@ msgid "Edit index page"
 msgstr ""
 
 msgid "Enable IPv6"
+msgstr ""
+
+msgid "Enable a virtual access point (VAP) by default if possible."
 msgstr ""
 
 msgid "Error"
@@ -323,6 +327,9 @@ msgid "Update available!"
 msgstr ""
 
 msgid "Uptime"
+msgstr ""
+
+msgid "VAP"
 msgstr ""
 
 msgid "Verify downloaded images"

@@ -37,9 +37,6 @@ msgstr ""
 msgid "Enable"
 msgstr "Engedélyezés"
 
-msgid "Event interface"
-msgstr "Esemény interfész"
-
 msgid "Force update every"
 msgstr "Frissítés erőltetése minden"
 
@@ -55,9 +52,6 @@ msgstr "Interfész"
 msgid "Network"
 msgstr "Hálózat"
 
-msgid "On which interface up should start the ddns script process."
-msgstr "Melyik interfész indulása váltsa ki a ddns script indítását."
-
 msgid "Password"
 msgstr "Jelszó"
 
@@ -72,6 +66,9 @@ msgstr "URL"
 
 msgid "Username"
 msgstr "Felhasználónév"
+
+msgid "WAN Interface"
+msgstr ""
 
 msgid "custom"
 msgstr "egyéni"
@@ -89,3 +86,9 @@ msgstr "perc"
 
 msgid "network"
 msgstr "hálózat"
+
+#~ msgid "Event interface"
+#~ msgstr "Esemény interfész"
+
+#~ msgid "On which interface up should start the ddns script process."
+#~ msgstr "Melyik interfész indulása váltsa ki a ddns script indítását."

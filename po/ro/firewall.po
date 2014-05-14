@@ -156,6 +156,9 @@ msgstr ""
 msgid "General Settings"
 msgstr "Setari generale"
 
+msgid "Hide"
+msgstr ""
+
 msgid "IPv4"
 msgstr ""
 
@@ -430,6 +433,9 @@ msgid "drop"
 msgstr ""
 
 msgid "reject"
+msgstr ""
+
+msgid "traffic"
 msgstr ""
 
 #~ msgid "Destination"

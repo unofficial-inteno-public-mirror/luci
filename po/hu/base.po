@@ -11,6 +11,18 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Pootle 2.0.6\n"
 
+msgid "%s %s used by '%s'"
+msgstr ""
+
+msgid "%s is disabled"
+msgstr ""
+
+msgid "%s is enabled"
+msgstr ""
+
+msgid "%s password successfully changed!"
+msgstr ""
+
 msgid "(%d minute window, %d second interval)"
 msgstr "(%d perces ablak, %d másodperces intervallum)"
 
@@ -26,26 +38,114 @@ msgstr "(nincs csatalkoztatott interfész)"
 msgid "-- Additional Field --"
 msgstr "-- További mező --"
 
+msgid "-- Please Choose --"
+msgstr ""
+
 msgid "-- Please choose --"
 msgstr "-- Kérem válasszon --"
 
 msgid "-- custom --"
 msgstr "-- egyéni --"
 
+msgid "1"
+msgstr ""
+
 msgid "1 Minute Load:"
 msgstr "Terhelés (utolsó 1 perc):"
+
+msgid "10"
+msgstr ""
+
+msgid "11"
+msgstr ""
+
+msgid "12"
+msgstr ""
+
+msgid "12a"
+msgstr ""
+
+msgid "12b"
+msgstr ""
+
+msgid "13"
+msgstr ""
 
 msgid "15 Minute Load:"
 msgstr "Terhelés (utolsó 15 perc):"
 
-msgid "40MHz 2nd channel above"
-msgstr "40 MHz, második csatorna felette"
+msgid "17a"
+msgstr ""
 
-msgid "40MHz 2nd channel below"
-msgstr "40 MHz, második csatorna alatta"
+msgid "2"
+msgstr ""
+
+msgid "2.4GHz"
+msgstr ""
+
+msgid "3"
+msgstr ""
+
+msgid "4"
+msgstr ""
+
+msgid "5"
+msgstr ""
 
 msgid "5 Minute Load:"
 msgstr "Terhelés (utolsó 5 perc):"
+
+msgid "5GHz"
+msgstr ""
+
+msgid "6"
+msgstr ""
+
+msgid "6rd interface"
+msgstr ""
+
+msgid "6rd interface to be configured from DHCP"
+msgstr ""
+
+msgid ""
+"6relayd is a daemon for serving and relaying IPv6 management protocols to "
+"configure clients and downstream routers. It provides server services for "
+"RA, stateless and stateful DHCPv6, prefix delegation and can be used to "
+"relay RA, DHCPv6 and NDP between routed (non-bridged) interfaces in case no "
+"delegated prefixes are available."
+msgstr ""
+
+msgid "7"
+msgstr ""
+
+msgid "8"
+msgstr ""
+
+msgid "802.11"
+msgstr ""
+
+msgid "802.1Q Bridges"
+msgstr ""
+
+msgid ""
+"802.1Q bridges expose encapsulated ethernet in vlan connections as virtual "
+"Linux network interfaces which can be used in interface creations"
+msgstr ""
+
+msgid "8a"
+msgstr ""
+
+msgid "8b"
+msgstr ""
+
+msgid "8c"
+msgstr ""
+
+msgid "8d"
+msgstr ""
+
+msgid "9"
+msgstr ""
 
 msgid "<abbr title=\"Basic Service Set Identifier\">BSSID</abbr>"
 msgstr "<abbr title=\"Basic Service Set Identifier\">BSSID</abbr>"
@@ -114,11 +214,24 @@ msgstr "<abbr title=\"maximal\">Max.</abbr> párhuzamos lekérdezés"
 msgid "<abbr title='Pairwise: %s / Group: %s'>%s - %s</abbr>"
 msgstr ""
 
+msgid ""
+"A comma separated string of Fully Qualified Domain Names or IP addresses"
+msgstr ""
+
+msgid "ADSL"
+msgstr ""
+
+msgid "ADSL Version"
+msgstr ""
+
+msgid "ADSL2"
+msgstr ""
+
+msgid "ADSL2+"
+msgstr ""
+
 msgid "APN"
 msgstr "APN"
-
-msgid "AR Support"
-msgstr "AR Támogatás"
 
 msgid "ARP retry threshold"
 msgstr "ARP újrapróbálkozási küszöbérték"
@@ -126,11 +239,20 @@ msgstr "ARP újrapróbálkozási küszöbérték"
 msgid "ATM Bridges"
 msgstr "ATM Hidak"
 
+msgid "ATM Device"
+msgstr ""
+
 msgid "ATM Virtual Channel Identifier (VCI)"
 msgstr "ATM Virtuális Csatorna Azonosító (VCI)"
 
+msgid "ATM Virtual Channel Identifier (VCI): [32-65535]"
+msgstr ""
+
 msgid "ATM Virtual Path Identifier (VPI)"
 msgstr "ATM Virtuális Út Azonosító (VPI)"
+
+msgid "ATM Virtual Path Identifier (VPI): [0-255]"
+msgstr ""
 
 msgid ""
 "ATM bridges expose encapsulated ethernet in AAL5 connections as virtual "
@@ -141,11 +263,13 @@ msgstr ""
 "hálózati interfész mutatják, mely így DHCP-vel vagy PPP-vel összekapcsolva "
 "használható a szolgáltatói hálózatba történő betárcsázáshoz."
 
+msgid ""
+"ATM bridges expose encapsulated ethernet in AAL5 connections as virtual "
+"Linux network interfaces which can be used in interface creations"
+msgstr ""
+
 msgid "ATM device number"
 msgstr "ATM eszközszám"
-
-msgid "Accept router advertisements"
-msgstr "Router hirdetések elfogadása"
 
 msgid "Access Concentrator"
 msgstr "Elérési központ"
@@ -179,6 +303,9 @@ msgstr "Aktív DHCP bérletek"
 msgid "Active DHCPv6 Leases"
 msgstr "Aktív DHCPv6 bérletek"
 
+msgid "Active IP Connections"
+msgstr ""
+
 msgid "Ad-Hoc"
 msgstr "Ad-Hoc"
 
@@ -206,12 +333,6 @@ msgstr "Adminisztráció"
 
 msgid "Advanced Settings"
 msgstr "Haladó beállítások"
-
-msgid "Advertise IPv6 on network"
-msgstr "IPv6 hirdetése a hálózaton"
-
-msgid "Advertised network ID"
-msgstr "Hirdetett hálózati azonosító"
 
 msgid "Alert"
 msgstr "Riasztás"
@@ -246,19 +367,29 @@ msgstr ""
 "A 127.0.0.0/8-as tartományba eső DNS válaszok engedélyezése (pl. RBL "
 "szervizek)"
 
-msgid "Allowed range is 1 to 65535"
-msgstr "Engedélyezett tartomány 1-től 65535-ig"
-
-msgid ""
-"Always use 40MHz channels even if the secondary channel overlaps. Using this "
-"option does not comply with IEEE 802.11n-2009!"
+msgid "Always announce default router"
 msgstr ""
-"40 MHz csatornaszélesség használata akkor is, ha a másodlagos csatorna "
-"átfedésben van. Ezen opció használata nem felel meg az IEE 902.11n-2009 "
-"szabványnak!"
+
+msgid "Always announce local DNS"
+msgstr ""
 
 msgid "An additional network will be created if you leave this unchecked."
 msgstr "Amennyiben ezt jelöletlenül hagyja, egy további hálózat jön létre"
+
+msgid "AnnexL"
+msgstr ""
+
+msgid "AnnexM"
+msgstr ""
+
+msgid "Announce a custom DNS-server instead of the local one."
+msgstr ""
+
+msgid "Announce as default router even if no public prefix is available."
+msgstr ""
+
+msgid "Announce the local router as DNS server even in relay mode."
+msgstr ""
 
 msgid "Antenna 1"
 msgstr "1-es antenna"
@@ -266,11 +397,14 @@ msgstr "1-es antenna"
 msgid "Antenna 2"
 msgstr "2-es antenna"
 
-msgid "Antenna Configuration"
-msgstr "Antenna beállítások"
+msgid "Antenna Selection"
+msgstr ""
 
 msgid "Any zone"
 msgstr "Bármelyik zóna"
+
+msgid "Anyfi.net"
+msgstr ""
 
 msgid "Apply"
 msgstr "Alkalmaz"
@@ -278,17 +412,25 @@ msgstr "Alkalmaz"
 msgid "Applying changes"
 msgstr "Módosítások alkalmazása"
 
+msgid ""
+"Assign a part of given length of every public IPv6-prefix to this interface"
+msgstr ""
+
 msgid "Assign interfaces..."
 msgstr "Interfészek összekapcsolása..."
 
-msgid "Associated Stations"
-msgstr "Kapcsolódó kliensek"
+msgid ""
+"Assign prefix parts using this hexadecimal subprefix ID for this interface."
+msgstr ""
+
+msgid "Assign this interface as LAN"
+msgstr ""
 
 msgid "Atheros 802.11%s Wireless Controller"
 msgstr "Atheros 802.11%s vezeték-nélküli vezérlő"
 
-msgid "Authentication"
-msgstr "Hitelesítés"
+msgid "Auth Key"
+msgstr ""
 
 msgid "Authoritative"
 msgstr "Hiteles"
@@ -296,14 +438,17 @@ msgstr "Hiteles"
 msgid "Authorization Required"
 msgstr "Hitelesítés szükséges"
 
+msgid "Auto"
+msgstr ""
+
+msgid "Auto Channel Timer"
+msgstr ""
+
 msgid "Auto Refresh"
 msgstr "Automatikus frissítés"
 
-msgid "Available"
-msgstr "Elérhető"
-
-msgid "Available packages"
-msgstr "Elérhető csomagok"
+msgid "Automatic"
+msgstr ""
 
 msgid "Average:"
 msgstr "Átlag:"
@@ -326,9 +471,6 @@ msgstr "Vissza az áttekintéshez"
 msgid "Back to scan results"
 msgstr "Vissza a felderítési eredményekhez"
 
-msgid "Background Scan"
-msgstr "Felderítés a háttérben"
-
 msgid "Backup / Flash Firmware"
 msgstr "Mentés / Firmware frissítés"
 
@@ -340,6 +482,18 @@ msgstr "Mentési fájl lista"
 
 msgid "Bad address specified!"
 msgstr "Hibás címet adott meg!"
+
+msgid "Band"
+msgstr ""
+
+msgid "Bandwidth"
+msgstr ""
+
+msgid "Basic Rate"
+msgstr ""
+
+msgid "Beacon Interval"
+msgstr ""
 
 msgid ""
 "Below is the determined list of files to backup. It consists of changed "
@@ -354,14 +508,20 @@ msgstr ""
 msgid "Bitrate"
 msgstr "Bitráta"
 
+msgid "Bitswap"
+msgstr ""
+
+msgid "Board Model"
+msgstr ""
+
 msgid "Bogus NX Domain Override"
 msgstr "Hamis NX tartomány felülbírálása"
 
+msgid "Brcm Version"
+msgstr ""
+
 msgid "Bridge"
 msgstr "Híd"
-
-msgid "Bridge interfaces"
-msgstr "Híd interfészek"
 
 msgid "Bridge unit number"
 msgstr "Híd eszközszám"
@@ -381,8 +541,20 @@ msgstr "Átmeneti tárban van"
 msgid "Buttons"
 msgstr "Gombok"
 
+msgid "CBR"
+msgstr ""
+
+msgid "CFE Version"
+msgstr ""
+
+msgid "CPE Info"
+msgstr ""
+
 msgid "CPU"
 msgstr "Processzor"
+
+msgid "CPU Usage"
+msgstr ""
 
 msgid "CPU usage (%)"
 msgstr "Processzor használat (%)"
@@ -393,8 +565,17 @@ msgstr "Gyorsítótárban van"
 msgid "Cancel"
 msgstr "Mégsem"
 
+msgid "Capabilities"
+msgstr ""
+
+msgid "Ceiling"
+msgstr ""
+
 msgid "Chain"
 msgstr "Lánc"
+
+msgid "Change Password"
+msgstr ""
 
 msgid "Changes"
 msgstr "Módosítások"
@@ -402,15 +583,8 @@ msgstr "Módosítások"
 msgid "Changes applied."
 msgstr "A módosítások alkalmazva."
 
-msgid "Changes the administrator password for accessing the device"
-msgstr ""
-"Itt módosíthatja az eszköz eléréséhez szükséges adminisztrátori jelszót"
-
 msgid "Channel"
 msgstr "Csatorna"
-
-msgid "Check"
-msgstr "Ellenőrzés"
 
 msgid "Checksum"
 msgstr "Ellenőrző összeg"
@@ -426,13 +600,8 @@ msgstr ""
 "zónából történő eltávolításához, vagy töltse ki az <em>új</em> mezőt új zóna "
 "megadásához és csatlakoztassa az interfészt ahhoz."
 
-msgid ""
-"Choose the network(s) you want to attach to this wireless interface or fill "
-"out the <em>create</em> field to define a new network."
+msgid "Choose the network(s) you want to attach to this wireless interface%s"
 msgstr ""
-"Válassza ki azokat a hálózatokat, amelyeket csatlakoztatni akar ehhez a "
-"vezetéknélküli interfészhez, vagy töltse ki az <em>új</em> mezőt egy új "
-"hálózat definiálásához."
 
 msgid "Cipher"
 msgstr "Titkosító"
@@ -472,9 +641,6 @@ msgstr "Parancs"
 msgid "Common Configuration"
 msgstr "Álatános beállítás"
 
-msgid "Compression"
-msgstr "Tömörítés"
-
 msgid "Configuration"
 msgstr "Beállítás"
 
@@ -484,9 +650,11 @@ msgstr "Beállítások alkalmazva."
 msgid "Configuration files will be kept."
 msgstr "A konfigurációs fájlok megmaradnak."
 
-msgid "Configures this mount as overlay storage for block-extroot"
+msgid "Configure your Ethernet WAN connection"
 msgstr ""
-"Beállítja ezt a csatlakozási pontot block-extroot részére mint overlay tároló"
+
+msgid "Configure your VLAN connection"
+msgstr ""
 
 msgid "Confirmation"
 msgstr "Megerősítés"
@@ -500,14 +668,20 @@ msgstr "Kapcsolódva"
 msgid "Connection Limit"
 msgstr "Kapcsolati korlát"
 
+msgid "Connection Test"
+msgstr ""
+
 msgid "Connections"
 msgstr "Kapcsolatok"
+
+msgid "Controller"
+msgstr ""
 
 msgid "Country"
 msgstr "Ország"
 
-msgid "Country Code"
-msgstr "Országkód"
+msgid "Cover the following bridge"
+msgstr ""
 
 msgid "Cover the following interface"
 msgstr "A következő interfészt tartalmazza"
@@ -521,17 +695,14 @@ msgstr "Tűzfal zóna készítés / hozzárendelés"
 msgid "Create Interface"
 msgstr "Új interfész"
 
-msgid "Create a bridge over multiple interfaces"
-msgstr "Híd létrehozása több interfész között"
-
 msgid "Critical"
 msgstr "Kritikus"
 
 msgid "Cron Log Level"
 msgstr "Cron naplózási szint"
 
-msgid "Custom Interface"
-msgstr "Egyéni interfész"
+msgid "Custom delegated IPv6-prefix"
+msgstr ""
 
 msgid ""
 "Customizes the behaviour of the device <abbr title=\"Light Emitting Diode"
@@ -540,8 +711,11 @@ msgstr ""
 "Az eszköz <abbr title=\"Light Emitting Diode\">LED</abbr>-jei működésének "
 "testreszabása."
 
-msgid "DHCP Leases"
-msgstr "DHCP bérletek"
+msgid "DES Key"
+msgstr ""
+
+msgid "DHCP Clients"
+msgstr ""
 
 msgid "DHCP Server"
 msgstr "DHCP kiszolgáló"
@@ -558,11 +732,47 @@ msgstr "DHCP beállítások"
 msgid "DHCPv6 Leases"
 msgstr "DHCPv6 bérletek"
 
+msgid "DHCPv6 client"
+msgstr ""
+
+msgid "DHCPv6-Mode"
+msgstr ""
+
+msgid "DHCPv6-Service"
+msgstr ""
+
 msgid "DNS"
 msgstr "DNS"
 
 msgid "DNS forwardings"
 msgstr "DNS továbbítások"
+
+msgid "DS-Lite AFTR address"
+msgstr ""
+
+msgid "DSL"
+msgstr ""
+
+msgid "DSL Annex"
+msgstr ""
+
+msgid "DSL Downstream Link Rate"
+msgstr ""
+
+msgid "DSL Latency Path0"
+msgstr ""
+
+msgid "DSL Latency Path1"
+msgstr ""
+
+msgid "DSL Latency Path1&2"
+msgstr ""
+
+msgid "DSL Upstream Link Rate"
+msgstr ""
+
+msgid "DTIM Interval"
+msgstr ""
 
 msgid "DUID"
 msgstr ""
@@ -570,8 +780,8 @@ msgstr ""
 msgid "Debug"
 msgstr "Hibakeresés"
 
-msgid "Default %d"
-msgstr "Alapértelmezés %d"
+msgid "Decide what ethernet port should be used for WAN services"
+msgstr ""
 
 msgid "Default gateway"
 msgstr "Alapértelmezett átjáró"
@@ -598,9 +808,6 @@ msgstr "Interfész törlése"
 
 msgid "Delete this network"
 msgstr "Hálózat törlése"
-
-msgid "Description"
-msgstr "Leírás"
 
 msgid "Design"
 msgstr "Megjelenés"
@@ -633,8 +840,8 @@ msgstr ""
 msgid "Disable DNS setup"
 msgstr "DNS beállítás letiltása"
 
-msgid "Disable HW-Beacon timer"
-msgstr "Hardveres beacon időzítő letiltása"
+msgid "Disable WMM Advertise"
+msgstr ""
 
 msgid "Disabled"
 msgstr "Letiltva"
@@ -642,17 +849,8 @@ msgstr "Letiltva"
 msgid "Discard upstream RFC1918 responses"
 msgstr "Beérkező RFC1918 DHCP válaszok elvetése. "
 
-msgid "Displaying only packages containing"
-msgstr "Csak azon csomagok megjelenítése, amelyek tartalmazzák"
-
 msgid "Distance Optimization"
 msgstr "Távolság optimalizáció"
-
-msgid "Distance to farthest network member in meters."
-msgstr "A hálózat legtávolabbi tagjának távolsága méterben."
-
-msgid "Diversity"
-msgstr "Diverzitás"
 
 msgid ""
 "Dnsmasq is a combined <abbr title=\"Dynamic Host Configuration Protocol"
@@ -676,9 +874,6 @@ msgstr ""
 msgid "Do not forward reverse lookups for local networks"
 msgstr "Ne továbbítson fordított keresési kéréseket a helyi hálózathoz"
 
-msgid "Do not send probe responses"
-msgstr "Ne válaszoljon a szondázásra"
-
 msgid "Domain required"
 msgstr "Tartomány szükséges"
 
@@ -692,11 +887,17 @@ msgstr ""
 "Ne továbbítsa a <abbr title=\"Domain Name System\">DNS</abbr>-név nélküli "
 "<abbr title=\"Domain Name System\">DNS</abbr>-kéréseket "
 
-msgid "Download and install package"
-msgstr "Csomag letöltése és telepítése"
+msgid "Downlink"
+msgstr ""
 
 msgid "Download backup"
 msgstr "Biztonsági mentés letöltése"
+
+msgid "Download logs"
+msgstr ""
+
+msgid "Downstream Rate"
+msgstr ""
 
 msgid "Dropbear Instance"
 msgstr "Dropbear példány"
@@ -708,6 +909,9 @@ msgstr ""
 "A Dropbear a hálózaton <abbr title=\"Secure Shell\">SSH</abbr> hozzáférést "
 "tesz lehetővé, valamint integrált <abbr title=\"Secure Copy\">SCP</abbr> "
 "szolgáltatást nyújt."
+
+msgid "Dual-Stack Lite (RFC6333)"
+msgstr ""
 
 msgid "Dynamic <abbr title=\"Dynamic Host Configuration Protocol\">DHCP</abbr>"
 msgstr ""
@@ -723,9 +927,6 @@ msgstr ""
 "Az ügyfelek számára kiosztott DHCP címek dinamikus lefoglalása. Letiltása "
 "esetén csak a statikus DHCP bérlettel rendelkező kliensek lesznek "
 "kiszolgálva."
-
-msgid "EAP-Method"
-msgstr "EAP metódus"
 
 msgid "Edit"
 msgstr "Szerkesztés"
@@ -745,6 +946,9 @@ msgstr "Engedélyezés"
 msgid "Enable <abbr title=\"Spanning Tree Protocol\">STP</abbr>"
 msgstr "<abbr title=\"Spanning Tree Protocol\">STP</abbr> engedélyezése"
 
+msgid "Enable Anyfi.net"
+msgstr ""
+
 msgid "Enable HE.net dynamic endpoint update"
 msgstr "HE.net dinamikus végpont frissítésének engedélyezése"
 
@@ -754,23 +958,20 @@ msgstr "IPv6 egyeztetés engedélyezése a PPP linken"
 msgid "Enable Jumbo Frame passthrough"
 msgstr "Óriás keretek átengedésének engedélyezése"
 
-msgid "Enable NTP client"
-msgstr "NTP-kliens engedélyezése"
-
-msgid "Enable TFTP server"
-msgstr "TFTP kiszolgáló engedélyezése"
-
 msgid "Enable VLAN functionality"
 msgstr "VLAN funkció engedélyezése"
+
+msgid "Enable WPS Push Button"
+msgstr ""
+
+msgid "Enable builtin NTP server"
+msgstr "Beépített NTP kiszolgáló engedélyezése"
 
 msgid "Enable learning and aging"
 msgstr "Tanulás és aging engedélyezése"
 
-msgid "Enable this mount"
-msgstr "A csatolás engedélyezése"
-
-msgid "Enable this swap"
-msgstr "A lapozó terület engedélyezése"
+msgid "Enable remote access to this wireless network"
+msgstr ""
 
 msgid "Enable/Disable"
 msgstr "Engedélyezés/Letiltás"
@@ -787,6 +988,18 @@ msgstr "Beágyazási mód"
 msgid "Encryption"
 msgstr "Titkosítás"
 
+msgid "Enter 802.1P Priority [0-7]:"
+msgstr ""
+
+msgid "Enter 802.1Q VLAN ID [0-4094]:"
+msgstr ""
+
+msgid "Enter if device will be used in a bridge"
+msgstr ""
+
+msgid "EoA"
+msgstr ""
+
 msgid "Erasing..."
 msgstr "Törlés..."
 
@@ -798,6 +1011,12 @@ msgstr "Ethernet adapter"
 
 msgid "Ethernet Switch"
 msgstr "Ethernet switch"
+
+msgid "Ethernet WAN"
+msgstr ""
+
+msgid "Ethernet WAN Interface"
+msgstr ""
 
 msgid "Expand hosts"
 msgstr "Gépek kibontása"
@@ -815,20 +1034,14 @@ msgstr "Külső rendszernapló kiszolgáló"
 msgid "External system log server port"
 msgstr "Külső rendszernapló kiszolgáló port"
 
-msgid "Fast Frames"
-msgstr "Gyors keretek"
+msgid "Factory Reset"
+msgstr ""
+
+msgid "Fallback to relay"
+msgstr ""
 
 msgid "File"
 msgstr "Fájl"
-
-msgid "Filename of the boot image advertised to clients"
-msgstr "A kliensek részére közzétett betöltö kép fájlneve"
-
-msgid "Filesystem"
-msgstr "Fájlrendszer"
-
-msgid "Filter"
-msgstr "Szűrő"
 
 msgid "Filter private"
 msgstr "Privát kérések szűrése"
@@ -836,11 +1049,8 @@ msgstr "Privát kérések szűrése"
 msgid "Filter useless"
 msgstr "Használhahatlan kérések szűrése"
 
-msgid "Find and join network"
-msgstr "Hálózatok keresése és csatlakozás"
-
-msgid "Find package"
-msgstr "Csomag keresése"
+msgid "Find networks for channel analysis"
+msgstr ""
 
 msgid "Finish"
 msgstr "Befejezés"
@@ -853,9 +1063,6 @@ msgstr "Tűzfal Beállítások"
 
 msgid "Firewall Status"
 msgstr "Tűzfal Állapot"
-
-msgid "Firmware Version"
-msgstr "Tűzfal verzió"
 
 msgid "Fixed source port for outbound DNS queries"
 msgstr "Rögzített forrás port a kimenő DNS kérésekhez"
@@ -878,11 +1085,11 @@ msgstr "Flash műveletek"
 msgid "Flashing..."
 msgstr "Flash-elés..."
 
+msgid "Floor"
+msgstr ""
+
 msgid "Force"
 msgstr "Kényszerítés"
-
-msgid "Force 40MHz mode"
-msgstr "40 MHz mód erőltetése"
 
 msgid "Force CCMP (AES)"
 msgstr "CCMP (AES) kényszerítése"
@@ -916,11 +1123,11 @@ msgstr ""
 msgid "Free"
 msgstr "Szabad"
 
-msgid "Free space"
-msgstr "Szabad hely"
+msgid "G.Dmt"
+msgstr ""
 
-msgid "Frequency Hopping"
-msgstr "Frekvencia ugrás"
+msgid "G.lite"
+msgstr ""
 
 msgid "GHz"
 msgstr ""
@@ -946,8 +1153,14 @@ msgstr "Archívum készítése"
 msgid "Generic 802.11%s Wireless Controller"
 msgstr "Általános 802.11%s vezeték-nélküli vezérlő"
 
-msgid "Given password confirmation did not match, password not changed!"
-msgstr "A megadott jelszavak nem egyeznek, a jelszó nem lett megváltoztatva!"
+msgid "Get all system logs"
+msgstr ""
+
+msgid "Given %s password confirmation did not match, %s password not changed!"
+msgstr ""
+
+msgid "Global network options"
+msgstr ""
 
 msgid "Go to password configuration..."
 msgstr "Ugrás a jelszó beállításhoz..."
@@ -960,12 +1173,6 @@ msgstr "HE.net jelszó"
 
 msgid "HE.net user ID"
 msgstr "HE.net felhasználói azonosító"
-
-msgid "HT capabilities"
-msgstr "HT képességek"
-
-msgid "HT mode"
-msgstr "HT mód"
 
 msgid "Handler"
 msgstr "Kezelő"
@@ -990,8 +1197,26 @@ msgstr ""
 msgid "Hermes 802.11b Wireless Controller"
 msgstr ""
 
+msgid ""
+"Hide <abbr title=\"Extended Service Set Identifier\"> Peak Cell Rate: [cells/"
+"s]</abbr>"
+msgstr ""
+
 msgid "Hide <abbr title=\"Extended Service Set Identifier\">ESSID</abbr>"
 msgstr "<abbr title=\"Extended Service Set Identifier\">ESSID</abbr> elrejtése"
+
+msgid ""
+"Hide <abbr title=\"Extended Service Set Identifier\">Maximum Burst Size: "
+"[cells]</abbr>"
+msgstr ""
+
+msgid ""
+"Hide <abbr title=\"Extended Service Set Identifier\">Sustainable Cell Rate: "
+"[cells/s]</abbr>"
+msgstr ""
+
+msgid "High Priority (Preemption)"
+msgstr ""
 
 msgid "Host entries"
 msgstr "Host bejegyzések"
@@ -1011,8 +1236,17 @@ msgstr "DHCP kérés során küldendő gépnév"
 msgid "Hostnames"
 msgstr "Gépnevek"
 
+msgid "IOP Version"
+msgstr ""
+
 msgid "IP address"
 msgstr "IP cím"
+
+msgid "IPTV"
+msgstr ""
+
+msgid "IPoA"
+msgstr ""
 
 msgid "IPv4"
 msgstr "IPv4"
@@ -1053,11 +1287,23 @@ msgstr "IPv6"
 msgid "IPv6 Firewall"
 msgstr "IPv6 tűzfal"
 
+msgid "IPv6 RA and DHCPv6"
+msgstr ""
+
+msgid "IPv6 ULA-Prefix"
+msgstr ""
+
 msgid "IPv6 WAN Status"
 msgstr "IPv6 WAN állapot"
 
 msgid "IPv6 address"
 msgstr "IPv6 cím"
+
+msgid "IPv6 assignment hint"
+msgstr ""
+
+msgid "IPv6 assignment length"
+msgstr ""
 
 msgid "IPv6 gateway"
 msgstr "IPv6 átjáró"
@@ -1071,6 +1317,9 @@ msgstr ""
 msgid "IPv6 prefix length"
 msgstr "IPv6 prefix hossz"
 
+msgid "IPv6 routed prefix"
+msgstr ""
+
 msgid "IPv6-Address"
 msgstr "IPv6-cím"
 
@@ -1083,20 +1332,6 @@ msgstr ""
 msgid "IPv6-over-IPv4 (6to4)"
 msgstr ""
 
-msgid "Identity"
-msgstr "Identitás"
-
-msgid ""
-"If specified, mount the device by its UUID instead of a fixed device node"
-msgstr ""
-"Megadás esetén az eszköz csomópont helyett UUID alapján történő csatolása"
-
-msgid ""
-"If specified, mount the device by the partition label instead of a fixed "
-"device node"
-msgstr ""
-"Megadás esetén az eszköz csomópont helyett címke alapján történő csatolása"
-
 msgid "If unchecked, no default route is configured"
 msgstr "Ha nincs kiválasztva, akkor nincs alapértelmezett útvonal beállítva"
 
@@ -1104,19 +1339,6 @@ msgid "If unchecked, the advertised DNS server addresses are ignored"
 msgstr ""
 "Ha nincs kiválasztva, akkor a hirdetett DNS kiszolgáló címeket nem veszi "
 "figyelembe"
-
-msgid ""
-"If your physical memory is insufficient unused data can be temporarily "
-"swapped to a swap-device resulting in a higher amount of usable <abbr title="
-"\"Random Access Memory\">RAM</abbr>. Be aware that swapping data is a very "
-"slow process as the swap-device cannot be accessed with the high datarates "
-"of the <abbr title=\"Random Access Memory\">RAM</abbr>."
-msgstr ""
-"Ha a fizikai memória túl kevés a nem használt adatok ideiglenesen áttehetők "
-"egy swap-eszközre mely így nagyobb mennyiségű használható <abbr title="
-"\"Random Access Memory\">RAM</abbr>-ot eredményez. Az adatok áttétele egy "
-"nagyon lassú folyamat mivel a swap-eszköz nem érhető el akkora sebességgel "
-"mint a <abbr title=\"Random Access Memory\">RAM</abbr>."
 
 msgid "Ignore Hosts files"
 msgstr "A hosts fájlok figyelmen kívül hagyása"
@@ -1148,8 +1370,8 @@ msgstr "Indítási állomány"
 msgid "Initscripts"
 msgstr "Indítási állományok"
 
-msgid "Install"
-msgstr "Telepítés"
+msgid "Install iputils-traceroute6 for IPv6 traceroute"
+msgstr ""
 
 msgid "Install package %q"
 msgstr "%q csomag telepítése"
@@ -1157,14 +1379,17 @@ msgstr "%q csomag telepítése"
 msgid "Install protocol extensions..."
 msgstr "Protokoll kiterjesztések telepítése..."
 
-msgid "Installed packages"
-msgstr "Telepített csomagok"
-
 msgid "Interface"
 msgstr "Interfész"
 
+msgid "Interface Base"
+msgstr ""
+
 msgid "Interface Configuration"
 msgstr "Interfész beállítások"
+
+msgid "Interface Name"
+msgstr ""
 
 msgid "Interface Overview"
 msgstr "Interfész áttekintés"
@@ -1184,11 +1409,20 @@ msgstr "Interfész újracsatlakoztatva"
 msgid "Interface shut down"
 msgstr "Interfész leállítás"
 
+msgid "Interface-ID"
+msgstr ""
+
 msgid "Interfaces"
 msgstr "Interfészek"
 
+msgid "Interfaces to provide services on or to relay services to."
+msgstr ""
+
 msgid "Internal Server Error"
 msgstr "Belső szerverhiba"
+
+msgid "Internet"
+msgstr ""
 
 msgid "Invalid"
 msgstr "Érvénytelen"
@@ -1248,6 +1482,12 @@ msgstr ""
 msgid "L2TP Server"
 msgstr ""
 
+msgid "LAN"
+msgstr ""
+
+msgid "LAN MAC"
+msgstr ""
+
 msgid "LCP echo failure threshold"
 msgstr "LCP echo hibaküszöb"
 
@@ -1257,14 +1497,29 @@ msgstr "LCP Echo időtartam"
 msgid "LLC"
 msgstr "LLC"
 
-msgid "Label"
-msgstr "Címke"
+msgid "LLC/ENCAPSULATION"
+msgstr ""
+
+msgid "LLC/SNAP-Bridging"
+msgstr ""
+
+msgid "LLC/SNAP-ROUTING"
+msgstr ""
+
+msgid "LTE Modem"
+msgstr ""
+
+msgid "LTE/HSPA+"
+msgstr ""
 
 msgid "Language"
 msgstr "Nyelv"
 
 msgid "Language and Style"
 msgstr "Nyelv és megjelenés"
+
+msgid "Layer 2 Interface"
+msgstr ""
 
 msgid "Lease validity time"
 msgstr "Bérlet érvényességi ideje"
@@ -1316,9 +1571,6 @@ msgstr "Szerver port a beérkező DNS kérések számára"
 
 msgid "Load"
 msgstr "Terhelés"
-
-msgid "Load Average"
-msgstr "Átlagos terhelés"
 
 msgid "Loading"
 msgstr "Betöltés"
@@ -1380,6 +1632,9 @@ msgstr "Bejelentkezés"
 msgid "Logout"
 msgstr "Kijelentkezés"
 
+msgid "Logs"
+msgstr ""
+
 msgid "Lowest leased address as offset from the network address."
 msgstr "A legalacsonyabb bérleti címnek az interfész címétől való távolsága"
 
@@ -1398,14 +1653,20 @@ msgstr "MAC-lista"
 msgid "MB/s"
 msgstr ""
 
-msgid "MHz"
+msgid "MPAAL Group Precedence"
 msgstr ""
 
 msgid "MTU"
 msgstr "MTU"
 
-msgid "Maximum Rate"
-msgstr "Maximális sebesség"
+msgid "Manual"
+msgstr ""
+
+msgid "Master Interface"
+msgstr ""
+
+msgid "Maximum Client"
+msgstr ""
 
 msgid "Maximum allowed number of active DHCP leases"
 msgstr "Aktív DHCP bérletek maximális száma"
@@ -1437,9 +1698,6 @@ msgstr "Memória használat (%)"
 msgid "Metric"
 msgstr "Metrika"
 
-msgid "Minimum Rate"
-msgstr "Minimális sebesség"
-
 msgid "Minimum hold time"
 msgstr "Minimális tartási idő"
 
@@ -1455,39 +1713,11 @@ msgstr "Modemeszköz"
 msgid "Modem init timeout"
 msgstr "Modem inicializálás időtúllépés"
 
+msgid "Modulation"
+msgstr ""
+
 msgid "Monitor"
 msgstr "Ellenőrzés"
-
-msgid "Mount Entry"
-msgstr "Csatolási bejegyzés"
-
-msgid "Mount Point"
-msgstr "Csatolási pont"
-
-msgid "Mount Points"
-msgstr "Csatolási pontok"
-
-msgid "Mount Points - Mount Entry"
-msgstr "Csatolási pontok - Csatolási bejegyzés"
-
-msgid "Mount Points - Swap Entry"
-msgstr "Csatolási pontok - Lapozóterület bejegyzés"
-
-msgid ""
-"Mount Points define at which point a memory device will be attached to the "
-"filesystem"
-msgstr ""
-"A csatolási pontok határozzák meg, hogy egy memória eszköz hová lesz "
-"csatlakoztatva a fájlendszeren belül "
-
-msgid "Mount options"
-msgstr "Csatolási beállítások"
-
-msgid "Mount point"
-msgstr "Csatolási pont"
-
-msgid "Mounted file systems"
-msgstr "Csatolt fájlrendszerek"
 
 msgid "Move down"
 msgstr "Mozgatás lefelé"
@@ -1495,14 +1725,11 @@ msgstr "Mozgatás lefelé"
 msgid "Move up"
 msgstr "Mozgatás felfelé"
 
-msgid "Multicast Rate"
-msgstr "Multicast sebesség"
-
 msgid "Multicast address"
 msgstr "Multicast cím"
 
-msgid "NAS ID"
-msgstr "NAS azonosító"
+msgid "NDP-Proxy"
+msgstr ""
 
 msgid "NTP server candidates"
 msgstr "Kijelölt NTP kiszolgálók"
@@ -1525,11 +1752,11 @@ msgstr "Hálózati maszk"
 msgid "Network"
 msgstr "Hálózat"
 
+msgid "Network Re-auth Interval"
+msgstr ""
+
 msgid "Network Utilities"
 msgstr "Hálózati eszközök"
-
-msgid "Network boot image"
-msgstr "Hálózati rendszertöltő lemezkép"
 
 msgid "Network without interfaces."
 msgstr "Interfészhez nem rendelt hálózat"
@@ -1558,9 +1785,6 @@ msgstr "Ehhez az eszközhöz nincs hálózat beállítva"
 msgid "No network name specified"
 msgstr "Nincs megadva hálózatnév"
 
-msgid "No package lists available"
-msgstr "Csomaglisták nem állnak rendelkezésre"
-
 msgid "No password set!"
 msgstr "Nincs jelszó!"
 
@@ -1576,20 +1800,23 @@ msgstr "Zaj"
 msgid "Noise:"
 msgstr "Zaj:"
 
+msgid "Non Realtime VBR"
+msgstr ""
+
 msgid "None"
 msgstr "Nincs"
 
 msgid "Normal"
 msgstr "Normál"
 
+msgid "Normal Priority"
+msgstr ""
+
 msgid "Not Found"
 msgstr "Nem található"
 
 msgid "Not associated"
 msgstr "Nincs hozzárendelve"
-
-msgid "Not connected"
-msgstr "Nincs kapcsolódva"
 
 msgid "Note: Configuration files will be erased."
 msgstr "Megjegyzés: konfigurációs fájlok törölve lesznek."
@@ -1600,28 +1827,17 @@ msgstr "Megjegyzés"
 msgid "Nslookup"
 msgstr ""
 
-msgid "OK"
-msgstr "OK"
+msgid "Number of Running Processes"
+msgstr ""
 
-msgid "OPKG-Configuration"
-msgstr "OPKG-Beállítások"
+msgid "OBSS Co-Existence"
+msgstr ""
 
 msgid "Off-State Delay"
 msgstr "Kikapcsolt állapot késleltetés"
 
-msgid ""
-"On this page you can configure the network interfaces. You can bridge "
-"several interfaces by ticking the \"bridge interfaces\" field and enter the "
-"names of several network interfaces separated by spaces. You can also use "
-"<abbr title=\"Virtual Local Area Network\">VLAN</abbr> notation "
-"<samp>INTERFACE.VLANNR</samp> (<abbr title=\"for example\">e.g.</abbr>: "
-"<samp>eth0.1</samp>)."
+msgid "On this page you can configure the network interfaces."
 msgstr ""
-"Ezen az oldalon a hálózati interfészeket állíthatja be. Több interfész "
-"között híd hozható létre a \"híd interfész\" mező bejelölésével és több "
-"hálózati interfész nevének szóközzel történő elválasztásával. Lehetőség van "
-"<abbr title=\"Virtual Local Area Network\">VLAN</abbr> jelölés "
-"<samp>INTERFÉSZ.VLANSZÁM</samp> használatára is, pl. <samp>eth0.1</samp>)."
 
 msgid "On-State Delay"
 msgstr "Bekapcsolt állapot késleltetés"
@@ -1637,6 +1853,9 @@ msgstr "Egy vagy több kötelezően kitöltendő mező üres!"
 
 msgid "Open list..."
 msgstr "Lista megnyitása..."
+
+msgid "OpenWrt Version"
+msgstr ""
 
 msgid "Option changed"
 msgstr "Beállítás módosítva"
@@ -1656,14 +1875,14 @@ msgstr "Ki"
 msgid "Outbound:"
 msgstr "Kimenő:"
 
-msgid "Outdoor Channels"
-msgstr "Kültéri csatornák"
-
 msgid "Override MAC address"
 msgstr "MAC cím felülbírálása"
 
 msgid "Override MTU"
 msgstr "MTU felülbíráslás"
+
+msgid "Override announced DNS-server"
+msgstr ""
 
 msgid "Override the gateway in DHCP responses"
 msgstr "Átjáró felülbírálása a DHCP válaszokban"
@@ -1699,6 +1918,9 @@ msgstr "PIN"
 msgid "PPP"
 msgstr "PPP"
 
+msgid "PPPoA"
+msgstr ""
+
 msgid "PPPoA Encapsulation"
 msgstr "PPPoA beágyazás"
 
@@ -1711,14 +1933,16 @@ msgstr "PPPoE"
 msgid "PPtP"
 msgstr "PPtP"
 
-msgid "Package libiwinfo required!"
-msgstr "A libiwinfo csomag szükséges!"
+msgid "PTM Bridges"
+msgstr ""
 
-msgid "Package lists are older than 24 hours"
-msgstr "A csomag listák 24 óránál régebbiek"
+msgid "PTM Device"
+msgstr ""
 
-msgid "Package name"
-msgstr "Csomagnév"
+msgid ""
+"PTM bridges expose encapsulated ethernet in ptm connections as virtual Linux "
+"network interfaces which can be used in interface creations"
+msgstr ""
 
 msgid "Packets"
 msgstr "Csomagok"
@@ -1731,21 +1955,6 @@ msgstr "Jelszó"
 
 msgid "Password authentication"
 msgstr "Jelszó hitelesítés"
-
-msgid "Password of Private Key"
-msgstr "A privát kulcsh jelszava"
-
-msgid "Password successfully changed!"
-msgstr "A jelszó megváltoztatása sikeres!"
-
-msgid "Path to CA-Certificate"
-msgstr "CA tanúsítvány elérési útja"
-
-msgid "Path to Client-Certificate"
-msgstr "Kliens tanúsítvány elérési útja"
-
-msgid "Path to Private Key"
-msgstr "A privát kulcs elérési útja"
 
 msgid "Path to executable which handles the button event"
 msgstr "A gomb eseményeit kezelő végrehajtható állomány elérési útja"
@@ -1789,6 +1998,9 @@ msgstr "Port %d"
 msgid "Port %d is untagged in multiple VLANs!"
 msgstr "A %d port egyszerre több VLAN-ban is cimkézetlen!"
 
+msgid "Port Status"
+msgstr ""
+
 msgid "Port status:"
 msgstr "Port állapot:"
 
@@ -1826,37 +2038,40 @@ msgstr "Az új interfész protokollja"
 msgid "Protocol support is not installed"
 msgstr "Protokoll támogatás nincs telepítve"
 
-msgid "Provide NTP server"
-msgstr "NTP kiszolgáló"
-
 msgid "Provide new network"
 msgstr "Új hálózat nyújtása"
 
-msgid "Pseudo Ad-Hoc (ahdemo)"
-msgstr "Ál Ad-hoc (ahdemo)"
+msgid "Public prefix routed to this device for distribution to clients."
+msgstr ""
 
 msgid "Quality"
 msgstr "Minőség"
 
-msgid "RTS/CTS Threshold"
-msgstr "RTS/CTS küszöbérték"
+msgid "RIFS"
+msgstr ""
+
+msgid "RIFS Advertisement"
+msgstr ""
+
+msgid "RSSI (dBm)"
+msgstr ""
+
+msgid "RTS Threshold"
+msgstr ""
 
 msgid "RX"
 msgstr "RX"
 
-msgid "RX Rate"
-msgstr "RX sebesség"
+msgid "RX Chain Power Save"
+msgstr ""
+
+msgid "RX Chain Power Save PPS"
+msgstr ""
+
+msgid "RX Chain Power Save Quite Time"
+msgstr ""
 
 msgid "RaLink 802.11%s Wireless Controller"
-msgstr ""
-
-msgid "Radius-Accounting-Port"
-msgstr ""
-
-msgid "Radius-Accounting-Secret"
-msgstr ""
-
-msgid "Radius-Accounting-Server"
 msgstr ""
 
 msgid "Radius-Authentication-Port"
@@ -1868,12 +2083,8 @@ msgstr ""
 msgid "Radius-Authentication-Server"
 msgstr "Radius-Hitelesítés-Kiszolgáló"
 
-msgid ""
-"Read <code>/etc/ethers</code> to configure the <abbr title=\"Dynamic Host "
-"Configuration Protocol\">DHCP</abbr>-Server"
+msgid "Rate"
 msgstr ""
-"Az <code>/etc/ethers</code> fájl olvasása a <abbr title=\"Dynamic Host "
-"Configuration Protocol\">DHCP</abbr> kiszolgáló beállításához"
 
 msgid ""
 "Really delete this interface? The deletion cannot be undone!\\nYou might "
@@ -1925,6 +2136,9 @@ msgstr "Valósidejű terhelés"
 msgid "Realtime Traffic"
 msgstr "Valósidejű forgalom"
 
+msgid "Realtime VBR"
+msgstr ""
+
 msgid "Realtime Wireless"
 msgstr "Valósidejű vezetéknélküli adatok"
 
@@ -1955,9 +2169,6 @@ msgstr "Interfész újracsatlakoztatása"
 msgid "References"
 msgstr "Hivatkozások"
 
-msgid "Regulatory Domain"
-msgstr "Szabályozó tartomány"
-
 msgid "Relay"
 msgstr "Átjátszás"
 
@@ -1969,6 +2180,11 @@ msgstr "Átjátszás hálózatok között"
 
 msgid "Relay bridge"
 msgstr "Átjátszó híd"
+
+msgid ""
+"Relay services from master to server interfaces when there is no public "
+"prefix available."
+msgstr ""
 
 msgid "Remote IPv4 address"
 msgstr "Távoli IPv4 cím"
@@ -1982,8 +2198,19 @@ msgstr "Felderítés ismétlése"
 msgid "Replace entry"
 msgstr "Bejegyés lecserélése"
 
+msgid ""
+"Replace the running firmware. Check \"Keep settings\" to retain the current "
+"configuration."
+msgstr ""
+
 msgid "Replace wireless configuration"
 msgstr "Vezetéknélküli beállítások lecserélése"
+
+msgid "Request IPv6-address"
+msgstr ""
+
+msgid "Request IPv6-prefix of length"
+msgstr ""
 
 msgid "Required for certain ISPs, e.g. Charter with DOCSIS 3"
 msgstr ""
@@ -2019,11 +2246,11 @@ msgstr "Jelszó mutatása/elrejtése"
 msgid "Revert"
 msgstr "Visszavonás"
 
-msgid "Root"
-msgstr "Gyökérkönyvtár"
+msgid "Router Advertisement-Service"
+msgstr ""
 
-msgid "Root directory for files served via TFTP"
-msgstr "TFTP-n keresztül megosztott fájlok gyökérkönyvtára"
+msgid "Router MAC Address"
+msgstr ""
 
 msgid "Router Model"
 msgstr "Router modell"
@@ -2031,8 +2258,8 @@ msgstr "Router modell"
 msgid "Router Name"
 msgstr "Router név"
 
-msgid "Router Password"
-msgstr "Router jelszó"
+msgid "Router S/N"
+msgstr ""
 
 msgid "Routes"
 msgstr "Útvonalak"
@@ -2047,11 +2274,8 @@ msgstr ""
 msgid "Rule #"
 msgstr "Szabály #"
 
-msgid "Run a filesystem check before mounting the device"
-msgstr "Fájlrendszer ellenőrzés futtatása az eszköz csatolása előtt"
-
-msgid "Run filesystem check"
-msgstr "Fájlrendszer ellenőrzés futtatása"
+msgid "SRA"
+msgstr ""
 
 msgid "SSH Access"
 msgstr "SSH hozzáférés"
@@ -2083,8 +2307,20 @@ msgstr "Szakasz hozzáadva"
 msgid "Section removed"
 msgstr "Szakasz eltávolítva"
 
-msgid "See \"mount\" manpage for details"
-msgstr "Részletekért lásd a 'mount' man oldalát"
+msgid "Select DSL Latency Path0"
+msgstr ""
+
+msgid "Select DSL Latency Path1"
+msgstr ""
+
+msgid "Select DSL Link Type (EoA is for PPPoE, IPoE, and Bridge.)"
+msgstr ""
+
+msgid "Select IP QoS Scheduler Algorithm"
+msgstr ""
+
+msgid "Select PTM Priority"
+msgstr ""
 
 msgid ""
 "Send LCP echo requests at the given interval in seconds, only effective in "
@@ -2093,17 +2329,20 @@ msgstr ""
 "LCP echo kérések küldése a másodpercben megadott időközönként, csak a "
 "hibaküszöbbel együtt van hatása."
 
-msgid "Send router solicitations"
-msgstr "Router kérelmezések küldése"
-
 msgid "Separate Clients"
 msgstr "Kliensek szétválasztása"
 
-msgid "Separate WDS"
-msgstr "WDS szétválasztása"
+msgid "Serial No"
+msgstr ""
 
 msgid "Server Settings"
 msgstr "Kiszolgáló beállításai"
+
+msgid "Service Category"
+msgstr ""
+
+msgid "Service Interfaces"
+msgstr ""
 
 msgid "Service Name"
 msgstr "Szolgáltatás neve"
@@ -2113,6 +2352,9 @@ msgstr "Szolgáltatás típusa"
 
 msgid "Services"
 msgstr "Szolgáltatások"
+
+msgid "Set as"
+msgstr ""
 
 msgid "Setup DHCP Server"
 msgstr "DHCP kiszolgáló beállítása"
@@ -2150,9 +2392,6 @@ msgstr "Ugrás a navigációhoz"
 msgid "Slot time"
 msgstr "Időrés"
 
-msgid "Software"
-msgstr "Szoftver"
-
 msgid "Some fields are invalid, cannot save values!"
 msgstr "Néhán mező érvénytelen, az értékek nem menthetők!"
 
@@ -2164,12 +2403,9 @@ msgstr "Sajnálom, a szerver váratlan hibát észlelt."
 
 msgid ""
 "Sorry, there is no sysupgrade support present, a new firmware image must be "
-"flashed manually. Please refer to the OpenWrt wiki for device specific "
-"install instructions."
+"flashed manually. Please consult your operator for device specific install "
+"instructions."
 msgstr ""
-"Sajnáljuk, a 'sysupgrade' támogatás nem elérhető, az új firmware fájl "
-"telepítését manuálisan kell elvégezni. Az eszközhöz tartozó telepítési "
-"utasításokért keresse fel az OpenWrt wiki-t."
 
 msgid "Sort"
 msgstr "Sorbarendezés"
@@ -2177,20 +2413,14 @@ msgstr "Sorbarendezés"
 msgid "Source"
 msgstr "Forrás"
 
-msgid "Specifies the advertised preferred prefix lifetime in seconds"
-msgstr ""
-
-msgid "Specifies the advertised valid prefix lifetime in seconds"
-msgstr ""
-
 msgid "Specifies the button state to handle"
 msgstr "Meghatározza a gomb kezelendő állapotát"
 
-msgid "Specifies the directory the device is attached to"
-msgstr "Megadja az eszköz csatlakozási könyvtárát."
-
 msgid "Specifies the listening port of this <em>Dropbear</em> instance"
 msgstr "Megadja a <em>Dropbear</em> példány portját"
+
+msgid "Specifies the master interface for services that are relayed."
+msgstr ""
 
 msgid ""
 "Specifies the maximum amount of failed ARP requests until hosts are presumed "
@@ -2229,9 +2459,6 @@ msgstr "Statikus bérletek"
 msgid "Static Routes"
 msgstr "Statikus útvonalak"
 
-msgid "Static WDS"
-msgstr "Statikus WDS"
-
 msgid "Static address"
 msgstr "Statikus cím"
 
@@ -2245,11 +2472,21 @@ msgstr ""
 "szükségesek, ahol a csak a megfelelő bérlettel rendelkező hosztok kerülnek "
 "kiszolgálásra."
 
+msgid ""
+"Static leases are used to assign fixed IPv6 Interface-IDs to clients. "
+"Interface-IDs are appended to available prefixes to form IPv6-addresses. (e."
+"g. a prefix of 2001:db80::/64 combined with Interface-ID 123456 will form "
+"the address 2001:db80::12:3456)"
+msgstr ""
+
 msgid "Status"
 msgstr "Állapot"
 
 msgid "Stop"
 msgstr "Leállítás"
+
+msgid "Strict Priority Precedence"
+msgstr ""
 
 msgid "Strict order"
 msgstr "Kötött sorrend"
@@ -2257,8 +2494,8 @@ msgstr "Kötött sorrend"
 msgid "Submit"
 msgstr "Elküldés"
 
-msgid "Swap Entry"
-msgstr "Lapozóterület"
+msgid "Swap"
+msgstr ""
 
 msgid "Switch"
 msgstr "Kapcsoló"
@@ -2290,20 +2527,17 @@ msgstr "Rendszer tulajdonságok"
 msgid "System log buffer size"
 msgstr "Rendszer napló puffer méret"
 
+msgid "T.1413"
+msgstr ""
+
 msgid "TCP:"
 msgstr "TCP:"
 
-msgid "TFTP Settings"
-msgstr "TFTP beállítások"
-
-msgid "TFTP server root"
-msgstr "TFTP szerver gyökér könyvtár"
+msgid "TR-069 Log"
+msgstr ""
 
 msgid "TX"
 msgstr "TX"
-
-msgid "TX Rate"
-msgstr "TX sebesség"
 
 msgid "Table"
 msgstr "Tábla"
@@ -2315,24 +2549,11 @@ msgid "Terminate"
 msgstr "Megszakítás"
 
 msgid ""
-"The <em>Device Configuration</em> section covers physical settings of the "
-"radio hardware such as channel, transmit power or antenna selection which is "
-"shared among all defined wireless networks (if the radio hardware is multi-"
-"SSID capable). Per network settings like encryption or operation mode are "
-"grouped in the <em>Interface Configuration</em>."
+"The <em>Device Configuration</em> section covers settings which are shared "
+"among all defined wireless networks (if the radio hardware is multi-SSID "
+"capable). Per network settings like encryption or operation mode are grouped "
+"in the <em>Interface Configuration</em>."
 msgstr ""
-"Az <em>Eszköz beállítások</em> szakasz a rádió hardver fizikai beállításait, "
-"úgymint csatorna, adóteljesítmény vagy antenna választás teszi lehetővé, "
-"amelyen az összes definiált vezeték nélküli hálózat (ha a rádió hardver "
-"multi-SSID képes) osztozik. A hálózatonkénti beállítások, mint az "
-"titkosítás, mód az <em>Interfész beállítások</em> alá vannak csoportosítva."
-
-msgid ""
-"The <em>libiwinfo-lua</em> package is not installed. You must install this "
-"component for working wireless configuration!"
-msgstr ""
-"A <em>libiwinfo-lua</em> nincs telepítve. A vezetéknélküli beállítás "
-"működéséhez ezt az összetevőt telepítnei kell."
 
 msgid ""
 "The IPv6 prefix assigned to the provider, usually ends with <code>::</code>"
@@ -2344,22 +2565,6 @@ msgid ""
 msgstr ""
 "A következő karakterek használhatók: <code>A-Z</code>, <code>a-z</code>, "
 "<code>0-9</code> and <code>_</code>"
-
-msgid ""
-"The device file of the memory or partition (<abbr title=\"for example\">e.g."
-"</abbr> <code>/dev/sda1</code>)"
-msgstr ""
-"A memória vagy partíció eszköz fájlja (<abbr title=\"például\">pl.</abbr> "
-"<code>/dev/sda1</code>)"
-
-msgid ""
-"The filesystem that was used to format the memory (<abbr title=\"for example"
-"\">e.g.</abbr> <samp><abbr title=\"Third Extended Filesystem\">ext3</abbr></"
-"samp>)"
-msgstr ""
-"A memória formázásához használt fájlrendszer típusa (<abbr title=\"for "
-"example\">pl.</abbr> <samp><abbr title=\"Third Extended Filesystem\">ext3</"
-"abbr></samp>)"
 
 msgid ""
 "The flash image was uploaded. Below is the checksum and file size listed, "
@@ -2399,6 +2604,11 @@ msgid "The length of the IPv6 prefix in bits"
 msgstr ""
 
 msgid ""
+"The maximum percentage of available spectrum and backhaul that mobile users "
+"are allowed to consume"
+msgstr ""
+
+msgid ""
 "The network ports on this device can be combined to several <abbr title="
 "\"Virtual Local Area Network\">VLAN</abbr>s in which computers can "
 "communicate directly with each other. <abbr title=\"Virtual Local Area "
@@ -2406,13 +2616,18 @@ msgid ""
 "segments. Often there is by default one Uplink port for a connection to the "
 "next greater network like the internet and other ports for a local network."
 msgstr ""
-"Az eszközön található hálózati portok kombinálhatók több <abbr "
-"title=\"Virtual Local Area Network\">VLAN</abbr>-ba, amelyekben a számítógépek "
+"Az eszközön található hálózati portok kombinálhatók több <abbr title="
+"\"Virtual Local Area Network\">VLAN</abbr>-ba, amelyekben a számítógépek "
 "közvetlenül kommunikálhatnak egmással. A <abbr title=\"Virtual Local Area "
 "Network\">VLAN</abbr>-ok gyakran a hálózati szegmensek elkülönítésére "
 "használják. Gyakran van egy alapértelmezett Uplink port a következő nagyobb "
 "hálózathoz (pl. az internet) való kapcsolódásra és a többi port a helyi "
 "hálózathoz."
+
+msgid ""
+"The percentage of available spectrum and backhaul that mobile users are "
+"allowed to consume even if there is competition with the primary user"
+msgstr ""
 
 msgid "The selected protocol needs a device assigned"
 msgstr "A kiválasztott protokoll eszköz hozzárendelést igényel"
@@ -2434,11 +2649,26 @@ msgstr ""
 "megújítása."
 
 msgid ""
+"The total downstream bandwidth available on the WAN connection, in bits per "
+"second"
+msgstr ""
+
+msgid ""
+"The total upstream bandwidth available on the WAN connection, in bits per "
+"second"
+msgstr ""
+
+msgid ""
 "The uploaded image file does not contain a supported format. Make sure that "
 "you choose the generic image format for your platform."
 msgstr ""
 "A feltöltött image fájl formátuma nem támogatott. Ügyeljen arra, hogy a "
 "platformjának megfelelő általános image formátumot válassza ki."
+
+msgid ""
+"The uploaded image file has larger size than the partition spared for file "
+"system."
+msgstr ""
 
 msgid "There are no active leases."
 msgstr "Nincsenek aktív bérletek."
@@ -2503,19 +2733,16 @@ msgstr ""
 "Ez az egyetlen <abbr title=\"Dynamic Host Configuration Protocol\">DHCP</"
 "abbr> a helyi hálózaton"
 
+msgid ""
+"This is the prefix routed to you by the tunnel broker for use by clients"
+msgstr ""
+
 msgid "This is the system crontab in which scheduled tasks can be defined."
 msgstr "Ez a rendszer crontab, amiben időzített feladatok definiálhatók."
 
 msgid ""
 "This is usually the address of the nearest PoP operated by the tunnel broker"
 msgstr ""
-
-msgid ""
-"This list gives an overview over currently running system processes and "
-"their status."
-msgstr ""
-"Ez a lista a rendszerben jelenleg futó folyamatokról és azok állapotáról ad "
-"áttekintést."
 
 msgid "This page allows the configuration of custom button actions"
 msgstr "Ez a lap a gombok egyedi működésének beállítását teszi lehetővé"
@@ -2555,9 +2782,6 @@ msgstr "Forgalom"
 msgid "Transfer"
 msgstr "Átvitel"
 
-msgid "Transmission Rate"
-msgstr "Átviteli sebesség"
-
 msgid "Transmit"
 msgstr "Küldés"
 
@@ -2579,8 +2803,17 @@ msgstr "Tunnel azonosító"
 msgid "Tunnel Interface"
 msgstr "Tunnel interfész"
 
-msgid "Turbo Mode"
-msgstr "Turbó mód"
+msgid "Tunnel Link"
+msgstr ""
+
+msgid "Turn Off"
+msgstr ""
+
+msgid "Turn On"
+msgstr ""
+
+msgid "Turn off wireless radio"
+msgstr ""
 
 msgid "Tx-Power"
 msgstr "Adóteljesítmény"
@@ -2588,8 +2821,17 @@ msgstr "Adóteljesítmény"
 msgid "Type"
 msgstr "Típus"
 
+msgid "UBR With PCR"
+msgstr ""
+
+msgid "UBR Without PCR"
+msgstr ""
+
 msgid "UDP:"
 msgstr "UDP:"
+
+msgid "ULA-preference compatibility"
+msgstr ""
 
 msgid "UMTS only"
 msgstr "Csak UTMS"
@@ -2597,11 +2839,14 @@ msgstr "Csak UTMS"
 msgid "UMTS/GPRS/EV-DO"
 msgstr "UMTS/GPRS/EV-DO"
 
+msgid "US0"
+msgstr ""
+
+msgid "USB"
+msgstr ""
+
 msgid "USB Device"
 msgstr "USB eszköz"
-
-msgid "UUID"
-msgstr "UUID"
 
 msgid "Unable to dispatch"
 msgstr "Nem indiítható"
@@ -2609,8 +2854,8 @@ msgstr "Nem indiítható"
 msgid "Unknown"
 msgstr "Ismeretlen"
 
-msgid "Unknown Error, password not changed!"
-msgstr "Ismeretlen hiba, a jelszó nem lett megváltoztatva!"
+msgid "Unknown Error, %s password not changed!"
+msgstr ""
 
 msgid "Unmanaged"
 msgstr "Nem kezelt"
@@ -2621,18 +2866,8 @@ msgstr "El nem mentett módosítások"
 msgid "Unsupported protocol type."
 msgstr "Nem támogatott protokoll típus."
 
-msgid "Update lists"
-msgstr "Listák frissítése"
-
-msgid ""
-"Upload a sysupgrade-compatible image here to replace the running firmware. "
-"Check \"Keep settings\" to retain the current configuration (requires an "
-"OpenWrt compatible firmware image)."
+msgid "Uplink"
 msgstr ""
-"Itt tölthet fel egy új sysupgrade-kompatibilis képet a futó firmware "
-"lecseréléséhez. A jelenlegi beállítások megtartásához jelölje be a "
-"\"Beállítások megtartása\" négyzetet (OpenWrt-vel kompatibilis firmware kép "
-"szükséges)."
 
 msgid "Upload archive..."
 msgstr "Archívum feltöltése..."
@@ -2640,11 +2875,11 @@ msgstr "Archívum feltöltése..."
 msgid "Uploaded File"
 msgstr "Feltöltött fájl"
 
+msgid "Upstream Rate"
+msgstr ""
+
 msgid "Uptime"
 msgstr "Működési idő"
-
-msgid "Use <code>/etc/ethers</code>"
-msgstr "<code>/etc/ethers</code> használata"
 
 msgid "Use DHCP gateway"
 msgstr "DHCP kiszolgáló használata"
@@ -2652,17 +2887,11 @@ msgstr "DHCP kiszolgáló használata"
 msgid "Use DNS servers advertised by peer"
 msgstr "Másik fél által ajánlott DNS szerverek használata"
 
-msgid "Use ISO/IEC 3166 alpha2 country codes."
-msgstr "ISO/IEC 3166 alpha2 országkódok használata"
-
 msgid "Use MTU on tunnel interface"
 msgstr "MTU használata az alagút interfészen"
 
 msgid "Use TTL on tunnel interface"
 msgstr "TTL használata az alagút interfészen"
-
-msgid "Use as root filesystem"
-msgstr "Gyökér fájlrenszerként történő használat"
 
 msgid "Use broadcast flag"
 msgstr "Broadcast flag használata"
@@ -2676,11 +2905,14 @@ msgstr "Alapértelmezett átjáró használata"
 msgid "Use gateway metric"
 msgstr "Átjáró metrikájának használata"
 
-msgid "Use preferred lifetime"
-msgstr "Előnyben részesített élettartam használata"
-
 msgid "Use routing table"
 msgstr "Útválasztó tábla használata"
+
+msgid ""
+"Use the <em>Add</em> Button to add a new lease entry. The <em>DUID</em> "
+"indentifies the host, the <em>Interface-ID</em> specifies the ID to use in "
+"addresses."
+msgstr ""
 
 msgid ""
 "Use the <em>Add</em> Button to add a new lease entry. The <em>MAC-Address</"
@@ -2693,12 +2925,6 @@ msgstr ""
 "használandó rögzített IP címet és a <em>Gépnév</em> lesz szimbolikus névként "
 "hozzárendelve az igénylő géphez."
 
-msgid "Use valid lifetime"
-msgstr "Érvényességi időtartam használata"
-
-msgid "Used"
-msgstr "Használt"
-
 msgid "Used Key Slot"
 msgstr "Használt kulcsindex"
 
@@ -2707,6 +2933,21 @@ msgstr "Felhasználónév"
 
 msgid "VC-Mux"
 msgstr "VC-Mux"
+
+msgid "VC/MUX"
+msgstr ""
+
+msgid "VDSL"
+msgstr ""
+
+msgid "VDSL Profile"
+msgstr ""
+
+msgid "VDSL2"
+msgstr ""
+
+msgid "VLAN"
+msgstr ""
 
 msgid "VLAN Interface"
 msgstr "VLAN interfész"
@@ -2726,11 +2967,17 @@ msgstr "DHCP kérés során küldendő 'Vendor Class'"
 msgid "Verify"
 msgstr "Ellenőrzés"
 
-msgid "Version"
-msgstr "Verzió"
-
 msgid "WDS"
 msgstr "WDS"
+
+msgid "WDS Connection List"
+msgstr ""
+
+msgid "WDS Link Detection Timeout"
+msgstr ""
+
+msgid "WDS Mode"
+msgstr ""
 
 msgid "WEP Open System"
 msgstr "WEP nyílt rendszer"
@@ -2741,18 +2988,32 @@ msgstr "WEP megosztott kulcs"
 msgid "WEP passphrase"
 msgstr "WEP jelmondat"
 
+msgid "WLAN MAC"
+msgstr ""
+
+msgid "WLAN Status"
+msgstr ""
+
+msgid "WLAN Version"
+msgstr ""
+
+msgid "WMM APSD"
+msgstr ""
+
 msgid "WMM Mode"
 msgstr "WMM mód"
 
+msgid "WMM No Acknowledgement"
+msgstr ""
+
+msgid "WPA Group Rekey Interval"
+msgstr ""
+
+msgid "WPA Key"
+msgstr ""
+
 msgid "WPA passphrase"
 msgstr "WPA jelmondat"
-
-msgid ""
-"WPA-Encryption requires wpa_supplicant (for client mode) or hostapd (for AP "
-"and ad-hoc mode) to be installed."
-msgstr ""
-"WPA titkosításhoz kliens módnál 'wpa_supplicant', hozzáférési pont illetve "
-"ad-hoc módnál 'hostapd' telepítése szükséges."
 
 msgid "Waiting for changes to be applied..."
 msgstr "Várakozás a változtatások alklamazására..."
@@ -2768,8 +3029,8 @@ msgstr ""
 "Figyelem: vannak el nem mentett változások melyek el fognak veszni az "
 "újraindítás során!"
 
-msgid "Wifi"
-msgstr "Wifi"
+msgid "Weighted Fair Queuing"
+msgstr ""
 
 msgid "Wireless"
 msgstr "Vezetéknélküli rész"
@@ -2777,14 +3038,29 @@ msgstr "Vezetéknélküli rész"
 msgid "Wireless Adapter"
 msgstr "Vezetéknélküli adapter"
 
+msgid "Wireless Bridge"
+msgstr ""
+
+msgid "Wireless Clients"
+msgstr ""
+
 msgid "Wireless Network"
 msgstr "Vezetéknélküli hálózat"
+
+msgid "Wireless Networks"
+msgstr ""
 
 msgid "Wireless Overview"
 msgstr "Vezetéknélküli rész áttekintés"
 
+msgid "Wireless SSID"
+msgstr ""
+
 msgid "Wireless Security"
 msgstr "Vezetéknélküli biztonság"
+
+msgid "Wireless WAN"
+msgstr ""
 
 msgid "Wireless is disabled or not associated"
 msgstr "Vezetéknélküli hálózat le van tiltva vagy nincs kapcsolódva"
@@ -2792,23 +3068,17 @@ msgstr "Vezetéknélküli hálózat le van tiltva vagy nincs kapcsolódva"
 msgid "Wireless is restarting..."
 msgstr "Vezetéknélküli rész újraindítása folyamatban..."
 
-msgid "Wireless network is disabled"
-msgstr "Vezetéknélküli hálózat letiltva"
-
-msgid "Wireless network is enabled"
-msgstr "Vezetéknélküli hálózat engedélyezve"
-
 msgid "Wireless restarted"
 msgstr "Vezetéknélküli rész újraindítva"
 
 msgid "Wireless shut down"
 msgstr "Vezetéknélküli rész leállítása"
 
+msgid "Work around IPv6 address-selection issues of some devices."
+msgstr ""
+
 msgid "Write received DNS requests to syslog"
 msgstr "A kapott DNS kéréseket írja a rendszernaplóba"
-
-msgid "XR Support"
-msgstr "XR támogatás"
 
 msgid ""
 "You can enable or disable installed init scripts here. Changes will applied "
@@ -2832,6 +3102,9 @@ msgstr "bármelyik"
 msgid "auto"
 msgstr "automatikus"
 
+msgid "automatic"
+msgstr ""
+
 msgid "baseT"
 msgstr "baseT"
 
@@ -2841,17 +3114,14 @@ msgstr "áthidalt"
 msgid "create:"
 msgstr "új:"
 
-msgid "creates a bridge over specified interface(s)"
-msgstr "híd létrehozása a megadott interfész(ek) között"
-
 msgid "dB"
 msgstr "dB"
 
 msgid "dBm"
 msgstr "dBm"
 
-msgid "disable"
-msgstr "letiltás"
+msgid "disabled"
+msgstr ""
 
 msgid "expired"
 msgstr "lejárt"
@@ -2862,6 +3132,12 @@ msgid ""
 msgstr ""
 "fájl ahová a <abbr title=\"Dynamic Host Configuration Protocol\">DHCP</abbr> "
 "bérletek tárolásra kerülnek"
+
+msgid "for IPTV connection test"
+msgstr ""
+
+msgid "for Internet connection test"
+msgstr ""
 
 msgid "forward"
 msgstr "továbbítás"
@@ -2884,8 +3160,8 @@ msgstr "ha a cél hálózat"
 msgid "input"
 msgstr "bemenet"
 
-msgid "kB"
-msgstr "kB"
+msgid "iopsys Version"
+msgstr ""
 
 msgid "kB/s"
 msgstr "kB/s"
@@ -2896,14 +3172,8 @@ msgstr "kbit/s"
 msgid "local <abbr title=\"Domain Name System\">DNS</abbr> file"
 msgstr "helyi <abbr title=\"Domain Name System\">DNS</abbr> fájl"
 
-msgid "no"
-msgstr "nem"
-
 msgid "no link"
 msgstr "nincs link"
-
-msgid "none"
-msgstr "nincs"
 
 msgid "off"
 msgstr "ki"
@@ -2914,8 +3184,26 @@ msgstr "be"
 msgid "open"
 msgstr "nyitás"
 
+msgid "or"
+msgstr ""
+
+msgid "relay mode"
+msgstr ""
+
 msgid "routed"
 msgstr "irányított"
+
+msgid "server mode"
+msgstr ""
+
+msgid "stateful-only"
+msgstr ""
+
+msgid "stateless"
+msgstr ""
+
+msgid "stateless + stateful"
+msgstr ""
 
 msgid "tagged"
 msgstr "cimkézett"
@@ -2935,17 +3223,525 @@ msgstr "nincs magadva -vagy- új:"
 msgid "untagged"
 msgstr "cimkézetlen"
 
-msgid "yes"
-msgstr "igen"
+msgid "will be ignored if channel is set to auto."
+msgstr ""
+
+msgid "xDSL Line settings and profiles"
+msgstr ""
+
+msgid "xDSL Settings"
+msgstr ""
 
 msgid "« Back"
 msgstr "« Vissza"
 
+#~ msgid "40MHz 2nd channel above"
+#~ msgstr "40 MHz, második csatorna felette"
+
+#~ msgid "40MHz 2nd channel below"
+#~ msgstr "40 MHz, második csatorna alatta"
+
+#~ msgid "AR Support"
+#~ msgstr "AR Támogatás"
+
+#~ msgid "Accept router advertisements"
+#~ msgstr "Router hirdetések elfogadása"
+
+#~ msgid "Advertise IPv6 on network"
+#~ msgstr "IPv6 hirdetése a hálózaton"
+
+#~ msgid "Advertised network ID"
+#~ msgstr "Hirdetett hálózati azonosító"
+
+#~ msgid "Allowed range is 1 to 65535"
+#~ msgstr "Engedélyezett tartomány 1-től 65535-ig"
+
+#~ msgid ""
+#~ "Always use 40MHz channels even if the secondary channel overlaps. Using "
+#~ "this option does not comply with IEEE 802.11n-2009!"
+#~ msgstr ""
+#~ "40 MHz csatornaszélesség használata akkor is, ha a másodlagos csatorna "
+#~ "átfedésben van. Ezen opció használata nem felel meg az IEE 902.11n-2009 "
+#~ "szabványnak!"
+
+#~ msgid "Antenna Configuration"
+#~ msgstr "Antenna beállítások"
+
+#~ msgid "Associated Stations"
+#~ msgstr "Kapcsolódó kliensek"
+
+#~ msgid "Authentication"
+#~ msgstr "Hitelesítés"
+
+#~ msgid "Available"
+#~ msgstr "Elérhető"
+
+#~ msgid "Available packages"
+#~ msgstr "Elérhető csomagok"
+
+#~ msgid "Background Scan"
+#~ msgstr "Felderítés a háttérben"
+
+#~ msgid "Bridge interfaces"
+#~ msgstr "Híd interfészek"
+
+#~ msgid "Changes the administrator password for accessing the device"
+#~ msgstr ""
+#~ "Itt módosíthatja az eszköz eléréséhez szükséges adminisztrátori jelszót"
+
+#~ msgid "Check"
+#~ msgstr "Ellenőrzés"
+
+#~ msgid ""
+#~ "Choose the network(s) you want to attach to this wireless interface or "
+#~ "fill out the <em>create</em> field to define a new network."
+#~ msgstr ""
+#~ "Válassza ki azokat a hálózatokat, amelyeket csatlakoztatni akar ehhez a "
+#~ "vezetéknélküli interfészhez, vagy töltse ki az <em>új</em> mezőt egy új "
+#~ "hálózat definiálásához."
+
+#~ msgid "Compression"
+#~ msgstr "Tömörítés"
+
+#~ msgid "Configures this mount as overlay storage for block-extroot"
+#~ msgstr ""
+#~ "Beállítja ezt a csatlakozási pontot block-extroot részére mint overlay "
+#~ "tároló"
+
+#~ msgid "Country Code"
+#~ msgstr "Országkód"
+
+#~ msgid "Create a bridge over multiple interfaces"
+#~ msgstr "Híd létrehozása több interfész között"
+
+#~ msgid "Custom Interface"
+#~ msgstr "Egyéni interfész"
+
+#~ msgid "DHCP Leases"
+#~ msgstr "DHCP bérletek"
+
+#~ msgid "Default %d"
+#~ msgstr "Alapértelmezés %d"
+
+#~ msgid "Description"
+#~ msgstr "Leírás"
+
+#~ msgid "Disable HW-Beacon timer"
+#~ msgstr "Hardveres beacon időzítő letiltása"
+
+#~ msgid "Displaying only packages containing"
+#~ msgstr "Csak azon csomagok megjelenítése, amelyek tartalmazzák"
+
+#~ msgid "Distance to farthest network member in meters."
+#~ msgstr "A hálózat legtávolabbi tagjának távolsága méterben."
+
+#~ msgid "Diversity"
+#~ msgstr "Diverzitás"
+
+#~ msgid "Do not send probe responses"
+#~ msgstr "Ne válaszoljon a szondázásra"
+
+#~ msgid "Download and install package"
+#~ msgstr "Csomag letöltése és telepítése"
+
+#~ msgid "EAP-Method"
+#~ msgstr "EAP metódus"
+
+#~ msgid "Enable NTP client"
+#~ msgstr "NTP-kliens engedélyezése"
+
+#~ msgid "Enable TFTP server"
+#~ msgstr "TFTP kiszolgáló engedélyezése"
+
+#~ msgid "Enable this mount"
+#~ msgstr "A csatolás engedélyezése"
+
+#~ msgid "Enable this swap"
+#~ msgstr "A lapozó terület engedélyezése"
+
+#~ msgid "Fast Frames"
+#~ msgstr "Gyors keretek"
+
+#~ msgid "Filename of the boot image advertised to clients"
+#~ msgstr "A kliensek részére közzétett betöltö kép fájlneve"
+
+#~ msgid "Filesystem"
+#~ msgstr "Fájlrendszer"
+
+#~ msgid "Filter"
+#~ msgstr "Szűrő"
+
+#~ msgid "Find and join network"
+#~ msgstr "Hálózatok keresése és csatlakozás"
+
+#~ msgid "Find package"
+#~ msgstr "Csomag keresése"
+
+#~ msgid "Firmware Version"
+#~ msgstr "Tűzfal verzió"
+
+#~ msgid "Force 40MHz mode"
+#~ msgstr "40 MHz mód erőltetése"
+
+#~ msgid "Free space"
+#~ msgstr "Szabad hely"
+
+#~ msgid "Frequency Hopping"
+#~ msgstr "Frekvencia ugrás"
+
+#~ msgid "Given password confirmation did not match, password not changed!"
+#~ msgstr ""
+#~ "A megadott jelszavak nem egyeznek, a jelszó nem lett megváltoztatva!"
+
+#~ msgid "HT capabilities"
+#~ msgstr "HT képességek"
+
+#~ msgid "HT mode"
+#~ msgstr "HT mód"
+
+#~ msgid "Identity"
+#~ msgstr "Identitás"
+
+#~ msgid ""
+#~ "If specified, mount the device by its UUID instead of a fixed device node"
+#~ msgstr ""
+#~ "Megadás esetén az eszköz csomópont helyett UUID alapján történő csatolása"
+
+#~ msgid ""
+#~ "If specified, mount the device by the partition label instead of a fixed "
+#~ "device node"
+#~ msgstr ""
+#~ "Megadás esetén az eszköz csomópont helyett címke alapján történő csatolása"
+
+#~ msgid ""
+#~ "If your physical memory is insufficient unused data can be temporarily "
+#~ "swapped to a swap-device resulting in a higher amount of usable <abbr "
+#~ "title=\"Random Access Memory\">RAM</abbr>. Be aware that swapping data is "
+#~ "a very slow process as the swap-device cannot be accessed with the high "
+#~ "datarates of the <abbr title=\"Random Access Memory\">RAM</abbr>."
+#~ msgstr ""
+#~ "Ha a fizikai memória túl kevés a nem használt adatok ideiglenesen "
+#~ "áttehetők egy swap-eszközre mely így nagyobb mennyiségű használható <abbr "
+#~ "title=\"Random Access Memory\">RAM</abbr>-ot eredményez. Az adatok "
+#~ "áttétele egy nagyon lassú folyamat mivel a swap-eszköz nem érhető el "
+#~ "akkora sebességgel mint a <abbr title=\"Random Access Memory\">RAM</abbr>."
+
+#~ msgid "Install"
+#~ msgstr "Telepítés"
+
+#~ msgid "Installed packages"
+#~ msgstr "Telepített csomagok"
+
+#~ msgid "Label"
+#~ msgstr "Címke"
+
+#~ msgid "Load Average"
+#~ msgstr "Átlagos terhelés"
+
+#~ msgid "Maximum Rate"
+#~ msgstr "Maximális sebesség"
+
+#~ msgid "Minimum Rate"
+#~ msgstr "Minimális sebesség"
+
+#~ msgid "Mount Entry"
+#~ msgstr "Csatolási bejegyzés"
+
+#~ msgid "Mount Point"
+#~ msgstr "Csatolási pont"
+
+#~ msgid "Mount Points"
+#~ msgstr "Csatolási pontok"
+
+#~ msgid "Mount Points - Mount Entry"
+#~ msgstr "Csatolási pontok - Csatolási bejegyzés"
+
+#~ msgid "Mount Points - Swap Entry"
+#~ msgstr "Csatolási pontok - Lapozóterület bejegyzés"
+
+#~ msgid ""
+#~ "Mount Points define at which point a memory device will be attached to "
+#~ "the filesystem"
+#~ msgstr ""
+#~ "A csatolási pontok határozzák meg, hogy egy memória eszköz hová lesz "
+#~ "csatlakoztatva a fájlendszeren belül "
+
+#~ msgid "Mount options"
+#~ msgstr "Csatolási beállítások"
+
+#~ msgid "Mount point"
+#~ msgstr "Csatolási pont"
+
+#~ msgid "Mounted file systems"
+#~ msgstr "Csatolt fájlrendszerek"
+
+#~ msgid "Multicast Rate"
+#~ msgstr "Multicast sebesség"
+
+#~ msgid "NAS ID"
+#~ msgstr "NAS azonosító"
+
+#~ msgid "Network boot image"
+#~ msgstr "Hálózati rendszertöltő lemezkép"
+
+#~ msgid "No package lists available"
+#~ msgstr "Csomaglisták nem állnak rendelkezésre"
+
+#~ msgid "Not connected"
+#~ msgstr "Nincs kapcsolódva"
+
+#~ msgid "OK"
+#~ msgstr "OK"
+
+#~ msgid "OPKG-Configuration"
+#~ msgstr "OPKG-Beállítások"
+
+#~ msgid ""
+#~ "On this page you can configure the network interfaces. You can bridge "
+#~ "several interfaces by ticking the \"bridge interfaces\" field and enter "
+#~ "the names of several network interfaces separated by spaces. You can also "
+#~ "use <abbr title=\"Virtual Local Area Network\">VLAN</abbr> notation "
+#~ "<samp>INTERFACE.VLANNR</samp> (<abbr title=\"for example\">e.g.</abbr>: "
+#~ "<samp>eth0.1</samp>)."
+#~ msgstr ""
+#~ "Ezen az oldalon a hálózati interfészeket állíthatja be. Több interfész "
+#~ "között híd hozható létre a \"híd interfész\" mező bejelölésével és több "
+#~ "hálózati interfész nevének szóközzel történő elválasztásával. Lehetőség "
+#~ "van <abbr title=\"Virtual Local Area Network\">VLAN</abbr> jelölés "
+#~ "<samp>INTERFÉSZ.VLANSZÁM</samp> használatára is, pl. <samp>eth0.1</samp>)."
+
+#~ msgid "Outdoor Channels"
+#~ msgstr "Kültéri csatornák"
+
+#~ msgid "Package libiwinfo required!"
+#~ msgstr "A libiwinfo csomag szükséges!"
+
+#~ msgid "Package lists are older than 24 hours"
+#~ msgstr "A csomag listák 24 óránál régebbiek"
+
+#~ msgid "Package name"
+#~ msgstr "Csomagnév"
+
+#~ msgid "Password of Private Key"
+#~ msgstr "A privát kulcsh jelszava"
+
+#~ msgid "Password successfully changed!"
+#~ msgstr "A jelszó megváltoztatása sikeres!"
+
+#~ msgid "Path to CA-Certificate"
+#~ msgstr "CA tanúsítvány elérési útja"
+
+#~ msgid "Path to Client-Certificate"
+#~ msgstr "Kliens tanúsítvány elérési útja"
+
+#~ msgid "Path to Private Key"
+#~ msgstr "A privát kulcs elérési útja"
+
+#~ msgid "Provide NTP server"
+#~ msgstr "NTP kiszolgáló"
+
+#~ msgid "Pseudo Ad-Hoc (ahdemo)"
+#~ msgstr "Ál Ad-hoc (ahdemo)"
+
+#~ msgid "RTS/CTS Threshold"
+#~ msgstr "RTS/CTS küszöbérték"
+
+#~ msgid "RX Rate"
+#~ msgstr "RX sebesség"
+
+#~ msgid ""
+#~ "Read <code>/etc/ethers</code> to configure the <abbr title=\"Dynamic Host "
+#~ "Configuration Protocol\">DHCP</abbr>-Server"
+#~ msgstr ""
+#~ "Az <code>/etc/ethers</code> fájl olvasása a <abbr title=\"Dynamic Host "
+#~ "Configuration Protocol\">DHCP</abbr> kiszolgáló beállításához"
+
+#~ msgid "Regulatory Domain"
+#~ msgstr "Szabályozó tartomány"
+
+#~ msgid "Root"
+#~ msgstr "Gyökérkönyvtár"
+
+#~ msgid "Root directory for files served via TFTP"
+#~ msgstr "TFTP-n keresztül megosztott fájlok gyökérkönyvtára"
+
+#~ msgid "Router Password"
+#~ msgstr "Router jelszó"
+
+#~ msgid "Run a filesystem check before mounting the device"
+#~ msgstr "Fájlrendszer ellenőrzés futtatása az eszköz csatolása előtt"
+
+#~ msgid "Run filesystem check"
+#~ msgstr "Fájlrendszer ellenőrzés futtatása"
+
+#~ msgid "See \"mount\" manpage for details"
+#~ msgstr "Részletekért lásd a 'mount' man oldalát"
+
+#~ msgid "Send router solicitations"
+#~ msgstr "Router kérelmezések küldése"
+
+#~ msgid "Separate WDS"
+#~ msgstr "WDS szétválasztása"
+
+#~ msgid "Software"
+#~ msgstr "Szoftver"
+
+#~ msgid ""
+#~ "Sorry, there is no sysupgrade support present, a new firmware image must "
+#~ "be flashed manually. Please refer to the OpenWrt wiki for device specific "
+#~ "install instructions."
+#~ msgstr ""
+#~ "Sajnáljuk, a 'sysupgrade' támogatás nem elérhető, az új firmware fájl "
+#~ "telepítését manuálisan kell elvégezni. Az eszközhöz tartozó telepítési "
+#~ "utasításokért keresse fel az OpenWrt wiki-t."
+
+#~ msgid "Specifies the directory the device is attached to"
+#~ msgstr "Megadja az eszköz csatlakozási könyvtárát."
+
+#~ msgid "Static WDS"
+#~ msgstr "Statikus WDS"
+
+#~ msgid "Swap Entry"
+#~ msgstr "Lapozóterület"
+
+#~ msgid "TFTP Settings"
+#~ msgstr "TFTP beállítások"
+
+#~ msgid "TFTP server root"
+#~ msgstr "TFTP szerver gyökér könyvtár"
+
+#~ msgid "TX Rate"
+#~ msgstr "TX sebesség"
+
+#~ msgid ""
+#~ "The <em>Device Configuration</em> section covers physical settings of the "
+#~ "radio hardware such as channel, transmit power or antenna selection which "
+#~ "is shared among all defined wireless networks (if the radio hardware is "
+#~ "multi-SSID capable). Per network settings like encryption or operation "
+#~ "mode are grouped in the <em>Interface Configuration</em>."
+#~ msgstr ""
+#~ "Az <em>Eszköz beállítások</em> szakasz a rádió hardver fizikai "
+#~ "beállításait, úgymint csatorna, adóteljesítmény vagy antenna választás "
+#~ "teszi lehetővé, amelyen az összes definiált vezeték nélküli hálózat (ha a "
+#~ "rádió hardver multi-SSID képes) osztozik. A hálózatonkénti beállítások, "
+#~ "mint az titkosítás, mód az <em>Interfész beállítások</em> alá vannak "
+#~ "csoportosítva."
+
+#~ msgid ""
+#~ "The <em>libiwinfo-lua</em> package is not installed. You must install "
+#~ "this component for working wireless configuration!"
+#~ msgstr ""
+#~ "A <em>libiwinfo-lua</em> nincs telepítve. A vezetéknélküli beállítás "
+#~ "működéséhez ezt az összetevőt telepítnei kell."
+
+#~ msgid ""
+#~ "The device file of the memory or partition (<abbr title=\"for example\">e."
+#~ "g.</abbr> <code>/dev/sda1</code>)"
+#~ msgstr ""
+#~ "A memória vagy partíció eszköz fájlja (<abbr title=\"például\">pl.</abbr> "
+#~ "<code>/dev/sda1</code>)"
+
+#~ msgid ""
+#~ "The filesystem that was used to format the memory (<abbr title=\"for "
+#~ "example\">e.g.</abbr> <samp><abbr title=\"Third Extended Filesystem"
+#~ "\">ext3</abbr></samp>)"
+#~ msgstr ""
+#~ "A memória formázásához használt fájlrendszer típusa (<abbr title=\"for "
+#~ "example\">pl.</abbr> <samp><abbr title=\"Third Extended Filesystem"
+#~ "\">ext3</abbr></samp>)"
+
+#~ msgid ""
+#~ "This list gives an overview over currently running system processes and "
+#~ "their status."
+#~ msgstr ""
+#~ "Ez a lista a rendszerben jelenleg futó folyamatokról és azok állapotáról "
+#~ "ad áttekintést."
+
+#~ msgid "Transmission Rate"
+#~ msgstr "Átviteli sebesség"
+
+#~ msgid "Turbo Mode"
+#~ msgstr "Turbó mód"
+
+#~ msgid "UUID"
+#~ msgstr "UUID"
+
+#~ msgid "Unknown Error, password not changed!"
+#~ msgstr "Ismeretlen hiba, a jelszó nem lett megváltoztatva!"
+
+#~ msgid "Update lists"
+#~ msgstr "Listák frissítése"
+
+#~ msgid ""
+#~ "Upload a sysupgrade-compatible image here to replace the running "
+#~ "firmware. Check \"Keep settings\" to retain the current configuration "
+#~ "(requires an OpenWrt compatible firmware image)."
+#~ msgstr ""
+#~ "Itt tölthet fel egy új sysupgrade-kompatibilis képet a futó firmware "
+#~ "lecseréléséhez. A jelenlegi beállítások megtartásához jelölje be a "
+#~ "\"Beállítások megtartása\" négyzetet (OpenWrt-vel kompatibilis firmware "
+#~ "kép szükséges)."
+
+#~ msgid "Use <code>/etc/ethers</code>"
+#~ msgstr "<code>/etc/ethers</code> használata"
+
+#~ msgid "Use ISO/IEC 3166 alpha2 country codes."
+#~ msgstr "ISO/IEC 3166 alpha2 országkódok használata"
+
+#~ msgid "Use as root filesystem"
+#~ msgstr "Gyökér fájlrenszerként történő használat"
+
+#~ msgid "Use preferred lifetime"
+#~ msgstr "Előnyben részesített élettartam használata"
+
+#~ msgid "Use valid lifetime"
+#~ msgstr "Érvényességi időtartam használata"
+
+#~ msgid "Used"
+#~ msgstr "Használt"
+
+#~ msgid "Version"
+#~ msgstr "Verzió"
+
+#~ msgid ""
+#~ "WPA-Encryption requires wpa_supplicant (for client mode) or hostapd (for "
+#~ "AP and ad-hoc mode) to be installed."
+#~ msgstr ""
+#~ "WPA titkosításhoz kliens módnál 'wpa_supplicant', hozzáférési pont "
+#~ "illetve ad-hoc módnál 'hostapd' telepítése szükséges."
+
+#~ msgid "Wifi"
+#~ msgstr "Wifi"
+
+#~ msgid "Wireless network is disabled"
+#~ msgstr "Vezetéknélküli hálózat letiltva"
+
+#~ msgid "Wireless network is enabled"
+#~ msgstr "Vezetéknélküli hálózat engedélyezve"
+
+#~ msgid "XR Support"
+#~ msgstr "XR támogatás"
+
+#~ msgid "creates a bridge over specified interface(s)"
+#~ msgstr "híd létrehozása a megadott interfész(ek) között"
+
+#~ msgid "disable"
+#~ msgstr "letiltás"
+
+#~ msgid "kB"
+#~ msgstr "kB"
+
+#~ msgid "no"
+#~ msgstr "nem"
+
+#~ msgid "none"
+#~ msgstr "nincs"
+
+#~ msgid "yes"
+#~ msgstr "igen"
+
 #~ msgid "Waiting for router..."
 #~ msgstr "Várakozás a routerre..."
-
-#~ msgid "Enable builtin NTP server"
-#~ msgstr "Beépített NTP kiszolgáló engedélyezése"
 
 #~ msgid "Active Leases"
 #~ msgstr "Aktív bérletek"

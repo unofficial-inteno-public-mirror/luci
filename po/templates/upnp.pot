@@ -63,6 +63,9 @@ msgstr ""
 msgid "Enable secure mode"
 msgstr ""
 
+msgid "External Interface"
+msgstr ""
+
 msgid "External Port"
 msgstr ""
 
@@ -70,6 +73,9 @@ msgid "External ports"
 msgstr ""
 
 msgid "General Settings"
+msgstr ""
+
+msgid "Internal Interface"
 msgstr ""
 
 msgid "Internal addresses"
@@ -112,11 +118,6 @@ msgid "UPNP"
 msgstr ""
 
 msgid ""
-"UPNP allows clients in the local network to automatically configure the "
-"router."
-msgstr ""
-
-msgid ""
 "UPnP allows clients in the local network to automatically configure the "
 "router."
 msgstr ""
@@ -131,7 +132,4 @@ msgid "Uplink"
 msgstr ""
 
 msgid "Value in KByte/s, informational only"
-msgstr ""
-
-msgid "enable"
 msgstr ""

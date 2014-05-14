@@ -16,11 +16,6 @@ msgstr ""
 msgid "Allow guests"
 msgstr "Permitir invitados"
 
-msgid "Allow system users to reach their home directories via network shares"
-msgstr ""
-"Permitir a los usuarios acceder a sus directorios de inicio vía "
-"comparticiones de red"
-
 msgid "Allowed users"
 msgstr "Usuarios permitidos"
 
@@ -30,20 +25,20 @@ msgstr "Crear máscara"
 msgid "Description"
 msgstr "Descripción"
 
+msgid "Device"
+msgstr ""
+
+msgid "Directory"
+msgstr ""
+
 msgid "Directory mask"
 msgstr "Máscara de directorio"
 
-msgid "Edit Template"
-msgstr "Editar plantilla"
-
-msgid "Edit the template that is used for generating the samba configuration."
-msgstr "Editar la plantilla usada para generar la configuración de samba."
-
-msgid "General Settings"
-msgstr "Configuración general"
-
 msgid "Hostname"
 msgstr "Nombre de máquina"
+
+msgid "Interfaces"
+msgstr ""
 
 msgid "Mask for new directories"
 msgstr "Máscara para directorios nuevos"
@@ -57,30 +52,61 @@ msgstr "Nombre"
 msgid "Network Shares"
 msgstr "Comparticiones de red"
 
-msgid "Path"
-msgstr "Dirección"
+msgid "Password"
+msgstr ""
 
 msgid "Read-only"
 msgstr "Solo lectura"
 
-msgid "Share home-directories"
-msgstr "Compartir directorios personales"
+msgid "Samba Users"
+msgstr ""
 
 msgid "Shared Directories"
 msgstr "Directorios compartidos"
 
-msgid ""
-"This is the content of the file '/etc/samba/smb.conf.template' from which "
-"your samba configuration will be generated. Values enclosed by pipe symbols "
-"('|') should not be changed. They get their values from the 'General "
-"Settings' tab."
+msgid "User Name"
 msgstr ""
-"Contenido del fichero '/etc/samba/smb.conf.template' desde el que se "
-"generará la configuración de samba. Los valores entre tuberías ('|') no "
-"deben cambiarse. Su valor se toma desde la pestaña 'Configuración General'."
 
 msgid "Workgroup"
 msgstr "Grupo de trabajo"
+
+msgid ""
+"the interface(s) samba will listen on; samba will not start if no interface "
+"is selected"
+msgstr ""
+
+#~ msgid ""
+#~ "Allow system users to reach their home directories via network shares"
+#~ msgstr ""
+#~ "Permitir a los usuarios acceder a sus directorios de inicio vía "
+#~ "comparticiones de red"
+
+#~ msgid "Edit Template"
+#~ msgstr "Editar plantilla"
+
+#~ msgid ""
+#~ "Edit the template that is used for generating the samba configuration."
+#~ msgstr "Editar la plantilla usada para generar la configuración de samba."
+
+#~ msgid "General Settings"
+#~ msgstr "Configuración general"
+
+#~ msgid "Path"
+#~ msgstr "Dirección"
+
+#~ msgid "Share home-directories"
+#~ msgstr "Compartir directorios personales"
+
+#~ msgid ""
+#~ "This is the content of the file '/etc/samba/smb.conf.template' from which "
+#~ "your samba configuration will be generated. Values enclosed by pipe "
+#~ "symbols ('|') should not be changed. They get their values from the "
+#~ "'General Settings' tab."
+#~ msgstr ""
+#~ "Contenido del fichero '/etc/samba/smb.conf.template' desde el que se "
+#~ "generará la configuración de samba. Los valores entre tuberías ('|') no "
+#~ "deben cambiarse. Su valor se toma desde la pestaña 'Configuración "
+#~ "General'."
 
 #~ msgid "Shared Directory"
 #~ msgstr "Directorio compatido"

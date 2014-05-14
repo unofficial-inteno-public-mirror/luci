@@ -7,6 +7,7 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -157,6 +158,9 @@ msgid "From %s in %s with source %s and %s"
 msgstr ""
 
 msgid "General Settings"
+msgstr ""
+
+msgid "Hide"
 msgstr ""
 
 msgid "IPv4"
@@ -469,6 +473,9 @@ msgstr "drop"
 
 msgid "reject"
 msgstr "reject"
+
+msgid "traffic"
+msgstr ""
 
 #~ msgid "Destination"
 #~ msgstr "Destination"

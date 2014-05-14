@@ -161,6 +161,9 @@ msgstr ""
 msgid "General Settings"
 msgstr "Paramètres généraux"
 
+msgid "Hide"
+msgstr ""
+
 msgid "IPv4"
 msgstr "IPv4"
 
@@ -495,6 +498,9 @@ msgstr "ignorer"
 
 msgid "reject"
 msgstr "rejeter"
+
+msgid "traffic"
+msgstr ""
 
 #~ msgid "Destination"
 #~ msgstr "Destination"

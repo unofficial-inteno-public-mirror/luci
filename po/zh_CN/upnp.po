@@ -75,6 +75,9 @@ msgstr "启用额外的日志记录"
 msgid "Enable secure mode"
 msgstr "启用安全模式"
 
+msgid "External Interface"
+msgstr ""
+
 msgid "External Port"
 msgstr "外部端口"
 
@@ -83,6 +86,9 @@ msgstr "外部端口"
 
 msgid "General Settings"
 msgstr "一般设置"
+
+msgid "Internal Interface"
+msgstr ""
 
 msgid "Internal addresses"
 msgstr "内部地址"
@@ -124,11 +130,6 @@ msgid "UPNP"
 msgstr "UPNP"
 
 msgid ""
-"UPNP allows clients in the local network to automatically configure the "
-"router."
-msgstr "UPnP允许局域网内客户端自动设置路由上的端口转发。"
-
-msgid ""
 "UPnP allows clients in the local network to automatically configure the "
 "router."
 msgstr "UPnP允许局域网内客户端自动设置路由上的端口转发。"
@@ -145,5 +146,10 @@ msgstr "上行速率"
 msgid "Value in KByte/s, informational only"
 msgstr "值为KByte/s，仅供参考"
 
-msgid "enable"
-msgstr "启用"
+#~ msgid ""
+#~ "UPNP allows clients in the local network to automatically configure the "
+#~ "router."
+#~ msgstr "UPnP允许局域网内客户端自动设置路由上的端口转发。"
+
+#~ msgid "enable"
+#~ msgstr "启用"

@@ -162,6 +162,9 @@ msgstr "送信元 %s (%s) , 送信元 %s, 送信元 %s"
 msgid "General Settings"
 msgstr "一般設定"
 
+msgid "Hide"
+msgstr ""
+
 msgid "IPv4"
 msgstr "IPv4"
 
@@ -511,6 +514,9 @@ msgstr "遮断"
 
 msgid "reject"
 msgstr "拒否"
+
+msgid "traffic"
+msgstr ""
 
 #~ msgid "Destination"
 #~ msgstr "宛先"

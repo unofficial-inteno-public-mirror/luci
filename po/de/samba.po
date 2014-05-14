@@ -16,11 +16,6 @@ msgstr ""
 msgid "Allow guests"
 msgstr "Gastzugang"
 
-msgid "Allow system users to reach their home directories via network shares"
-msgstr ""
-"Systembenutzer dürfen ihre Heimatverzeichnis über Netzwerkfreigaben "
-"erreichen."
-
 msgid "Allowed users"
 msgstr "Legitimierte Benutzer"
 
@@ -30,22 +25,20 @@ msgstr "Berechtigungsmaske für neue Dateien"
 msgid "Description"
 msgstr "Beschreibung"
 
+msgid "Device"
+msgstr ""
+
+msgid "Directory"
+msgstr ""
+
 msgid "Directory mask"
 msgstr "Verzeichnismaske"
 
-msgid "Edit Template"
-msgstr "Template bearbeiten"
-
-msgid "Edit the template that is used for generating the samba configuration."
-msgstr ""
-"Hier kann das Template bearbeitet werden, das zur Erstellung der Samba-"
-"Konfigurationsdateien verwendet wird."
-
-msgid "General Settings"
-msgstr "Allgemeine Einstellungen"
-
 msgid "Hostname"
 msgstr "Hostname"
+
+msgid "Interfaces"
+msgstr ""
 
 msgid "Mask for new directories"
 msgstr "Maske für neue Verzeichnisse"
@@ -59,29 +52,61 @@ msgstr "Name"
 msgid "Network Shares"
 msgstr "Netzwerkfreigaben"
 
-msgid "Path"
-msgstr "Pfad"
+msgid "Password"
+msgstr ""
 
 msgid "Read-only"
 msgstr "Nur Lesen"
 
-msgid "Share home-directories"
-msgstr "Heimatverzeichnisse freigeben"
+msgid "Samba Users"
+msgstr ""
 
 msgid "Shared Directories"
 msgstr "Freigegebene Verzeichnisse"
 
-msgid ""
-"This is the content of the file '/etc/samba/smb.conf.template' from which "
-"your samba configuration will be generated. Values enclosed by pipe symbols "
-"('|') should not be changed. They get their values from the 'General "
-"Settings' tab."
+msgid "User Name"
 msgstr ""
-"Dieses Fenster zeigt den Inhalt der Datei '/etc/samba/smb.conf.template', "
-"die als Template zum Erstellen der Samba-Konfiguration verwendet wird. Werte "
-"die von Pipe Symbolen (|) eingeschlossen sind sollten nicht verändert "
-"werden, da diese beim Erstellen der Konfiguration mit den Werten aus dem Tab "
-"'Allgemeine Einstellungen' ersetzt werden."
 
 msgid "Workgroup"
 msgstr "Arbeitsgruppe"
+
+msgid ""
+"the interface(s) samba will listen on; samba will not start if no interface "
+"is selected"
+msgstr ""
+
+#~ msgid ""
+#~ "Allow system users to reach their home directories via network shares"
+#~ msgstr ""
+#~ "Systembenutzer dürfen ihre Heimatverzeichnis über Netzwerkfreigaben "
+#~ "erreichen."
+
+#~ msgid "Edit Template"
+#~ msgstr "Template bearbeiten"
+
+#~ msgid ""
+#~ "Edit the template that is used for generating the samba configuration."
+#~ msgstr ""
+#~ "Hier kann das Template bearbeitet werden, das zur Erstellung der Samba-"
+#~ "Konfigurationsdateien verwendet wird."
+
+#~ msgid "General Settings"
+#~ msgstr "Allgemeine Einstellungen"
+
+#~ msgid "Path"
+#~ msgstr "Pfad"
+
+#~ msgid "Share home-directories"
+#~ msgstr "Heimatverzeichnisse freigeben"
+
+#~ msgid ""
+#~ "This is the content of the file '/etc/samba/smb.conf.template' from which "
+#~ "your samba configuration will be generated. Values enclosed by pipe "
+#~ "symbols ('|') should not be changed. They get their values from the "
+#~ "'General Settings' tab."
+#~ msgstr ""
+#~ "Dieses Fenster zeigt den Inhalt der Datei '/etc/samba/smb.conf.template', "
+#~ "die als Template zum Erstellen der Samba-Konfiguration verwendet wird. "
+#~ "Werte die von Pipe Symbolen (|) eingeschlossen sind sollten nicht "
+#~ "verändert werden, da diese beim Erstellen der Konfiguration mit den "
+#~ "Werten aus dem Tab 'Allgemeine Einstellungen' ersetzt werden."

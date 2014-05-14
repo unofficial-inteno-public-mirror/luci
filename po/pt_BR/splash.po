@@ -138,13 +138,6 @@ msgstr ""
 msgid "Hostname"
 msgstr "Nome do Equipamento"
 
-msgid ""
-"Hosts and Networks that are listed here are excluded from splashing, i.e. "
-"they are always allowed."
-msgstr ""
-"Equipamentos ou Redes listadas aqui estarão excluídas do termo de uso. Eles "
-"estarão sempre autorizados."
-
 msgid "IP Address"
 msgstr "Endereço IP"
 
@@ -342,6 +335,13 @@ msgstr "usar banda com fluxos ou arquivos baixados não necessários"
 
 msgid "whitelisted"
 msgstr "na lista branca"
+
+#~ msgid ""
+#~ "Hosts and Networks that are listed here are excluded from splashing, i.e. "
+#~ "they are always allowed."
+#~ msgstr ""
+#~ "Equipamentos ou Redes listadas aqui estarão excluídas do termo de uso. "
+#~ "Eles estarão sempre autorizados."
 
 #~ msgid "By accepting these rules you can use this network for"
 #~ msgstr "Aceitando estas regras, você pode usar esta rede para"

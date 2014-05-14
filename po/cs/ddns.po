@@ -33,9 +33,6 @@ msgstr ""
 msgid "Enable"
 msgstr "Povolit"
 
-msgid "Event interface"
-msgstr ""
-
 msgid "Force update every"
 msgstr "Vynutit aktualizaci každých"
 
@@ -51,9 +48,6 @@ msgstr "Rozhraní"
 msgid "Network"
 msgstr "Síť"
 
-msgid "On which interface up should start the ddns script process."
-msgstr ""
-
 msgid "Password"
 msgstr "Heslo"
 
@@ -68,6 +62,9 @@ msgstr "URL"
 
 msgid "Username"
 msgstr "Uživatelské jméno"
+
+msgid "WAN Interface"
+msgstr ""
 
 msgid "custom"
 msgstr "vlastní"

@@ -12,108 +12,47 @@ msgstr ""
 "20)) ? 1 : 2);;\n"
 "X-Generator: Pootle 2.0.4\n"
 
-msgid "Attempts Before WAN Failover"
+msgid "Port Management"
 msgstr ""
 
-msgid "Attempts Before WAN Recovery"
+msgid "eth0 (%s)"
 msgstr ""
 
-msgid "Auto"
+msgid "eth1 (%s)"
 msgstr ""
 
-msgid "Collecting data..."
+msgid "eth2 (%s)"
 msgstr ""
 
-msgid ""
-"Configure rules for directing outbound traffic through specified WAN Uplinks."
+msgid "eth3 (%s)"
 msgstr ""
 
-msgid "DNS Server(s)"
-msgstr "Servere DNS"
-
-msgid "Default Route"
-msgstr "Ruta default"
-
-msgid "Destination Address"
-msgstr "Adresa destinatie"
-
-msgid "Disable"
-msgstr "Dezactiveaza"
-
-msgid "Enable"
-msgstr "Activeaza"
-
-msgid "Failing"
+msgid "eth4 (%s)"
 msgstr ""
 
-msgid "Failover Traffic Destination"
-msgstr ""
+#~ msgid "DNS Server(s)"
+#~ msgstr "Servere DNS"
 
-msgid "Health Monitor ICMP Host(s)"
-msgstr ""
+#~ msgid "Default Route"
+#~ msgstr "Ruta default"
 
-msgid "Health Monitor ICMP Timeout"
-msgstr ""
+#~ msgid "Destination Address"
+#~ msgstr "Adresa destinatie"
 
-msgid "Health Monitor Interval"
-msgstr ""
+#~ msgid "Disable"
+#~ msgstr "Dezactiveaza"
 
-msgid ""
-"Health Monitor detects and corrects network changes and failed connections."
-msgstr ""
+#~ msgid "Enable"
+#~ msgstr "Activeaza"
 
-msgid "KO"
-msgstr ""
+#~ msgid "Ports"
+#~ msgstr "Porturi"
 
-msgid "Load Balancer Distribution"
-msgstr ""
+#~ msgid "Protocol"
+#~ msgstr "Protocol"
 
-msgid "Load Balancer(Compatibility)"
-msgstr ""
+#~ msgid "Source Address"
+#~ msgstr "Adresa sursei"
 
-msgid "Load Balancer(Performance)"
-msgstr ""
-
-msgid "Multi-WAN"
-msgstr ""
-
-msgid "Multi-WAN Status"
-msgstr ""
-
-msgid "Multi-WAN Traffic Rules"
-msgstr ""
-
-msgid ""
-"Multi-WAN allows for the use of multiple uplinks for load balancing and "
-"failover."
-msgstr ""
-
-msgid "None"
-msgstr ""
-
-msgid "OK"
-msgstr ""
-
-msgid "Ports"
-msgstr "Porturi"
-
-msgid "Protocol"
-msgstr "Protocol"
-
-msgid "Recovering"
-msgstr ""
-
-msgid "Source Address"
-msgstr "Adresa sursei"
-
-msgid "Unknown"
-msgstr ""
-
-msgid "WAN Interfaces"
-msgstr "Interfete WAN"
-
-msgid "WAN Uplink"
-msgstr ""
-
-msgid "all"
-msgstr ""
+#~ msgid "WAN Interfaces"
+#~ msgstr "Interfete WAN"

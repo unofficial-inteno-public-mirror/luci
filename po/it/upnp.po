@@ -77,6 +77,9 @@ msgstr "Abilita log addizionale"
 msgid "Enable secure mode"
 msgstr "Abilita la modalità sicura"
 
+msgid "External Interface"
+msgstr ""
+
 msgid "External Port"
 msgstr "Porta Esterna"
 
@@ -85,6 +88,9 @@ msgstr "Porte Esterne"
 
 msgid "General Settings"
 msgstr "Opzioni Generali"
+
+msgid "Internal Interface"
+msgstr ""
 
 msgid "Internal addresses"
 msgstr "Indirizzi Interni"
@@ -126,13 +132,6 @@ msgid "UPNP"
 msgstr "UPNP"
 
 msgid ""
-"UPNP allows clients in the local network to automatically configure the "
-"router."
-msgstr ""
-"UPnP permette ai dispositivi nella rete locale di configurare "
-"automaticamente il router."
-
-msgid ""
 "UPnP allows clients in the local network to automatically configure the "
 "router."
 msgstr ""
@@ -151,5 +150,12 @@ msgstr "Uplink"
 msgid "Value in KByte/s, informational only"
 msgstr "Valori in KByte/s, (informativo)"
 
-msgid "enable"
-msgstr "abilita"
+#~ msgid ""
+#~ "UPNP allows clients in the local network to automatically configure the "
+#~ "router."
+#~ msgstr ""
+#~ "UPnP permette ai dispositivi nella rete locale di configurare "
+#~ "automaticamente il router."
+
+#~ msgid "enable"
+#~ msgstr "abilita"

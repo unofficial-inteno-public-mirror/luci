@@ -25,6 +25,12 @@ msgstr ""
 msgid "Announced network"
 msgstr ""
 
+msgid "Bad (ETX > 10)"
+msgstr ""
+
+msgid "Bad (SNR < 5)"
+msgstr ""
+
 msgid "Both values must use the dotted decimal notation."
 msgstr ""
 
@@ -34,7 +40,9 @@ msgstr ""
 msgid "Configuration"
 msgstr ""
 
-msgid "Device"
+msgid ""
+"Could not get any data. Make sure the jsoninfo plugin is installed and "
+"allows connections from localhost."
 msgstr ""
 
 msgid "Display"
@@ -90,6 +98,15 @@ msgstr ""
 msgid "General settings"
 msgstr ""
 
+msgid "Good (2 < ETX < 4)"
+msgstr ""
+
+msgid "Good (30 > SNR > 20)"
+msgstr ""
+
+msgid "Green"
+msgstr ""
+
 msgid "HNA"
 msgstr ""
 
@@ -109,6 +126,12 @@ msgid "Hello interval"
 msgstr ""
 
 msgid "Hello validity time"
+msgstr ""
+
+msgid "Hide IPv4"
+msgstr ""
+
+msgid "Hide IPv6"
 msgstr ""
 
 msgid "Hna4"
@@ -303,8 +326,8 @@ msgid "Main IP"
 msgstr ""
 
 msgid ""
-"Make sure that OLSRd is running, the \"txtinfo\" plugin is loaded, "
-"configured on port 2006 and accepts connections from \"127.0.0.1\"."
+"Make sure that OLSRd is running, the \"jsoninfo\" plugin is loaded, "
+"configured on port 9090 and accepts connections from \"127.0.0.1\"."
 msgstr ""
 
 msgid "Metric"
@@ -377,6 +400,9 @@ msgstr ""
 msgid "OLSR node"
 msgstr ""
 
+msgid "Orange"
+msgstr ""
+
 msgid "Overview"
 msgstr ""
 
@@ -419,6 +445,9 @@ msgstr ""
 msgid "Prefix"
 msgstr ""
 
+msgid "Red"
+msgstr ""
+
 msgid "Resolve"
 msgstr ""
 
@@ -438,6 +467,15 @@ msgid ""
 "Sets the main IP (originator ip) of the router. This IP will NEVER change "
 "during the uptime of olsrd. Default is 0.0.0.0, which triggers usage of the "
 "IP of the first interface."
+msgstr ""
+
+msgid "Show IPv4"
+msgstr ""
+
+msgid "Show IPv6"
+msgstr ""
+
+msgid "Signal Noise Ratio in dB"
 msgstr ""
 
 msgid "SmartGW"
@@ -464,6 +502,12 @@ msgid "State"
 msgstr ""
 
 msgid "Status"
+msgstr ""
+
+msgid "Still usable (20 > SNR > 5)"
+msgstr ""
+
+msgid "Still usable (4 < ETX < 10)"
 msgstr ""
 
 msgid "Success rate of packages received from the neighbour"
@@ -519,8 +563,8 @@ msgid "Topology"
 msgstr ""
 
 msgid ""
-"Type of service value for the IP header of control traffic. Default is \"16"
-"\"."
+"Type of service value for the IP header of control traffic. Default is "
+"\"16\"."
 msgstr ""
 
 msgid "Unable to connect to the OLSR daemon!"
@@ -535,7 +579,16 @@ msgstr ""
 msgid "Use hysteresis"
 msgstr ""
 
+msgid "Validity Time"
+msgstr ""
+
 msgid "Version"
+msgstr ""
+
+msgid "Very good (ETX < 2)"
+msgstr ""
+
+msgid "Very good (SNR > 30)"
 msgstr ""
 
 msgid "WLAN"
@@ -566,4 +619,13 @@ msgid ""
 msgstr ""
 
 msgid "Willingness"
+msgstr ""
+
+msgid "Yellow"
+msgstr ""
+
+msgid "no"
+msgstr ""
+
+msgid "yes"
 msgstr ""

@@ -1,0 +1,79 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: el\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Actions"
+msgstr ""
+
+msgid "Available packages"
+msgstr ""
+
+msgid "Configuration"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Displaying only packages containing"
+msgstr ""
+
+msgid "Download and install package"
+msgstr ""
+
+msgid "Filter"
+msgstr ""
+
+msgid "Find package"
+msgstr ""
+
+msgid "Free space"
+msgstr ""
+
+msgid "Install"
+msgstr ""
+
+msgid "Installed packages"
+msgstr ""
+
+msgid "No package lists available"
+msgstr ""
+
+msgid "OK"
+msgstr ""
+
+msgid "OPKG-Configuration"
+msgstr ""
+
+msgid "Package lists are older than 24 hours"
+msgstr ""
+
+msgid "Package name"
+msgstr ""
+
+msgid "Remove"
+msgstr ""
+
+msgid "Reset"
+msgstr ""
+
+msgid "Software"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "Update lists"
+msgstr ""
+
+msgid "Version"
+msgstr ""
+
+msgid "none"
+msgstr ""

@@ -38,9 +38,6 @@ msgstr ""
 msgid "Enable"
 msgstr "אפשר"
 
-msgid "Event interface"
-msgstr ""
-
 msgid "Force update every"
 msgstr "אלץ עדכון כל"
 
@@ -57,9 +54,6 @@ msgstr "ממשק"
 msgid "Network"
 msgstr "רשת"
 
-msgid "On which interface up should start the ddns script process."
-msgstr ""
-
 msgid "Password"
 msgstr "סיסמא"
 
@@ -74,6 +68,9 @@ msgstr "URL"
 
 msgid "Username"
 msgstr "שם משתמש"
+
+msgid "WAN Interface"
+msgstr ""
 
 msgid "custom"
 msgstr "מותאם אישית"
