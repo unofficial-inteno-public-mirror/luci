@@ -159,6 +159,9 @@ msgstr ""
 msgid "General Settings"
 msgstr "Γενικές Ρυθμίσεις"
 
+msgid "Hide"
+msgstr ""
+
 msgid "IPv4"
 msgstr "IPv4"
 
@@ -442,6 +445,9 @@ msgstr "αγνόηση"
 
 msgid "reject"
 msgstr "απόρριψη"
+
+msgid "traffic"
+msgstr ""
 
 #~ msgid "Destination"
 #~ msgstr "Προορισμός"

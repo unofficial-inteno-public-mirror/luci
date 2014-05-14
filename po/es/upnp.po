@@ -77,6 +77,9 @@ msgstr "Activar registro adicional"
 msgid "Enable secure mode"
 msgstr "Habilitar modo seguro"
 
+msgid "External Interface"
+msgstr ""
+
 msgid "External Port"
 msgstr "Puerto externo"
 
@@ -85,6 +88,9 @@ msgstr "Puertos externos"
 
 msgid "General Settings"
 msgstr "Configuración general"
+
+msgid "Internal Interface"
+msgstr ""
 
 msgid "Internal addresses"
 msgstr "Direcciones internas"
@@ -126,13 +132,6 @@ msgid "UPNP"
 msgstr "UPnP"
 
 msgid ""
-"UPNP allows clients in the local network to automatically configure the "
-"router."
-msgstr ""
-"UPnP permite que los puestos de la red local configuren automáticamente el "
-"router."
-
-msgid ""
 "UPnP allows clients in the local network to automatically configure the "
 "router."
 msgstr ""
@@ -151,8 +150,15 @@ msgstr "Enlace de subida"
 msgid "Value in KByte/s, informational only"
 msgstr "Valor en KBytes/s (sólo informativo)"
 
-msgid "enable"
-msgstr "activar"
+#~ msgid ""
+#~ "UPNP allows clients in the local network to automatically configure the "
+#~ "router."
+#~ msgstr ""
+#~ "UPnP permite que los puestos de la red local configuren automáticamente "
+#~ "el router."
+
+#~ msgid "enable"
+#~ msgstr "activar"
 
 #~ msgid "Log output"
 #~ msgstr "Loguear salida"

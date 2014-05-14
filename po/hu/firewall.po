@@ -159,6 +159,9 @@ msgstr "%s felől %s-ben %s és %s forrással"
 msgid "General Settings"
 msgstr "Általános beállítások"
 
+msgid "Hide"
+msgstr ""
+
 msgid "IPv4"
 msgstr "IPv4"
 
@@ -465,6 +468,9 @@ msgstr "eldobás"
 
 msgid "reject"
 msgstr "visszautasítás"
+
+msgid "traffic"
+msgstr ""
 
 #~ msgid "Destination"
 #~ msgstr "Cél"

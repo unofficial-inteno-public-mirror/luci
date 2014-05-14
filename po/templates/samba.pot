@@ -4,9 +4,6 @@ msgstr "Content-Type: text/plain; charset=UTF-8"
 msgid "Allow guests"
 msgstr ""
 
-msgid "Allow system users to reach their home directories via network shares"
-msgstr ""
-
 msgid "Allowed users"
 msgstr ""
 
@@ -16,19 +13,19 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
+msgid "Device"
+msgstr ""
+
+msgid "Directory"
+msgstr ""
+
 msgid "Directory mask"
 msgstr ""
 
-msgid "Edit Template"
-msgstr ""
-
-msgid "Edit the template that is used for generating the samba configuration."
-msgstr ""
-
-msgid "General Settings"
-msgstr ""
-
 msgid "Hostname"
+msgstr ""
+
+msgid "Interfaces"
 msgstr ""
 
 msgid "Mask for new directories"
@@ -43,24 +40,25 @@ msgstr ""
 msgid "Network Shares"
 msgstr ""
 
-msgid "Path"
+msgid "Password"
 msgstr ""
 
 msgid "Read-only"
 msgstr ""
 
-msgid "Share home-directories"
+msgid "Samba Users"
 msgstr ""
 
 msgid "Shared Directories"
 msgstr ""
 
-msgid ""
-"This is the content of the file '/etc/samba/smb.conf.template' from which "
-"your samba configuration will be generated. Values enclosed by pipe symbols "
-"('|') should not be changed. They get their values from the 'General "
-"Settings' tab."
+msgid "User Name"
 msgstr ""
 
 msgid "Workgroup"
+msgstr ""
+
+msgid ""
+"the interface(s) samba will listen on; samba will not start if no interface "
+"is selected"
 msgstr ""

@@ -27,10 +27,16 @@ msgstr ""
 "Primer has d'instal·lar els paquets de suport USB (kmod-usb-printer) o de "
 "port paral·lel (kmod-lp)"
 
+msgid "Interface"
+msgstr ""
+
 msgid "Port"
 msgstr ""
 
 msgid "Settings"
+msgstr ""
+
+msgid "Specifies the interface to listen on."
 msgstr ""
 
 msgid "TCP listener port."

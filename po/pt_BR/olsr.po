@@ -39,6 +39,12 @@ msgstr "Anunciar enlace superior (uplink)"
 msgid "Announced network"
 msgstr "Rede anunciada"
 
+msgid "Bad (ETX > 10)"
+msgstr ""
+
+msgid "Bad (SNR < 5)"
+msgstr ""
+
 msgid "Both values must use the dotted decimal notation."
 msgstr "Ambos os valores devem usar a notação decimal com pontos."
 
@@ -48,8 +54,10 @@ msgstr "Endereço de broadcast"
 msgid "Configuration"
 msgstr "Configuração"
 
-msgid "Device"
-msgstr "Dispositivo"
+msgid ""
+"Could not get any data. Make sure the jsoninfo plugin is installed and "
+"allows connections from localhost."
+msgstr ""
 
 msgid "Display"
 msgstr "Visão"
@@ -116,6 +124,15 @@ msgstr "Configurações Gerais"
 msgid "General settings"
 msgstr "Configurações gerais"
 
+msgid "Good (2 < ETX < 4)"
+msgstr ""
+
+msgid "Good (30 > SNR > 20)"
+msgstr ""
+
+msgid "Green"
+msgstr ""
+
 msgid "HNA"
 msgstr ""
 "<abbr title=\"Host and network association, Associação de equipamentos e "
@@ -144,6 +161,12 @@ msgstr "Intervalo entre Saudações (Hello)"
 
 msgid "Hello validity time"
 msgstr "Validade da Saudação (Hello)"
+
+msgid "Hide IPv4"
+msgstr ""
+
+msgid "Hide IPv6"
+msgstr ""
 
 msgid "Hna4"
 msgstr "Hna4"
@@ -390,12 +413,9 @@ msgid "Main IP"
 msgstr "IP Principal"
 
 msgid ""
-"Make sure that OLSRd is running, the \"txtinfo\" plugin is loaded, "
-"configured on port 2006 and accepts connections from \"127.0.0.1\"."
+"Make sure that OLSRd is running, the \"jsoninfo\" plugin is loaded, "
+"configured on port 9090 and accepts connections from \"127.0.0.1\"."
 msgstr ""
-"Certifique-se que o processo OLSRd está em execução, que o plugin \"txtinfo"
-"\" está carregado e configurado para a porta 2006 e que aceita conexões a "
-"partir de \"127.0.0.1\"."
 
 msgid "Metric"
 msgstr "Métrica"
@@ -477,6 +497,9 @@ msgstr "Roteador OLSR"
 msgid "OLSR node"
 msgstr "Nó OLSR"
 
+msgid "Orange"
+msgstr ""
+
 msgid "Overview"
 msgstr "Visão Geral"
 
@@ -520,6 +543,9 @@ msgstr "Porta"
 msgid "Prefix"
 msgstr "Prefixo"
 
+msgid "Red"
+msgstr ""
+
 msgid "Resolve"
 msgstr "Resolver"
 
@@ -547,6 +573,15 @@ msgstr ""
 "Define o IP principal (ip originador) do seu roteador. Este IP nunca muda "
 "durante o funcionamento do olsrd. O padrão é 0.0.0.0, que faz com que o "
 "endereço da primeira interface seja usado."
+
+msgid "Show IPv4"
+msgstr ""
+
+msgid "Show IPv6"
+msgstr ""
+
+msgid "Signal Noise Ratio in dB"
+msgstr ""
 
 msgid "SmartGW"
 msgstr "SmartGW"
@@ -576,6 +611,12 @@ msgstr "Estado"
 
 msgid "Status"
 msgstr "Estado"
+
+msgid "Still usable (20 > SNR > 5)"
+msgstr ""
+
+msgid "Still usable (4 < ETX < 10)"
+msgstr ""
 
 msgid "Success rate of packages received from the neighbour"
 msgstr "Taxa de sucesso de pacotes recebidos de vizinhos"
@@ -647,8 +688,8 @@ msgid "Topology"
 msgstr "Topologia"
 
 msgid ""
-"Type of service value for the IP header of control traffic. Default is \"16"
-"\"."
+"Type of service value for the IP header of control traffic. Default is "
+"\"16\"."
 msgstr ""
 "Valor do tipo de serviço para o cabeçalho IP para controle de tráfego. O "
 "padrao é \"16\"."
@@ -665,8 +706,17 @@ msgstr "Enlace superior (uplink) usa NAT"
 msgid "Use hysteresis"
 msgstr "Usar retardo"
 
+msgid "Validity Time"
+msgstr ""
+
 msgid "Version"
 msgstr "Versão"
+
+msgid "Very good (ETX < 2)"
+msgstr ""
+
+msgid "Very good (SNR > 30)"
+msgstr ""
 
 msgid "WLAN"
 msgstr "Rede sem fio (WLAN)"
@@ -711,3 +761,23 @@ msgstr ""
 
 msgid "Willingness"
 msgstr "Disponibilidade"
+
+msgid "Yellow"
+msgstr ""
+
+msgid "no"
+msgstr ""
+
+msgid "yes"
+msgstr ""
+
+#~ msgid "Device"
+#~ msgstr "Dispositivo"
+
+#~ msgid ""
+#~ "Make sure that OLSRd is running, the \"txtinfo\" plugin is loaded, "
+#~ "configured on port 2006 and accepts connections from \"127.0.0.1\"."
+#~ msgstr ""
+#~ "Certifique-se que o processo OLSRd está em execução, que o plugin "
+#~ "\"txtinfo\" está carregado e configurado para a porta 2006 e que aceita "
+#~ "conexões a partir de \"127.0.0.1\"."

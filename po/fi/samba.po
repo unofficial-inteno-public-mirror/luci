@@ -1,0 +1,72 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: fi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Allow guests"
+msgstr ""
+
+msgid "Allowed users"
+msgstr ""
+
+msgid "Create mask"
+msgstr ""
+
+msgid "Description"
+msgstr ""
+
+msgid "Device"
+msgstr ""
+
+msgid "Directory"
+msgstr ""
+
+msgid "Directory mask"
+msgstr ""
+
+msgid "Hostname"
+msgstr ""
+
+msgid "Interfaces"
+msgstr ""
+
+msgid "Mask for new directories"
+msgstr ""
+
+msgid "Mask for new files"
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Network Shares"
+msgstr ""
+
+msgid "Password"
+msgstr ""
+
+msgid "Read-only"
+msgstr ""
+
+msgid "Samba Users"
+msgstr ""
+
+msgid "Shared Directories"
+msgstr ""
+
+msgid "User Name"
+msgstr ""
+
+msgid "Workgroup"
+msgstr ""
+
+msgid ""
+"the interface(s) samba will listen on; samba will not start if no interface "
+"is selected"
+msgstr ""

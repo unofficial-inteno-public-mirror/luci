@@ -1,0 +1,709 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: ca\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "%s - IP address of the participant's public network interface"
+msgstr ""
+
+msgid "%scert - Certificate for authentication"
+msgstr ""
+
+msgid "%sid - Authentication Identification"
+msgstr ""
+
+msgid "%srsasigkey - Public key for authentication"
+msgstr ""
+
+msgid "%supdown - Up/Down Script"
+msgstr ""
+
+msgid "%sxauthclient - Is XAUTH client"
+msgstr ""
+
+msgid "%sxauthserver - Is XAUTH server"
+msgstr ""
+
+msgid "%sxauthusername - XAUTH Username"
+msgstr ""
+
+msgid ""
+"<p>Configure available X.509 certificates for IPsec</p> <p>X.509 certificate "
+"files must be encoded in DER (binary) or PEM (ASCII - RFC 1421). If the file "
+"is encrypted (only supported for private key files) it must use DES-EDE3-CBC "
+"as the encryption algorithm. In this case, for automated operation, a "
+"password must be provided in the <a href=\"secrets\">Secrets</a> "
+"configuration.</p> <p>Error checking is currently only performed by the "
+"pluto daemon. If a certificate is invalid, an error message will be logged "
+"when pluto attempts to use the certificate.</p>"
+msgstr ""
+
+msgid ""
+"Acceptable values are secret for shared secrets, rsasig for RSA digital "
+"signatures (the default), and never if negotiation is never to be attempted "
+"or accepted (useful for shunt-only conns). Digital signatures are superior "
+"in every way to shared secrets."
+msgstr ""
+
+msgid "Add"
+msgstr ""
+
+msgid ""
+"Aggressive Mode is less secure, and vulnerable to Denial Of Service attacks. "
+"It is also vulnerable to brute force attacks with software such as ikecrack. "
+"It should not be used, and it should especially not be used with XAUTH and "
+"group secrets (PSK). If the remote system administrator insists on staying "
+"irresponsible, enable this option."
+msgstr ""
+
+msgid ""
+"An empty value, or the magic value none, means no debugging output. The "
+"magic value all means full output. Otherwise only the specified types of "
+"output (a quoted list, names without the --debug- prefix, separated by white "
+"space) are enabled; for --details on available debugging types, see "
+"ipsec_pluto(8)."
+msgstr ""
+
+msgid "Applicable Hosts"
+msgstr ""
+
+msgid "Authorization Authority"
+msgstr ""
+
+msgid "Basic Connection Configuration for %s"
+msgstr ""
+
+msgid "Certificate Authority"
+msgstr ""
+
+msgid "Certificate File"
+msgstr ""
+
+msgid "Certificate File must be specified."
+msgstr ""
+
+msgid "Certificate Role"
+msgstr ""
+
+msgid "Certificates"
+msgstr ""
+
+msgid "Configuration category"
+msgstr ""
+
+msgid ""
+"Configuration options relevant to common connection configuration scenarios."
+msgstr ""
+
+msgid "Configuration options which apply to both ends of a connection."
+msgstr ""
+
+msgid ""
+"Configuration options which apply to the to the \"%s\" side of the "
+"connection. The definition of sides is up to you (the user). The IPsec "
+"daemons will determine which side of the connection each system is on "
+"heuristically at runtime based on the addresses assigned to each side."
+msgstr ""
+
+msgid ""
+"Configuration parameters for establishing inbound and/or outbound "
+"connections secured using IPsec. Most parameters are direct mappings to "
+"their equivalents in ipsec.conf(5), which are displayed in parentheses for "
+"reference."
+msgstr ""
+
+msgid ""
+"Configuration parameters for establishing inbound and/or outbound "
+"connections secured using IPsec. Most parameters are direct mappings to "
+"their equivalents in ipsec.conf(5)."
+msgstr ""
+
+msgid "Connect"
+msgstr ""
+
+msgid "Connect/Disconnect"
+msgstr ""
+
+msgid "Connection to configure"
+msgstr ""
+
+msgid "Connections"
+msgstr ""
+
+msgid ""
+"Currently only the mast stack supports this. Acceptable values are yes (the "
+"default), no or conntrack. This option is ignored when SArefs are not "
+"supported. This option is passed as PLUTO_SAREF_TRACKING to the updown "
+"script which makes the actual decisions whether to perform any iptables/"
+"ip_conntrack manipulation. A value of yes means that an IPSEC mangle table "
+"will be created. This table will be used to match reply packets. A value of "
+"conntrack means that additionally, subsequent packets using this connection "
+"will be marked as well, reducing the lookups needed to find the proper SAref "
+"by using the ip_conntrack state. A value of no means no IPSEC mangle table "
+"is created, and SAref tracking is left to a third-party (kernel) module. In "
+"case of a third party module, the SArefs can be relayed using the "
+"HAVE_STATSD deamon."
+msgstr ""
+
+msgid ""
+"Currently the accepted values are tunnel signifying a host-to-host, host-to-"
+"subnet, or subnet-to-subnet tunnel; transport, signifying host-to-host "
+"transport mode; passthrough, signifying that no IPsec processing should be "
+"done at all; drop, signifying that packets should be discarded; and reject, "
+"signifying that packets should be discarded and a diagnostic ICMP returned."
+msgstr ""
+
+msgid ""
+"Currently-accepted values are add (signifying an ipsec auto --add), route "
+"(signifying that plus an ipsec auto --route), start (signifying that plus an "
+"ipsec auto --up), manual (signifying an ipsec manual --up), and ignore (also "
+"the default) (signifying no automatic startup operation). See the config "
+"setup discussion below. Relevant only locally, other end need not agree on "
+"it (but in general, for an intended-to-be-permanent connection, both ends "
+"should use auto=start to ensure that any reboot causes immediate "
+"renegotiation)."
+msgstr ""
+
+msgid "Disable"
+msgstr ""
+
+msgid "Disabling automatic start is useful only in special circumstances."
+msgstr ""
+
+msgid "Disconnect"
+msgstr ""
+
+msgid "Enable"
+msgstr ""
+
+msgid "Enable/Disable"
+msgstr ""
+
+msgid ""
+"For example, a command to decrypt an encrypted copy of the ipsec.secrets "
+"file. The command is run in a very simple way; complexities like I/O "
+"redirection are best hidden within a script. Any output is redirected for "
+"logging, so running interactive commands is difficult unless they use /dev/"
+"tty or equivalent for their interaction."
+msgstr ""
+
+msgid ""
+"For example, a command to remove a decrypted copy of the ipsec.secrets file. "
+"The command is run in a very simple way; complexities like I/O redirection "
+"are best hidden within a script. Any output is redirected for logging, so "
+"running interactive commands is difficult unless they use /dev/tty or "
+"equivalent for their interaction."
+msgstr ""
+
+msgid "Global Configuration"
+msgstr ""
+
+msgid "Host (Private Key)"
+msgstr ""
+
+msgid "Host (Public Key)"
+msgstr ""
+
+msgid ""
+"Hosts can be specified as IP addresses or Fully Qualified Domain Names "
+"prefixed with \"@\"."
+msgstr ""
+
+msgid ""
+"How long a particular instance of a connection (a set of encryption/"
+"authentication keys for user packets) should last, from successful "
+"negotiation to expiry; acceptable values are an integer optionally followed "
+"by s (a time in seconds) or a decimal number followed by m, h, or d (a time "
+"in minutes, hours, or days respectively) (default 8h, maximum 24h). "
+"Normally, the connection is renegotiated (via the keying channel) before it "
+"expires. The two ends need not exactly agree on salifetime, although if they "
+"do not, there will be some clutter of superseded connections on the end "
+"which thinks the lifetime is longer."
+msgstr ""
+
+msgid ""
+"How long before connection expiry or keying-channel expiry should attempts "
+"to negotiate a replacement begin; acceptable values as for salifetime "
+"(default 9m). Relevant only locally, other end need not agree on it."
+msgstr ""
+
+msgid "IPsec"
+msgstr ""
+
+msgid "IPsec Certificate Passwords"
+msgstr ""
+
+msgid "IPsec Certificates"
+msgstr ""
+
+msgid "IPsec Connection Configuration"
+msgstr ""
+
+msgid "IPsec Connection Status"
+msgstr ""
+
+msgid "IPsec Connections"
+msgstr ""
+
+msgid "IPsec Global Settings"
+msgstr ""
+
+msgid "IPsec Preshared Secrets"
+msgstr ""
+
+msgid "IPsec Secrets"
+msgstr ""
+
+msgid "IPsec XAUTH Passwords"
+msgstr ""
+
+msgid ""
+"If any of the CRL's is expired, or if they previously failed to get updated, "
+"a new attempt at updating the CRL is made. The first attempt to update a CRL "
+"is started at two times the crlcheckinterval. If set to 0, which is also the "
+"default value if this option is not specified, CRL updating is disabled."
+msgstr ""
+
+msgid ""
+"If not set, pluto is tolerant about missing or expired X.509 Certificate "
+"Revocation Lists (CRL's), and will allow peer certificates as long as they "
+"do not appear on an expired CRL. When this option is enabled, all "
+"connections with an expired or missing CRL will be denied. Active "
+"connections will be terminated at rekey time. This setup is more secure, but "
+"also dangerous. If the CRL is fetched through an IPsec tunnel with a CRL "
+"that expired, the entire VPN server will be dead in the water until a new "
+"CRL is manually transferred to the machine (if it allows non-IPsec "
+"connections)."
+msgstr ""
+
+msgid ""
+"If not specified, a secure set of defaults will be used. Sets are separated "
+"using comma's."
+msgstr ""
+
+msgid ""
+"If you are using leftrsasigkey=%cert this defines the certificate you would "
+"like to use. It should point to a X.509 encoded certificate file. If you do "
+"not specify a full pathname, by default it will look in /etc/ipsec.d/certs. "
+"If openswan has been compiled with USE_LIBNSS=true, then openswan will also "
+"check the NSS database for RSA keys. These can be software or hardware."
+msgstr ""
+
+msgid ""
+"In any form accepted by ipsec_ttoaddr(3). Currently, IPv4 and IPv6 IP "
+"addresses are supported. There are several magic values. If it is "
+"%defaultroute, and the config setup section's, interfaces specification "
+"contains %defaultroute, left will be filled in automatically with the local "
+"address of the default-route interface (as determined at IPsec startup "
+"time); this also overrides any value supplied for leftnexthop. (Either left "
+"or right may be %defaultroute, but not both.) The value %any signifies an "
+"address to be filled in (by automatic keying) during negotiation. The value "
+"%opportunistic signifies that both left and leftnexthop are to be filled in "
+"(by automatic keying) from DNS data for left's client. The value can also "
+"contain the interface name, which will then later be used to obtain the IP "
+"address from to fill in. For example %ppp0 The values %group and "
+"%opportunisticgroup makes this a policy group conn: one that will be "
+"instantiated into a regular or opportunistic conn for each CIDR block listed "
+"in the policy group file with the same name as the conn."
+msgstr ""
+
+msgid ""
+"In some cases, for example when ESP packets are filtered or when a broken "
+"IPsec peer does not properly recognise NAT, it can be useful to force "
+"RFC-3948 encapsulation. forceencaps=yes forces the NAT detection code to lie "
+"and tell the remote peer that RFC-3948 encapsulation (ESP in UDP port 4500 "
+"packets) is required. For this option to have any effect, the setup section "
+"option nat_traversal=yes needs to be set."
+msgstr ""
+
+msgid "Invalid"
+msgstr ""
+
+msgid "Left"
+msgstr ""
+
+msgid "Left Endpoint Options for %s"
+msgstr ""
+
+msgid "Loaded"
+msgstr ""
+
+msgid "Not Loaded"
+msgstr ""
+
+msgid ""
+"Options which affect all IPsec connections and/or the behavior of the IPsec "
+"daemons"
+msgstr ""
+
+msgid "Password"
+msgstr ""
+
+msgid ""
+"Private key files available for use with IPsec. Passwords are used to "
+"decrypt files encrypted using 3DES and should be left blank for files which "
+"are not encrypted."
+msgstr ""
+
+msgid "Revocation List"
+msgstr ""
+
+msgid "Right"
+msgstr ""
+
+msgid "Right Endpoint Options for %s"
+msgstr ""
+
+msgid "Secret"
+msgstr ""
+
+msgid "Secrets"
+msgstr ""
+
+msgid "See ipsec_pluto(8) for available options."
+msgstr ""
+
+msgid "Select a Connection"
+msgstr ""
+
+msgid ""
+"Set the length of time (in seconds) we will idle without hearing either an "
+"R_U_THERE poll from our peer, or an R_U_THERE_ACK reply. After this period "
+"has elapsed with no response and no traffic, we will declare the peer dead, "
+"and remove the SA (default 120 seconds). If dpdtimeout is set, dpdaction "
+"also needs to be set."
+msgstr ""
+
+msgid ""
+"Sets the delay (in seconds) between Dead Peer Dectection (RFC 3706) "
+"keepalives (R_U_THERE, R_U_THERE_ACK) that are sent for this connection. If "
+"dpddelay is set, dpdtimeout also needs to be set."
+msgstr ""
+
+msgid "Settings"
+msgstr ""
+
+msgid "Shared"
+msgstr ""
+
+msgid "Shared Options for %s"
+msgstr ""
+
+msgid ""
+"Shared secrets are used to authenticate connection peers to each other. Each "
+"endpoint must use the same shared secret for authentication to be "
+"successful. Each shared secret may be shared by many hosts."
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid ""
+"Stored secrets for IKE/IPsec authentication. Secrets can include preshared "
+"secrets, passphrases for X.509 certificates, and XAUTH static passwords."
+msgstr ""
+
+msgid ""
+"The XAUTH username associated with this XAUTH connection. The XAUTH password "
+"can be configured in the ipsec.secrets file."
+msgstr ""
+
+msgid ""
+"The format is \"cipher-hash;modpgroup\" Any left out option will be filled "
+"in with all allowed default options. If an ike option is specified, no other "
+"received proposals will be accepted. Formerly there was a distinction (by "
+"using a \"!\" symbol) between \"strict mode\" or not. That mode has been "
+"obsoleted. If an ike option is specified, the mode is always strict, meaning "
+"no other received proposals will be accepted. Some examples are ike=3des-"
+"sha1,aes-sha1, ike=aes, ike=aes128-md5;modp2048, ike=aes128-sha1;dh22, "
+"ike=3des-md5;modp1024,aes-sha1;modp1536 or ike=modp1536. The options must be "
+"suitable as a value of ipsec_spi(8)'s --ike option. The default is to use "
+"IKE, and to allow all combinations of: cipher: 3des or aes hash: sha1 or md5 "
+"pfsgroup (DHgroup): modp1024 or modp1536"
+msgstr ""
+
+msgid ""
+"The left participant's public key for RSA signature authentication, in RFC "
+"2537 format using ipsec_ttodata(3) encoding. The magic value %none means the "
+"same as not specifying a value (useful to override a default). The value "
+"%dnsondemand (the default) means the key is to be fetched from DNS at the "
+"time it is needed. The value %dnsonload means the key is to be fetched from "
+"DNS at the time the connection description is read from ipsec.conf; "
+"currently this will be treated as %none if right=%any or right="
+"%opportunistic. The value %dns is currently treated as %dnsonload but will "
+"change to %dnsondemand in the future. The identity used for the left "
+"participant must be a specific host, not %any or another magic value. The "
+"value %cert will load the information required from a certificate defined in "
+"%leftcert and automatically define leftid for you. Caution: if two "
+"connection descriptions specify different public keys for the same leftid, "
+"confusion and madness will ensue."
+msgstr ""
+
+msgid ""
+"The xauth connection will have to be started interactively and cannot be "
+"configured using auto=start. Instead, it has to be started from the "
+"commandline using ipsec auto --up connname. You will then be prompted for "
+"the username and password. To setup an XAUTH connection non-interactively, "
+"which defeats the whole purpose of XAUTH, but is regularly requested by "
+"users, it is possible to use a whack command - ipsec whack --name baduser --"
+"ipsecgroup-xauth --xauthname badusername --xauthpass password --initiate The "
+"other side of the connection should be configured as rightxauthserver."
+msgstr ""
+
+msgid ""
+"This can enable additional processing during the IKE negotiation. Acceptable "
+"values are cisco or ietf (the default). When set to cisco, support for Cisco "
+"IPsec gateway redirection and Cisco obtained DNS and domainname are enabled. "
+"This includes automatically updating (and restoring) /etc/resolv.conf. These "
+"options require that XAUTH is also enabled on this connection."
+msgstr ""
+
+msgid ""
+"This can use PAM for authentication or md5 passwords in /etc/ipsec.d/passwd. "
+"These are additional credentials to verify the user identity, and should not "
+"be confused with the XAUTH group secret, which is just a regular PSK defined "
+"in ipsec.secrets. The other side of the connection should be configured as "
+"rightxauthclient. XAUTH connections cannot rekey, so rekey=no should be "
+"specified in this conn. For further details on how to compile and use XAUTH, "
+"see README.XAUTH."
+msgstr ""
+
+msgid ""
+"This section contains a list of the configured IPsec connections and their "
+"current states."
+msgstr ""
+
+msgid "To create a new connection, use the <a href=\"%s\">status page</a>."
+msgstr ""
+
+msgid ""
+"To troubleshoot connection problems, check the <a href=\"%s\">System Log</a>."
+msgstr ""
+
+msgid "Unable to save certificate file to %s: %s"
+msgstr ""
+
+msgid "Unrecognized certificate role."
+msgstr ""
+
+msgid "Upload Certificate"
+msgstr ""
+
+msgid "Uploaded certificate saved as %s."
+msgstr ""
+
+msgid "Username"
+msgstr ""
+
+msgid ""
+"Usernames and passwords sent to peers for user authentication via XAUTH."
+msgstr ""
+
+msgid ""
+"Valid options are: esp for encryption, and ah for authentication only, ah"
+"+esp for both."
+msgstr ""
+
+msgid ""
+"Valid values are \"auto\", \"klips\", \"netkey\" and \"mast\". The \"mast\" "
+"stack is a variation for the klips stack."
+msgstr ""
+
+msgid ""
+"Wait for each negotiation attempt that is part of startup to finish before "
+"proceeding with the next."
+msgstr ""
+
+msgid ""
+"What \"updown\" script to run to adjust routing and/or firewalling when the "
+"status of the connection changes (default ipsec _updown). May include "
+"positional parameters separated by white space (although this requires "
+"enclosing the whole string in quotes); including shell metacharacters is "
+"unwise. An example to enable routing when using the NETKEY stack, one can "
+"use: \"ipsec _updown --route yes\". See ipsec_pluto(8) for details. Relevant "
+"only locally, other end need not agree on it."
+msgstr ""
+
+msgid ""
+"When disabled, prevents pluto from restarting after it crashes. This option "
+"should only be used when debugging a crasher. It will prevent overwriting a "
+"core file on a new start, or a cascade of core files. This option is also "
+"required if used with plutostderrlog= to avoid clearing the logs of the "
+"crasher."
+msgstr ""
+
+msgid ""
+"Whether IPComp compression of content is proposed on the connection (link-"
+"level compression does not work on encrypted data, so to be effective, "
+"compression must be done before encryption); The two ends need not agree. A "
+"value of yes causes IPsec to propose both compressed and uncompressed, and "
+"prefer compressed. A value of no prevents IPsec from proposing compression; "
+"a proposal to compress will still be accepted."
+msgstr ""
+
+msgid ""
+"Whether KLIPS's check that a packet emerging from a tunnel has plausible "
+"addresses in its header should be disabled. Tunnel-exit checks improve "
+"security and do not break any normal configuration. Relevant only locally, "
+"other end need not agree on it."
+msgstr ""
+
+msgid ""
+"Whether a particular participant ID should be kept unique, with any new "
+"(automatically keyed) connection using an ID from a different IP address "
+"deemed to replace all old ones using that ID. Participant IDs normally are "
+"unique, so a new (automatically-keyed) connection using the same ID is "
+"almost invariably intended to replace an old one."
+msgstr ""
+
+msgid ""
+"Whether a tunnel packet's TOS field should be set to 0 rather than copied "
+"from the user packet inside This KLIPS option has no effect on NETKEY, "
+"Windows or BSD stacks."
+msgstr ""
+
+msgid "aggrmode - Use Aggressive Mode instead of Main Mode"
+msgstr ""
+
+msgid "ah - AH authentication algorithm to be used for the connection."
+msgstr ""
+
+msgid "authby - How the two security gateways should authenticate each other."
+msgstr ""
+
+msgid "auto - Operation, if any, to be done at IPsec startup"
+msgstr ""
+
+msgid "compress - Propose IPComp compression"
+msgstr ""
+
+msgid "connaddrfamily - Address family"
+msgstr ""
+
+msgid ""
+"crlcheckinterval - Interval (in seconds) after which pluto will verify "
+"loaded X.509 CRL's for expiration"
+msgstr ""
+
+msgid "disablearrivalcheck - Disable KLIPS's normal tunnel-exit check"
+msgstr ""
+
+msgid "dpddelay - Delay (in seconds) between Dead Peer Dectection keepalives"
+msgstr ""
+
+msgid ""
+"dpdtimeout - Set the length of time (in seconds) we will idle without "
+"hearing either an R_U_THERE poll from our peer, or an R_U_THERE_ACK reply."
+msgstr ""
+
+msgid "failureshunt - Failed packet action"
+msgstr ""
+
+msgid "forceencaps - Force RFC-3948 encapsulation (for NAT)"
+msgstr ""
+
+msgid "hidetos - Don't copy TOS field to containing packet"
+msgstr ""
+
+msgid ""
+"how the left participant should be identified for authentication; defaults "
+"to left. Can be an IP address (in any ipsec_ttoaddr(3) syntax) or a fully-"
+"qualified domain name preceded by @ (which is used as a literal string and "
+"not resolved). The magic value %fromcert causes the ID to be set to a DN "
+"taken from a certificate that is loaded. Prior to 2.5.16, this was the "
+"default if a certificate was specified. The magic value %none sets the ID to "
+"no ID. This is included for completeness, as the ID may have been set in the "
+"default conn, and one wishes for it to default instead of being explicitly "
+"set. The magic value %myid stands for the current setting of myid. This is "
+"set in config setup or by ipsec_whack(8), or, if not set, it is the IP "
+"address in %defaultroute (if that is supported by a TXT record in its "
+"reverse domain), or otherwise it is the system's hostname (if that is "
+"supported by a TXT record in its forward domain), or otherwise it is "
+"undefined."
+msgstr ""
+
+msgid ""
+"ike - IKE encryption/authentication algorithm to be used for the connection "
+"(phase 1 aka ISAKMP SA)."
+msgstr ""
+
+msgid "nhelpers - Number of pluto helper processes to start"
+msgstr ""
+
+msgid "overridemtu - Force MTU"
+msgstr ""
+
+msgid "phase2 - Sets the type of SA that will be produced."
+msgstr ""
+
+msgid ""
+"phase2alg - Specifies the algorithms that will be offered/accepted for a "
+"phase2 negotiation."
+msgstr ""
+
+msgid "pluto - Start pluto automatically"
+msgstr ""
+
+msgid "plutodebug - How much Pluto debugging output should be logged."
+msgstr ""
+
+msgid "plutoopts - Additional options to pass to pluto upon startup"
+msgstr ""
+
+msgid "plutorestartoncrash - Restart pluto after crash"
+msgstr ""
+
+msgid "plutostderrlog - Log to file instead of syslog"
+msgstr ""
+
+msgid "plutowait - Serialize startup"
+msgstr ""
+
+msgid "postpluto - Shell command to run after starting Pluto"
+msgstr ""
+
+msgid "prepluto - Shell command to run before starting Pluto"
+msgstr ""
+
+msgid "protostack - Protocol stack to use"
+msgstr ""
+
+msgid ""
+"rekeymargin - Time before expiry when attempts to negotiate a replacement "
+"begin."
+msgstr ""
+
+msgid "remote_peer_type - Set the remote peer type."
+msgstr ""
+
+msgid "salifetime - Security Association Lifetime"
+msgstr ""
+
+msgid ""
+"sareftrack - Set the method of tracking reply packets with SArefs when using "
+"an SAref compatible stack."
+msgstr ""
+
+msgid "strictcrlpolicy - Require current X.509 Certificate Revocation Lists"
+msgstr ""
+
+msgid ""
+"syslog - The syslog2 “facility” name and priority to use for startup/"
+"shutdown log messages"
+msgstr ""
+
+msgid "type - Type of connection"
+msgstr ""
+
+msgid "uniqueids - Keep IDs unique for each participant"
+msgstr ""
+
+msgid ""
+"what to do with packets when negotiation fails. The default is none: no "
+"shunt; passthrough, drop, and reject have the obvious meanings."
+msgstr ""

@@ -134,13 +134,6 @@ msgstr ""
 msgid "Hostname"
 msgstr "Nombre de máquina"
 
-msgid ""
-"Hosts and Networks that are listed here are excluded from splashing, i.e. "
-"they are always allowed."
-msgstr ""
-"A estas máquinas y redes no se les mostrará la presentación y siempre serán "
-"bienvenidas."
-
 msgid "IP Address"
 msgstr "Dirección IP"
 
@@ -336,6 +329,13 @@ msgstr "malgastar ancho de banda con descargas innecesarias o multimedia"
 
 msgid "whitelisted"
 msgstr "en lista blanca"
+
+#~ msgid ""
+#~ "Hosts and Networks that are listed here are excluded from splashing, i.e. "
+#~ "they are always allowed."
+#~ msgstr ""
+#~ "A estas máquinas y redes no se les mostrará la presentación y siempre "
+#~ "serán bienvenidas."
 
 #~ msgid "By accepting these rules you can use this network for"
 #~ msgstr "Si acepta estas reglas pordrá usar esta red para"

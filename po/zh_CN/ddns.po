@@ -28,13 +28,11 @@ msgstr "动态DNS"
 msgid ""
 "Dynamic DNS allows that your router can be reached with a fixed hostname "
 "while having a dynamically changing IP address."
-msgstr "动态DNS允许为主机配置一个固定的可访问域名， 但该域名对应的IP可以是动态的."
+msgstr ""
+"动态DNS允许为主机配置一个固定的可访问域名， 但该域名对应的IP可以是动态的."
 
 msgid "Enable"
 msgstr "启用"
-
-msgid "Event interface"
-msgstr ""
 
 msgid "Force update every"
 msgstr "强制更新间隔"
@@ -51,9 +49,6 @@ msgstr "接口"
 msgid "Network"
 msgstr "网络"
 
-msgid "On which interface up should start the ddns script process."
-msgstr ""
-
 msgid "Password"
 msgstr "密码"
 
@@ -68,6 +63,9 @@ msgstr "URL"
 
 msgid "Username"
 msgstr "用户名"
+
+msgid "WAN Interface"
+msgstr ""
 
 msgid "custom"
 msgstr "自定义"

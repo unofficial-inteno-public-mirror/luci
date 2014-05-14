@@ -77,6 +77,9 @@ msgstr "További naplózás engedélyezése"
 msgid "Enable secure mode"
 msgstr "Biztonságos mód engedélyezése"
 
+msgid "External Interface"
+msgstr ""
+
 msgid "External Port"
 msgstr "Külső port"
 
@@ -85,6 +88,9 @@ msgstr "Külső portok"
 
 msgid "General Settings"
 msgstr "Általános beállítások"
+
+msgid "Internal Interface"
+msgstr ""
 
 msgid "Internal addresses"
 msgstr "Belső címek"
@@ -126,13 +132,6 @@ msgid "UPNP"
 msgstr "UPNP"
 
 msgid ""
-"UPNP allows clients in the local network to automatically configure the "
-"router."
-msgstr ""
-"Az UPnP lehetővé teszi a hálózatban lévő ügyfelek számára hogy automatikusan "
-"beállítsák a routert."
-
-msgid ""
 "UPnP allows clients in the local network to automatically configure the "
 "router."
 msgstr ""
@@ -151,5 +150,12 @@ msgstr "Feltöltés"
 msgid "Value in KByte/s, informational only"
 msgstr "Érték KByte/s-ban, csak tájékoztató jellegű"
 
-msgid "enable"
-msgstr "engedélyezés"
+#~ msgid ""
+#~ "UPNP allows clients in the local network to automatically configure the "
+#~ "router."
+#~ msgstr ""
+#~ "Az UPnP lehetővé teszi a hálózatban lévő ügyfelek számára hogy "
+#~ "automatikusan beállítsák a routert."
+
+#~ msgid "enable"
+#~ msgstr "engedélyezés"

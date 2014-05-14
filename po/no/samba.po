@@ -7,9 +7,6 @@ msgstr ""
 msgid "Allow guests"
 msgstr "Tillat gjester"
 
-msgid "Allow system users to reach their home directories via network shares"
-msgstr "Tillat systembrukere å nå sine hjemmekataloger via nettverks mapper."
-
 msgid "Allowed users"
 msgstr "Tillatte brukere"
 
@@ -19,20 +16,20 @@ msgstr "Opprett Maske"
 msgid "Description"
 msgstr "Beskrivelse"
 
+msgid "Device"
+msgstr ""
+
+msgid "Directory"
+msgstr ""
+
 msgid "Directory mask"
 msgstr "Katalog maske"
 
-msgid "Edit Template"
-msgstr "Rediger Mal"
-
-msgid "Edit the template that is used for generating the samba configuration."
-msgstr "Rediger malen som brukes til å generere samba konfigurasjonen."
-
-msgid "General Settings"
-msgstr "Generelle Innstillinger"
-
 msgid "Hostname"
 msgstr "Vertsnavn"
+
+msgid "Interfaces"
+msgstr ""
 
 msgid "Mask for new directories"
 msgstr "Maske for nye kataloger"
@@ -46,27 +43,56 @@ msgstr "Navn"
 msgid "Network Shares"
 msgstr "Nettverks Mapper"
 
-msgid "Path"
-msgstr "Fysisk bane"
+msgid "Password"
+msgstr ""
 
 msgid "Read-only"
 msgstr "Skrivebeskyttet"
 
-msgid "Share home-directories"
-msgstr "Del Hjemmekataloger"
+msgid "Samba Users"
+msgstr ""
 
 msgid "Shared Directories"
 msgstr "Delte Kataloger"
 
-msgid ""
-"This is the content of the file '/etc/samba/smb.conf.template' from which "
-"your samba configuration will be generated. Values enclosed by pipe symbols "
-"('|') should not be changed. They get their values from the 'General "
-"Settings' tab."
+msgid "User Name"
 msgstr ""
-"Dette er innholdet av filen '/etc/samba/smb.conf.template' som din samba "
-"konfigurasjon vil bli generert fra. Verdier omsluttet av ('|') bør ikke "
-"endres. De får sine verdier fra 'Generelle Innstillinger' fanen."
 
 msgid "Workgroup"
 msgstr "Arbeidsgruppe"
+
+msgid ""
+"the interface(s) samba will listen on; samba will not start if no interface "
+"is selected"
+msgstr ""
+
+#~ msgid ""
+#~ "Allow system users to reach their home directories via network shares"
+#~ msgstr ""
+#~ "Tillat systembrukere å nå sine hjemmekataloger via nettverks mapper."
+
+#~ msgid "Edit Template"
+#~ msgstr "Rediger Mal"
+
+#~ msgid ""
+#~ "Edit the template that is used for generating the samba configuration."
+#~ msgstr "Rediger malen som brukes til å generere samba konfigurasjonen."
+
+#~ msgid "General Settings"
+#~ msgstr "Generelle Innstillinger"
+
+#~ msgid "Path"
+#~ msgstr "Fysisk bane"
+
+#~ msgid "Share home-directories"
+#~ msgstr "Del Hjemmekataloger"
+
+#~ msgid ""
+#~ "This is the content of the file '/etc/samba/smb.conf.template' from which "
+#~ "your samba configuration will be generated. Values enclosed by pipe "
+#~ "symbols ('|') should not be changed. They get their values from the "
+#~ "'General Settings' tab."
+#~ msgstr ""
+#~ "Dette er innholdet av filen '/etc/samba/smb.conf.template' som din samba "
+#~ "konfigurasjon vil bli generert fra. Verdier omsluttet av ('|') bør ikke "
+#~ "endres. De får sine verdier fra 'Generelle Innstillinger' fanen."

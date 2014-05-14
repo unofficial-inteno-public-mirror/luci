@@ -19,12 +19,6 @@ msgid "Allow guests"
 msgstr "Permet convidats"
 
 #, fuzzy
-msgid "Allow system users to reach their home directories via network shares"
-msgstr ""
-"Els usuaris del sistema poden arribar als directoris d'inici via compartició "
-"de xarxa."
-
-#, fuzzy
 msgid "Allowed users"
 msgstr "Usuaris permesos"
 
@@ -35,21 +29,21 @@ msgstr "Crea màscara"
 msgid "Description"
 msgstr "Descripció"
 
+msgid "Device"
+msgstr ""
+
+msgid "Directory"
+msgstr ""
+
 #, fuzzy
 msgid "Directory mask"
 msgstr "Màscara de directori"
 
-msgid "Edit Template"
-msgstr ""
-
-msgid "Edit the template that is used for generating the samba configuration."
-msgstr ""
-
-msgid "General Settings"
-msgstr ""
-
 msgid "Hostname"
 msgstr "Nom de màquina"
+
+msgid "Interfaces"
+msgstr ""
 
 msgid "Mask for new directories"
 msgstr "Màscara per directoris nous"
@@ -63,28 +57,39 @@ msgstr ""
 msgid "Network Shares"
 msgstr "Comparticions de xarxa"
 
-msgid "Path"
+msgid "Password"
 msgstr ""
 
 #, fuzzy
 msgid "Read-only"
 msgstr "Només lectura"
 
-msgid "Share home-directories"
-msgstr "Comparteix directoris d'inici"
+msgid "Samba Users"
+msgstr ""
 
 msgid "Shared Directories"
 msgstr "Directoris compartits"
 
-msgid ""
-"This is the content of the file '/etc/samba/smb.conf.template' from which "
-"your samba configuration will be generated. Values enclosed by pipe symbols "
-"('|') should not be changed. They get their values from the 'General "
-"Settings' tab."
+msgid "User Name"
 msgstr ""
 
 msgid "Workgroup"
 msgstr "Grup de treball"
+
+msgid ""
+"the interface(s) samba will listen on; samba will not start if no interface "
+"is selected"
+msgstr ""
+
+#, fuzzy
+#~ msgid ""
+#~ "Allow system users to reach their home directories via network shares"
+#~ msgstr ""
+#~ "Els usuaris del sistema poden arribar als directoris d'inici via "
+#~ "compartició de xarxa."
+
+#~ msgid "Share home-directories"
+#~ msgstr "Comparteix directoris d'inici"
 
 #~ msgid "Shared Directory"
 #~ msgstr "Directori compartit"

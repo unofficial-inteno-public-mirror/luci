@@ -15,11 +15,6 @@ msgstr ""
 msgid "Allow guests"
 msgstr "Permite oaspeti"
 
-msgid "Allow system users to reach their home directories via network shares"
-msgstr ""
-"Permite utilizatorii de sistem sa acceseze directoarele lor peste "
-"partajarile de retea"
-
 msgid "Allowed users"
 msgstr "Utilizatori acceptati"
 
@@ -29,20 +24,20 @@ msgstr "Creaza masca"
 msgid "Description"
 msgstr "Descriere"
 
+msgid "Device"
+msgstr ""
+
+msgid "Directory"
+msgstr ""
+
 msgid "Directory mask"
 msgstr "Masca director"
 
-msgid "Edit Template"
-msgstr "Editeaza sablon"
-
-msgid "Edit the template that is used for generating the samba configuration."
-msgstr "Editeaza sablonul care e folosit pentru generarea configuratiei samba."
-
-msgid "General Settings"
-msgstr "Setari generale"
-
 msgid "Hostname"
 msgstr "Numele de host"
+
+msgid "Interfaces"
+msgstr ""
 
 msgid "Mask for new directories"
 msgstr "Masca pentru directoarele noi"
@@ -56,27 +51,59 @@ msgstr "Nume"
 msgid "Network Shares"
 msgstr "Partajari pe retea"
 
-msgid "Path"
-msgstr "Cale"
+msgid "Password"
+msgstr ""
 
 msgid "Read-only"
 msgstr "Doar citire"
 
-msgid "Share home-directories"
-msgstr "Partajeaza directoarele proprii"
+msgid "Samba Users"
+msgstr ""
 
 msgid "Shared Directories"
 msgstr "Directoare partajate"
 
-msgid ""
-"This is the content of the file '/etc/samba/smb.conf.template' from which "
-"your samba configuration will be generated. Values enclosed by pipe symbols "
-"('|') should not be changed. They get their values from the 'General "
-"Settings' tab."
+msgid "User Name"
 msgstr ""
-"Acesta este continutul fisierului '/etc/samba/smb.conf.template' din care se "
-"genereaza configuratia samba. Valorile dintre liniuta verticala ('|') n-ar "
-"trebui schimbate, ele iau valorile direct din tab-ul de \"Setari generale\"."
 
 msgid "Workgroup"
 msgstr "Workgroup"
+
+msgid ""
+"the interface(s) samba will listen on; samba will not start if no interface "
+"is selected"
+msgstr ""
+
+#~ msgid ""
+#~ "Allow system users to reach their home directories via network shares"
+#~ msgstr ""
+#~ "Permite utilizatorii de sistem sa acceseze directoarele lor peste "
+#~ "partajarile de retea"
+
+#~ msgid "Edit Template"
+#~ msgstr "Editeaza sablon"
+
+#~ msgid ""
+#~ "Edit the template that is used for generating the samba configuration."
+#~ msgstr ""
+#~ "Editeaza sablonul care e folosit pentru generarea configuratiei samba."
+
+#~ msgid "General Settings"
+#~ msgstr "Setari generale"
+
+#~ msgid "Path"
+#~ msgstr "Cale"
+
+#~ msgid "Share home-directories"
+#~ msgstr "Partajeaza directoarele proprii"
+
+#~ msgid ""
+#~ "This is the content of the file '/etc/samba/smb.conf.template' from which "
+#~ "your samba configuration will be generated. Values enclosed by pipe "
+#~ "symbols ('|') should not be changed. They get their values from the "
+#~ "'General Settings' tab."
+#~ msgstr ""
+#~ "Acesta este continutul fisierului '/etc/samba/smb.conf.template' din care "
+#~ "se genereaza configuratia samba. Valorile dintre liniuta verticala ('|') "
+#~ "n-ar trebui schimbate, ele iau valorile direct din tab-ul de \"Setari "
+#~ "generale\"."

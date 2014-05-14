@@ -161,6 +161,9 @@ msgstr "Von %s in %s mit Quell-%s und %s"
 msgid "General Settings"
 msgstr "Allgemein"
 
+msgid "Hide"
+msgstr ""
+
 msgid "IPv4"
 msgstr "IPv4"
 
@@ -475,6 +478,9 @@ msgstr "verwerfen"
 
 msgid "reject"
 msgstr "zurückweisen"
+
+msgid "traffic"
+msgstr ""
 
 #~ msgid "Destination"
 #~ msgstr "Ziel"

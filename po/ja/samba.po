@@ -16,9 +16,6 @@ msgstr ""
 msgid "Allow guests"
 msgstr "ゲストアクセスを許可"
 
-msgid "Allow system users to reach their home directories via network shares"
-msgstr "sambaを介してユーザーのホームディレクトリへのアクセスを許可します"
-
 msgid "Allowed users"
 msgstr "許可されたユーザー"
 
@@ -28,20 +25,20 @@ msgstr "マスクの作成"
 msgid "Description"
 msgstr "説明"
 
+msgid "Device"
+msgstr ""
+
+msgid "Directory"
+msgstr ""
+
 msgid "Directory mask"
 msgstr "ディレクトリのマスク"
 
-msgid "Edit Template"
-msgstr "テンプレートの編集"
-
-msgid "Edit the template that is used for generating the samba configuration."
-msgstr "samba設定を生成するテンプレートを編集します。"
-
-msgid "General Settings"
-msgstr "一般設定"
-
 msgid "Hostname"
 msgstr "ホスト名"
+
+msgid "Interfaces"
+msgstr ""
 
 msgid "Mask for new directories"
 msgstr "新規ディレクトリのマスク"
@@ -55,27 +52,55 @@ msgstr "名前"
 msgid "Network Shares"
 msgstr "ネットワーク共有"
 
-msgid "Path"
-msgstr "パス"
+msgid "Password"
+msgstr ""
 
 msgid "Read-only"
 msgstr "読み込みのみ"
 
-msgid "Share home-directories"
-msgstr "ホームディレクトリの共有"
+msgid "Samba Users"
+msgstr ""
 
 msgid "Shared Directories"
 msgstr "共有ディレクトリ"
 
-msgid ""
-"This is the content of the file '/etc/samba/smb.conf.template' from which "
-"your samba configuration will be generated. Values enclosed by pipe symbols "
-"('|') should not be changed. They get their values from the 'General "
-"Settings' tab."
+msgid "User Name"
 msgstr ""
-"これは、samba設定を生成するための'/etc/samba/smb.conf.template' ファイルの内"
-"容です。パイプ('|')で閉じられた値は変更しないでください。これらの値は'一般設"
-"定'タブ内の値によって置き換えられます。"
 
 msgid "Workgroup"
 msgstr "ワークグループ"
+
+msgid ""
+"the interface(s) samba will listen on; samba will not start if no interface "
+"is selected"
+msgstr ""
+
+#~ msgid ""
+#~ "Allow system users to reach their home directories via network shares"
+#~ msgstr "sambaを介してユーザーのホームディレクトリへのアクセスを許可します"
+
+#~ msgid "Edit Template"
+#~ msgstr "テンプレートの編集"
+
+#~ msgid ""
+#~ "Edit the template that is used for generating the samba configuration."
+#~ msgstr "samba設定を生成するテンプレートを編集します。"
+
+#~ msgid "General Settings"
+#~ msgstr "一般設定"
+
+#~ msgid "Path"
+#~ msgstr "パス"
+
+#~ msgid "Share home-directories"
+#~ msgstr "ホームディレクトリの共有"
+
+#~ msgid ""
+#~ "This is the content of the file '/etc/samba/smb.conf.template' from which "
+#~ "your samba configuration will be generated. Values enclosed by pipe "
+#~ "symbols ('|') should not be changed. They get their values from the "
+#~ "'General Settings' tab."
+#~ msgstr ""
+#~ "これは、samba設定を生成するための'/etc/samba/smb.conf.template' ファイルの"
+#~ "内容です。パイプ('|')で閉じられた値は変更しないでください。これらの値は'一"
+#~ "般設定'タブ内の値によって置き換えられます。"

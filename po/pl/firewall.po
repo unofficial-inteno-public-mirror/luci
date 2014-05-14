@@ -165,6 +165,9 @@ msgstr "Z %s w %s ze źródłem %s i %s"
 msgid "General Settings"
 msgstr "Ustawienia ogólne"
 
+msgid "Hide"
+msgstr ""
+
 msgid "IPv4"
 msgstr "IPv4"
 
@@ -484,6 +487,9 @@ msgstr "porzucaj"
 
 msgid "reject"
 msgstr "odrzucaj"
+
+msgid "traffic"
+msgstr ""
 
 #~ msgid "Destination"
 #~ msgstr "Miejsce przeznaczenia"

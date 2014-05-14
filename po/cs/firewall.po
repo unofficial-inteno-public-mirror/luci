@@ -158,6 +158,9 @@ msgstr "Z %s v %s se zdrojovou %s a %s"
 msgid "General Settings"
 msgstr "Obecné nastavení"
 
+msgid "Hide"
+msgstr ""
+
 msgid "IPv4"
 msgstr "IPv4"
 
@@ -471,6 +474,9 @@ msgstr "zahodit"
 
 msgid "reject"
 msgstr "odmítnout"
+
+msgid "traffic"
+msgstr ""
 
 #~ msgid "Destination"
 #~ msgstr "Cíl"

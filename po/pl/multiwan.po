@@ -12,114 +12,135 @@ msgstr ""
 "|| n%100>=20) ? 1 : 2);\n"
 "X-Generator: Pootle 2.0.6\n"
 
-msgid "Attempts Before WAN Failover"
-msgstr "Liczba prób przed procedurą WAN Failover (połączenie awaryjne WAN)"
-
-msgid "Attempts Before WAN Recovery"
-msgstr "Liczba prób przed procedurą WAN Recovery (przywrócenie WAN)"
-
-msgid "Auto"
-msgstr "Automatycznie"
-
-msgid "Collecting data..."
-msgstr "Zbieranie informacji..."
-
-msgid ""
-"Configure rules for directing outbound traffic through specified WAN Uplinks."
+msgid "Port Management"
 msgstr ""
-"Skonfiguruj zasady kierowania ruchu wychodzącego za pośrednictwem "
-"określonych łączy WAN."
 
-msgid "DNS Server(s)"
-msgstr "Serwer(y) DNS"
-
-msgid "Default Route"
-msgstr "Trasa domyślna"
-
-msgid "Destination Address"
-msgstr "Adres docelowy"
-
-msgid "Disable"
-msgstr "Wyłącz"
-
-msgid "Enable"
-msgstr "Włącz"
-
-msgid "Failing"
-msgstr "Niepowodzenie"
-
-msgid "Failover Traffic Destination"
-msgstr "Cel ruch dla połączenia awaryjnego"
-
-msgid "Health Monitor ICMP Host(s)"
-msgstr "Monitorowane hosty przy użyciu protokołu ICMP (ping)"
-
-msgid "Health Monitor ICMP Timeout"
+msgid "eth0 (%s)"
 msgstr ""
-"Czas nieosiągalności monitorowanych hostów przy użyciu protokołu ICMP (ping)"
 
-msgid "Health Monitor Interval"
-msgstr "Odstęp pomiędzy próbami monitoringu"
-
-msgid ""
-"Health Monitor detects and corrects network changes and failed connections."
+msgid "eth1 (%s)"
 msgstr ""
-"Monitor stanu wykrywa i koryguje zmiany sieci oraz nieudane połączenia."
 
-msgid "KO"
-msgstr "KO"
-
-msgid "Load Balancer Distribution"
-msgstr "Dystrybucja równoważenia obciążenia"
-
-msgid "Load Balancer(Compatibility)"
-msgstr "Równoważenie obciążenia (Zgodność)"
-
-msgid "Load Balancer(Performance)"
-msgstr "Równoważenie obciążenia (Wydajność)"
-
-msgid "Multi-WAN"
-msgstr "Multi-WAN"
-
-msgid "Multi-WAN Status"
-msgstr "Status Multi-WAN"
-
-msgid "Multi-WAN Traffic Rules"
-msgstr "Reguły ruchu Multi-WAN"
-
-msgid ""
-"Multi-WAN allows for the use of multiple uplinks for load balancing and "
-"failover."
+msgid "eth2 (%s)"
 msgstr ""
-"Multi-WAN pozwala na używanie kilku łącz w celu równoważenia obciążenia lub "
-"omijania awarii."
 
-msgid "None"
-msgstr "Żaden"
+msgid "eth3 (%s)"
+msgstr ""
 
-msgid "OK"
-msgstr "OK"
+msgid "eth4 (%s)"
+msgstr ""
 
-msgid "Ports"
-msgstr "Porty"
+#~ msgid "Attempts Before WAN Failover"
+#~ msgstr "Liczba prób przed procedurą WAN Failover (połączenie awaryjne WAN)"
 
-msgid "Protocol"
-msgstr "Protokół"
+#~ msgid "Attempts Before WAN Recovery"
+#~ msgstr "Liczba prób przed procedurą WAN Recovery (przywrócenie WAN)"
 
-msgid "Recovering"
-msgstr "Odzyskiwanie"
+#~ msgid "Auto"
+#~ msgstr "Automatycznie"
 
-msgid "Source Address"
-msgstr "Adres źródłowy"
+#~ msgid "Collecting data..."
+#~ msgstr "Zbieranie informacji..."
 
-msgid "Unknown"
-msgstr "Nieznany"
+#~ msgid ""
+#~ "Configure rules for directing outbound traffic through specified WAN "
+#~ "Uplinks."
+#~ msgstr ""
+#~ "Skonfiguruj zasady kierowania ruchu wychodzącego za pośrednictwem "
+#~ "określonych łączy WAN."
 
-msgid "WAN Interfaces"
-msgstr "Interfejsy WAN"
+#~ msgid "DNS Server(s)"
+#~ msgstr "Serwer(y) DNS"
 
-msgid "WAN Uplink"
-msgstr "Łącze WAN"
+#~ msgid "Default Route"
+#~ msgstr "Trasa domyślna"
 
-msgid "all"
-msgstr "wszystkie"
+#~ msgid "Destination Address"
+#~ msgstr "Adres docelowy"
+
+#~ msgid "Disable"
+#~ msgstr "Wyłącz"
+
+#~ msgid "Enable"
+#~ msgstr "Włącz"
+
+#~ msgid "Failing"
+#~ msgstr "Niepowodzenie"
+
+#~ msgid "Failover Traffic Destination"
+#~ msgstr "Cel ruch dla połączenia awaryjnego"
+
+#~ msgid "Health Monitor ICMP Host(s)"
+#~ msgstr "Monitorowane hosty przy użyciu protokołu ICMP (ping)"
+
+#~ msgid "Health Monitor ICMP Timeout"
+#~ msgstr ""
+#~ "Czas nieosiągalności monitorowanych hostów przy użyciu protokołu ICMP "
+#~ "(ping)"
+
+#~ msgid "Health Monitor Interval"
+#~ msgstr "Odstęp pomiędzy próbami monitoringu"
+
+#~ msgid ""
+#~ "Health Monitor detects and corrects network changes and failed "
+#~ "connections."
+#~ msgstr ""
+#~ "Monitor stanu wykrywa i koryguje zmiany sieci oraz nieudane połączenia."
+
+#~ msgid "KO"
+#~ msgstr "KO"
+
+#~ msgid "Load Balancer Distribution"
+#~ msgstr "Dystrybucja równoważenia obciążenia"
+
+#~ msgid "Load Balancer(Compatibility)"
+#~ msgstr "Równoważenie obciążenia (Zgodność)"
+
+#~ msgid "Load Balancer(Performance)"
+#~ msgstr "Równoważenie obciążenia (Wydajność)"
+
+#~ msgid "Multi-WAN"
+#~ msgstr "Multi-WAN"
+
+#~ msgid "Multi-WAN Status"
+#~ msgstr "Status Multi-WAN"
+
+#~ msgid "Multi-WAN Traffic Rules"
+#~ msgstr "Reguły ruchu Multi-WAN"
+
+#~ msgid ""
+#~ "Multi-WAN allows for the use of multiple uplinks for load balancing and "
+#~ "failover."
+#~ msgstr ""
+#~ "Multi-WAN pozwala na używanie kilku łącz w celu równoważenia obciążenia "
+#~ "lub omijania awarii."
+
+#~ msgid "None"
+#~ msgstr "Żaden"
+
+#~ msgid "OK"
+#~ msgstr "OK"
+
+#~ msgid "Ports"
+#~ msgstr "Porty"
+
+#~ msgid "Protocol"
+#~ msgstr "Protokół"
+
+#~ msgid "Recovering"
+#~ msgstr "Odzyskiwanie"
+
+#~ msgid "Source Address"
+#~ msgstr "Adres źródłowy"
+
+#~ msgid "Unknown"
+#~ msgstr "Nieznany"
+
+#~ msgid "WAN Interfaces"
+#~ msgstr "Interfejsy WAN"
+
+#~ msgid "WAN Uplink"
+#~ msgstr "Łącze WAN"
+
+#~ msgid "all"
+#~ msgstr "wszystkie"

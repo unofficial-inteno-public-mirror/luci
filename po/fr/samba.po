@@ -16,11 +16,6 @@ msgstr ""
 msgid "Allow guests"
 msgstr "Invités autorisés"
 
-msgid "Allow system users to reach their home directories via network shares"
-msgstr ""
-"Autoriser les utilisateurs système à atteindre leurs dossiers personnels via "
-"les partages réseau"
-
 msgid "Allowed users"
 msgstr "Utilisateurs autorisés"
 
@@ -30,20 +25,20 @@ msgstr "Maque de création"
 msgid "Description"
 msgstr "Description"
 
+msgid "Device"
+msgstr ""
+
+msgid "Directory"
+msgstr ""
+
 msgid "Directory mask"
 msgstr "Masque des dossiers"
 
-msgid "Edit Template"
-msgstr "Éditer le modèle"
-
-msgid "Edit the template that is used for generating the samba configuration."
-msgstr "Éditer le modèle utilisé pour générer la configuration Samba."
-
-msgid "General Settings"
-msgstr "Paramètres généraux"
-
 msgid "Hostname"
 msgstr "Nom d'hôte"
+
+msgid "Interfaces"
+msgstr ""
 
 msgid "Mask for new directories"
 msgstr "Masque pour les nouveaux dossiers"
@@ -57,28 +52,58 @@ msgstr "Nom"
 msgid "Network Shares"
 msgstr "Partages réseau"
 
-msgid "Path"
-msgstr "Chemin"
+msgid "Password"
+msgstr ""
 
 msgid "Read-only"
 msgstr "Lecture seule"
 
-msgid "Share home-directories"
-msgstr "Partager les dossiers personnels"
+msgid "Samba Users"
+msgstr ""
 
 msgid "Shared Directories"
 msgstr "Dossiers partagés"
 
-msgid ""
-"This is the content of the file '/etc/samba/smb.conf.template' from which "
-"your samba configuration will be generated. Values enclosed by pipe symbols "
-"('|') should not be changed. They get their values from the 'General "
-"Settings' tab."
+msgid "User Name"
 msgstr ""
-"Voici le contenu du fichier '/etc/samba/smb.conf.template' d'où sera généré "
-"votre configuration Samba. Les valeurs entre les symboles barre-verticale "
-" (« | ») ne doivent pas être modifiées, elles proviennent de l'onglet "
-"« Paramètres généraux »."
 
 msgid "Workgroup"
 msgstr "Groupe de travail"
+
+msgid ""
+"the interface(s) samba will listen on; samba will not start if no interface "
+"is selected"
+msgstr ""
+
+#~ msgid ""
+#~ "Allow system users to reach their home directories via network shares"
+#~ msgstr ""
+#~ "Autoriser les utilisateurs système à atteindre leurs dossiers personnels "
+#~ "via les partages réseau"
+
+#~ msgid "Edit Template"
+#~ msgstr "Éditer le modèle"
+
+#~ msgid ""
+#~ "Edit the template that is used for generating the samba configuration."
+#~ msgstr "Éditer le modèle utilisé pour générer la configuration Samba."
+
+#~ msgid "General Settings"
+#~ msgstr "Paramètres généraux"
+
+#~ msgid "Path"
+#~ msgstr "Chemin"
+
+#~ msgid "Share home-directories"
+#~ msgstr "Partager les dossiers personnels"
+
+#~ msgid ""
+#~ "This is the content of the file '/etc/samba/smb.conf.template' from which "
+#~ "your samba configuration will be generated. Values enclosed by pipe "
+#~ "symbols ('|') should not be changed. They get their values from the "
+#~ "'General Settings' tab."
+#~ msgstr ""
+#~ "Voici le contenu du fichier '/etc/samba/smb.conf.template' d'où sera "
+#~ "généré votre configuration Samba. Les valeurs entre les symboles barre-"
+#~ "verticale  (« | ») ne doivent pas être modifiées, elles proviennent de "
+#~ "l'onglet « Paramètres généraux »."

@@ -79,6 +79,9 @@ msgstr "Activer la journalisation additionnelle"
 msgid "Enable secure mode"
 msgstr "Activer le mode sécurisé"
 
+msgid "External Interface"
+msgstr ""
+
 msgid "External Port"
 msgstr "Port externe"
 
@@ -87,6 +90,9 @@ msgstr "Ports externes"
 
 msgid "General Settings"
 msgstr "Paramètres généraux"
+
+msgid "Internal Interface"
+msgstr ""
 
 msgid "Internal addresses"
 msgstr "Adresses internes"
@@ -129,13 +135,6 @@ msgid "UPNP"
 msgstr "UPNP"
 
 msgid ""
-"UPNP allows clients in the local network to automatically configure the "
-"router."
-msgstr ""
-"UPnP permet à des clients du réseau local de configurer automatiquement le "
-"routeur."
-
-msgid ""
 "UPnP allows clients in the local network to automatically configure the "
 "router."
 msgstr ""
@@ -154,5 +153,12 @@ msgstr "Lien remontant"
 msgid "Value in KByte/s, informational only"
 msgstr "Valeur en Ko/s, pour information seulement"
 
-msgid "enable"
-msgstr "activer"
+#~ msgid ""
+#~ "UPNP allows clients in the local network to automatically configure the "
+#~ "router."
+#~ msgstr ""
+#~ "UPnP permet à des clients du réseau local de configurer automatiquement "
+#~ "le routeur."
+
+#~ msgid "enable"
+#~ msgstr "activer"

@@ -36,9 +36,6 @@ msgstr ""
 msgid "Enable"
 msgstr "Włącz"
 
-msgid "Event interface"
-msgstr "Interfejs"
-
 msgid "Force update every"
 msgstr "Wymuszaj aktualizację co"
 
@@ -54,9 +51,6 @@ msgstr "Interfejs"
 msgid "Network"
 msgstr "Sieć"
 
-msgid "On which interface up should start the ddns script process."
-msgstr "Określa interfejs na którym zostanie uruchomiony skrypt ddns."
-
 msgid "Password"
 msgstr "Hasło"
 
@@ -71,6 +65,9 @@ msgstr "URL"
 
 msgid "Username"
 msgstr "Nazwa użytkownika"
+
+msgid "WAN Interface"
+msgstr ""
 
 msgid "custom"
 msgstr "niestandardowe"
@@ -88,3 +85,9 @@ msgstr "min"
 
 msgid "network"
 msgstr "sieć"
+
+#~ msgid "Event interface"
+#~ msgstr "Interfejs"
+
+#~ msgid "On which interface up should start the ddns script process."
+#~ msgstr "Określa interfejs na którym zostanie uruchomiony skrypt ddns."

@@ -77,6 +77,9 @@ msgstr "ログ機能を有効にする"
 msgid "Enable secure mode"
 msgstr "セキュアモードを有効にする"
 
+msgid "External Interface"
+msgstr ""
+
 msgid "External Port"
 msgstr "外部ポート"
 
@@ -85,6 +88,9 @@ msgstr "外部ポート"
 
 msgid "General Settings"
 msgstr "一般設定"
+
+msgid "Internal Interface"
+msgstr ""
 
 msgid "Internal addresses"
 msgstr "内部アドレス"
@@ -126,13 +132,6 @@ msgid "UPNP"
 msgstr ""
 
 msgid ""
-"UPNP allows clients in the local network to automatically configure the "
-"router."
-msgstr ""
-"UPnPを使用することで、ローカルネットワーク内のクライアントが自動的にルータを"
-"構成することができます。"
-
-msgid ""
 "UPnP allows clients in the local network to automatically configure the "
 "router."
 msgstr ""
@@ -151,8 +150,15 @@ msgstr "アップリンク"
 msgid "Value in KByte/s, informational only"
 msgstr ""
 
-msgid "enable"
-msgstr "有効"
+#~ msgid ""
+#~ "UPNP allows clients in the local network to automatically configure the "
+#~ "router."
+#~ msgstr ""
+#~ "UPnPを使用することで、ローカルネットワーク内のクライアントが自動的にルータ"
+#~ "を構成することができます。"
+
+#~ msgid "enable"
+#~ msgstr "有効"
 
 #~ msgid ""
 #~ "UPNP should only be enabled if absolutely necessary as it can result in "

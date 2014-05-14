@@ -14,11 +14,6 @@ msgstr ""
 msgid "Allow guests"
 msgstr "Vendég hozzáférés"
 
-msgid "Allow system users to reach their home directories via network shares"
-msgstr ""
-"A rendszerfelhasználók hálózati megosztáson keresztül hozzáférhetnek a home "
-"könyvtárukhoz."
-
 msgid "Allowed users"
 msgstr "Engedélyezett felhasználók"
 
@@ -28,22 +23,20 @@ msgstr "Létrehozási maszk"
 msgid "Description"
 msgstr "Leírás"
 
+msgid "Device"
+msgstr ""
+
+msgid "Directory"
+msgstr ""
+
 msgid "Directory mask"
 msgstr "Könyvtár maszk"
 
-msgid "Edit Template"
-msgstr "Sablon szerkesztése"
-
-msgid "Edit the template that is used for generating the samba configuration."
-msgstr ""
-"Itt szerkesztheti a sablont, ami a végleges samba konfiguráció "
-"elkészítéséhez kerül felhasználásra."
-
-msgid "General Settings"
-msgstr "Általános beállítások"
-
 msgid "Hostname"
 msgstr "Gépnév"
+
+msgid "Interfaces"
+msgstr ""
 
 msgid "Mask for new directories"
 msgstr "Új könyvtárak maszkja"
@@ -57,28 +50,60 @@ msgstr "Név"
 msgid "Network Shares"
 msgstr "Hálózati megosztások"
 
-msgid "Path"
-msgstr "Elérési út"
+msgid "Password"
+msgstr ""
 
 msgid "Read-only"
 msgstr "Csak olvasható"
 
-msgid "Share home-directories"
-msgstr "Home könyvtárak megosztása"
+msgid "Samba Users"
+msgstr ""
 
 msgid "Shared Directories"
 msgstr "Megosztott könyvtárak"
 
-msgid ""
-"This is the content of the file '/etc/samba/smb.conf.template' from which "
-"your samba configuration will be generated. Values enclosed by pipe symbols "
-"('|') should not be changed. They get their values from the 'General "
-"Settings' tab."
+msgid "User Name"
 msgstr ""
-"Itt látható a /etc/samba/smb.conf.template file tartalma, ami a samba "
-"konfiguráció előállításához kerül felhasználásra. A pipe szimbólumok ('|') "
-"közé zárt értékek módosítása nem szükséges, az értéküket az általános "
-"beállítások fülről kapják."
 
 msgid "Workgroup"
 msgstr "Munkacsoport"
+
+msgid ""
+"the interface(s) samba will listen on; samba will not start if no interface "
+"is selected"
+msgstr ""
+
+#~ msgid ""
+#~ "Allow system users to reach their home directories via network shares"
+#~ msgstr ""
+#~ "A rendszerfelhasználók hálózati megosztáson keresztül hozzáférhetnek a "
+#~ "home könyvtárukhoz."
+
+#~ msgid "Edit Template"
+#~ msgstr "Sablon szerkesztése"
+
+#~ msgid ""
+#~ "Edit the template that is used for generating the samba configuration."
+#~ msgstr ""
+#~ "Itt szerkesztheti a sablont, ami a végleges samba konfiguráció "
+#~ "elkészítéséhez kerül felhasználásra."
+
+#~ msgid "General Settings"
+#~ msgstr "Általános beállítások"
+
+#~ msgid "Path"
+#~ msgstr "Elérési út"
+
+#~ msgid "Share home-directories"
+#~ msgstr "Home könyvtárak megosztása"
+
+#~ msgid ""
+#~ "This is the content of the file '/etc/samba/smb.conf.template' from which "
+#~ "your samba configuration will be generated. Values enclosed by pipe "
+#~ "symbols ('|') should not be changed. They get their values from the "
+#~ "'General Settings' tab."
+#~ msgstr ""
+#~ "Itt látható a /etc/samba/smb.conf.template file tartalma, ami a samba "
+#~ "konfiguráció előállításához kerül felhasználásra. A pipe szimbólumok "
+#~ "('|') közé zárt értékek módosítása nem szükséges, az értéküket az "
+#~ "általános beállítások fülről kapják."

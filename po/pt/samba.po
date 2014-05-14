@@ -18,12 +18,6 @@ msgid "Allow guests"
 msgstr "Permitir Convidados"
 
 #, fuzzy
-msgid "Allow system users to reach their home directories via network shares"
-msgstr ""
-"Usuários do sistema poderão acessar seu diretório home através dos "
-"compartilhamentos de rede."
-
-#, fuzzy
 msgid "Allowed users"
 msgstr "Usuários Permitidos"
 
@@ -34,21 +28,21 @@ msgstr "Criar Máscara"
 msgid "Description"
 msgstr "Descrição"
 
+msgid "Device"
+msgstr ""
+
+msgid "Directory"
+msgstr ""
+
 #, fuzzy
 msgid "Directory mask"
 msgstr "Máscara do Diretório"
 
-msgid "Edit Template"
-msgstr ""
-
-msgid "Edit the template that is used for generating the samba configuration."
-msgstr ""
-
-msgid "General Settings"
-msgstr ""
-
 msgid "Hostname"
 msgstr "Hostname"
+
+msgid "Interfaces"
+msgstr ""
 
 msgid "Mask for new directories"
 msgstr "Máscara para novos diretórios"
@@ -62,28 +56,39 @@ msgstr ""
 msgid "Network Shares"
 msgstr "Compartilhamentos de Rede"
 
-msgid "Path"
+msgid "Password"
 msgstr ""
 
 #, fuzzy
 msgid "Read-only"
 msgstr "Somente Leitura"
 
-msgid "Share home-directories"
-msgstr "Compartilhar diretórios home"
+msgid "Samba Users"
+msgstr ""
 
 msgid "Shared Directories"
 msgstr "Diretórios Compartilhados"
 
-msgid ""
-"This is the content of the file '/etc/samba/smb.conf.template' from which "
-"your samba configuration will be generated. Values enclosed by pipe symbols "
-"('|') should not be changed. They get their values from the 'General "
-"Settings' tab."
+msgid "User Name"
 msgstr ""
 
 msgid "Workgroup"
 msgstr "Grupo de Trabalho"
+
+msgid ""
+"the interface(s) samba will listen on; samba will not start if no interface "
+"is selected"
+msgstr ""
+
+#, fuzzy
+#~ msgid ""
+#~ "Allow system users to reach their home directories via network shares"
+#~ msgstr ""
+#~ "Usuários do sistema poderão acessar seu diretório home através dos "
+#~ "compartilhamentos de rede."
+
+#~ msgid "Share home-directories"
+#~ msgstr "Compartilhar diretórios home"
 
 #~ msgid "Shared Directory"
 #~ msgstr "Diretório Compartilhado"
