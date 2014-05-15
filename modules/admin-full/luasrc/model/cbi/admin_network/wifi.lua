@@ -121,7 +121,7 @@ s:tab("antenna", translate("Antenna Selection"))
 end
 --s:tab("bridge", translate("Wireless Bridge"))
 if guser == "admin" then
-s:tab("anyfi", translate("Anyfi.net"))
+s:tab("anyfi", "Anyfi.net")
 end
 
 --[[
@@ -634,89 +634,88 @@ end
 --	wdslist = s:taboption("bridge", DynamicList, "wdslist", translate("WDS Connection List"))
 --	wdslist:depends({wdsmode="0"})
 --	wdstimo = s:taboption("bridge", Value, "wdstimo", translate("WDS Link Detection Timeout"), "min")
+end
 
-	function anyfi_bandwidth_is_valid(value)
-		if not tonumber(value) or tonumber(value) < 1 or tonumber(value) > 100 then
-			return false
-		else
-			return true
-		end
-	end
-
-	if guser == "admin" and (fs.access("/sbin/anyfid") or fs.access("/sbin/myfid")) then
-
-		anyfi_controller = s:taboption("anyfi", Value, "anyfi_controller", translate("Controller"), translate("A comma separated string of Fully Qualified Domain Names or IP addresses"))
-		anyfi_controller.rmempty = true
-
-		anyfi_controller.cfgvalue = function(self, section, value)
-			return m.uci:get("anyfi", "config", "controller")
-		end
-
-		anyfi_controller.write = function(self, section, value)
-			m.uci:set("anyfi", "config", "controller", value)
-			m.uci:commit("anyfi")
-		end
-
-		anyfi_controller.remove = function(self, section)
-			m.uci:delete("anyfi", "config", "controller")
-			m.uci:commit("anyfi")
-		end
-
-		anyfi_floor = s:taboption("anyfi", Value, "anyfi_floor", translate("Floor"), translate("The percentage of available spectrum and backhaul that mobile users are allowed to consume even if there is competition with the primary user"))
-
-		anyfi_floor.rmempty = true
-		anyfi_floor.default = "5"
-		anyfi_floor:value("10", "10%")
-		anyfi_floor:value("20", "20%")
-		anyfi_floor:value("30", "30%")
-		anyfi_floor:value("40", "40%")
-		anyfi_floor:value("50", "50%")
-		anyfi_floor:value("60", "60%")
-		anyfi_floor:value("70", "70%")
-		anyfi_floor:value("80", "80%")
-		anyfi_floor:value("90", "90%")
-		anyfi_floor:value("100", "100%")
-
-		function anyfi_floor.validate(self, value, section)
-		    if anyfi_bandwidth_is_valid(value) then
-			return value
-		    else
-			return nil, "Invalid value for Floor, enter a value between 1-100 without '%'"
-		    end
-		end
-
-		anyfi_ceiling = s:taboption("anyfi", Value, "anyfi_ceiling", translate("Ceiling"), translate("The maximum percentage of available spectrum and backhaul that mobile users are allowed to consume"))
-		anyfi_ceiling.rmempty = true
-		anyfi_ceiling.default = "75"
-		anyfi_ceiling:value("10", "10%")
-		anyfi_ceiling:value("20", "20%")
-		anyfi_ceiling:value("30", "30%")
-		anyfi_ceiling:value("40", "40%")
-		anyfi_ceiling:value("50", "50%")
-		anyfi_ceiling:value("60", "60%")
-		anyfi_ceiling:value("70", "70%")
-		anyfi_ceiling:value("80", "80%")
-		anyfi_ceiling:value("90", "90%")
-		anyfi_ceiling:value("100", "100%")
-
-		function anyfi_ceiling.validate(self, value, section)
-		    if anyfi_bandwidth_is_valid(value) then
-			return value
-		    else
-			return nil, "Invalid value for Ceiling, enter a value between 1-100 without '%'"
-		    end
-		end
-
-		anyfi_uplink = s:taboption("anyfi", Value, "anyfi_uplink", translate("Uplink"), translate("The total upstream bandwidth available on the WAN connection, in bits per second"))
-		anyfi_uplink.rmempty = true
-		--anyfi_uplink.default = "1048576"
-
-		anyfi_downlink = s:taboption("anyfi", Value, "anyfi_downlink", translate("Downlink"), translate("The total downstream bandwidth available on the WAN connection, in bits per second"))
-		anyfi_downlink.rmempty = true
-		--anyfi_downlink.default = "8388608"
+function anyfi_bandwidth_is_valid(value)
+	if not tonumber(value) or tonumber(value) < 1 or tonumber(value) > 100 then
+		return false
+	else
+		return true
 	end
 end
 
+------------------- Anyfi.net global configuration ------------------
+
+if guser == "admin" and (fs.access("/sbin/anyfid") or fs.access("/sbin/myfid")) then
+
+	anyfi_controller = s:taboption("anyfi", Value, "anyfi_controller", "Controller", translate("A Fully Qualified Domain Name or IP address (e.g. demo.anyfi.net)"))
+	anyfi_controller.rmempty = true
+
+	anyfi_controller.cfgvalue = function(self, section, value)
+		return m.uci:get("anyfi", "controller", "hostname")
+	end
+
+	anyfi_controller.write = function(self, section, value)
+		m.uci:set("anyfi", "controller", "hostname", value)
+		m.uci:commit("anyfi")
+	end
+
+	anyfi_controller.remove = function(self, section)
+		m.uci:delete("anyfi", "controller", "hostname")
+		m.uci:commit("anyfi")
+	end
+end
+local anyfi_controller = anyfi_controller:formvalue(wdev:name()) or m.uci:get("anyfi", "controller", "hostname")
+
+------------------- Anyfi.net device configuration ------------------
+
+if guser == "admin" and os.execute("/sbin/anyfi-probe " .. hwtype .. " >/dev/null") == 0 and anyfi_controller and anyfi_controller ~= "" then
+	anyfi_floor = s:taboption("anyfi", Value, "anyfi_floor", "Floor",
+				  translate("The percentage of available spectrum and backhaul that mobile users are allowed to consume even if there is competition with the primary user"))
+
+	anyfi_floor.rmempty = true
+	anyfi_floor.default = "5"
+	anyfi_floor:value("10", "10%")
+	anyfi_floor:value("20", "20%")
+	anyfi_floor:value("30", "30%")
+	anyfi_floor:value("40", "40%")
+	anyfi_floor:value("50", "50%")
+	anyfi_floor:value("60", "60%")
+	anyfi_floor:value("70", "70%")
+	anyfi_floor:value("80", "80%")
+	anyfi_floor:value("90", "90%")
+	anyfi_floor:value("100", "100%")
+
+	function anyfi_floor.validate(self, value, section)
+		if anyfi_bandwidth_is_valid(value) then
+			return value
+		else
+			return nil, "Invalid value for Floor, enter a value between 1-100 without '%'"
+		end
+	end
+
+	anyfi_ceiling = s:taboption("anyfi", Value, "anyfi_ceiling", "Ceiling", translate("The maximum percentage of available spectrum and backhaul that mobile users are allowed to consume"))
+	anyfi_ceiling.rmempty = true
+	anyfi_ceiling.default = "75"
+	anyfi_ceiling:value("10", "10%")
+	anyfi_ceiling:value("20", "20%")
+	anyfi_ceiling:value("30", "30%")
+	anyfi_ceiling:value("40", "40%")
+	anyfi_ceiling:value("50", "50%")
+	anyfi_ceiling:value("60", "60%")
+	anyfi_ceiling:value("70", "70%")
+	anyfi_ceiling:value("80", "80%")
+	anyfi_ceiling:value("90", "90%")
+	anyfi_ceiling:value("100", "100%")
+
+	function anyfi_ceiling.validate(self, value, section)
+		if anyfi_bandwidth_is_valid(value) then
+			return value
+		else
+			return nil, "Invalid value for Ceiling, enter a value between 1-100 without '%'"
+		end
+	end
+end
 
 ----------------------- Interface -----------------------
 
@@ -788,27 +787,6 @@ end
 -------------------- Broadcom Interface ----------------------
 
 if hwtype == "broadcom" then
-
-	if fs.access("/sbin/myfid") and m.uci:get("anyfi", "config", "controller") ~= nil then
-		anyfi_status = s:taboption("anyfi", Flag, "anyfi_enabled", translate("Enable Anyfi.net"), translate("Enable remote access to this wireless network"))
-		anyfi_status:depends({mode="ap", encryption="psk"})
-		anyfi_status:depends({mode="ap", encryption="psk2"})
-		anyfi_status:depends({mode="ap", encryption="pskmixedpsk2"})
-		anyfi_status.rmempty = false
-		anyfi_status.default = "0"
-
-		function anyfi_status.write(self, section, value)
-			wdev:set("anyfi_enabled", value)
-			self.map:set(section, "anyfi_enabled", value)
-			for _, net in ipairs(wdev:get_wifinets()) do
-				if net:get("anyfi_enabled") == "1" then
-					wdev:set("anyfi_enabled", "1")
-					break
-				end
-			end
-		end
-	end
-
 	--mode:value("wds", translate("WDS"))
 	--mode:value("monitor", translate("Monitor"))
 
@@ -1095,5 +1073,38 @@ for slot=1,4 do
 	end
 end
 
+------------------- Anyfi.net interface configuration --------------------
+
+if fs.access("/sbin/myfid") and anyfi_controller and anyfi_controller ~= "" then
+	anyfi_status = s:taboption("anyfi", Flag, "anyfi_disabled", translate("Enable Anyfi.net"), translate("Enable remote access to this wireless network"))
+	anyfi_status.enabled = 0
+	anyfi_status.disabled = 1
+	anyfi_status.default = anyfi_status.enabled
+	anyfi_status.rmempty = true
+	anyfi_status:depends({mode="ap", encryption="psk"})
+	anyfi_status:depends({mode="ap", encryption="psk2"})
+	anyfi_status:depends({mode="ap", encryption="psk-mixed"})
+	anyfi_status:depends({mode="ap", encryption="pskmixedpsk2"})
+	anyfi_status:depends({mode="ap", encryption="wpa"})
+	anyfi_status:depends({mode="ap", encryption="wpa2"})
+	anyfi_status:depends({mode="ap", encryption="wpa-mixed"})
+	anyfi_status:depends({mode="ap", encryption="wpamixedwpa2"})
+
+	function anyfi_status.remove(self, section)
+		wdev:set("anyfi_disabled", nil)
+		self.map:del(section, "anyfi_disabled")
+	end
+
+	function anyfi_status.write(self, section, value)
+		wdev:set("anyfi_disabled", value)
+		self.map:set(section, "anyfi_disabled", value)
+		for _, net in ipairs(wdev:get_wifinets()) do
+			if net:get("anyfi_disabled") ~= "1" then
+				wdev:set("anyfi_disabled", nil)
+				break
+			end
+		end
+	end
+end
 
 return m
