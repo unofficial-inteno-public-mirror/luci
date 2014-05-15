@@ -645,27 +645,27 @@ function anyfi_bandwidth_is_valid(value)
 end
 
 ------------------- Anyfi.net global configuration ------------------
-
 if guser == "admin" and (fs.access("/sbin/anyfid") or fs.access("/sbin/myfid")) then
 
-	anyfi_controller = s:taboption("anyfi", Value, "anyfi_controller", "Controller", translate("A Fully Qualified Domain Name or IP address (e.g. demo.anyfi.net)"))
-	anyfi_controller.rmempty = true
+	anyfi_cntrl = s:taboption("anyfi", Value, "anyfi_controller", "Controller", translate("A Fully Qualified Domain Name or IP address (e.g. demo.anyfi.net)"))
+	anyfi_cntrl.rmempty = true
 
-	anyfi_controller.cfgvalue = function(self, section, value)
+	anyfi_cntrl.cfgvalue = function(self, section, value)
 		return m.uci:get("anyfi", "controller", "hostname")
 	end
 
-	anyfi_controller.write = function(self, section, value)
+	anyfi_cntrl.write = function(self, section, value)
 		m.uci:set("anyfi", "controller", "hostname", value)
 		m.uci:commit("anyfi")
 	end
 
-	anyfi_controller.remove = function(self, section)
+	anyfi_cntrl.remove = function(self, section)
 		m.uci:delete("anyfi", "controller", "hostname")
 		m.uci:commit("anyfi")
 	end
 end
-local anyfi_controller = anyfi_controller:formvalue(wdev:name()) or m.uci:get("anyfi", "controller", "hostname")
+--local anyfi_controller = anyfi_cntrl:formvalue(wdev:name()) or m.uci:get("anyfi", "controller", "hostname")
+local anyfi_controller = m.uci:get("anyfi", "controller", "hostname")
 
 ------------------- Anyfi.net device configuration ------------------
 
