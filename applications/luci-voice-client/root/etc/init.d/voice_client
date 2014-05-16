@@ -74,6 +74,8 @@ TMPL_MUSICONHOLD=$TEMPLATEDIR/musiconhold.conf.TEMPLATE
 TMPL_BRCM=$TEMPLATEDIR/brcm.conf.TEMPLATE
 TMPL_BRCM_LINE=$TEMPLATEDIR/brcm_line.TEMPLATE
 
+TMPL_MEETME=$TEMPLATEDIR/meetme.conf.TEMPLATE
+
 # Escape special characters in a string that is being passed to sed
 escape_sed_substitution()
 {
@@ -133,7 +135,9 @@ assemble_and_copy_config()
 	cp $TMPL_MODULES		$WORKDIR/modules.conf
 	cp $TMPL_EXTENSIONS_MACRO	$WORKDIR/extensions_macro.conf
 	cp $TMPL_MUSICONHOLD		$WORKDIR/musiconhold.conf
-
+	
+	test -e $TMPL_MEETME && cp $TMPL_MEETME $WORKDIR/meetme.conf
+	
 	# Handle extensions_extra, carry over old file to new config if there is one
 	if [ -e "$ASTERISKDIR/extensions_extra.conf" ] ; then
 		cp $ASTERISKDIR/extensions_extra.conf	$WORKDIR/extensions_extra.conf
