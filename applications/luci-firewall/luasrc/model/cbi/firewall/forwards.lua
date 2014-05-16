@@ -14,6 +14,8 @@ You may obtain a copy of the License at
 
 local ds = require "luci.dispatcher"
 local ft = require "luci.tools.firewall"
+local uci = require "luci.model.uci"
+local cursor = uci.cursor()
 
 m = Map("firewall", translate("Firewall - Port Forwards"),
 	translate("Port forwarding allows remote computers on the Internet to \
@@ -69,10 +71,55 @@ function s.parse(self, ...)
 	end
 end
 
+-- Return true if option has a certain value
+function has_option(config, section, option, value)
+	local res = false
+
+	cursor:foreach(config, section, function(s)
+		if s[option] == value then
+			res = true
+		end
+	end)
+	return res
+end
+
+-- Redirect WebGUI to a free port if user forwards port 80.
+function redirect_web()
+	-- select a free port
+	local dport = nil
+	local http_ports = { 8080, 8081, 8008, 8888 }
+	for _,p in ipairs(http_ports) do
+		p = tostring(p)
+		if not has_option("firewall", "redirect", "src_dport", p) then
+			dport = p
+			break
+		end
+	end
+
+	if dport then cursor:section("firewall", "redirect", nil, {
+		name      = "Redirect WebGUI",
+		src       = "wan",
+		dest      = "lan",
+		dest_ip   = cursor:get("network", "lan", "ipaddr") or "192.168.1.1",
+		src_dport = dport,
+		dest_port = "80",
+		proto     = "tcp",
+		target    = "DNAT",
+	}) end
+end
+
+function m.on_init(self)
+	if not has_option("firewall", "redirect", "name", "Redirect WebGUI") and
+		has_option("firewall", "redirect", "src_dport", "80") then
+		redirect_web()
+		cursor:save("firewall")
+		cursor:commit("firewall")
+	end
+end
+
 function s.filter(self, sid)
 	return (self.map:get(sid, "target") ~= "SNAT")
 end
-
 
 ft.opt_name(s, DummyValue, translate("Name"))
 
@@ -81,7 +128,7 @@ local function forward_proto_txt(self, s)
 	return "%s-%s" %{
 		translate("IPv4"),
 		ft.fmt_proto(self.map:get(s, "proto"),
-	                 self.map:get(s, "icmp_type")) or "TCP+UDP"
+			self.map:get(s, "icmp_type")) or "TCP+UDP"
 	}
 end
 
