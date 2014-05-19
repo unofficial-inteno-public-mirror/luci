@@ -17,6 +17,8 @@
     along with luci-pbx.  If not, see <http://www.gnu.org/licenses/>.
 ]]--
 
+require("luci.tools.webadmin")
+
 local datatypes = require("luci.cbi.datatypes")
 
 -- Read line counts from driver
@@ -51,6 +53,12 @@ function proxy.validate(self, value, section)
 	end
 	return value
 end
+
+bindintf = sip:option(ListValue, 'bindintf', "Bind Interface", "WAN Interface to bind to (listen on)")
+bindintf.rmempty = true
+bindintf.default = ""
+bindintf:value("", translate("Listen on all interfaces"))
+luci.tools.webadmin.cbi_add_wan_networks(bindintf)
 
 bindport = sip:option(Value, 'bindport', "Bindport", "UDP Port to bind to (listen on)")
 bindport.optional = true

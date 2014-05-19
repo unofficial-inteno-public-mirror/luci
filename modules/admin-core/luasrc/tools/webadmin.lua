@@ -122,7 +122,6 @@ function cbi_add_wan_networks(field)
 			end
 		end
 	)
-	field.titleref = luci.dispatcher.build_url(guser, "network", "network")
 end
 
 function cbi_add_lan_networks(field)
@@ -133,7 +132,6 @@ function cbi_add_lan_networks(field)
 			end
 		end
 	)
-	field.titleref = luci.dispatcher.build_url(guser, "network", "network")
 end
 
 function cbi_add_knownips(field)

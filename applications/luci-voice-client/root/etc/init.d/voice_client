@@ -23,6 +23,7 @@
 #    along with luci-pbx.  If not, see <http://www.gnu.org/licenses/>.
 
 . /lib/functions.sh
+. /lib/functions/network.sh
 
 START=60
 
@@ -256,11 +257,20 @@ format_sip_contact()
 	echo $lines
 }
 
+get_bindaddr() {
+	local intf="$1"
+	local bindaddr=""
+
+	[ -n "$intf" ] && network_get_ipaddr bindaddr "$intf"
+	echo "${bindaddr:-0.0.0.0}"
+}
+
 configure_sip()
 {
 	echo "Configuring SIP"
 	local useragent
 	local externhost
+	local bindintf
 	local bindport
 	local rtpstart
 	local rtpend
@@ -278,6 +288,7 @@ configure_sip()
 
 	config_get useragent $1 useragent
 	config_get externhost $1 externhost
+	config_get bindintf $1 bindintf
 	config_get bindport $1 bindport
 	config_get rtpstart $1 rtpstart
 	config_get rtpend $1 rtpend
@@ -305,6 +316,12 @@ configure_sip()
 		sed -i "s/externhost=|EXTERNHOST|/;externhost=/g"	$WORKDIR/sip.tmp
 	else
 		sed -i "s/|EXTERNHOST|/$externhost/g"			$WORKDIR/sip.tmp
+	fi
+
+	if [ -z "$bindintf" ] ; then
+		sed -i "s/bindaddr=.*/bindaddr=0.0.0.0/g"			$WORKDIR/sip.tmp
+	else
+		sed -i "s/bindaddr=.*/bindaddr=$(get_bindaddr $bindintf)/g"	$WORKDIR/sip.tmp
 	fi
 
 	if [ -z "$bindport" ] ; then
