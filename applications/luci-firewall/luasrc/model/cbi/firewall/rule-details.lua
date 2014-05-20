@@ -96,14 +96,14 @@ elseif rule_type == "redirect" then
 	o.template = "cbi/firewall_zonelist"
 
 
-	o = s:option(Value, "src_ip", translate("Source IP address"))
+	o = s:option(DynamicList, "src_ip", translate("Source IP address"))
 	o.rmempty = true
 	o.datatype = "neg(ipaddr)"
 	o.placeholder = translate("any")
 
-	luci.sys.net.ipv4_hints(function(ip, name)
-		o:value(ip, "%s (%s)" %{ ip, name })
-	end)
+--	luci.sys.net.ipv4_hints(function(ip, name)
+--		o:value(ip, "%s (%s)" %{ ip, name })
+--	end)
 
 
 	o = s:option(Value, "src_port",
@@ -121,12 +121,12 @@ elseif rule_type == "redirect" then
 	o.template = "cbi/firewall_zonelist"
 
 
-	o = s:option(Value, "dest_ip", translate("Destination IP address"))
+	o = s:option(DynamicList, "dest_ip", translate("Destination IP address"))
 	o.datatype = "neg(ip4addr)"
 
-	luci.sys.net.ipv4_hints(function(ip, name)
-		o:value(ip, "%s (%s)" %{ ip, name })
-	end)
+--	luci.sys.net.ipv4_hints(function(ip, name)
+--		o:value(ip, "%s (%s)" %{ ip, name })
+--	end)
 
 
 	o = s:option(Value, "dest_port",
@@ -270,19 +270,19 @@ else
 	end)
 
 
-	o = s:option(Value, "src_ip", translate("Source address"))
+	o = s:option(DynamicList, "src_ip", translate("Source address"))
 	o.datatype = "neg(ipaddr)"
 	o.placeholder = translate("any")
 
-	luci.sys.net.ipv4_hints(function(ip, name)
-		o:value(ip, "%s (%s)" %{ ip, name })
-	end)
+--	luci.sys.net.ipv4_hints(function(ip, name)
+--		o:value(ip, "%s (%s)" %{ ip, name })
+--	end)
 
-	if nw:has_ipv6() then
-		luci.sys.net.ipv6_hints(function(ip, name)
-			o:value(ip, "%s (%s)" %{ ip, name })
-		end)
-	end
+--	if nw:has_ipv6() then
+--		luci.sys.net.ipv6_hints(function(ip, name)
+--			o:value(ip, "%s (%s)" %{ ip, name })
+--		end)
+--	end
 
 
 	o = s:option(Value, "src_port", translate("Source port"))
@@ -297,19 +297,19 @@ else
 	o.template = "cbi/firewall_zonelist"
 
 
-	o = s:option(Value, "dest_ip", translate("Destination address"))
+	o = s:option(DynamicList, "dest_ip", translate("Destination address"))
 	o.datatype = "neg(ipaddr)"
 	o.placeholder = translate("any")
 
-	luci.sys.net.ipv4_hints(function(ip, name)
-		o:value(ip, "%s (%s)" %{ ip, name })
-	end)
-	
-	if nw:has_ipv6() then
-		luci.sys.net.ipv6_hints(function(ip, name)
-			o:value(ip, "%s (%s)" %{ ip, name })
-		end)
-	end
+--	luci.sys.net.ipv4_hints(function(ip, name)
+--		o:value(ip, "%s (%s)" %{ ip, name })
+--	end)
+--
+--	if nw:has_ipv6() then
+--		luci.sys.net.ipv6_hints(function(ip, name)
+--			o:value(ip, "%s (%s)" %{ ip, name })
+--		end)
+--	end
 
 
 	o = s:option(Value, "dest_port", translate("Destination port"))
