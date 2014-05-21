@@ -41,6 +41,8 @@ IFACE_PATTERNS_VIRTUAL  = { }
 IFACE_PATTERNS_IGNORE   = { "^wmaster%d", "^wifi%d", "^hwsim%d", "^imq%d", "^ifb%d", "^mon%.wlan%d", "^sit%d", "^gre%d", "^lo$","sar$","swc$","bcmsw$","dsl%d","^atm%d$","^ptm%d$","^radiotap%d$","^vap%d$"}
 IFACE_PATTERNS_WIRELESS = { "^wlan%d", "^wl%d", "^ath%d", "^%w+%.network%d" }
 
+AC_WIRELESS_PCIDS	= { "43a0", "43a2" }
+
 
 protocol = utl.class()
 
@@ -1510,20 +1512,49 @@ function wifidev.name(self)
 	return self.sid
 end
 
+function wifidev.version(self)
+	local version = "0"
+	local name, idx = self:name():match("^([a-z]+)(%d+)")
+	idx = tonumber(idx)
+	if name == "wl" then
+		local nm = 0
+
+		local fd = nxo.open("/proc/bus/pci/devices", "r")
+		if fd then
+			local ln
+			for ln in fd:linesource() do
+				if ln:match("wl$") then
+					if nm == idx then
+						version = ln:match("^%S+%s+%S%S%S%S([0-9a-f]+)")
+						break
+					else
+						nm = nm + 1
+					end
+				end
+			end
+			fd:close()
+		end
+	end
+	return version
+end
+
+function wifidev.is_ac(self)
+	local ac = false
+	for _, pcid in ipairs(AC_WIRELESS_PCIDS) do
+		if self:version() == pcid then
+			ac = true
+			break
+		end
+	end
+	return ac
+end
+
 function wifidev.bands(self)
 	return sys.exec("wlctl -i %q bands" %self.sid)
 end
 
 function wifidev.band(self)
-	local bands = self:bands()
-	if bands:match("a") and not bands:match("b") then
-		return "a"
-	end
---	if sys.exec("wlctl -i %s phylist" %self.sid) == "v" then
---		return "a"
---	end
-	return "b"
---	return sys.exec("wlctl -i %q band" %self.sid)
+	return sys.exec("wlctl -i %q band" %self.sid)
 end
 
 function wifidev.channels(self, country, band, bwidth)
@@ -1535,7 +1566,7 @@ function wifidev.channels(self, country, band, bwidth)
 end
 
 function wifidev.hwmodes(self)
-	if sys.exec("wlctl -i %q status" %self.sid):match("VHT Capable") then
+	if self:is_ac() then
 		return { n = true, ac = true }
 	else
 		return { b = true, g = true, n = true }
