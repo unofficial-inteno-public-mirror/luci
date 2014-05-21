@@ -695,7 +695,9 @@ You may obtain a copy of the License at
 			<%for _prt in luci.util.execi("db get hw.board.ethernetPortNames | tr ' ' '\n'") do%>
 			      <th class="cbi-section-table-cell"><%=_prt%></th>
 			<%end%>
-			<th class="cbi-section-table-cell"><%:DSL%></th>
+			<%if luci.sys.exec("db get  hw.board.hasAdsl") =="1" then%>
+				<th class="cbi-section-table-cell"><%:DSL%></th>
+			<%end%>
 			<th class="cbi-section-table-cell"><%:USB%></th>
 		</tr>
 
@@ -703,8 +705,9 @@ You may obtain a copy of the License at
 			<%for _prt in luci.util.execi("db get hw.board.ethernetPortOrder | tr ' ' '\n'") do%>
 				<td id="port_<%=_prt%>" class="cbi-value-field"><img src="<%=resource%>/icons/ethernet<%=prt:eth_type(tonumber(_prt:sub(4)))%>_disabled.png"/></td>
 			<% end %>
-
-			<td id="port_dsl" class="cbi-value-field"><img src="<%=resource%>/icons/dsl_disabled.png"/></td>
+			<%if luci.sys.exec("db get  hw.board.hasAdsl") =="1" then%>
+			 	<td id="port_dsl" class="cbi-value-field"><img src="<%=resource%>/icons/dsl_disabled.png"/></td>
+			<%end%>
 			<td id="port_usb"class="cbi-value-field"><img src="<%=resource%>/icons/usb_disabled.png"/></td>
 		</tr>
 	</table>
