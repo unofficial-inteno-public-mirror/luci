@@ -4,8 +4,8 @@
 [|ACCOUNT|]
 ; Main context, handles all normal calls for this account
 include => local_extensions
-include => |ACCOUNT|-outgoing
 include => |ACCOUNT|-callforwarding
+include => |ACCOUNT|-outgoing
 
 [|ACCOUNT|-transfer]
 ; Context used for call transfer for this account
