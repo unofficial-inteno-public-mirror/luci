@@ -12,7 +12,7 @@ function index()
 
         for k, user in pairs(users) do
                 if not specs or specs.adsl then
-                        entry({user, "network", "layer2_interface"}, cbi("admin_network/layer2_interface"), "xDSL Settings", 11)
+                        entry({user, "network", "layer2_interface"}, cbi("admin_network/layer2_interface"), "Layer 2 Interfaces", 11)
                 else
                         entry({user, "network", "layer2_interface"}, cbi("admin_network/layer2_interface_ethernet"), "Layer 2 Interfaces", 11)
                 end
