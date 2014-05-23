@@ -1,4 +1,4 @@
 exten => |CONTACT_USER|,1,	Set(__TRANSFER_CONTEXT=transfer_${CHANNEL(peername)})
-exten => |CONTACT_USER|,n,	Dial(|LINES|,,tF(hangup,h,2))
+exten => |CONTACT_USER|,n,	Dial(|LINES|,,F(hangup,h,2))
 exten => |CONTACT_USER|,n,	Hangup()
 

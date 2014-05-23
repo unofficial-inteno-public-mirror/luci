@@ -19,7 +19,7 @@ exten => _[*#0-9].,n,	Set(result=${SHELL(/usr/lib/asterisk/log_call.sh Outgoing 
 exten => _[*#0-9].,n,	Set(DB(LASTCALL/|ACCOUNT|)=${DIAL_EXTEN})
 exten => _[*#0-9].,n,	Set(CALLERID(name)=|DISPLAYNAME|)
 exten => _[*#0-9].,n,	Set(__TRANSFER_CONTEXT=|ACCOUNT|-transfer)
-exten => _[*#0-9].,n,	Dial(SIP/${DIAL_EXTEN}@|ACCOUNT|,,gT)
+exten => _[*#0-9].,n,	Dial(SIP/${DIAL_EXTEN}@|ACCOUNT|,,g)
 exten => _[*#0-9].,n,	Macro(endcall,|ACCOUNT|,${DIAL_EXTEN},${CHANNEL(name)},|MAX_RETRIES|,|RETRYTIME|,|WAITTIME|,|CBBS_KEY|,|CONGESTIONTONE|)
 exten => _[*#0-9].,n,	Goto(hangup,h,2)
 exten => _[*#0-9].,n,	Hangup()
