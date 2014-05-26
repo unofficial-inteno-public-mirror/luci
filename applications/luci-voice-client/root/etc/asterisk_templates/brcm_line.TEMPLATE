@@ -3,6 +3,7 @@
 ;callerid=|CALLERID|
 autodial=|AUTODIAL|
 autodial_timeoutmsec=|AUTODIAL_TIMEOUT|
+dialtone_timeoutmsec=|DIALTONE_TIMEOUT|
 ;jitter_fixed=|JITTERFIXED|
 ;jitter_min=|JITTERMIN|
 ;jitter_max=|JITTERMAX|

@@ -997,6 +997,7 @@ configure_brcm_line()
 	local rxgain
 	local codecs
 	local is_fax
+	local dialtone_timeout
 
 	config_get sip_provider $1 sip_provider
 	config_get ptime $1 ptime
@@ -1009,6 +1010,7 @@ configure_brcm_line()
 	config_get jitter_target $1 jitter_target
 	config_get txgain $1 txgain
 	config_get rxgain $1 rxgain
+	config_get dialtone_timeout $1 dialtone_timeout
 
 	#If line is configured with no sip_provider, use local_extensions context
 	local provider_enabled
@@ -1029,6 +1031,10 @@ configure_brcm_line()
 		codecs="allow = ulaw\\nallow = alaw"
 	fi
 
+	if [ -z "$dialtone_timeout" ] ; then
+		dialtone_timeout=20000
+	fi
+
 	cp $TMPL_BRCM_LINE $WORKDIR/brcm_line.tmp
 	sed -i "s/|SECTION|/$1/"				$WORKDIR/brcm_line.tmp
 	sed -i "s/|CONTEXT|/$sip_provider/g"			$WORKDIR/brcm_line.tmp
@@ -1044,6 +1050,7 @@ configure_brcm_line()
 	sed -i "s/|RXGAIN|/$rxgain/"				$WORKDIR/brcm_line.tmp
 	sed -i "s/|ALLOW|/$codecs/"				$WORKDIR/brcm_line.tmp
 	sed -i "s/|DIALTONE_EXTENSION_HINT|/$1/"		$WORKDIR/brcm_line.tmp
+	sed -i "s/|DIALTONE_TIMEOUT|/$dialtone_timeout/"	$WORKDIR/brcm_line.tmp
 
 	cat $WORKDIR/brcm_line.tmp >>				$WORKDIR/brcm.tmp
 	rm -f							$WORKDIR/brcm_line.tmp

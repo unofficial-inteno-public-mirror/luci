@@ -2,6 +2,7 @@
 ;language=|LANGUAGE|
 ;callerid=|CALLERID|
 ;autodial=|AUTODIAL|
+dialtone_timeoutmsec=|DIALTONE_TIMEOUT|
 ;jitter_fixed=|JITTERFIXED|
 ;jitter_min=|JITTERMIN|
 ;jitter_max=|JITTERMAX|
