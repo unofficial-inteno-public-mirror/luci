@@ -49,9 +49,9 @@ proto_4g_setup() {
 			local mbimdev=/dev/$(basename $(ls /sys/class/net/${iface}/device/usb/cdc-wdm* -d))
 			local comdev="${comdev:-$mbimdev}"
 			[ -n "$pincode" ] && {
-				if ! mbimcli -d $comdev --query-pin-state | grep "unlocked" >/dev/null; then
+				if ! mbimcli -d $comdev --query-pin-state 2>&1 | grep -q "unlocked"; then
 					set -o pipefail
-					if ! mbimcli -d $comdev "--enter-pin=${pincode}" 2>&1; then
+					if ! mbimcli -d $comdev --enter-pin="${pincode}" 2>&1; then
 						mbimcli -d $comdev --query-pin-state
 						proto_notify_error "$config" PIN_FAILED
 						proto_block_restart "$interface"
@@ -69,9 +69,9 @@ proto_4g_setup() {
 			local qmidev=/dev/$(basename $(ls /sys/class/net/${iface}/device/usb/cdc-wdm* -d))
 			local comdev="${comdev:-$qmidev}"
 			[ -n "$pincode" ] && {
-				if ! qmicli -d $comdev --dms-uim-get-pin-status | grep "enabled-verified" >/dev/null; then
+				if ! qmicli -d $comdev --dms-uim-get-pin-status 2>&1 | grep -q "enabled-verified\|disabled" >/dev/null; then
 					set -o pipefail
-					if ! qmicli -d $comdev "--dms-uim-verify-pin=PIN,${pincode}" 2>&1; then
+					if ! qmicli -d $comdev --dms-uim-verify-pin="PIN,${pincode}" 2>&1; then
 						qmicli -d $comdev --dms-uim-get-pin-status
 						proto_notify_error "$config" PIN_FAILED
 						proto_block_restart "$interface"
