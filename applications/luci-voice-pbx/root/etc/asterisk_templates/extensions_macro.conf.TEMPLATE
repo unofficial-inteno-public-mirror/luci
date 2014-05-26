@@ -105,6 +105,12 @@ exten => s-CONGESTION,n,	Wait(5)
 exten => s-CONGESTION,n,	Congestion()
 exten => s-CONGESTION,n,	Hangup()
 
+;handle unavailable 
+exten => s-CHANUNAVAIL,1,	Playtones(${ARG8})
+exten => s-CHANUNAVAIL,n,	Wait(5)
+exten => s-CHANUNAVAIL,n,	Congestion()
+exten => s-CHANUNAVAIL,n,	Hangup()
+
 [macro-callhandler]
 ;
 ; ${ARG1} - Calling sip peer
