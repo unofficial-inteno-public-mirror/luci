@@ -413,13 +413,14 @@ local function wifi_reconnect_shutdown(shutdown, wnet)
 	local net = netmd:get_wifinet(wnet)
 	local dev = net:get_device()
 	if dev and net then
-		luci.sys.call("env -i /sbin/wifi down >/dev/null 2>/dev/null")
+--		luci.sys.call("env -i /sbin/wifi down >/dev/null 2>/dev/null")
 
 		dev:set("disabled", nil)
 		net:set("disabled", shutdown and 1 or nil)
 		netmd:commit("wireless")
 
-		luci.sys.call("env -i /sbin/wifi up >/dev/null 2>/dev/null")
+--		luci.sys.call("env -i /sbin/wifi up >/dev/null 2>/dev/null")
+		luci.sys.call("env -i /sbin/wifi %s %s >/dev/null 2>/dev/null" %{shutdown and "disable" or "enable", net:ifname()})
 		luci.http.status(200, shutdown and "Shutdown" or "Reconnected")
 
 		return

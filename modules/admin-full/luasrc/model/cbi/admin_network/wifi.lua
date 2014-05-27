@@ -50,16 +50,20 @@ end
 
 -- wireless toggle was requested, commit and reload page
 function m.parse(map)
+	local action
 	if m:formvalue("cbid.wireless.%s.__toggle" % wdev:name()) then
 		if wdev:get("disabled") == "1" or wnet:get("disabled") == "1" then
 			wnet:set("disabled", nil)
+			action = "enable"
 		else
 			wnet:set("disabled", "1")
+			action = "disable"
 		end
 		wdev:set("disabled", nil)
 
 		nw:commit("wireless")
-		luci.sys.call("(env -i /sbin/wifi down; env -i /sbin/wifi up) >/dev/null 2>/dev/null")
+--		luci.sys.call("(env -i /sbin/wifi down; env -i /sbin/wifi up) >/dev/null 2>/dev/null")
+		luci.sys.call("env -i /sbin/wifi %s %s >/dev/null 2>/dev/null" %{action, wnet:ifname()})
 
 		luci.http.redirect(luci.dispatcher.build_url("admin/network/wireless", arg[1]))
 		return
