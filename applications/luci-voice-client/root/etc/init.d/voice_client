@@ -870,7 +870,7 @@ configure_brcm()
 	config_get cw_enable BRCM cw_enable
 
 	if [ -z "$dialoutmsec" ] ; then
-		dialoutmsec=3000
+		dialoutmsec=4000
 	fi
 
 	if [ -z "$cw_enable" ] ; then
