@@ -68,9 +68,7 @@ end
 sip_account = s:option(ListValue, "sip_account", "Call out on SIP account")
 m.uci:foreach("voice_client", "sip_service_provider",
 	function(s1)
-		if s1.enabled == "1" then
-			sip_account:value(s1['.name'], s1.name)
-		end
+		sip_account:value(s1['.name'], s1.name)
 	end)
 sip_account:value("-", "-")
 sip_account.default = "-"

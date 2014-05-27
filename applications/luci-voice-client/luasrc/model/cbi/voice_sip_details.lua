@@ -30,24 +30,6 @@ else
 	allCount = 0
 end
 
-
--- Parse function for enabled Flags, change sip_account setting for lines using a disabled account
-function parse_enabled(self, section)
-	Flag.parse(self, section)
-	local fvalue = self:formvalue(section)
-
-	if not fvalue then
-		m.uci:foreach("voice_client", "brcm_line",
-			function(s1)
-				line_name = s1['.name']
-				if s1.sip_account == section then
-					m.uci:set("voice_client", line_name, "sip_account", "-")
-				end
-			end
-		)
-	end
-end
-
 local dsp = require "luci.dispatcher"
 
 arg[1] = arg[1] or ""
@@ -69,6 +51,20 @@ else
 		name = "Unknown SIP Account"
 	end
 	m.title = name
+end
+
+-- For new and disabled accounts that are being enabled,
+-- ensure that user has supplied a password
+old_enabled_val = m.uci:get_bool("voice_client", s.section, "enabled")
+function parse_enabled(self, section)                                                                                                                           
+    Flag.parse(self, section)
+    local fvalue = self:formvalue(section)
+    local passwd = pwd:formvalue(section)
+    if fvalue and not old_enabled_val then
+    	if not passwd or #passwd == 0 then
+    		self.add_error(self, section, "missing", "Please enter a password")
+    	end
+    end
 end
 
 -- Enabled checkbox
@@ -111,7 +107,7 @@ pwd.rmempty = false
 
 -- We skip reading off the saved value and return nothing.
 function pwd.cfgvalue(self, section)
-    return "" 
+    return ""
 end
 
 -- Write/change password only if user has entered a value

@@ -72,7 +72,7 @@ function s.create(self, section)
 end
 
 -- Called when an account is being deleted
--- Check that account is not in use before allowing deletion
+-- Remove its usage from brcm lines
 function s.remove(self, section)
 	m.uci:foreach("voice_client", "brcm_line",
 		function(s1)
@@ -85,31 +85,17 @@ function s.remove(self, section)
 	TypedSection.remove(self, section)
 end
 
-
--- Parse function for enabled Flags, perform validation
--- to make sure the account is not used for outgoing calls from
--- some line. If it is, we should not allow it to be disabled.
-function parse_enabled(self, section)
-	Flag.parse(self, section)
-	local fvalue = self:formvalue(section)
-                                                                                                                                         
-	if not fvalue then
-		m.uci:foreach("voice_client", "brcm_line",
-			function(s1)
-				line_name = s1['.name']
-				if s1.sip_account == section then
-					m.uci:set("voice_client", line_name, "sip_account", "-")
-				end
-			end
-		)
-	end
-end
-
 account_name = s:option(DummyValue, "name", "SIP Account")
 
-e = s:option(Flag, "enabled", "Account Enabled")
-e.default = 0
-e.parse = parse_enabled
+e = s:option(DummyValue, "enabled", "Account Enabled")
+function e.cfgvalue(self, section)
+        local l = Value.cfgvalue(self, section)
+        if l and l == "1" then
+                return "Yes"
+        else
+                return "No"
+        end
+end
 
 s:option(DummyValue, "user", "Username")
 s:option(DummyValue, 'domain', 'SIP domain name')
