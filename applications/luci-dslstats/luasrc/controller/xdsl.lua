@@ -5,8 +5,13 @@ local guser = luci.dispatcher.context.path[1]
 function index()
         local uci = require("luci.model.uci").cursor()
         local net = require "luci.model.xdsl".init(uci)
+	local specs = require "luci.quest".router_specs()
 	local users = { "admin", "support", "user" }
         local page
+
+	if not specs.hasadsl then
+		return
+	end
 
 	for k, user in pairs(users) do
 		page = node(user, "status", "dslstats")

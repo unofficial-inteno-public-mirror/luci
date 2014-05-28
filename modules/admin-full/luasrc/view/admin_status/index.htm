@@ -79,7 +79,7 @@ You may obtain a copy of the License at
 				link    = wan:adminlink(),
 				Wname   = prt:Wname(wan:ifname()),
 				l2name  = prt:l2name(wan:ifname()),
-				dslrate  = prt:dslrate()
+				dslrate	= prt:dslrate()
 			}
 		end
 
@@ -90,7 +90,7 @@ You may obtain a copy of the License at
 			eth3	= prt:status_eth("eth3", "link") or prt:status_eth("eth3", "up"),
 			eth4	= prt:status_eth("eth4", "link") or prt:status_eth("eth4", "up"),
 			eth5	= prt:status_eth("eth5", "link") or prt:status_eth("eth5", "up"),
-			dsl	= prt:status_dsl(),
+			dsl	= specs.hasadsl and prt:status_dsl() or "na",
 			usb     = prt:status_usb()
 		}
 
@@ -194,7 +194,7 @@ You may obtain a copy of the License at
 					pd.innerHTML = '<img src="<%=resource%>/icons/adsl.png"/><br />';
 				else if (iport.dsl == "vdsl")
 					pd.innerHTML = '<img src="<%=resource%>/icons/vdsl2.png"/><br />';
-				else
+				else if (iport.dsl != "na")
 					pd.innerHTML = '<img src="<%=resource%>/icons/dsl_disabled.png"/><br />';
 
 				if (iport.usb == 1)

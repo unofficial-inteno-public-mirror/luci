@@ -4,6 +4,7 @@ local sys = require "luci.sys"
 local uci = require "luci.model.uci"
 local utl = require "luci.util"
 local nfs = require "nixio.fs"
+local io  = require "io"
 local bus = require "ubus"
 
 module "luci.model.ports"
@@ -32,16 +33,23 @@ function status_eth(self, port, field)
 end
 
 function status_dsl(self)
-	local vdsl = tonumber(sys.exec("cat /var/state/layer2_interface | grep 'vdsl' | grep -c 'up'"))
-	local adsl = tonumber(sys.exec("cat /var/state/layer2_interface | grep 'adsl' | grep -c 'up'"))
+	local fd = io.open("/var/state/layer2_interface", "r")
+	local adsl = 0
+	local vdsl = 0
 
-	if vdsl > 0 then
-		return "vdsl"
-	elseif adsl > 0 then
-		return "adsl"
-	else
-		return "none"
+	if fd then
+		fd:close()
+		vdsl = tonumber(sys.exec("cat /var/state/layer2_interface | grep 'vdsl' | grep -c 'up'"))
+		adsl = tonumber(sys.exec("cat /var/state/layer2_interface | grep 'adsl' | grep -c 'up'"))
+
+		if vdsl > 0 then
+			return "vdsl"
+		elseif adsl > 0 then
+			return "adsl"
+		end
 	end
+
+	return "none"
 end
 
 function status_usb(self)
@@ -51,10 +59,6 @@ end
 
 function port_type(self, port)
 	return sys.exec(". /lib/network/config.sh && interfacename %s" %port)
-end
-
-function port_speed(self, port)
-	return sys.exec(". /lib/network/config.sh && interfacespeed %s" %port)
 end
 
 function eth_type(self, port)
@@ -78,7 +82,7 @@ function Wname (self, ifname)
 				end
 			end
 		end
-	elseif ifname:match("pppo") or ifname:match("qmi") then
+	elseif ifname:match("pppo") then
 		local _ubus
 		local _ubuscache = { }
 		local newif
