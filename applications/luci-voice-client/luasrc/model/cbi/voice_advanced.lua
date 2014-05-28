@@ -263,11 +263,11 @@ end
 
 -- Call Back Busy Subscriber
 if m.uci.get("voice_client", "features", "cbbs_enabled") == "1" then
-	s = m:section(TypedSection, "sip_service_provider", "Call Back Busy Subscriber")
+	s = m:section(TypedSection, "BRCM", "Call Back Busy Subscriber")
 	s.template  = "cbi/tblsection"
 	s.anonymous = true
 
-	s:option(DummyValue, 'name', "SIP Account")
+	s:option(DummyValue, 'name', "")
 
 	cbbs_key = s:option(Value, 'cbbs_key', "CBBS key", "Call Back Busy Subscriber key")
 	function cbbs_key.validate(self, value, section)

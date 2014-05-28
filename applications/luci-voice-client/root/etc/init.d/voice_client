@@ -52,6 +52,7 @@ TMPL_EXTENSIONS_ACCOUNT=$TEMPLATEDIR/extensions_account.TEMPLATE
 TMPL_EXTENSIONS_INCOMING=$TEMPLATEDIR/extensions_incoming.TEMPLATE
 TMPL_EXTENSIONS_INCOMING_LINE=$TEMPLATEDIR/extensions_incoming_line.TEMPLATE
 TMPL_EXTENSIONS_LOCAL=$TEMPLATEDIR/extensions_local.TEMPLATE
+TMPL_EXTENSIONS_LOCAL_LINE=$TEMPLATEDIR/extensions_local_line.TEMPLATE
 TMPL_EXTENSIONS_DIRECT=$TEMPLATEDIR/extensions_direct.TEMPLATE
 TMPL_EXTENSIONS_DIALTONE=$TEMPLATEDIR/extensions_dialtone.TEMPLATE
 
@@ -579,7 +580,7 @@ configure_sip_account()
 	sed -i "s/|ACCOUNT|/$1/g"			$WORKDIR/sip_reg.tmp	
 	sed -i "s/|USER|/$(escape_sed_substitution $user)/g"			$WORKDIR/sip_reg.tmp
 	sed -i "s/|SECRET|/$(escape_sed_substitution $secret)/"			$WORKDIR/sip_reg.tmp
-	sed -i "s/|DOMAIN|/$domain/g"			$WORKDIR/sip_reg.tmp	
+	sed -i "s/|DOMAIN|/$domain/g"			$WORKDIR/sip_reg.tmp	 
 	if [ -n "$authuser" ] ; then
 		sed -i "s/|AUTHUSER|/:$(escape_sed_substitution $authuser)/"	$WORKDIR/sip_reg.tmp
 	else
@@ -803,6 +804,50 @@ create_extensions_account()
 	rm -f								$WORKDIR/extensions_incoming_line.tmp
 }
 
+create_local_extension()
+{
+	local extension
+
+	local cbbs_enabled
+        local cbbs_key
+	local cbbs_maxretry
+	local cbbs_retrytime
+	local cbbs_waittime
+	
+	config_get extension "brcm$1" extension
+	if [ -n "$extension" ] ; then
+		echo "Configuring local extension $extension"
+
+		config_get cbbs_enabled "features" cbbs_enabled
+		# load cbbs settings if enabled                                                                                                                                             
+		if [ -z "$cbbs_enabled" -o "$cbbs_enabled" = "0" ] ; then
+			cbbs_key=""
+			cbbs_maxretry="0"
+			cbbs_retrytime="0"
+			cbbs_waittime="0"
+		else
+			config_get cbbs_key BRCM cbbs_key
+			config_get cbbs_maxretry BRCM cbbs_maxretry
+			config_get cbbs_retrytime BRCM cbbs_retrytime
+			config_get cbbs_waittime BRCM cbbs_waittime
+		fi
+	
+		cp $TMPL_EXTENSIONS_LOCAL_LINE			$WORKDIR/extensions_local_line.tmp
+		sed -i "s/|EXTEN|/$extension/g"			$WORKDIR/extensions_local_line.tmp
+		sed -i "s/|LINE|/$1/g"				$WORKDIR/extensions_local_line.tmp
+
+		#cbbs settings                                                                                                                                                              
+		sed -i "s/|CBBS_KEY|/$(escape_sed_substitution $cbbs_key)/"	$WORKDIR/extensions_local_line.tmp
+		sed -i "s/|MAX_RETRIES|/$cbbs_maxretry/"      			$WORKDIR/extensions_local_line.tmp
+		sed -i "s/|RETRYTIME|/$cbbs_retrytime/"				$WORKDIR/extensions_local_line.tmp
+		sed -i "s/|WAITTIME|/$cbbs_waittime/"				$WORKDIR/extensions_local_line.tmp
+		sed -i "s/|CONGESTIONTONE|/$congestiontone/"			$WORKDIR/extensions_local_line.tmp
+	
+		cat $WORKDIR/extensions_local_line.tmp >>	$WORKDIR/extensions_local.tmp
+		rm -f 						$WORKDIR/extensions_local_line.tmp
+	fi
+}
+
 create_extensions_local()
 {
 	echo "Configuring local extensions"
@@ -830,11 +875,7 @@ create_extensions_local()
 	#Add extensions for all brcm lines (up to 10)
 	local extension
 	for i in 0 1 2 3 4 5 6 7 8 9 ; do
-		config_get extension "brcm$i" extension
-		if [ -n "$extension" ] ; then
-			echo "exten => $extension,1,Dial(BRCM/$i)"		>> $WORKDIR/extensions_local.tmp
-			echo "exten => $extension,n,Hangup()"			>> $WORKDIR/extensions_local.tmp
-		fi
+		create_local_extension $i
 	done
 }
 
@@ -859,7 +900,6 @@ configure_brcm()
 	local jbimpl
 	local dtmfcompatibility
 	local dialoutmsec
-	local cw_enable
 
 	config_get country BRCM country
 	config_get jbenable BRCM jbenable
@@ -868,14 +908,9 @@ configure_brcm()
 	config_get jbimpl BRCM jbimpl
 	config_get dtmfmode SIP dtmfmode
 	config_get dialoutmsec BRCM dialoutmsec
-	config_get cw_enable BRCM cw_enable
 
 	if [ -z "$dialoutmsec" ] ; then
 		dialoutmsec=4000
-	fi
-
-	if [ -z "$cw_enable" ] ; then
-		cw_enable=yes
 	fi
 
 	sed -i "s/|COUNTRY|/$country/"				$WORKDIR/brcm.tmp
@@ -891,7 +926,6 @@ configure_brcm()
 		dtmfcompatibility="0"
 	fi
 	sed -i "s/|DTMFCOMPATIBILITY|/$dtmfcompatibility/"      $WORKDIR/brcm.tmp
-	sed -i "s/|CW_ENABLE|/$cw_enable/"			$WORKDIR/brcm.tmp
 }
 
 #
@@ -914,6 +948,7 @@ configure_brcm_line()
 	local autodial_timeout
 	local dialtone_timeout
 	local sip_account_enabled
+	local callwaiting
 
 	config_get sip_account $1 sip_account
 	config_get silence $1 vad
@@ -928,6 +963,7 @@ configure_brcm_line()
 	config_get autodial $1 autodial
 	config_get autodial_timeout $1 autodial_timeout
 	config_get dialtone_timeout $1 dialtone_timeout
+	config_get callwaiting $1 callwaiting
 
 	#If line is configured with no sip_account, or sip_account is disabled, use local_extensions context
 	config_get sip_account_enabled $sip_account enabled
@@ -943,6 +979,10 @@ configure_brcm_line()
 
 	if [ -z "$dialtone_timeout" ] ; then
 		dialtone_timeout=20000
+	fi
+
+	if [ -z "$callwaiting" ] ; then
+		callwaiting=1
 	fi
 
 	cp $TMPL_BRCM_LINE $WORKDIR/brcm_line.tmp
@@ -962,6 +1002,7 @@ configure_brcm_line()
 	sed -i "s/|AUTODIAL_TIMEOUT|/$autodial_timeout/"		$WORKDIR/brcm_line.tmp
 	sed -i "s/|DTMFRELAY|/$dtmfmode/"      				$WORKDIR/brcm_line.tmp
 	sed -i "s/|DIALTONE_TIMEOUT|/$dialtone_timeout/"		$WORKDIR/brcm_line.tmp
+	sed -i "s/|CALLWAITING|/$callwaiting/"				$WORKDIR/brcm_line.tmp
 
 
 	#Configure BRCM line with codecs according to the SIP line settings
@@ -1085,6 +1126,7 @@ start() {
 	cp $TMPL_EXTENSIONS_INCOMING	$WORKDIR/extensions_incoming.tmp
 	cp $TMPL_EXTENSIONS_DIALTONE	$WORKDIR/extensions_dialtone.tmp
 	cp $TMPL_EXTENSIONS_LOCAL	$WORKDIR/extensions_local.tmp
+	cp $TMPL_EXTENSIONS_LOCAL_LINE	$WORKDIR/extensions_local_line.tmp
 	create_extensions
 	config_foreach create_extensions_account sip_service_provider
 	config_foreach create_extensions_dialtone brcm_line

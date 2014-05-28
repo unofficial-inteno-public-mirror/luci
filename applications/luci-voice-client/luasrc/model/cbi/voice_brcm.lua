@@ -64,6 +64,12 @@ function exten.validate(self, value, section)
 	end
 end
 
+-- Show call waiting setting        
+cw = s:option(Flag, "callwaiting", "Call Waiting")
+cw.default = "1"
+cw.disabled = "0"
+cw.enabled = "1"
+
 -- Show SIP account selection
 sip_account = s:option(ListValue, "sip_account", "Call out on SIP account")
 m.uci:foreach("voice_client", "sip_service_provider",

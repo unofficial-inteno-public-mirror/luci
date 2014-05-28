@@ -6,6 +6,7 @@ config 'brcm_line' 'brcm0'
 	option 'txgain' 0
 	option 'rxgain' 0
 	option 'echo_cancel' 1
+	option 'callwaiting' 1
 
 config 'brcm_line' 'brcm1'
 	option 'extension' '1111'
@@ -15,6 +16,7 @@ config 'brcm_line' 'brcm1'
 	option 'txgain' 0
 	option 'rxgain' 0
 	option 'echo_cancel' 1
+	option 'callwaiting' 1
 
 config 'brcm_line' 'brcm2'
 	option 'extension' '2222'
@@ -24,6 +26,7 @@ config 'brcm_line' 'brcm2'
 	option 'txgain' 0
 	option 'rxgain' 0
 	option 'echo_cancel' 1
+	option 'callwaiting' 1
 
 config 'brcm_line' 'brcm3'
 	option 'extension' '3333'
@@ -33,6 +36,7 @@ config 'brcm_line' 'brcm3'
 	option 'txgain' 0
 	option 'rxgain' 0
 	option 'echo_cancel' 1
+	option 'callwaiting' 1
 
 config 'brcm_line' 'brcm4'
 	option 'extension' '4444'
@@ -42,6 +46,7 @@ config 'brcm_line' 'brcm4'
 	option 'txgain' 0
 	option 'rxgain' 0
 	option 'echo_cancel' 1
+	option 'callwaiting' 1
 
 config 'brcm_line' 'brcm5'
 	option 'extension' '5555'
@@ -51,6 +56,7 @@ config 'brcm_line' 'brcm5'
 	option 'txgain' 0
 	option 'rxgain' 0
 	option 'echo_cancel' 1
+	option 'callwaiting' 1
 
 config 'brcm_line' 'brcm6'
 	option 'extension' '6666'
@@ -60,6 +66,7 @@ config 'brcm_line' 'brcm6'
 	option 'txgain' 0
 	option 'rxgain' 0
 	option 'echo_cancel' 1
+	option 'callwaiting' 1
 
 config 'brcm_line' 'brcm7'
 	option 'extension' '7777'
@@ -69,6 +76,7 @@ config 'brcm_line' 'brcm7'
 	option 'txgain' 0
 	option 'rxgain' 0
 	option 'echo_cancel' 1
+	option 'callwaiting' 1
 
 config 'dialplan' 'custom_dialplan'
 	option 'custom_outgoing_enabled' '0'
@@ -100,6 +108,10 @@ config 'brcm_advanced' 'BRCM'
 	option 'dtmfcompatibility' '1'
 	option 'dialoutmsec' '4000'
 	option 'cw_enable' 'yes'
+	option 'cbbs_key' '5'
+	option 'cbbs_maxretry' '5'
+	option 'cbbs_retrytime' '300'
+	option 'cbbs_waittime' '30'
 
 config 'features' 'features'
 	option 'cbbs_enabled' '1'
@@ -123,10 +135,6 @@ config 'sip_service_provider' 'sip0'
 	option 'cfbs_off' '#61#'
 	option 'call_return' '*69'
 	option 'redial' '*66'
-	option 'cbbs_key' '5'
-	option 'cbbs_maxretry' '5'
-	option 'cbbs_retrytime' '300'
-	option 'cbbs_waittime' '30'
 	option 'is_fax' '0'
 	option 'transport' 'udp'
 

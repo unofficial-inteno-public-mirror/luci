@@ -18,6 +18,7 @@ context_direct=|CONTEXT|-direct
 dialtone_extension_hint_context=brcm_dialtone
 dialtone_extension_hint=|DIALTONE_EXTENSION_HINT|
 period=20
+callwaiting=|CALLWAITING|
 dtmfrelay=|DTMFRELAY|
 |ALLOW|
 
