@@ -40,6 +40,8 @@ set_port_speed() {
 	local curspeed=$(get_current_speed $port)
 	local portno
 
+	ifconfig $port >/dev/null 2>&1 || return
+
 	if [ "$speed" != "$curspeed" ]; then
 		case "$speed" in
 			1000*)
