@@ -1067,7 +1067,7 @@ configure_brcm_line_extension()
 
 	mailbox_enabled=$(mailbox_check_enabled $1)
 
-	echo "exten => $extension,1,Dial(BRCM/$line)"				>> $WORKDIR/extensions_local.tmp
+	echo "exten => $extension,1,Dial(BRCM/$line, 30)"				>> $WORKDIR/extensions_local.tmp
 	if [ "$mailbox_enabled" = "1" ] ; then
 		echo "Enabling Mailbox for BRCM line $1"
 		echo "exten => $extension,n,VoiceMail($extension,u)"	>> $WORKDIR/extensions_local.tmp
@@ -1104,7 +1104,7 @@ configure_sip_user_extension()
 	mailbox_enabled=$(mailbox_check_enabled $1)
 
 	echo "Configuring extension for SIP User $user"
-	echo "exten => $extension,1,Dial(SIP/$user)"				>> $WORKDIR/extensions_local.tmp
+	echo "exten => $extension,1,Dial(SIP/$user, 30)"				>> $WORKDIR/extensions_local.tmp
 	if [ "$mailbox_enabled" = "1" ] ; then
 		echo "Enabling Mailbox for SIP User $user"
 		echo "exten => $extension,n,VoiceMail($extension,u)"	>> $WORKDIR/extensions_local.tmp
