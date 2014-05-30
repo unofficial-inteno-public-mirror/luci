@@ -834,6 +834,30 @@ configure_extensions()
 }
 
 #
+# Check if an enabled mailbox exists for the given user
+#
+get_call_filter()
+{
+	[ "$#" -ge 1 ] || return 0
+
+	local section cfgtype sip_provider
+	[ -z "$CONFIG_SECTIONS" ] && return 0
+	for section in ${CONFIG_SECTIONS}; do
+		config_get cfgtype "$section" TYPE
+		[ -n "call_filter" -a "x$cfgtype" != "xcall_filter" ] && continue
+		config_get sip_provider $section sip_provider
+		if [ "$sip_provider" = "$1" ] ; then
+			local enabled
+			config_get enabled $section enabled
+			if [ "x$enabled" == "x1" ] ; then
+				echo "$section"
+			fi
+			break
+		fi
+	done
+}
+
+#
 # Create dialplan settings for each enabled SIP Provider
 #
 configure_extensions_provider()
@@ -890,6 +914,57 @@ configure_extensions_provider()
 		custom_outgoing="Macro(custom-outgoing)"
 	fi
 
+	# check call filters for outgoing calls
+	local call_filter_macro
+	call_filter_macro="NoOp()"
+	call_filter=$(get_call_filter $1)
+	if ! [ -z "$call_filter" ] ; then
+		call_filter_macro="Macro(sip0-outgoing-call-filter)"
+		
+		# create tempfile for call filter macro
+		echo "[macro-sip0-outgoing-call-filter]" >>	$WORKDIR/call_filter_macros.tmp
+		echo "exten => s,1,Set(CALL_BLOCKED=0)" >>	$WORKDIR/call_filter_macros.tmp
+
+		local filter_outgoing
+		config_get filter_outgoing $call_filter outgoing
+		local goto_label
+		if [ "x$filter_outgoing" == "xblacklist" ] ; then
+			goto_label="block"
+		fi
+		if [ "x$filter_outgoing" == "xwhitelist" ] ; then
+			goto_label="pass"
+		fi
+
+		local section cfgtype owner
+		for section in ${CONFIG_SECTIONS}; do
+			config_get cfgtype "$section" TYPE
+			[ "x$cfgtype" != "xcall_filter_rule" ] && continue
+			config_get owner $section owner
+			if [ "x$owner" == "x$call_filter" ] ; then
+				local rule_direction rule_user rule_extension
+				config_get rule_direction $section direction
+				config_get rule_user $section user
+				config_get rule_extension $section extension
+
+				if [ "x$rule_direction" == "xoutgoing" ] ; then
+					echo "Outgoing calls from $1 to $rule_extension ${filter_outgoing}ed"
+					if [ "x$rule_user" == "x*" ] ; then
+						echo "exten => s,n,GotoIf($[\"\${DIAL_EXTEN}\"=\"$rule_extension\"]?$goto_label)" >>	$WORKDIR/call_filter_macros.tmp
+					else
+						echo "exten => s,n,GotoIf($[ $[\"\${DIAL_EXTEN}\"=\"$rule_extension\"] & $["\${CHANNEL}":"$rule_user/[0-9]+\|$rule_user-[0-9]+">0]?$goto_label)" >>	$WORKDIR/call_filter_macros.tmp
+					fi
+				fi
+			fi
+		done
+	
+		if [ "x$filter_outgoing" == "xblacklist" ] ; then
+			echo "exten => s,n,Goto(pass)" >>		$WORKDIR/call_filter_macros.tmp
+		fi
+		echo "exten => s,n(block),Set(CALL_BLOCKED=1)" >>	$WORKDIR/call_filter_macros.tmp
+		echo "exten => s,n(pass),NoOp()" >>			$WORKDIR/call_filter_macros.tmp
+		echo "" >>						$WORKDIR/call_filter_macros.tmp
+	fi
+		
 	#Set congestion tone (default to congestion)
 	config_get congestiontone "SIP" congestiontone
 	if [ -z "$congestiontone" ] ; then
@@ -932,6 +1007,7 @@ configure_extensions_provider()
 	#common settings
 	sed -i "s/|PROVIDER|/$1/g"			$WORKDIR/extensions_provider.tmp
 	sed -i "s/|CUSTOM_OUTGOING|/$custom_outgoing/"	$WORKDIR/extensions_provider.tmp
+	sed -i "s/|CALL_FILTER|/$call_filter_macro/"	$WORKDIR/extensions_provider.tmp
 	sed -i "s/|DISPLAYNAME|/$(escape_sed_substitution $displayname)/"		$WORKDIR/extensions_provider.tmp
 
 	#cbbs settings
@@ -979,8 +1055,46 @@ configure_extensions_provider()
 
 	# create tempfile for incoming context
 	tmp=$(mktemp)
+
+	echo "exten => $user,1,NoOp()" >>							$tmp
+
+	# check call filters for incoming calls
+	call_filter=$(get_call_filter $1)	
+	if ! [ -z "$call_filter" ] ; then
+		local filter_outgoing
+		config_get filter_incoming $call_filter incoming
+		local goto_label
+		if [ "x$filter_incoming" == "xblacklist" ] ; then
+			goto_label="block"
+		fi
+		if [ "x$filter_incoming" == "xwhitelist" ] ; then
+			goto_label="pass"
+		fi
+
+		local section cfgtype owner
+		for section in ${CONFIG_SECTIONS}; do
+			config_get cfgtype "$section" TYPE
+			[ "x$cfgtype" != "xcall_filter_rule" ] && continue
+			config_get owner $section owner
+			if [ "x$owner" == "x$call_filter" ] ; then
+				local rule_direction rule_extension
+				config_get rule_direction $section direction
+				config_get rule_extension $section extension
+
+				if [ "x$rule_direction" == "xincoming" ] ; then
+					echo "Incoming calls to $1 from $rule_extension ${filter_incoming}ed"
+					echo "exten => $user,n,GotoIf($[\"\${CALLERID(num)}\"=\"$rule_extension\"]?$goto_label)" >>	$tmp
+				fi
+			fi
+		done
+	fi
+
+	if [ "x$filter_incoming" == "xwhitelist" ] ; then
+		echo "exten => $user,n,Goto(block)" >>						$tmp
+	fi
+
 	local call_lines call_ivr call_queue oh_profile extension
-	echo "exten => $user,1,Set(__TRANSFER_CONTEXT=transfer_\${CHANNEL(peername)})" >>	$tmp
+	echo "exten => $user,n(pass),Set(__TRANSFER_CONTEXT=transfer_\${CHANNEL(peername)})" >>	$tmp
 	config_get call_lines $1 call_lines
 	config_get call_queue $1 call_queue
 	config_get call_ivr $1 call_ivr
@@ -1045,6 +1159,8 @@ configure_extensions_provider()
 	if [ "$has_voicemail" = "1" ] ; then
 		echo "exten => $user,n,VoiceMail($user,u)" >>					$tmp
 	fi
+	echo "exten => $user,n,Hangup()" >>							$tmp
+	echo "exten => $user,n(block),Playback(tt-monkeys)" >>					$tmp
 	echo "exten => $user,n,Hangup()" >>							$tmp
 	cat $tmp >>										$WORKDIR/extensions_incoming.tmp
 	rm -f											$tmp
@@ -1449,6 +1565,7 @@ start() {
 	touch				$WORKDIR/sip_registrations.tmp
 	touch				$WORKDIR/sip_users.tmp
 	touch				$WORKDIR/features.tmp
+	touch				$WORKDIR/call_filter_macros.tmp
 
 	#########################
 	# Dialplan configuration
@@ -1509,6 +1626,7 @@ start() {
 	#########################
 	# Finish up configuration
 	#########################
+	cat $WORKDIR/call_filter_macros.tmp >>	$WORKDIR/extensions.tmp
 	cat $WORKDIR/extensions_incoming.tmp >> $WORKDIR/extensions.tmp
 	cat $WORKDIR/extensions_dialtone.tmp >> $WORKDIR/extensions.tmp
 	cat $WORKDIR/extensions_local.tmp >> $WORKDIR/extensions.tmp

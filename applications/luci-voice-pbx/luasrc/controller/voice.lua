@@ -43,6 +43,10 @@ function index()
 				arcombine(cbi("voice_opening_hours"), cbi("voice_opening_hours_profile")),
 				_("Opening Hours"), 10).leaf = true
 
+			entry({user, "services", "voice", "voice_call_filters"},
+				arcombine(cbi("voice_call_filters"), cbi("voice_call_filter_details")),
+				_("Call Filters"), 11).leaf = true
+
 			entry({user, "services", "voice", "voice_log"},	cbi("voice_log"),	"Call Log",		99)
 			entry({user, "status", "voice"},			cbi("voice_status"),	"SIP Registration",	80)
 		end
