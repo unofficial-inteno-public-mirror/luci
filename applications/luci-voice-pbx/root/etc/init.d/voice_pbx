@@ -481,6 +481,7 @@ configure_sip_provider()
 	sed -i "s/|PROVIDER|/$1/g"			$WORKDIR/sip_reg.tmp	
 	sed -i "s/|USER|/$(escape_sed_substitution $user)/g"			$WORKDIR/sip_reg.tmp
 	sed -i "s/|SECRET|/$(escape_sed_substitution $secret)/"			$WORKDIR/sip_reg.tmp
+	sed -i "s/|DOMAIN|/$domain/"			$WORKDIR/sip_reg.tmp
 	if [ -n "$authuser" ] ; then
 		sed -i "s/|AUTHUSER|/:$(escape_sed_substitution $authuser)/"	$WORKDIR/sip_reg.tmp
 	else
