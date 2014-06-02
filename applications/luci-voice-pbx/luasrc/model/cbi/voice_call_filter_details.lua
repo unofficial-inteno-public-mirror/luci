@@ -49,42 +49,7 @@ else
 	end
 end
 
-if create_new then
-	sip_provider = s:option(ListValue, "sip_provider", "SIP Provider")
-	m.uci:foreach("voice_pbx", "sip_service_provider",
-		function(v)
-			if num_call_filters(v['.name']) == 0 then
-				sip_provider:value(v['.name'], v['name'])
-			end
-		end
-	)
-	sip_provider.rmempty = false
-	function sip_provider.validate(self, value, section)
-		-- Check that SIP provider exists
-		valid = false
-		m.uci.foreach("voice_pbx", "call_filter",
-			function(s1)
-				if s1['sip_provider'] == value then
-					valid = true
-				end
-			end
-		)
-		-- Check that the chosen SIP provider does not already have a call filter
-		if create_new and not num_call_filters(value) == 0 then
-			return nil, "Call filter already exists for this SIP provider"
-		end
-		return value
-	end
-else
-	sip_provider = s:option(DummyValue, "sip_provider", "SIP Provider")
-	function sip_provider.cfgvalue(self, section)
-	        local v = vc.user2name(Value.cfgvalue(self, section))
-	        if v:len() == 0 then
-	                v = "-"
-	        end
-	        return v
-	end
-end
+name = s:option(Value, "name", "Name")
 
 s:option(Flag, "enabled", "Enabled")
 

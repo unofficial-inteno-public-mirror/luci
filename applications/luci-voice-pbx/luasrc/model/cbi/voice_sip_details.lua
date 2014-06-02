@@ -103,6 +103,14 @@ m.uci:foreach("voice_pbx", "ivr",
 	end
 )
 
+call_filter = s:option(ListValue, "call_filter", "Call filter")
+call_filter:value("-", "-")
+m.uci:foreach("voice_pbx", "call_filter",
+	function(s1)
+		call_filter:value(s1[".name"], s1["name"])
+	end
+)
+
 domain = s:option(Value, 'domain', 'SIP domain name')
 function domain.validate(self, value, section)
 	if datatypes.host(value) then

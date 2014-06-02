@@ -41,7 +41,7 @@ end
 -- proceed to detailed editor.
 function s.create(self, section)
 	section_nr = get_new_section_number()
-	data = {}
+	data = { name = "Untitled Call Filter" }
 	newQueue = m.uci:section("voice_pbx", "call_filter", "call_filter" .. section_nr, data)
 	luci.http.redirect(s.extedit % newQueue)
 end
@@ -59,14 +59,7 @@ function s.remove(self, section)
 	TypedSection.remove(self, section)
 end
 
-sip_provider = s:option(DummyValue, "sip_provider", "SIP Provider")
-function sip_provider.cfgvalue(self, section)
-        local v = vc.user2name(Value.cfgvalue(self, section))
-        if v:len() == 0 then
-                v = "-"
-        end
-        return v
-end
+s:option(DummyValue, "name", "Name")
 s:option(Flag, "enabled", "Enabled")
 
 return m

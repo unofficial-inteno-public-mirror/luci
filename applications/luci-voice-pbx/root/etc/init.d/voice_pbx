@@ -801,13 +801,7 @@ configure_call_filter_helper()
 		return
 	fi
 
-	config_get sip_provider $1 sip_provider
-
-	if [ -z $sip_provider ] ; then
-		return
-	fi
-
-	echo "[macro-$sip_provider-$direction-call-filter]" >>	$WORKDIR/call_filter_macros.tmp
+	echo "[macro-$1-$direction-call-filter]" >>		$WORKDIR/call_filter_macros.tmp
 	echo "exten => s,1,Set(CALL_BLOCKED=0)" >>		$WORKDIR/call_filter_macros.tmp
 
 	config_get filter_mode $1 $direction
@@ -839,7 +833,6 @@ configure_call_filter_helper()
 			[ -z "$rule_enabled" -o "$rule_enabled" = "0" ] && continue
 		
 			if [ "x$rule_direction" == "xoutgoing" ] ; then
-				echo "Outgoing calls from $sip_provider to $rule_extension ${filter_mode}ed"
 				if [ "x$rule_user" == "x*" ] ; then
 					tmp="exten => s,n,GotoIf($[\"\${DIAL_EXTEN}\"=\"$rule_extension\"]?$goto_label)"
 					echo $tmp >>		$WORKDIR/call_filter_macros.tmp
@@ -851,7 +844,6 @@ configure_call_filter_helper()
 			fi
 			
 			if [ "x$rule_direction" == "xincoming" ] ; then
-				echo "Incoming calls to $sip_provider from $rule_extension ${filter_mode}ed"
 				tmp="exten => s,n,GotoIf($[\"\${CALLERID(num)}\"=\"$rule_extension\"]?$goto_label)"
 				echo $tmp >>			$WORKDIR/call_filter_macros.tmp
 			fi
@@ -921,26 +913,6 @@ configure_extensions()
 }
 
 #
-# Get call filter for a given SIP provider if it exists
-#
-get_call_filter()
-{
-	[ "$#" -ge 1 ] || return 0
-
-	local section cfgtype sip_provider
-	[ -z "$CONFIG_SECTIONS" ] && return 0
-	for section in ${CONFIG_SECTIONS}; do
-		config_get cfgtype "$section" TYPE
-		[ -n "call_filter" -a "x$cfgtype" != "xcall_filter" ] && continue
-		config_get sip_provider $section sip_provider
-		if [ "$sip_provider" = "$1" ] ; then
-			echo "$section"
-			return 0
-		fi
-	done
-}
-
-#
 # Create dialplan settings for each enabled SIP Provider
 #
 configure_extensions_provider()
@@ -998,14 +970,14 @@ configure_extensions_provider()
 	fi
 
 	# check call filters for outgoing calls
-	local call_filter_macro call_filter_enabled
+	local call_filter call_filter_macro call_filter_enabled
 	call_filter_macro="Set(CALL_BLOCKED=0)"
-	call_filter=$(get_call_filter $1)
+	config_get call_filter $1 call_filter
 	if ! [ -z "$call_filter" ] ; then
 		# check if call filter is enabled
 		config_get call_filter_enabled $call_filter enabled
 		if [ "x$call_filter_enabled" = "x1" ] ; then
-			call_filter_macro="Macro($1-outgoing-call-filter)"
+			call_filter_macro="Macro($call_filter-outgoing-call-filter)"
 		fi	
 	fi
 		
@@ -1104,7 +1076,7 @@ configure_extensions_provider()
 	call_filter_macro="Set(CALL_BLOCKED=0)"
 	# check if call filter is enabled
 	if [ "x$call_filter_enabled" = "x1" ] ; then
-		call_filter_macro="Macro($1-incoming-call-filter)"
+		call_filter_macro="Macro($call_filter-incoming-call-filter)"
 	fi	
 
 	echo "exten => $user,1,$call_filter_macro" >>						$tmp
