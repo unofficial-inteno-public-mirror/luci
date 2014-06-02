@@ -59,6 +59,7 @@ end
 -- Called when an account is being deleted
 -- Check that account is not in use before allowing deletion
 function s.remove(self, section)
+	-- Disable calling out using this account
 	vc.foreach_user({'brcm', 'sip'},
 		function(v)
 			name = v['.name']
@@ -67,6 +68,14 @@ function s.remove(self, section)
 			end
 		end
 	)
+	-- Remove call filters associated to this account
+	m.uci:foreach("voice_pbx", "call_filter",
+		function(s1)
+			if s1['sip_provider'] == section then
+				m.uci:set("voice_pbx", s1[".name"], "sip_provider", "-")
+			end
+		end
+	)				
 	TypedSection.remove(self, section)
 end
 

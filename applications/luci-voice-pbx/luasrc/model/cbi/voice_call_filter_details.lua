@@ -119,16 +119,15 @@ function get_new_section_number()
         return section_nr
 end
 
--- This function is called when a new tone selection should be configured i.e. when
--- user presses the "Add" button. We create a new section,
--- and proceed to detailed editor.
+-- This function is called when a new call filter rule should be configured i.e. when
+-- user presses the "Add" button.
 function s.create(self, section)
 	section_number = get_new_section_number()
 	data = { owner = arg[1] }
 	newSelection = m.uci:section("voice_pbx", "call_filter_rule", "call_filter_rule" .. section_number , data)
 end
 
--- Called when an account is being deleted
+-- Called when a call filter rule is being deleted
 function s.remove(self, section)
         TypedSection.remove(self, section)
 end

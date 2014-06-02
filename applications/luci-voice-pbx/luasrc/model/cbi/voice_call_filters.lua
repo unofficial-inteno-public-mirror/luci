@@ -36,7 +36,7 @@ function get_new_section_number()
 	return section_nr
 end
 
--- This function is called when a new queue should be created i.e. when
+-- This function is called when a new call filter should be created i.e. when
 -- user presses the "Add" button. We create a new section, name it, and
 -- proceed to detailed editor.
 function s.create(self, section)
@@ -46,8 +46,16 @@ function s.create(self, section)
 	luci.http.redirect(s.extedit % newQueue)
 end
 
--- Called when a queue is being deleted
+-- Called when a call filter is being deleted
 function s.remove(self, section)
+	-- Remove all rules belonging to this call filter
+	m.uci:foreach("voice_pbx", "call_filter_rule",
+		function(s1)
+			if s1["owner"] == section then
+				m.uci:delete("voice_pbx", s1[".name"])
+			end
+		end
+	)
 	TypedSection.remove(self, section)
 end
 
