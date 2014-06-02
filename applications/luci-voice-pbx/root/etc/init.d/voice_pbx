@@ -783,7 +783,9 @@ configure_sip_user()
 configure_call_filter()
 {
 	configure_call_filter_helper $1 "incoming"
+	echo "" >>						$WORKDIR/call_filter_macros.tmp
 	configure_call_filter_helper $1 "outgoing"
+	echo "" >>						$WORKDIR/call_filter_macros.tmp
 }
 
 #
@@ -814,6 +816,10 @@ configure_call_filter_helper()
 	fi
 	if [ "x$filter_mode" == "xwhitelist" ] ; then
 		goto_label="pass"
+	fi
+
+	if [ -z $goto_label ] ; then
+		return
 	fi
 
 	local section cfgtype owner tmp
@@ -857,7 +863,6 @@ configure_call_filter_helper()
 	fi
 	echo "exten => s,n(block),Set(CALL_BLOCKED=1)" >>	$WORKDIR/call_filter_macros.tmp
 	echo "exten => s,n(pass),NoOp()" >>			$WORKDIR/call_filter_macros.tmp
-	echo "" >>						$WORKDIR/call_filter_macros.tmp
 }
 
 #
