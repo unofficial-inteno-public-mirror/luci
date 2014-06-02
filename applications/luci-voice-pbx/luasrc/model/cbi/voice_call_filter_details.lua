@@ -163,5 +163,7 @@ user:depends("direction", "outgoing")
 user.rmempty = true
 
 s:option(Value, "extension", "Extension")
+enabled = s:option(Flag, "enabled", "Enabled")
+enabled.default = 1
 
 return m

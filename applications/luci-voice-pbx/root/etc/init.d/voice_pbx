@@ -822,12 +822,15 @@ configure_call_filter_helper()
 		[ "x$cfgtype" != "xcall_filter_rule" ] && continue
 		config_get owner $section owner
 		if [ "x$owner" == "x$1" ] ; then
-			local rule_direction rule_user rule_extension
+			local rule_direction rule_user rule_extension rule_enabled
 			config_get rule_direction $section direction
 			config_get rule_user $section user
 			config_get rule_extension $section extension
+			config_get rule_enabled $section enabled
 
 			[ "x$rule_direction" != "x$direction" ] && continue
+
+			[ -z "$rule_enabled" -o "$rule_enabled" = "0" ] && continue
 		
 			if [ "x$rule_direction" == "xoutgoing" ] ; then
 				echo "Outgoing calls from $sip_provider to $rule_extension ${filter_mode}ed"
