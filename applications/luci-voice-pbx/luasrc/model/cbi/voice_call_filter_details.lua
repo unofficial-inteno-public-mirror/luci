@@ -88,7 +88,7 @@ end
 -- user presses the "Add" button.
 function s.create(self, section)
 	section_number = get_new_section_number()
-	data = { owner = arg[1] }
+	data = { owner = arg[1], enabled = 1 }
 	newSelection = m.uci:section("voice_pbx", "call_filter_rule", "call_filter_rule" .. section_number , data)
 end
 
