@@ -47,6 +47,13 @@ end
 
 -- Called when a queue is being deleted
 function s.remove(self, section)
+	m.uci:foreach("voice_pbx", "tone_selection", 
+		function(s1)
+			if s1["owner"] == section then
+				m.uci:delete("voice_pbx", s1[".name"])
+			end
+		end
+	)
 	TypedSection.remove(self, section)
 end
 

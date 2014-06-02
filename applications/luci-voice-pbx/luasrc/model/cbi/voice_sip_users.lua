@@ -57,6 +57,13 @@ end
 
 -- Called when an account is being deleted
 function s.remove(self, section)
+	m.uci:foreach("voice_pbx", "mailbox",
+		function(s1)
+			if s1["user"] == section then
+				m.uci:set("voice_pbx", s1[".name"], "user", "-")
+			end
+		end
+	)
 	TypedSection.remove(self, section)
 end
 
