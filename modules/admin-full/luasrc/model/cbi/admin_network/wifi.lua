@@ -50,8 +50,8 @@ end
 
 -- wireless toggle was requested, commit and reload page
 function m.parse(map)
-	local action
 	if m:formvalue("cbid.wireless.%s.__toggle" % wdev:name()) then
+		local action
 		if wdev:get("disabled") == "1" or wnet:get("disabled") == "1" then
 			wnet:set("disabled", nil)
 			action = "enable"
@@ -64,6 +64,11 @@ function m.parse(map)
 		nw:commit("wireless")
 --		luci.sys.call("(env -i /sbin/wifi down; env -i /sbin/wifi up) >/dev/null 2>/dev/null")
 		luci.sys.call("env -i /sbin/wifi %s %s >/dev/null 2>/dev/null" %{action, wnet:ifname()})
+
+		luci.http.redirect(luci.dispatcher.build_url("admin/network/wireless", arg[1]))
+		return
+	elseif m:formvalue("cbid.wireless.%s.__autoch" % wdev:name()) then
+		luci.sys.exec("acs_cli -i %s autochannel >/dev/null 2>/dev/null" %wdev:name())
 
 		luci.http.redirect(luci.dispatcher.build_url("admin/network/wireless", arg[1]))
 		return
@@ -414,6 +419,14 @@ if hwtype == "broadcom" then
 	ch:value("153/80", detailed_name("153"), {band="a", bandwidth="80"})
 	ch:value("157/80", detailed_name("157"), {band="a", bandwidth="80"})
 	ch:value("161/80", detailed_name("161"), {band="a", bandwidth="80"})
+
+	if wdev:get("channel") == "auto" then
+		ach = s:taboption("advanced", Button, "__autoch")
+		ach:depends("channel", "auto")
+		ach.title      = translate("Current channel is %s" %wnet:channel())
+		ach.inputtitle = translate("Force Auto Channel Selection")
+		ach.inputstyle = "apply"
+	end
 
 if guser ~= "user" then
 	timer = s:taboption("advanced", Value, "scantimer", translate("Auto Channel Timer"), "min")
