@@ -1149,7 +1149,8 @@ configure_extensions_provider()
 		echo "exten => $user,n,VoiceMail($user,u)" >>					$tmp
 	fi
 	echo "exten => $user,n,Goto(end)" >>							$tmp
-	echo "exten => $user,n(blocked),Playback(tt-monkeys)" >>				$tmp
+	echo "exten => $user,n(blocked),Set(result=\${SHELL(/usr/lib/asterisk/log_call.sh Incoming \${CALLERID(num)} Blocked)})" >> $tmp
+	echo "exten => $user,n,Playback(tt-monkeys)" >>						$tmp
 	echo "exten => $user,n(end),Hangup()" >>						$tmp
 	cat $tmp >>										$WORKDIR/extensions_incoming.tmp
 	rm -f											$tmp

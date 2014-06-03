@@ -19,8 +19,12 @@ function get_call_log()
 			calls[i] = {
 				time = values[1],
 				direction = values[2],
-				number = values[3]
+				number = values[3],
+				note = ""
 			}
+			if (table.getn(values) >= 4) then
+				calls[i].note = values[4]
+			end
 		end
 	end
 	return calls
@@ -84,6 +88,7 @@ else
 	s:option(DummyValue, "time", "Time")
 	s:option(DummyValue, "direction", "Direction")
 	s:option(DummyValue, "number", "Number")
+	s:option(DummyValue, "note", "Note")
 
 	-- Add a Call button for each local line
 	line_nr = 0
