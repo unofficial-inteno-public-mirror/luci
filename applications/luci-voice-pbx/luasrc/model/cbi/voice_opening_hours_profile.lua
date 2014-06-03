@@ -75,9 +75,87 @@ function s.remove(self, section)
 end
 
 s:option(Value, "name", "Name")
-s:option(Value, "time_range", "Time Range")
-s:option(Value, "days_of_week", "Days of Week")
-s:option(Value, "days_of_month", "Days of Month")
-s:option(Value, "months", "Month")
+
+tr = s:option(Value, "time_range", "Time Range")
+function tr.validate(self, value, section)
+	if value == "*" then
+		return value
+	end
+
+	if not value:match("^[0-9][0-9]:[0-9][0-9]%-[0-9][0-9]:[0-9][0-9]$") then
+		return nil, "Invalid time range format"
+	end
+	return value
+end
+
+dow = s:option(Value, "days_of_week", "Days of Week")
+function dow.validate(self, value, section)
+	if value == "*" then
+		return value
+	end
+
+	local days = { "mon", "tue", "wed", "thu", "fri", "sat", "sun" }
+	if value:match("^[a-z][a-z][a-z]%-[a-z][a-z][a-z]$") then
+		for d in string.gmatch(value, "%l+") do
+			valid_day = false
+			for _,v in pairs(days) do
+				if v == d then
+					valid_day = true
+					break
+				end
+			end
+			if not valid_day then
+				return nil, "Invalid day " .. d
+			end
+		end
+	else
+		return nil, "Invalid days of week format"
+	end
+	return value
+end
+
+dom = s:option(Value, "days_of_month", "Days of Month")
+function dom.validate(self, value, section)
+	if value == "*" then
+		return value
+	end
+
+	if not value:match("^[0-9][0-9]?%-[0-9][0-9]?$") then
+		return nil, "Invalid days of month format"
+	end
+	for d in string.gmatch(value, "%d+") do
+		num = tonumber(d)
+		if num < 1 or num > 31 then
+			return nil, "Invalid day of month " .. d
+		end
+	end
+	return value
+end
+
+mon = s:option(Value, "months", "Months")
+function mon.validate(self, value, section)
+	if value == "*" then
+		return value
+	end
+
+	local months = { "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec" }
+	if value:match("^[a-z][a-z][a-z]%-[a-z][a-z][a-z]$") then
+		for m in string.gmatch(value, "%l+") do
+			valid_month = false
+			for _,v in pairs(months) do
+				if v == m then
+					valid_month = true
+					break
+				end
+			end
+			if not valid_month then
+				return nil, "Invalid month " .. m
+			end
+		end
+	else
+		return nil, "Invalid months format"
+	end
+	return value
+end
 
 return m

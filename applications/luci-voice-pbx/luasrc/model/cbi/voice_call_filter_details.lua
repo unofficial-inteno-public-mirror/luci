@@ -126,7 +126,14 @@ user.custom = false
 user:depends("direction", "outgoing")
 user.rmempty = true
 
-s:option(Value, "extension", "Extension")
+exten = s:option(Value, "extension", "Extension")
+function exten.validate(self, value, section)
+	if not datatypes.phonedigit(value) then
+		return nil, value .. " is not a valid extension"
+	end
+	return value
+end
+
 enabled = s:option(Flag, "enabled", "Enabled")
 enabled.default = 1
 
