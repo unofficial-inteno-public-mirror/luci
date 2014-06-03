@@ -53,27 +53,39 @@ else
 end
 
 -- Create and populate dropdown with available users
-if create_new then
-	user = s:option(ListValue, "user", "User")
-	vc.foreach_user({'brcm', 'sip'},
-		function(v)
-			if not user_has_mailbox(v['.name']) then
-				user:value(v['.name'], v['name'])
-			end
+user = s:option(ListValue, "user", "User")
+current_user = nil
+if not create_new then
+	current_user = m.uci:get("voice_pbx", arg[1], "user")
+end
+user:value("-", "-")
+vc.foreach_user({'brcm', 'sip'},
+	function(v)
+		if not user_has_mailbox(v['.name']) or v['.name'] == current_user then
+			user:value(v['.name'], v['name'])
 		end
-	)
-	m.uci:foreach("voice_pbx", "sip_service_provider",
-		function(v)
-			if not user_has_mailbox(v['.name']) then
-				user:value(v['.name'], v['name'])
-			end
-		end
-	)
-else
-	user = s:option(DummyValue, "user", "User")
-	function user.cfgvalue(self, section)
-		return vc.user2name(m.uci:get("voice_pbx", arg[1], "user"))
 	end
+)
+m.uci:foreach("voice_pbx", "sip_service_provider",
+	function(v)
+		if not user_has_mailbox(v['.name']) or v['.name'] == current_user then
+			user:value(v['.name'], v['name'])
+		end
+	end
+)
+function user.validate(self, value, section)
+	ok = true
+	m.uci:foreach("voice_pbx", "mailbox",
+		function(s1)
+			if s1['.name'] ~= section and s1['user'] ~= '-' and s1['user'] == value then
+				ok = false
+			end
+		end
+	)
+	if not ok then
+		return nil, "User already has a mailbox"
+	end
+	return value
 end
 
 pin = s:option(Value, "pin", "PIN", "Enter a new PIN code for accessing the mailbox.\
