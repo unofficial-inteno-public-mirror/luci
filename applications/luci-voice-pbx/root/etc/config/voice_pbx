@@ -150,13 +150,5 @@ config log 'LOG'
 	option syslog_facility 'local0'
 	option syslog ''
 
-config 'queue'
-	option 'name' 'Test Queue'
-	option 'enabled' '1'
-	option 'extension' '1001'
-	option 'strategy' 'rrmemory'
-	list 'member' 'brcm4'
-	list 'member' 'brcm5'
-
 config moh 'moh'
 	option sound_file ''
