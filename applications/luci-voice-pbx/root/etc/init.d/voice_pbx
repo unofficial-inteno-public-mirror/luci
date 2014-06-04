@@ -917,6 +917,7 @@ configure_extensions()
 	if [ -n "$record_message" ] ; then
 		echo "exten => $record_message,1,Playback(beep)"		>> $WORKDIR/extensions_local.tmp
 		echo "exten => $record_message,n,Record(\"/usr/lib/asterisk/recordings/user-recording\${STRFTIME(\${EPOCH},,%C%y%m%d-%T)}.gsm)"	>> $WORKDIR/extensions_local.tmp
+		echo "exten => $record_message,n,Playback(auth-thankyou)"	>> $WORKDIR/extensions_local.tmp
 		echo "exten => $record_message,n,Hangup()"			>> $WORKDIR/extensions_local.tmp
 	fi
 }

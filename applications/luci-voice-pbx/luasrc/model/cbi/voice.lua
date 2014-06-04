@@ -4,7 +4,12 @@ local vc = require "luci.model.cbi.voice.common"
 m = Map ("voice_pbx", translate("Voice Settings"))
 
 function remove_recording(self, section)
-	nixio.fs.remove("/usr/lib/asterisk/recordings/" .. section)
+	for i,v in pairs(vc.get_recordings()) do
+		if section == i then
+			nixio.fs.remove("/usr/lib/asterisk/recordings/" .. v["file"])
+			break
+		end
+	end
 	luci.http.redirect(luci.dispatcher.build_url("admin/services/voice/voice"))
 end
 

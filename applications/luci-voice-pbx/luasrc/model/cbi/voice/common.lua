@@ -105,13 +105,15 @@ end
 
 function common.get_recordings()
 	local recordings = {}
+	i = 0
 	for e in nixio.fs.dir("/usr/lib/asterisk/recordings") do
-		recordings[e] = {
+		recordings[i] = {
 			file = e,
 			name = string.sub(e, 0, 31),
 			timestamp = string.sub(e, 15, 31),
 			format = string.sub(e, 33)
 		}
+		i = i + 1
 	end
 	return recordings
 end
