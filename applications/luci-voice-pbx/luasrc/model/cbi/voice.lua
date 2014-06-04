@@ -8,7 +8,9 @@ function remove_recording(self, section)
 	luci.http.redirect(luci.dispatcher.build_url("admin/services/voice/voice"))
 end
 
-s = m:section(Table, vc.get_recordings(), "Recordings")
+number = m.uci:get("voice_pbx", "features", "record_message")
+
+s = m:section(Table, vc.get_recordings(), "Recordings", "Call " .. number .. " to record a new message")
 s.template = "cbi/tblsection"
 s:option(DummyValue, "timestamp", "Timestamp")
 s:option(DummyValue, "format", "Format")

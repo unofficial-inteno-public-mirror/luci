@@ -637,7 +637,7 @@ configure_ivr()
 		fi
 	done
 
-	echo "exten => $extension,1(welcome),Playback($sound_file)"			>> $WORKDIR/extensions_local.tmp
+	echo "exten => $extension,1(welcome),Playback(/usr/lib/asterisk/recordings/$sound_file)"			>> $WORKDIR/extensions_local.tmp
 	echo "exten => $extension,n,Set(digit=0)"					>> $WORKDIR/extensions_local.tmp
 	echo "exten => $extension,n(start),NoOp()"					>> $WORKDIR/extensions_local.tmp
 	cat $tmp1									>> $WORKDIR/extensions_local.tmp
@@ -869,6 +869,7 @@ configure_extensions()
 	local extension_all_ports
 	local test_audio_extension
 	local test_echo_extension
+	local record_message
 
 	config_get custom_incoming_enabled custom_dialplan custom_incoming_enabled
 	config_get custom_hangup_enabled custom_dialplan custom_hangup_enabled
@@ -876,6 +877,7 @@ configure_extensions()
 	config_get test_audio_extension custom_dialplan test_audio_extension
 	config_get test_echo_extension custom_dialplan test_echo_extension
 	config_get callforward_enabled features callforward_enabled
+	config_get record_message features record_message
 
 	if [ -z "$custom_incoming_enabled" -o "$custom_incoming_enabled" = "0" ] ; then
 		sed -i "s/|CUSTOM_INCOMING|/NoOp()/"					$WORKDIR/extensions.tmp
@@ -909,6 +911,13 @@ configure_extensions()
 	if [ -n "$test_echo_extension" ] ; then
 		echo "exten => $test_echo_extension,1,Echo()"			>> $WORKDIR/extensions_local.tmp
 		echo "exten => $test_echo_extension,n,Hangup()"			>> $WORKDIR/extensions_local.tmp
+	fi
+
+	
+	if [ -n "$record_message" ] ; then
+		echo "exten => $record_message,1,Playback(beep)"		>> $WORKDIR/extensions_local.tmp
+		echo "exten => $record_message,n,Record(\"/usr/lib/asterisk/recordings/user-recording\${STRFTIME(\${EPOCH},,%C%y%m%d-%T)}.gsm)"	>> $WORKDIR/extensions_local.tmp
+		echo "exten => $record_message,n,Hangup()"			>> $WORKDIR/extensions_local.tmp
 	fi
 }
 

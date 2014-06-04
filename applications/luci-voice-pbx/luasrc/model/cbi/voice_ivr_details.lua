@@ -54,7 +54,10 @@ end
 e = s:option(Flag, "enabled", "IVR Enabled")
 e.default = 0
 
-sound_file = s:option(Value, "sound_file", "Sound", "Sound file played back when someone calls the IVR")
+sound_file = s:option(ListValue, "sound_file", "Sound", "Sound file played back when someone calls the IVR")
+for _,v in pairs(vc.get_recordings()) do
+	sound_file:value(v["name"], v["timestamp"])
+end
 
 s = m:section(TypedSection, "tone_selection", "Tone Selections")
 function s.filter(self, section)
