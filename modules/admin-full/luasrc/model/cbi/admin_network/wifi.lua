@@ -268,7 +268,16 @@ if hwtype == "broadcom" then
 	country:value("US", "UNITED STATES")
 	country:value("EU/13", "EUROPEAN UNION")
 
-	s:taboption("general", Value, "maxassoc", translate("Connection Limit"))
+	maxassc = s:taboption("general", Value, "maxassoc", translate("Connection Limit"))
+	maxassc.default = "16"
+
+	function maxassc.validate(self, value, section)
+		local nvalue = tonumber(value) or 16
+		if nvalue < 1 or nvalue > 128 then
+			return nil, "Connection Limit value must be within 1-128 range"
+		end
+		return value
+	end
 
 	band = s:taboption("advanced", ListValue, "band", translate("Band"))
 	if wdev:is_ac() then
@@ -810,7 +819,25 @@ if hwtype == "broadcom" then
 	hidden:depends({mode="adhoc"})
 	hidden:depends({mode="wds"})
 
-	s:taboption("general", Value, "bss_max", translate("Maximum Client"))
+	bssmax = s:taboption("general", Value, "bss_max", translate("Maximum Client"))
+	bssmax.default = "16"
+
+	function bssmax.validate(self, value, section)
+		local maxassoc = tonumber(maxassc:formvalue(wdev:name())) or 16
+		local nvalue = tonumber(value) or 16
+		if nvalue < 1 or nvalue > 128 then
+			return nil, "Maximum Client value must be within 1-128 range"
+		elseif nvalue > maxassoc then
+			return nil, "Maximum Client value cannot be higher than Connection Limit value (%d) of %s" %{maxassoc, wdev:name()}
+		end
+		return value
+	end
+
+	function bssmax.remove(self, section)
+		local maxassoc = tonumber(maxassc:formvalue(wdev:name())) or 16
+		local nvalue = (maxassoc < 16) and maxassoc or 16
+		self.map:set(section, "bss_max", tostring(nvalue))
+	end
 
 	isolate = s:taboption("advanced", Flag, "isolate", translate("Separate Clients"), translate("Prevents client-to-client communication"))
 	isolate:depends({mode="ap"})
