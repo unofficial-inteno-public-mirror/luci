@@ -1438,6 +1438,26 @@ configure_language()
 	fi
 }
 
+configure_moh()
+{
+	local sound_file
+	config_get sound_file moh sound_file
+
+	if [ -z "$sound_file" ] ; then
+		return
+	fi
+
+	if [ -f $sound_file ]; then
+		# Move sound file to /usr/lib/asterisk/moh
+		echo "Found new MOH sound file"
+		path="/usr/lib/asterisk/moh"
+		mv $sound_file $path/music.gsm
+		if [ $? == 0 ] ; then
+			echo "Installed new MOH sound file as music.gsm"
+		fi
+	fi
+}
+
 #Create an extension "hint" to allow dialtone to be set according to sip provider reg status
 create_extensions_dialtone()
 {
@@ -1611,6 +1631,11 @@ start() {
 	# Language
 	###########
 	configure_language
+
+	###############
+	# Music on hold
+	###############
+	configure_moh
 
 	####################
 	# Log configuration

@@ -157,3 +157,6 @@ config 'queue'
 	option 'strategy' 'rrmemory'
 	list 'member' 'brcm4'
 	list 'member' 'brcm5'
+
+config moh 'moh'
+	option sound_file ''
