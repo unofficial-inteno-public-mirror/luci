@@ -1,5 +1,5 @@
 --[[
-Read SIP account status from asterisk and present registration status for the SIP accounts
+Read SIP account status from ami_tool and present registration status for the SIP accounts
 ]]--
 
 require("luci.json")
@@ -7,45 +7,28 @@ u = luci.model.uci:cursor()
 
 function get_status()
 	local status = {}
-
-	sip_registry = luci.sys.exec("asterisk -rx 'sip show registry'")
-	ubus_data = luci.sys.exec("ubus call asterisk sip")
+	ubus_data = luci.sys.exec("ubus call asterisk status")
 	json_data = luci.json.decode(ubus_data)
+	sip_data = json_data.sip
 
-	lines = string.split(sip_registry, "\n")
-	for _, line in ipairs(lines) do
-		host, port = line:sub(1,40):match("^%s*(sip%d+):(%d+)%s*$")
-		if host then
-			dnsmgr = line:sub(41, 47):match("^%s*(.-)%s*$")
-			acc_user = line:sub(48, 62):match("^%s*(.-)%s*$")
-			acc_refresh = line:sub(63, 70):match("^%s*(.-)%s*$")
-			acc_state = line:sub(71, 91):match("^%s*(.-)%s*$")
-			acc_regtime = line:sub(92):match("^%s*(.-)%s*$")
-
-			acc_name = u:get("voice_client", host, "name")
-			acc_domain = u:get("voice_client", host, "domain")
-			
-			if json_data then
-				acc_regtime = json_data[host].last_registration
-			end
-
-			if acc_state == "Registered" then
-				acc_state = "Yes"
-			else
-				acc_state = string.format("No (%s)", acc_state)
+	u:foreach("voice_client", "sip_service_provider",
+		function(sip_account)
+			accountname = sip_account['.name']
+			if not sip_account.enabled or sip_account.enabled ~= "1" then
+				return
 			end
 
 			row = {
-				title = acc_name,
-				user = acc_user,
-				domain = acc_domain,
-				state = acc_state,
-				refresh = acc_refresh,
-				regtime = acc_regtime
+				title = sip_account.name,
+				user = sip_data[accountname].username,
+				domain = sip_data[accountname].domain,
+				state = sip_data[accountname].state,
+				refresh = tostring(sip_data[accountname].refresh_interval),
+				regtime = sip_data[accountname].last_successful_registration
 			}
-			status[host] = row
+			status[accountname] = row
 		end
-	end
+	)
 	return status
 end
 
@@ -53,13 +36,22 @@ m = SimpleForm("voice_status", "SIP Registration status", "Registration status o
 m.reset = false
 m.submit = false
 
--- Create a Table section
-s = m:section(Table, get_status(), "")
-s:option(DummyValue, "title", "SIP Account")
-s:option(DummyValue, "user", "User")
-s:option(DummyValue, "domain", "Domain")
-s:option(DummyValue, "state", "Registered")
-s:option(DummyValue, "refresh", "Registration interval (s)")
-s:option(DummyValue, "regtime", "Last registration")
+-- Read registration status
+status_ok, result = pcall(get_status)
+
+if status_ok then
+	-- Create a Table section
+	s = m:section(Table, result, "")
+	s:option(DummyValue, "title", "SIP Account")
+	s:option(DummyValue, "user", "User")
+	s:option(DummyValue, "domain", "Domain")
+	s:option(DummyValue, "state", "Status")
+	s:option(DummyValue, "refresh", "Registration interval (s)")
+	s:option(DummyValue, "regtime", "Last registration")
+else
+	-- Reading of sip registration status failed
+	s = m:section(SimpleSection)
+	s:option(DummyValue, "Error", "Failed to read status")
+end
 
 return m
