@@ -103,5 +103,16 @@ function common.user2name(user)
 	return name
 end
 
+function common.get_recordings()
+	local recordings = {}
+	for e in nixio.fs.dir("/usr/lib/asterisk/recordings") do
+		recordings[e] = {
+			timestamp = string.sub(e, 15, 31),
+			format = string.sub(e, 33)
+		}
+	end
+	return recordings
+end
+
 return common
 
