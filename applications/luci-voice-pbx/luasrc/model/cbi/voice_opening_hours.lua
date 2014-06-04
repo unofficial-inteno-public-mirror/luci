@@ -35,17 +35,24 @@ function get_new_section_number()
 	return section_nr
 end
 
--- This function is called when a new queue should be created i.e. when
+-- This function is called when a new profile should be created i.e. when
 -- user presses the "Add" button. We create a new section, name it, and
 -- proceed to detailed editor.
 function s.create(self, section)
-	section_nr = get_new_section_number()
+	profile_section_nr = get_new_section_number()
 	data = {}
-	newQueue = m.uci:section("voice_pbx", "opening_hours_profile", "opening_hours_profile" .. section_nr, data)
-	luci.http.redirect(s.extedit % newQueue)
+	newProfile = m.uci:section("voice_pbx", "opening_hours_profile", "opening_hours_profile" .. profile_section_nr, data)
+
+	local ts_section_nr = 0
+	while m.uci:get("voice_pbx", "timespan" .. ts_section_nr) do
+		ts_section_nr = ts_section_nr + 1
+	end
+	data = { owner = "opening_hours_profile" .. profile_section_nr, name = "Always open", time_range = "*", days_of_week = "*", days_of_month = "*", months = "*" }
+	newTimespan = m.uci:section("voice_pbx", "timespan", "timespan" .. ts_section_nr, data)
+	luci.http.redirect(s.extedit % newProfile)
 end
 
--- Called when a queue is being deleted
+-- Called when a profile is being deleted
 function s.remove(self, section)
 	m.uci:foreach("voice_pbx", "timespan",
 		function(s1)
