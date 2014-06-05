@@ -153,3 +153,6 @@ config log 'LOG'
 
 config moh 'moh'
 	option sound_file ''
+
+config custom_sounds 'custom_sounds'
+	option sound_pack ''

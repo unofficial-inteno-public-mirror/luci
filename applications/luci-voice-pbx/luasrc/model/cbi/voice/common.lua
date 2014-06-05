@@ -118,5 +118,32 @@ function common.get_recordings()
 	return recordings
 end
 
+function common.get_custom_sounds()
+	local files = {}
+	i = 0
+	for e in nixio.fs.dir("/usr/lib/asterisk/custom") do
+		-- get file name and file extension
+		lastdotpos = -1
+		for i = 1, #e do
+			if e:sub(i, i) == "." then
+				lastdotpos = i
+			end
+		end
+		name = ""
+		format = ""
+		if lastdotpos ~= -1 then
+			name = e:sub(0, lastdotpos - 1)
+			format = e:sub(lastdotpos + 1)
+		end
+		files[i] = {
+			file = e,
+			name = name,
+			format = format
+		}
+		i = i + 1
+	end
+	return files
+end
+
 return common
 

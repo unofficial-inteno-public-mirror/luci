@@ -22,6 +22,18 @@ s:option(DummyValue, "format", "Format")
 btn = s:option(Button, "file", "Remove")
 btn.write = remove_recording
 
+s = m:section(Table, vc.get_custom_sounds(), "Custom Sounds")
+s.template = "cbi/tblsection"
+s:option(DummyValue, "name", "Name")
+s:option(DummyValue, "format", "Format")
+s.anonymous = true
+s.addremove = false
+
+s = m:section(TypedSection, "custom_sounds", "Upload Custom Sound", "Upload custom sound-pack to be used for IVRs")
+s.anonymous = true
+s.addremove = false
+upload = s:option(FileUpload, "sound_pack", "Sound", "The files must be contained in a single directory called custom and compressed as <strong>tar.gz</strong>")
+
 s = m:section(TypedSection, "moh", "Music on hold", "Upload a sound file to be played when a call is put on hold or placed in a queue")
 s.anonymous = true
 s.addremove = false

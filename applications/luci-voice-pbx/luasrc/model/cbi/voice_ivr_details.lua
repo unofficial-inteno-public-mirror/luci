@@ -56,7 +56,10 @@ e.default = 0
 
 sound_file = s:option(ListValue, "sound_file", "Sound", "Sound file played back when someone calls the IVR")
 for _,v in pairs(vc.get_recordings()) do
-	sound_file:value(v["name"], v["timestamp"])
+	sound_file:value("/usr/lib/asterisk/recordings/" .. v["name"], v["timestamp"])
+end
+for _,v in pairs(vc.get_custom_sounds()) do
+	sound_file:value("/usr/lib/asterisk/custom/" .. v["name"], v["name"])
 end
 
 s = m:section(TypedSection, "tone_selection", "Tone Selections")
