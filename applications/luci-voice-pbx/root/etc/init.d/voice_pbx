@@ -1666,6 +1666,7 @@ start() {
 	touch				$WORKDIR/features.tmp
 	touch				$WORKDIR/call_filter_macros.tmp
 	touch				$WORKDIR/ivrs.tmp
+	touch 				$WORKDIR/queues.tmp
 
 	###########################
 	# Call Filter configuration
