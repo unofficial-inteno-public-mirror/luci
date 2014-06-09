@@ -206,7 +206,7 @@ end
 --- Retrieves the output of the "dmesg" command.
 -- @return	String containing the current log buffer
 function dmesg()
-	return luci.util.exec("dmesg")
+	return luci.util.exec("dmesgh")
 end
 
 --- Generates a random id with specified length.
