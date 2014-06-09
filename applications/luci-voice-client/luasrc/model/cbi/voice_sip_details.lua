@@ -120,8 +120,12 @@ end
 s:option(Value, "displayname", "Display Name", "Display name used in Caller Id")
 
 -- Create and populate dropdowns with available codec choices                            
-codecs = {ulaw = "G.711MuLaw", alaw = "G.711ALaw", g729 = "G.729a", g723 = "G.723.1", g726 = "G.726_32"}
+codecs = {}
 i = 0
+m.uci:foreach("voice_client", "supported_codec",
+	function(s1)
+		codecs[s1['.name']] = s1.name;
+	end)
 for a, b in pairs(codecs) do
 	if i == 0 then
 		codec = s:option(ListValue, "codec"..i, "Preferred codecs")
