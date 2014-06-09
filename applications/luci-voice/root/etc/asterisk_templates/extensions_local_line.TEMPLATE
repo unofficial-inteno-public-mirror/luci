@@ -1,0 +1,5 @@
+
+exten => |EXTEN|,1,   Dial(BRCM/|LINE|,,gT)
+exten => |EXTEN|,n,   Macro(endcall,BRCM,|LINE|,|EXTEN|,${CHANNEL(name)},|MAX_RETRIES|,|RETRYTIME|,|WAITTIME|,|CBBS_KEY|,|CONGESTIONTONE|)
+exten => |EXTEN|,n,   Goto(hangup,h,2)
+exten => |EXTEN|,n,   Hangup()
