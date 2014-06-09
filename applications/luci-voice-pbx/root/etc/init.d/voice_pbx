@@ -637,16 +637,21 @@ configure_ivr()
 		fi
 	done
 
+	echo "exten => s,1,NoOp()" >>					$WORKDIR/ivrs.tmp
 	if [ $num_selections -eq 0 ] ; then
-		echo "exten => s,1,Playback($sound_file)" >>					$WORKDIR/ivrs.tmp
-		echo "exten => s,n,Goto(hangup,h,2)" >>						$WORKDIR/ivrs.tmp
+		if ! [ -z $sound_file -o "x$sound_file" == "x-" ] ; then
+			echo "exten => s,n,Playback($sound_file)" >>	$WORKDIR/ivrs.tmp
+		fi
+		echo "exten => s,n,Goto(hangup,h,2)" >>			$WORKDIR/ivrs.tmp
 	else
-		echo "exten => s,1,Background($sound_file)" >>					$WORKDIR/ivrs.tmp
-		echo "exten => s,n,WaitExten(10)" >>						$WORKDIR/ivrs.tmp
-		echo "exten => i,1,Goto($1,s,1)" >>						$WORKDIR/ivrs.tmp
-		echo "exten => t,1,Goto($1,s,1)" >>						$WORKDIR/ivrs.tmp
+		if ! [ -z $sound_file -o "x$sound_file" == "x-" ] ; then
+			echo "exten => s,n,Background($sound_file)" >>	$WORKDIR/ivrs.tmp
+		fi
+		echo "exten => s,n,WaitExten(10)" >>			$WORKDIR/ivrs.tmp
+		echo "exten => i,1,Goto($1,s,1)" >>			$WORKDIR/ivrs.tmp
+		echo "exten => t,1,Goto($1,s,1)" >>			$WORKDIR/ivrs.tmp
 	fi
-	echo "" >>										$WORKDIR/ivrs.tmp
+	echo "" >>							$WORKDIR/ivrs.tmp
 }
 
 #
@@ -669,7 +674,6 @@ configure_queue()
 	echo "Configuring Call Queue $name"
 
 	echo "exten => $extension,1,Answer()"			>> $WORKDIR/extensions_local.tmp
-	echo "exten => $extension,n,Background(dir-welcome)"	>> $WORKDIR/extensions_local.tmp
 	echo "exten => $extension,n,Queue($1)"			>> $WORKDIR/extensions_local.tmp
 
 	
@@ -1143,7 +1147,9 @@ configure_extensions_provider()
 	
 	if [ -z $call_lines ] ; then
 		# Connect calls to queue or IVR only during opening hours	
-		echo "exten => $user,n(open),Goto(local_extensions,$extension,1)" >>		$tmp
+		if ! [ -z $extension ] ; then
+			echo "exten => $user,n(open),Goto(local_extensions,$extension,1)" >>	$tmp
+		fi
 		# Goto voicemail after hours
 		echo "exten => $user,n(closed),NoOp()" >> 					$tmp
 	fi
@@ -1496,8 +1502,15 @@ configure_moh()
 		# Move sound file to /usr/lib/asterisk/moh
 		echo "Found new MOH sound file"
 		path="/usr/lib/asterisk/moh"
+		if ! [ -d "$path" ] ; then
+			mkdir -p $path
+			if [ $? -ne 0 ] ; then
+				echo "Cannot create $path"
+				return 1
+			fi
+		fi
 		mv $sound_file $path/music.gsm
-		if [ $? == 0 ] ; then
+		if [ $? -eq 0 ] ; then
 			echo "Installed new MOH sound file as music.gsm"
 		fi
 	fi

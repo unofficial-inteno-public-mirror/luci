@@ -38,6 +38,7 @@ end
 s:option(Value, "name", "Name", "Display name")
 
 opening_hours = s:option(ListValue, "opening_hours_profile", "Opening Hours Profile")
+opening_hours:value("-", "-")
 m.uci:foreach("voice_pbx", "opening_hours_profile",
 	function(v)
 		opening_hours:value(v['.name'], v['name'])

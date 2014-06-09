@@ -14,8 +14,14 @@ function remove_recording(self, section)
 end
 
 number = m.uci:get("voice_pbx", "features", "record_message")
+local description
+if number then
+	description = "Call " .. number .. " to record a new message"
+else
+	description = "No extension configured for recording messages"
+end
 
-s = m:section(Table, vc.get_recordings(), "Recordings", "Call " .. number .. " to record a new message")
+s = m:section(Table, vc.get_recordings(), "Recordings", description)
 s.template = "cbi/tblsection"
 s:option(DummyValue, "timestamp", "Timestamp")
 s:option(DummyValue, "format", "Format")

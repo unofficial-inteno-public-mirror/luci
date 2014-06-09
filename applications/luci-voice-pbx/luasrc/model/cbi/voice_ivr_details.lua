@@ -38,6 +38,7 @@ end
 s:option(Value, "name", "Name", "Display name")
 
 opening_hours = s:option(ListValue, "opening_hours_profile", "Opening Hours Profile")
+opening_hours:value("-", "-")
 m.uci:foreach("voice_pbx", "opening_hours_profile",
 	function(v)
 		opening_hours:value(v['.name'], v['name'])
@@ -55,6 +56,7 @@ e = s:option(Flag, "enabled", "IVR Enabled")
 e.default = 0
 
 sound_file = s:option(ListValue, "sound_file", "Sound", "Sound file played back when someone calls the IVR")
+sound_file:value("-", "-")
 for _,v in pairs(vc.get_recordings()) do
 	sound_file:value("/usr/lib/asterisk/recordings/" .. v["name"], v["timestamp"])
 end

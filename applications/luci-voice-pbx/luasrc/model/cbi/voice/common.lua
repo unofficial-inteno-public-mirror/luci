@@ -105,42 +105,48 @@ end
 
 function common.get_recordings()
 	local recordings = {}
+	path = "/usr/lib/asterisk/recordings"
 	i = 0
-	for e in nixio.fs.dir("/usr/lib/asterisk/recordings") do
-		recordings[i] = {
-			file = e,
-			name = string.sub(e, 0, 31),
-			timestamp = string.sub(e, 15, 31),
-			format = string.sub(e, 33)
-		}
-		i = i + 1
+	if nixio.fs.stat(path) then
+		for e in nixio.fs.dir(path) do
+			recordings[i] = {
+				file = e,
+				name = string.sub(e, 0, 31),
+				timestamp = string.sub(e, 15, 31),
+				format = string.sub(e, 33)
+			}
+			i = i + 1
+		end
 	end
 	return recordings
 end
 
 function common.get_custom_sounds()
 	local files = {}
+	path = "/usr/lib/asterisk/custom"
 	i = 0
-	for e in nixio.fs.dir("/usr/lib/asterisk/custom") do
-		-- get file name and file extension
-		lastdotpos = -1
-		for i = 1, #e do
-			if e:sub(i, i) == "." then
-				lastdotpos = i
+	if nixio.fs.stat(path) then
+		for e in nixio.fs.dir(path) do
+			-- get file name and file extension
+			lastdotpos = -1
+			for i = 1, #e do
+				if e:sub(i, i) == "." then
+					lastdotpos = i
+				end
 			end
+			name = ""
+			format = ""
+			if lastdotpos ~= -1 then
+				name = e:sub(0, lastdotpos - 1)
+				format = e:sub(lastdotpos + 1)
+			end
+			files[i] = {
+				file = e,
+				name = name,
+				format = format
+			}
+			i = i + 1
 		end
-		name = ""
-		format = ""
-		if lastdotpos ~= -1 then
-			name = e:sub(0, lastdotpos - 1)
-			format = e:sub(lastdotpos + 1)
-		end
-		files[i] = {
-			file = e,
-			name = name,
-			format = format
-		}
-		i = i + 1
 	end
 	return files
 end
