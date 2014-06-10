@@ -263,7 +263,7 @@ end
 
 -- Call Back Busy Subscriber
 if m.uci.get("voice_client", "features", "cbbs_enabled") == "1" then
-	s = m:section(TypedSection, "BRCM", "Call Back Busy Subscriber")
+	s = m:section(TypedSection, "brcm_advanced", "Call Back Busy Subscriber")
 	s.template  = "cbi/tblsection"
 	s.anonymous = true
 
