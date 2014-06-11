@@ -7,4 +7,5 @@
 ;
 rtpstart=|RTPSTART|
 rtpend=|RTPEND|
+rtcpinterval=|RTCPINTERVAL|
 

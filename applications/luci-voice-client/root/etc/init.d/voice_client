@@ -275,6 +275,7 @@ configure_sip()
 	local bindport
 	local rtpstart
 	local rtpend
+	local rtcpinterval
 	local dtmfmode
 	local blindxfer
 	local defaultexpiry
@@ -293,6 +294,7 @@ configure_sip()
 	config_get bindport $1 bindport
 	config_get rtpstart $1 rtpstart
 	config_get rtpend $1 rtpend
+	config_get rtcpinterval $1 rtcpinterval
 	config_get dtmfmode $1 dtmfmode
 	config_get blindxfer $1 blindxfer
 	config_get defaultexpiry $1 defaultexpiry
@@ -429,6 +431,13 @@ configure_sip()
 	sed -i "s/|RTPSTART|/$rtpstart/"		$WORKDIR/rtp.tmp
 	sed -i "s/|RTPEND|/$rtpend/"			$WORKDIR/rtp.tmp
 
+	# Set or remove rtcpinterval
+	if [ -z "$rtcpinterval" ] ; then
+		sed -i "/|RTCPINTERVAL|/d"		$WORKDIR/rtp.tmp
+	else
+		sed -i "s/|RTCPINTERVAL|/$rtcpinterval/g"		$WORKDIR/rtp.tmp
+	fi
+
 	# Set blind transfer key
 	cp $TMPL_FEATURES				$WORKDIR/features.tmp
 	sed -i "s/|BLINDXFER|/$(escape_sed_substitution $blindxfer)/"		$WORKDIR/features.tmp
@@ -478,6 +487,7 @@ configure_sip_account()
 	local secret
 	local is_fax
 	local autoframing
+	local encryption
 
 	config_get enabled $1 enabled
 	config_get domain $1 domain
@@ -491,6 +501,7 @@ configure_sip_account()
 	config_get is_fax $1 is_fax
 	config_get autoframing $1 autoframing
 	config_get transport $1 transport
+	config_get encryption $1 encryption
 	
 	if [ -z "$transport" ] ; then 
 		transport="udp" 
@@ -556,6 +567,13 @@ configure_sip_account()
 		sed -i "s/|OUTBOUNDPROXYPORT|/:$outboundproxyport/g"	$WORKDIR/sip_peer.tmp
 	fi
 
+	# Set or remove encryption
+	if [ -z "$encryption" ] ; then
+		sed -i "/|ENCRYPTION|/d"		$WORKDIR/sip_peer.tmp
+	else
+		sed -i "s/|ENCRYPTION|/$encryption/g"		$WORKDIR/sip_peer.tmp
+	fi
+	
 	# Force ulaw/alaw if fax, otherwise read selected codecs
 	if [ -z "$is_fax" -o "$is_fax" = "1" ] ; then
 		sed -i "s/|ALLOW|/allow = ulaw\nallow = alaw/"	$WORKDIR/sip_peer.tmp
