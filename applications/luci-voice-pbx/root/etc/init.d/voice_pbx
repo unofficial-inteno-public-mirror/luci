@@ -1363,6 +1363,7 @@ configure_brcm_line()
 	sed -i "s/|ALLOW|/$codecs/"				$WORKDIR/brcm_line.tmp
 	sed -i "s/|DIALTONE_EXTENSION_HINT|/$1/"		$WORKDIR/brcm_line.tmp
 	sed -i "s/|DIALTONE_TIMEOUT|/$dialtone_timeout/"	$WORKDIR/brcm_line.tmp
+	sed -i "s/|DTMFRELAY|/$dtmfmode/"			$WORKDIR/brcm_line.tmp
 
 	cat $WORKDIR/brcm_line.tmp >>				$WORKDIR/brcm.tmp
 	rm -f							$WORKDIR/brcm_line.tmp
