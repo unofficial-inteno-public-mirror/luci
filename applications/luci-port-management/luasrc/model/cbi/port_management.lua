@@ -19,7 +19,6 @@ for _, eport in ipairs(PORTS) do
 	if interfacename(eport) then
 		eth = s:option(ListValue, eport, "%s (%s)" %{eport, interfacename(eport)})
 		eth.rmempty = true
-		eth:value("disabled", "Disabled")
 		eth:value("auto", "Auto-negotiation")
 		--eth:value("1000FD", "1000Mb, Full Duplex")
 		--eth:value("1000HD", "1000Mb, Half Duplex")
@@ -27,6 +26,7 @@ for _, eport in ipairs(PORTS) do
 		eth:value("100HD", "100Mb, Half Duplex")
 		eth:value("10FD" , "10Mb,  Full Duplex")
 		eth:value("10HD" , "10Mb,  Half Duplex")
+		eth:value("disabled", "Disabled")
 	end
 end
 
