@@ -41,8 +41,6 @@ IFACE_PATTERNS_VIRTUAL  = { }
 IFACE_PATTERNS_IGNORE   = { "^wmaster%d", "^wifi%d", "^hwsim%d", "^imq%d", "^ifb%d", "^mon%.wlan%d", "^sit%d", "^gre%d", "^lo$","sar$","swc$","bcmsw$","dsl%d","^atm%d$","^ptm%d$","^radiotap%d$","^vap%d$"}
 IFACE_PATTERNS_WIRELESS = { "^wlan%d", "^wl%d", "^ath%d", "^%w+%.network%d" }
 
-AC_WIRELESS_PCIDS	= { "43a0", "43a2" }
-
 
 protocol = utl.class()
 
@@ -1539,18 +1537,11 @@ function wifidev.version(self)
 end
 
 function wifidev.is_ac(self)
-	local ac = false
-	for _, pcid in ipairs(AC_WIRELESS_PCIDS) do
-		if self:version() == pcid then
-			ac = true
-			break
-		end
-	end
-	return ac
+	return (tonumber(sys.exec("db -q get hw.%s.is_ac" %self:version())) == 1)
 end
 
 function wifidev.bands(self)
-	return sys.exec("wlctl -i %q bands" %self.sid)
+	return sys.exec("db -q get hw.%s.bands" %self:version()) or sys.exec("wlctl -i %q bands" %self.sid)
 end
 
 function wifidev.band(self)
@@ -1566,11 +1557,20 @@ function wifidev.channels(self, country, band, bwidth)
 end
 
 function wifidev.hwmodes(self)
-	if self:is_ac() then
-		return { n = true, ac = true }
-	else
-		return { b = true, g = true, n = true }
+	local B = false
+	local G = false
+	local N = false
+	local AC = false
+	if self:bands():match("b") then
+		B = true
+		G = true
+		N = true
 	end
+	if self:bands():match("a") then
+		N = true
+		AC = self:is_ac()
+	end
+	return { b = B, g = G, n = N, ac = AC }
 end
 
 function wifidev.antenna(self)
