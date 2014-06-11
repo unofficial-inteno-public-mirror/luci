@@ -759,9 +759,9 @@ create_extensions_account()
 
 	# Confifure call forwarding if enabled
 	if [ -n "$callforward_enabled" -a "$callforward_enabled" = "1" ] ; then
-		echo "exten => $cfim_on,1,	Macro(create_cfim,$1,\${REPLACE(EXTEN:$cfim_on_len,*#-)})" >>	$WORKDIR/extensions_account.tmp
+		echo "exten => _${cfim_on}.,1,	Macro(create_cfim,$1,\${REPLACE(EXTEN:$cfim_on_len,*#-)})" >>	$WORKDIR/extensions_account.tmp
 		echo "exten => $cfim_off,1,	Macro(delete_cfim,$1)" >>					$WORKDIR/extensions_account.tmp
-		echo "exten => $cfbs_on,1,	Macro(create_cfbs,$1,\${REPLACE(EXTEN:$cfbs_on_len,*#-)})" >>	$WORKDIR/extensions_account.tmp
+		echo "exten => _${cfbs_on}.,1,	Macro(create_cfbs,$1,\${REPLACE(EXTEN:$cfbs_on_len,*#-)})" >>	$WORKDIR/extensions_account.tmp
 		echo "exten => $cfbs_off,1,	Macro(delete_cfbs,$1)" >>					$WORKDIR/extensions_account.tmp
 	fi
 

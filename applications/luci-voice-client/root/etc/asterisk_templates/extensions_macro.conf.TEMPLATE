@@ -118,24 +118,28 @@ exten => s-CHANUNAVAIL,n,	Hangup()
 
 ; Load Call Forwarding settings
 exten => s,1,			Set(linecfim=${DB(CFIM/${ARG1})})
-exten => s,n,			Set(linecfbs=${DB(CFBS/${ARG1})})
 
 ; If we have CFIM set, go to CFIM call
 exten => s,n,			GotoIf(${linecfim}?call_cfim)
 
-; If we have CFBS set, go to CFBS call
-exten => s,n,			GotoIf(${linecfbs}?call_cfbs)
-
 ;Call line normally, by going to call_line context
 exten => s,n,			Goto(call_line,${MACRO_EXTEN},1)
-
-;Call CFBS
-exten => s,n(call_cfbs),	Dial(${ARG2},20,)
-exten => s,n,			Dial(SIP/${linecfbs}@${ARG1})
-exten => s,n,			Hangup()
 
 ;Call CFIM number
 exten => s,n(call_cfim),	Dial(SIP/${linecfim}@${ARG1},)
 exten => s,n,			Hangup()
 
+[macro-callhandler-noanswer]
+;
+; ${ARG1} - Calling sip peer
+;
+
+; Load Call Forwarding settings
+exten => s,1,			Set(linecfbs=${DB(CFBS/${ARG1})})
+exten => s,n,			GotoIf(${linecfbs}?call_cfbs)
+exten => s,n,			Hangup()
+
+;Call CFBS
+exten => s,n(call_cfbs),	Dial(SIP/${linecfbs}@${ARG1})
+exten => s,n,			Hangup()
 
