@@ -18,7 +18,7 @@ get_port_no() {
 	done
 }
 
-get_current_speed() {
+get_current_status() {
 	local port="$1"
 	local media="$(ethctl $port media-type 2>&1)"
 	if echo $media | grep "Auto-negotiation enabled" >/dev/null; then
@@ -34,48 +34,57 @@ get_current_speed() {
 	fi
 }
 
-set_port_speed() {
+set_port_status() {
 	local port="$1"
-	local speed="$2"
-	local curspeed=$(get_current_speed $port)
+	local status="$2"
+	local curstatus=$(get_current_status $port)
 	local portno
 
 	ifconfig $port >/dev/null 2>&1 || return
 
-	if [ "$speed" != "$curspeed" ]; then
-		case "$speed" in
-			1000*)
-				portno=$(get_port_no $port)
-				case "$speed" in
-					1000FD) ethswctl -c phymode -p $portno -y 1000 -z 1 ;;
-					1000HD) ethswctl -c phymode -p $portno -y 1000 -z 0 ;;
+	case "$status" in
+		disabled)
+			ethctl $port phy-power down
+		;;
+		*)
+			if [ "$status" != "$curstatus" ]; then
+				case "$status" in
+					1000*)
+						portno=$(get_port_no $port)
+						case "$status" in
+							1000FD) ethswctl -c phymode -p $portno -y 1000 -z 1 ;;
+							1000HD) ethswctl -c phymode -p $portno -y 1000 -z 0 ;;
+						esac
+					;;
+					10*)
+						ethctl $port media-type $status
+					;;
+					*)
+						ethctl $port media-type auto
+					;;
 				esac
-			;;
-			10*)
-				ethctl $port media-type $speed
-			;;
-			*)
-				ethctl $port media-type auto
-			;;
-		esac
-	fi
+			else
+				ethctl $port phy-power up
+			fi
+		;;
+	esac
 }
 
 configure_ethports() {
 	config_get eth0 "$1" eth0
-	set_port_speed eth0 $eth0
+	set_port_status eth0 $eth0
 	
 	config_get eth1 "$1" eth1
-	set_port_speed eth1 $eth1
+	set_port_status eth1 $eth1
 	
 	config_get eth2 "$1" eth2
-	set_port_speed eth2 $eth2
+	set_port_status eth2 $eth2
 	
 	config_get eth3 "$1" eth3
-	set_port_speed eth3 $eth3
+	set_port_status eth3 $eth3
 	
 	config_get eth4 "$1" eth4
-	set_port_speed eth4 $eth4
+	set_port_status eth4 $eth4
 }
 
 start() {
