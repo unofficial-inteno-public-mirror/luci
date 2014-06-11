@@ -411,6 +411,9 @@ end
 -- jtarg = line:option(Value, 'jitter_target', 'Jitter target')
 -- jtarg.datatype = "integer"
 
+-- Comment on gain settings
+comment = m:section(SimpleSection, "", "Note: Changes to Tx and Rx Gain require a restart to have effect")
+comment.anonymous = true
 
 -- Hotline (autodial) settings per-line -------------------------------------
 hotline = m:section(TypedSection, "brcm_line", "Hotline settings", "Automatically dial a predetermined number after a delay, if user has not pressed any button(s). Leave empty to disable.")
