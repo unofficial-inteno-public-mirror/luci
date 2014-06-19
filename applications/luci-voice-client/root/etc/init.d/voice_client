@@ -777,9 +777,7 @@ create_extensions_account()
 
 	# Confifure call forwarding if enabled
 	if [ -n "$callforward_enabled" -a "$callforward_enabled" = "1" ] ; then
-		echo "exten => _${cfim_on}.,1,	Macro(create_cfim,$1,\${REPLACE(EXTEN:$cfim_on_len,*#-)})" >>	$WORKDIR/extensions_account.tmp
 		echo "exten => $cfim_off,1,	Macro(delete_cfim,$1)" >>					$WORKDIR/extensions_account.tmp
-		echo "exten => _${cfbs_on}.,1,	Macro(create_cfbs,$1,\${REPLACE(EXTEN:$cfbs_on_len,*#-)})" >>	$WORKDIR/extensions_account.tmp
 		echo "exten => $cfbs_off,1,	Macro(delete_cfbs,$1)" >>					$WORKDIR/extensions_account.tmp
 	fi
 
@@ -799,9 +797,15 @@ create_extensions_account()
 
 	# create direct dial extensions, if any are defined
 	config_get direct_dial $1 direct_dial
-	if [ -n "$direct_dial" ] ; then
+	if [ -n "$direct_dial" -o \( -n "$callforward_enabled" -a "$callforward_enabled" = "1" \) ] ; then
 		cp $TMPL_EXTENSIONS_DIRECT					$WORKDIR/extensions_direct.tmp
 		sed -i "s/|ACCOUNT|/$1/"					$WORKDIR/extensions_direct.tmp
+
+		if [ -n "$callforward_enabled" -a "$callforward_enabled" = "1" ] ; then
+			echo "exten => _${cfim_on},1,	Macro(create_cfim,$1)" >>	$WORKDIR/extensions_direct.tmp
+			echo "exten => _${cfbs_on},1,	Macro(create_cfbs,$1)" >>	$WORKDIR/extensions_direct.tmp
+		fi
+
 		for i in $direct_dial ; do
 			echo "Adding direct dial extension $i for $1"
 			echo "exten => $i,1,Goto($1-outgoing,\${EXTEN},1)" >>	$WORKDIR/extensions_direct.tmp
