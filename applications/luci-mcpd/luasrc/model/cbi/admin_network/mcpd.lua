@@ -10,13 +10,14 @@ s = m:section(TypedSection, "mcpd",  translate("Configure IGMP proxy specific pa
 s.addremove = false
 s.anonymous = true
 
-iface = s:option(ListValue, "igmp_proxy_interfaces", translate("IGMP proxy interface"))
+iface = s:option(MultiValue, "igmp_proxy_interfaces", translate("IGMP proxy interfaces"))
 uci:foreach("network", "interface",
 	function (section)
 		local ifc = section[".name"]
 		local islan = section["is_lan"]
 		local typ = section["type"]
-		if ifc ~= "loopback" and islan ~= "1" and typ ~= "alias" then
+		local ifname = section["ifname"]
+		if ifc ~= "loopback" and islan ~= "1" and typ ~= "alias" and not ifname:match("^@") then
 			iface:value(ifc)
 		end
 	end)
