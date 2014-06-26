@@ -10,6 +10,31 @@ s = m:section(TypedSection, "mcpd",  translate("Configure IGMP proxy specific pa
 s.addremove = false
 s.anonymous = true
 
+dscp = s:option(ListValue, "igmp_dscp_mark", translate("Differentiated services code point"),
+("will be used to mark all outgoing IGMP packets"))
+dscp:value("", " ")
+dscp:value("CS0")	-- 0
+dscp:value("CS1")	-- 8
+dscp:value("AF11")	-- 10
+dscp:value("AF12")	-- 12
+dscp:value("AF13")	-- 14
+dscp:value("CS2")	-- 16
+dscp:value("AF21")	-- 18
+dscp:value("AF22")	-- 20
+dscp:value("AF23")	-- 22
+dscp:value("CS3")	-- 24
+dscp:value("AF31")	-- 26
+dscp:value("AF32")	-- 28
+dscp:value("AF33")	-- 30
+dscp:value("CS4")	-- 32
+dscp:value("AF41")	-- 34
+dscp:value("AF42")	-- 36
+dscp:value("AF43")	-- 38
+dscp:value("CS5")	-- 40
+dscp:value("EF")	-- 46
+dscp:value("CS6")	-- 48
+dscp:value("CS7")	-- 56
+
 iface = s:option(MultiValue, "igmp_proxy_interfaces", translate("IGMP proxy interfaces"))
 uci:foreach("network", "interface",
 	function (section)

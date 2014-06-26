@@ -9,6 +9,17 @@ SERVICE_WRITE_PID=1
 
 MCPD_BIN=/usr/sbin/mcpd
 
+
+dscp_mark() {
+	local mark=$1
+	local dm=0
+	while [[ $dm -le 56 ]]; do
+		iptables -t mangle -D POSTROUTING -p igmp -j DSCP --set-dscp $dm 2>/dev/null
+		dm=$((dm+2))
+	done
+	[ -n "$mark" ] && iptables -t mangle -A POSTROUTING -p igmp -j DSCP --set-dscp-class $mark
+}
+
 start() {
 	local igmp_snooping_enable
         local igmp_snooping_interfaces
@@ -93,6 +104,9 @@ start() {
 		# enable bridged+routed igmp snooping mode
 		echo "igmp-bridged-routed 1" >> /tmp/mcpd.conf
 	fi
+
+	config_get igmp_dscp_mark mcpd igmp_dscp_mark
+	dscp_mark $igmp_dscp_mark
 
 	service_start $MCPD_BIN
 }
