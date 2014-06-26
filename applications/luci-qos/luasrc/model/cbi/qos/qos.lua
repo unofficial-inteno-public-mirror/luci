@@ -15,10 +15,16 @@ $Id: qos.lua 9417 2012-11-10 20:55:50Z soma $
 local wa = require "luci.tools.webadmin"
 local fs = require "nixio.fs"
 
+--m = Map("qos", translate("Quality of Service"),
+--	translate("With <abbr title=\"Quality of Service\">QoS</abbr> you " ..
+--		"can prioritize network traffic selected by addresses, " ..
+--		"ports or services."))
+
 m = Map("qos", translate("Quality of Service"),
 	translate("With <abbr title=\"Quality of Service\">QoS</abbr> you " ..
-		"can prioritize network traffic selected by type of service, addresses, " ..
-		"ports or services."))
+		"can prioritize network traffic selected by IP precedence, addresses, protocols or ports.") .. "<br />" ..
+		translate("Note: Each IP precedence value corresponds to single/multiple DSCP value(s) " ..
+		"according to redefined Type of Service (ToS) field."))
 
 --s = m:section(TypedSection, "interface", translate("Interfaces"))
 --s.addremove = true
@@ -54,17 +60,29 @@ t:value("Normal", translate("normal"))
 t:value("Bulk", translate("low"))
 t.default = "Normal"
 
-tos = s:option(ListValue, "tos", translate("ToS"))
-tos.rmempty = true
-tos:value("", translate("all"))
-tos:value("0")
-tos:value("1")
-tos:value("2")
-tos:value("3")
-tos:value("4")
-tos:value("5")
-tos:value("6")
-tos:value("7")
+dscp = s:option(ListValue, "dscp", translate("Precedence"))
+dscp.rmempty = true
+dscp:value("", translate("all"))
+dscp:value("0", "0")
+dscp:value("8 10 12 14", "1")
+dscp:value("16 18 20 22", "2")
+dscp:value("24 26 28 30", "3")
+dscp:value("32 34 36 38", "4")
+dscp:value("40 46", "5")
+dscp:value("48", "6")
+dscp:value("56", "7")
+
+--tos = s:option(ListValue, "tos", translate("IP Precedence"))
+--tos.rmempty = true
+--tos:value("", translate("all"))
+--tos:value("0", "0")
+--tos:value("32 40 56", "1")
+--tos:value("72 88", "2")
+--tos:value("96 112", "3")
+--tos:value("136 144 152", "4")
+--tos:value("160 184", "5")
+--tos:value("192", "6")
+--tos:value("224", "7")
 
 srch = s:option(Value, "srchost", translate("Source host"))
 srch.rmempty = true
@@ -76,24 +94,24 @@ dsth.rmempty = true
 dsth:value("", translate("all"))
 wa.cbi_add_knownips(dsth)
 
-l7 = s:option(ListValue, "layer7", translate("Service"))
-l7.rmempty = true
-l7:value("", translate("all"))
+--l7 = s:option(ListValue, "layer7", translate("Service"))
+--l7.rmempty = true
+--l7:value("", translate("all"))
 
-local pats = io.popen("find /etc/l7-protocols/ -type f -name '*.pat'")
-if pats then
-	local l
-	while true do
-		l = pats:read("*l")
-		if not l then break end
+--local pats = io.popen("find /etc/l7-protocols/ -type f -name '*.pat'")
+--if pats then
+--	local l
+--	while true do
+--		l = pats:read("*l")
+--		if not l then break end
 
-		l = l:match("([^/]+)%.pat$")
-		if l then
-			l7:value(l)
-		end
-	end
-	pats:close()
-end
+--		l = l:match("([^/]+)%.pat$")
+--		if l then
+--			l7:value(l)
+--		end
+--	end
+--	pats:close()
+--end
 
 p = s:option(Value, "proto", translate("Protocol"))
 p:value("", translate("all"))
