@@ -42,4 +42,22 @@ for k,v in pairs(countries) do
 end
 country.default = "SWE"
 
+voice_ver = brcm:option(DummyValue, "voiceversion", "")
+function voice_ver.cfgvalue(self, section)
+        v = luci.sys.exec("opkg find luci-app-voice-client")
+        if not v or #v < 1 then
+                v = "Unknown luci-app-voice-client version"
+        end
+        return v
+end
+
+ast_ver = brcm:option(DummyValue, "astversion", "")
+function ast_ver.cfgvalue(self, section)
+        v = luci.sys.exec("opkg find asterisk18-mod")
+        if not v or #v < 1 then
+                v = "Unknown asterisk18-mod version"
+        end
+        return v
+end
+
 return m
