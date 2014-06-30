@@ -18,27 +18,11 @@
 ]]--
 
 local datatypes = require("luci.cbi.datatypes")
-
--- Read line counts from driver
-lineInfo = luci.sys.exec("/usr/bin/brcminfo")
-lines = string.split(lineInfo, "\n")
-line_nr = 0
-if #lines == 5 then
-	dectInfo = lines[1]
-	dectCount = tonumber(dectInfo:match("%d+"))
-	fxsInfo = lines[2]
-	fxsCount = tonumber(fxsInfo:match("%d+"))
-	allInfo = lines[4]
-	allCount = tonumber(allInfo:match("%d"))
-else
-	dectCount = 0
-	fxsCount = 0
-	allCount = 0
-end
+local vc = require "luci.model.cbi.voice.common"
 
 default_extension = 0
 
-m = Map ("voice", "Line Settings")
+m = Map ("voice", "FXS and DECT Settings")
 s = m:section(TypedSection, "brcm_line")
 s.template  = "cbi/tblsection"
 s.anonymous = true
@@ -57,11 +41,7 @@ exten = s:option(Value, "extension", "Extension")
 exten.default = default_extension..default_extension..default_extension..default_extension
 default_extension = default_extension + 1
 function exten.validate(self, value, section)
-	if datatypes.phonedigit(value) then
-		return value
-	else
-		return nil, value .. " is not a valid extension"
-	end
+	return vc.validate_extension(value, section)
 end
 
 -- Show call waiting setting        
@@ -71,12 +51,14 @@ cw.disabled = "0"
 cw.enabled = "1"
 
 -- Show SIP account selection
-sip_account = s:option(ListValue, "sip_account", "Call out on SIP account")
+sip_provider = s:option(ListValue, "sip_provider", "Call out using SIP provider")
 m.uci:foreach("voice", "sip_service_provider",
 	function(s1)
-		sip_account:value(s1['.name'], s1.name)
+		if s1.enabled == "1" then
+			sip_provider:value(s1['.name'], s1.name)
+		end
 	end)
-sip_account:value("-", "-")
-sip_account.default = "-"
+sip_provider:value("-", "-")
+sip_provider.default = "-"
 
 return m

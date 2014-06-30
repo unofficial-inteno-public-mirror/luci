@@ -13,22 +13,8 @@ $Id: forward-details.lua 8962 2012-08-09 10:03:32Z jow $
 ]]--
 
 local datatypes = require("luci.cbi.datatypes")
+local vc = require "luci.model.cbi.voice.common"
 
--- Check line counts
-lineInfo = luci.sys.exec("/usr/bin/brcminfo")
-lines = string.split(lineInfo, "\n")
-if #lines == 5 then
-	dectInfo = lines[1]
-	dectCount = tonumber(dectInfo:match("%d+"))
-	fxsInfo = lines[2]
-	fxsCount = tonumber(fxsInfo:match("%d+"))
-	allInfo = lines[4]
-	allCount = tonumber(allInfo:match("%d+"))
-else
-	dectCount = 0
-	fxsCount = 0
-	allCount = 0
-end
 
 local dsp = require "luci.dispatcher"
 
@@ -53,18 +39,31 @@ else
 	m.title = name
 end
 
+-- Change sip_account setting for lines using a disabled account
 -- For new and disabled accounts that are being enabled,
 -- ensure that user has supplied a password
 old_enabled_val = m.uci:get_bool("voice", s.section, "enabled")
 function parse_enabled(self, section)                                                                                                                           
-    Flag.parse(self, section)
-    local fvalue = self:formvalue(section)
-    local passwd = pwd:formvalue(section)
-    if fvalue and not old_enabled_val then
-    	if not passwd or #passwd == 0 then
-    		self.add_error(self, section, "missing", "Please enter a password")
-    	end
-    end
+	Flag.parse(self, section)
+	local fvalue = self:formvalue(section)
+
+	if not fvalue then
+		vc.foreach_user({'brcm', 'sip'},
+			function(v)
+				name = v['.name']
+				if v.sip_account == section then
+					m.uci:set("voice", name, "sip_account", "-")
+				end
+			end
+		)
+	end
+
+	local passwd = pwd:formvalue(section)
+	if fvalue and not old_enabled_val then
+		if not passwd or #passwd == 0 then
+			self.add_error(self, section, "missing", "Please enter a password")
+		end
+	end
 end
 
 -- Enabled checkbox
@@ -72,19 +71,56 @@ e = s:option(Flag, "enabled", "Account Enabled")
 e.default = 0
 e.parse = parse_enabled
 
+target = s:option(ListValue, "target", "Incoming calls to")
+target:value('direct', 'Direct')
+target:value('queue', 'Queue')
+target:value('ivr', 'IVR')
+target.default = 'direct'
+
 -- Create a set of checkboxes for lines to call
-lines = s:option(MultiValue, "call_lines", "Incoming calls to")
+lines = s:option(MultiValue, "call_lines", "&nbsp;")
+lines:depends('target', 'direct')
 line_nr = 0
 -- DECT
 for i = 1, dectCount do
-	lines:value(line_nr, "DECT " .. i)
+	lines:value("BRCM/" .. line_nr, "DECT " .. i)
 	line_nr = line_nr + 1
 end
 -- FXS
 for i = 1, fxsCount do
-	lines:value(line_nr, "Tel " .. i)
+	lines:value("BRCM/" .. line_nr, "Tel " .. i)
 	line_nr = line_nr + 1
 end
+-- SIP users
+vc.foreach_user({'sip'},
+        function(v)
+                lines:value("SIP/" .. v['user'], v['name'])
+        end
+)
+
+queue = s:option(ListValue, "call_queue", "&nbsp;")
+queue:depends('target', 'queue')
+m.uci:foreach("voice", "queue",
+	function(v)
+		queue:value(v['.name'], v['name'])
+	end
+)
+
+ivr = s:option(ListValue, "call_ivr", "&nbsp;")
+ivr:depends('target', 'ivr')
+m.uci:foreach("voice", "ivr",
+	function(v)
+		ivr:value(v['.name'], v['name'])
+	end
+)
+
+call_filter = s:option(ListValue, "call_filter", "Call filter")
+call_filter:value("-", "-")
+m.uci:foreach("voice", "call_filter",
+	function(s1)
+		call_filter:value(s1[".name"], s1["name"])
+	end
+)
 
 domain = s:option(Value, 'domain', 'SIP domain name')
 function domain.validate(self, value, section)
@@ -125,7 +161,7 @@ i = 0
 for a, b in pairs(codecs) do
 	if i == 0 then
 		codec = s:option(ListValue, "codec"..i, "Preferred codecs")
-		codec.default = "alaw"		
+		codec.default = "alaw"
 	else
 		codec = s:option(ListValue, "codec"..i, "&nbsp;")
 		codec.default = "-"
@@ -137,7 +173,6 @@ for a, b in pairs(codecs) do
 		codec:value(k, v)
 	end
 	codec:value("-", "-")
-
 	i = i + 1
 end
 

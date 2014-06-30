@@ -19,22 +19,7 @@
 
 -- http://luci.subsignal.org/trac/browser/luci/trunk/applications/luci-radvd/luasrc/model/cbi/radvd.lua?rev=6
 local ds = require "luci.dispatcher"
-
--- Check line counts
-lineInfo = luci.sys.exec("/usr/bin/brcminfo")
-lines = string.split(lineInfo, "\n")
-if #lines == 5 then
-	dectInfo = lines[1]
-	dectCount = tonumber(dectInfo:match("%d+"))
-	fxsInfo = lines[2]
-	fxsCount = tonumber(fxsInfo:match("%d+"))
-	allInfo = lines[4]
-	allCount = tonumber(allInfo:match("%d+"))
-else
-	dectCount = 0
-	fxsCount = 0
-	allCount = 0
-end
+local vc = require "luci.model.cbi.voice.common"
 
 m = Map ("voice", "SIP Service Providers")
 s = m:section(TypedSection, "sip_service_provider")
@@ -72,13 +57,28 @@ function s.create(self, section)
 end
 
 -- Called when an account is being deleted
--- Remove its usage from brcm lines
 function s.remove(self, section)
-	m.uci:foreach("voice", "brcm_line",
+	-- Disable calling out using this account
+	vc.foreach_user({'brcm', 'sip'},
+		function(v)
+			name = v['.name']
+			if v.sip_account == section then
+				m.uci:set("voice", name, "sip_account", "-")
+			end
+		end
+	)
+	-- Remove call filters associated to this account
+	m.uci:foreach("voice", "call_filter",
 		function(s1)
-			line_name = s1['.name']
-			if s1.sip_account == section then
-				m.uci:set("voice", line_name, "sip_account", "-")
+			if s1['sip_provider'] == section then
+				m.uci:set("voice", s1[".name"], "sip_provider", "-")
+			end
+		end
+	)
+	m.uci:foreach("voice", "mailbox",
+		function(s1)
+			if s1["user"] == section then
+				m.uci:set("voice", s1[".name"], "user", "-")
 			end
 		end
 	)
@@ -87,15 +87,28 @@ end
 
 account_name = s:option(DummyValue, "name", "SIP Account")
 
-e = s:option(DummyValue, "enabled", "Account Enabled")
-function e.cfgvalue(self, section)
-        local l = Value.cfgvalue(self, section)
-        if l and l == "1" then
-                return "Yes"
-        else
-                return "No"
-        end
+-- Parse function for enabled Flags, perform validation
+-- to make sure the account is not used for outgoing calls from
+-- some line. If it is, we should not allow it to be disabled.
+function parse_enabled(self, section)
+	Flag.parse(self, section)
+	local fvalue = self:formvalue(section)
+                                                                                                                                         
+	if not fvalue then
+		vc.foreach_user({'brcm', 'sip'},
+			function(v)
+				name = v['.name']
+				if v.sip_account == section then
+					m.uci:set("voice", name, "sip_account", "-")
+				end
+			end
+		)
+	end
 end
+
+e = s:option(Flag, "enabled", "Account Enabled")
+e.default = 0
+e.parse = parse_enabled
 
 s:option(DummyValue, "user", "Username")
 s:option(DummyValue, 'domain', 'SIP domain name')
@@ -107,14 +120,27 @@ function l.cfgvalue(self, section)
 	if l then
 		lines = string.split(l, " ")
 		for i,l in ipairs(lines) do
-			lineId = tonumber(l:match("%d+"))
+			info = string.split(l, "/")
 			if i > 1 then
 				v = v .. ", "
 			end
-			if (lineId < dectCount) then
-				v = v .. "DECT " .. l + 1
-			else
-				v = v .. "Tel " .. l - dectCount + 1
+			if (info[1] == "SIP") then
+				vc.foreach_user({'sip'},
+					function(s1)
+						if (s1['user'] == info[2]) then
+							v = v .. s1['name']
+							return
+						end
+					end
+				)
+			elseif (info[1] == "BRCM") then
+				lineId = tonumber(info[2]:match("%d+"))
+			
+				if (lineId < dectCount) then
+					v = v .. "DECT " .. lineId + 1
+				else
+					v = v .. "Tel " .. lineId - dectCount + 1
+				end
 			end
 		end
 	end
