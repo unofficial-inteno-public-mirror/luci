@@ -29,8 +29,8 @@ function index()
 			entry({user, "services", "voice"},			cbi("voice/log"),	"Voice",		80)
 			entry({user, "status", "voice"},			cbi("voice/status"),	"SIP Registration",	80)
 		else
-			entry({user, "services", "voice"},			cbi("voice/log.lua"),	"Voice",		80)
-			entry({user, "services", "voice", "voice"},		cbi("voice/log.lua"),	"Voice",		1)
+			entry({user, "services", "voice"},			cbi("voice/log"),	"Voice",		80)
+			entry({user, "services", "voice", "voice"},		cbi("voice/log"),	"Voice",		1)
 			entry({user, "services", "voice", "voice_sip"},
 				arcombine(cbi("voice/sip"), cbi("voice/sip_details")),
 				_("SIP Providers"), 2).leaf = true
