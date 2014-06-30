@@ -20,22 +20,7 @@
 require("luci.tools.webadmin")
 
 local datatypes = require("luci.cbi.datatypes")
-
--- Read line counts from driver
-lineInfo = luci.sys.exec("/usr/bin/brcminfo")
-lines = string.split(lineInfo, "\n")
-if #lines == 5 then
-	dectInfo = lines[1]
-	dectCount = tonumber(dectInfo:match("%d+"))
-	fxsInfo = lines[2]
-	fxsCount = tonumber(fxsInfo:match("%d+"))
-	allInfo = lines[4]
-	allCount = tonumber(allInfo:match("%d+"))
-else
-	dectCount = 0
-	fxsCount = 0
-	allCount = 0
-end
+local vc = require "luci.model.cbi.voice.common"
 
 m = Map ("voice", translate("Advanced settings"))
 
@@ -112,6 +97,9 @@ function defaultexpiry.validate(self, value, section)
 	end
 	return nil, "Register Interval must be at least 1 second"
 end
+
+realm = sip:option(Value, 'realm', "Realm", "Realm for digest authentication, set this to your host name or domain name");
+localnet = sip:option(DynamicList, 'localnet', "Localnet", "Network addresses that are considered inside of the NATted network");
 
 advanced_register_settings = m.uci.get("voice", "features", "advanced_register_settings") == "1"
 if advanced_register_settings then
@@ -263,11 +251,11 @@ end
 
 -- Call Back Busy Subscriber
 if m.uci.get("voice", "features", "cbbs_enabled") == "1" then
-	s = m:section(TypedSection, "BRCM", "Call Back Busy Subscriber")
+	s = m:section(TypedSection, "sip_service_provider", "Call Back Busy Subscriber")
 	s.template  = "cbi/tblsection"
 	s.anonymous = true
 
-	s:option(DummyValue, 'name', "")
+	s:option(DummyValue, 'name', "SIP Account")
 
 	cbbs_key = s:option(Value, 'cbbs_key', "CBBS key", "Call Back Busy Subscriber key")
 	function cbbs_key.validate(self, value, section)

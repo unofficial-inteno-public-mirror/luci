@@ -1,7 +1,7 @@
 local dsp = require "luci.dispatcher"
 local vc = require "luci.model.cbi.voice.common"
 
-m = Map ("voice", translate("Voice Settings"))
+m = Map ("voice", translate("Sounds"))
 
 function remove_recording(self, section)
 	for i,v in pairs(vc.get_recordings()) do
@@ -44,5 +44,10 @@ s = m:section(TypedSection, "moh", "Music on hold", "Upload a sound file to be p
 s.anonymous = true
 s.addremove = false
 upload = s:option(FileUpload, 'sound_file', 'Sound', "The sound file must be in GSM format with a sample rate of 8 kHz. Use <tt>sox source.wav -r 8000 -c 1 music.gsm</tt> to convert.")
+
+s = m:section(TypedSection, "language", "Language", "Upload sound files to be used for various voice services")
+s.anonymous = true
+s.addremove = false
+upload = s:option(FileUpload, 'voice_pack', 'Voice-pack', "The voice-pack must contain a single directory named <strong>sounds</strong> and compressed as <strong>tar.gz</strong>")
 
 return m

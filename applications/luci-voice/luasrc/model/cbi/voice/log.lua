@@ -3,18 +3,7 @@
 	by the press of a button (click-to-dial)
 ]]--
 
--- Check line counts
-lineInfo = luci.sys.exec("/usr/bin/brcminfo")
-lines = string.split(lineInfo, "\n")
-if #lines == 5 then
-	dectInfo = lines[1]
-	dectCount = tonumber(dectInfo:match("%d+"))
-	fxsInfo = lines[2]
-	fxsCount = tonumber(fxsInfo:match("%d+"))
-else
-	dectCount = 0
-	fxsCount = 0
-end
+local vc = require "luci.model.cbi.voice.common"
 
 -- Function that reads call log into a table
 function get_call_log()
@@ -30,8 +19,12 @@ function get_call_log()
 			calls[i] = {
 				time = values[1],
 				direction = values[2],
-				number = values[3]
+				number = values[3],
+				note = ""
 			}
+			if (table.getn(values) >= 4) then
+				calls[i].note = values[4]
+			end
 		end
 	end
 	return calls
@@ -95,6 +88,7 @@ else
 	s:option(DummyValue, "time", "Time")
 	s:option(DummyValue, "direction", "Direction")
 	s:option(DummyValue, "number", "Number")
+	s:option(DummyValue, "note", "Note")
 
 	-- Add a Call button for each local line
 	line_nr = 0
