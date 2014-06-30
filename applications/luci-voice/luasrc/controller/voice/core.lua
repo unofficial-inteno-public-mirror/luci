@@ -26,15 +26,16 @@ function index()
 
 	for k, user in pairs(users) do
 		if user == "user"  then
-			entry({user, "services", "voice"},			cbi("voice/log"),	"Voice",		80)
+			entry({user, "services", "voice"},			cbi("voice/voice"),	"Voice",		1)
 			entry({user, "status", "voice"},			cbi("voice/status"),	"SIP Registration",	80)
 		else
-			entry({user, "services", "voice"},			cbi("voice/log"),	"Voice",		80)
-			entry({user, "services", "voice", "voice"},		cbi("voice/log"),	"Voice",		1)
-			entry({user, "services", "voice", "voice_sip"},
+			entry({user, "services", "voice"},			cbi("voice/voice"),	"Voice",		1)
+			entry({user, "services", "voice", "voice"},		cbi("voice/voice"),	"Voice",		1)
+			entry({user, "services", "voice", "log"},		cbi("voice/log"),	"Call Log",		80)
+			entry({user, "services", "voice", "sip"},
 				arcombine(cbi("voice/sip"), cbi("voice/sip_details")),
 				_("SIP Providers"), 2).leaf = true
-			entry({user, "services", "voice", "voice_advanced"},	cbi("voice/advanced"),	"Advanced Settings",	4)
+			entry({user, "services", "voice", "advanced"},		cbi("voice/advanced"),	"Advanced Settings",	4)
 			entry({user, "status", "voice"},			cbi("voice/status"),	"SIP Registration",	80)
 		end
 	end

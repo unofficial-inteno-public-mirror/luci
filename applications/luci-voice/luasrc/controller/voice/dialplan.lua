@@ -27,7 +27,7 @@ function index()
 	for k, user in pairs(users) do
 
 		if user ~= "user"  then
-			entry({user, "services", "voice", "voice_dialplan"},	cbi("voice/dialplan"),	"Dialplan",	5)
+			entry({user, "services", "voice", "dialplan"},	cbi("voice/dialplan"),	"Dialplan",	5)
 		end
 	end
 end
