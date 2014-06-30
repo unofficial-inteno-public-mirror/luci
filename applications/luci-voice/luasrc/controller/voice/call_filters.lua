@@ -19,15 +19,16 @@
     Modified to luci-app-voice-client
 ]]--
 
-module("luci.controller.voice.brcm", package.seeall)
+module("luci.controller.voice.call_filters", package.seeall)
 
 function index()
 	local users = { "admin", "support", "user" }
 
 	for k, user in pairs(users) do
-		if user ~= "user" then
-			entry({user, "services", "voice", "country"},		cbi("voice/country"),	"Country",	2)
-			entry({user, "services", "voice", "brcm"},		cbi("voice/brcm"),	"Lines",	3)
+		if user ~= "user"  then
+			entry({user, "services", "voice", "call_filters"},
+				arcombine(cbi("voice/call_filters"), cbi("voice/call_filter_details")),
+				_("Call Filters"), 80).leaf = true
 		end
 	end
 end
