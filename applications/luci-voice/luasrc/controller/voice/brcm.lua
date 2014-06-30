@@ -27,7 +27,7 @@ function index()
 	for k, user in pairs(users) do
 		if user ~= "user" then
 			entry({user, "services", "voice", "country"},		cbi("voice/country"),	"Country",	1)
-			entry({user, "services", "voice", "voice_brcm"},	cbi("voice/brcm"),		"Lines",	3)
+			entry({user, "services", "voice", "brcm"},		cbi("voice/brcm"),		"Lines",	3)
 		end
 	end
 end

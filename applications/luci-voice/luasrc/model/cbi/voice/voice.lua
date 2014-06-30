@@ -15,18 +15,4 @@
 
     You should have received a copy of the GNU General Public License
     along with luci-pbx.  If not, see <http://www.gnu.org/licenses/>.
-
-    Modified to luci-app-voice-client
 ]]--
-
-module("luci.controller.voice.ssl", package.seeall)
-
-function index()
-	local users = { "admin", "support", "user" }
-
-	for k, user in pairs(users) do
-		if user ~= "user"  then
-			entry({user, "services", "voice", "ssl"},	cbi("voice/ssl"),	"SSL",	6)
-		end
-	end
-end
