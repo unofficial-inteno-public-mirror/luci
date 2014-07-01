@@ -32,6 +32,7 @@ SERIAL=$(cat /proc/nvram/SerialNumber)
 BASEMAC=$(cat /proc/nvram/BaseMacAddr | sed 's/ //g')
 MODULENAME=voice
 USERAGENT="Inteno_${SERIAL}_${BASEMAC}"
+DIAL_TIMEOUT=30
 
 ASTUSER=nobody
 ASTGROUP=nogroup
@@ -57,12 +58,19 @@ TMPL_EXTENSIONS_DIRECT=$TEMPLATEDIR/extensions_direct.TEMPLATE
 TMPL_EXTENSIONS_DIALTONE=$TEMPLATEDIR/extensions_dialtone.TEMPLATE
 
 TMPL_SIP=$TEMPLATEDIR/sip.conf.TEMPLATE
-TMPL_SIPPEER=$TEMPLATEDIR/sip_peer.TEMPLATE
-TMPL_SIPPEERSEC=$TEMPLATEDIR/sip_peer_voicesec.TEMPLATE
+TMPL_SIPPROVIDER=$TEMPLATEDIR/sip_provider.TEMPLATE
+TMPL_SIPPROVIDERSEC=$TEMPLATEDIR/sip_provider_voicesec.TEMPLATE
 TMPL_SIPREG=$TEMPLATEDIR/sip_registration.TEMPLATE
 TMPL_SIPREGSEC=$TEMPLATEDIR/sip_registration_voicesec.TEMPLATE
+TMPL_SIPUSER=$TEMPLATEDIR/sip_user.TEMPLATE
 TMPL_RTP=$TEMPLATEDIR/rtp.conf.TEMPLATE
 TMPL_STUN=$TEMPLATEDIR/res_stun_monitor.conf.TEMPLATE
+
+TMPL_VOICEMAIL=$TEMPLATEDIR/voicemail.conf.TEMPLATE
+TMPL_VOICEMAIL_MAILBOX=$TEMPLATEDIR/voicemail_mailbox.TEMPLATE
+
+TMPL_QUEUES=$TEMPLATEDIR/queues.conf.TEMPLATE
+TMPL_QUEUE=$TEMPLATEDIR/queue.TEMPLATE
 
 TMPL_ASTERISK=$TEMPLATEDIR/asterisk.conf.TEMPLATE
 TMPL_INDICATIONS=$TEMPLATEDIR/indications.conf.TEMPLATE
@@ -81,7 +89,7 @@ TMPL_MEETME=$TEMPLATEDIR/meetme.conf.TEMPLATE
 # Escape special characters in a string that is being passed to sed
 escape_sed_substitution()
 {
-	echo $1 | sed -e 's/[\/&]/\\&/g'
+	echo "$@" | sed -e 's/[\/&]/\\&/g'
 }
 
 # Gets rid of any config files from $ASTERISKDIR not found in $WORKDIR.
@@ -155,14 +163,17 @@ assemble_and_copy_config()
 	# Create config files from the temporary files we have built
 	mv $WORKDIR/sip.tmp			$WORKDIR/sip.conf
 	mv $WORKDIR/sip_registrations.tmp	$WORKDIR/sip_registrations.conf
-	mv $WORKDIR/sip_peers.tmp		$WORKDIR/sip_peers.conf
+	mv $WORKDIR/sip_providers.tmp		$WORKDIR/sip_providers.conf
+	mv $WORKDIR/sip_users.tmp		$WORKDIR/sip_users.conf
 	mv $WORKDIR/brcm.tmp			$WORKDIR/brcm.conf
 	mv $WORKDIR/extensions.tmp		$WORKDIR/extensions.conf
 	mv $WORKDIR/codecs.tmp			$WORKDIR/codecs.conf
 	mv $WORKDIR/rtp.tmp			$WORKDIR/rtp.conf
 	mv $WORKDIR/res_stun_monitor.tmp	$WORKDIR/res_stun_monitor.conf
 	mv $WORKDIR/features.tmp		$WORKDIR/features.conf
+	mv $WORKDIR/voicemail.tmp		$WORKDIR/voicemail.conf
         mv $WORKDIR/logger.tmp			$WORKDIR/logger.conf
+	mv $WORKDIR/queues.tmp			$WORKDIR/queues.conf
 
 	# At this point, $WORKDIR should contain a complete, working config.
 	clean_up_asterisk_config_dir
@@ -215,8 +226,7 @@ read_codecs_ptime()
 	echo $codec_allow
 }
 
-# read lines that should receive incoming calls from
-# a SIP provider.
+# read lines that should receive incoming calls from a SIP Provider
 # returns a list of lines, formatted to replace a tag with sed
 # in a Dial() command
 read_lines()
@@ -225,8 +235,9 @@ read_lines()
 	local call_lines
 	config_get call_lines $1 call_lines
 	for i in $call_lines ; do
-		lines=$lines"BRCM\/$i\&"
+		lines=$lines"$i&"
 	done
+	lines=$(escape_sed_substitution $lines)
 	echo "${lines%??}"
 }
 
@@ -285,6 +296,8 @@ configure_sip()
 	local tos_audio
 	local tos_video
 	local tos_text
+	local realm
+	local localnet
 	local stun_server
 
 	config_get useragent $1 useragent
@@ -304,6 +317,8 @@ configure_sip()
 	config_get tos_audio $1 tos_audio
 	config_get tos_video $1 tos_video
 	config_get tos_text $1 tos_text
+	config_get realm $1 realm
+	config_get localnet $1 localnet
 	config_get tls_cipher $1 tls_cipher
 	config_get tls_version $1 tls_version
 	config_get stun_server $1 stun_server
@@ -360,7 +375,6 @@ configure_sip()
 	else
 		sed -i "s/|REMOTEHOLD|/$remotehold/g"					$WORKDIR/sip.tmp
 	fi
-
 
 	# Set Differentiated Services values (optional)
 	if [ -z "$tos_sip" ] ; then
@@ -425,7 +439,6 @@ configure_sip()
 	sed -i "s/|TCPTRANSPORT|/$tcptransport/"	$WORKDIR/sip.tmp
 	
 	# Set RTP port range
-	
 	sed -i "s/|RTPSTART|/$rtpstart/"		$WORKDIR/rtp.tmp
 	sed -i "s/|RTPEND|/$rtpend/"			$WORKDIR/rtp.tmp
 
@@ -433,17 +446,31 @@ configure_sip()
 	cp $TMPL_FEATURES				$WORKDIR/features.tmp
 	sed -i "s/|BLINDXFER|/$(escape_sed_substitution $blindxfer)/"		$WORKDIR/features.tmp
 
+	#Set realm
+	if [ -z "$realm" ] ; then
+		realm=asterisk
+	fi
+	sed -i "s/|REALM|/$(escape_sed_substitution $realm)/g"		$WORKDIR/sip.tmp
+
+	#Add localnets
+	if [ -n "$localnet" ] ; then
+		for i in $localnet ; do
+			echo "Adding localnet $i"
+			echo "localnet=$i" >> $WORKDIR/sip.tmp
+		done
+	fi
+
 	# STUN server
 	sed -i "s/|SERVER|/$stun_server/"	$WORKDIR/res_stun_monitor.tmp
 }
 
-# Get password from existing sip_peers config file
-# $1 is sip provider to get password for
+# Get password from existing sip_providers config file
+# $1 is SIP Provider to get password for
 restore_secret()
 {
 	local section_found
 	local secret
-	if [ -f "$ASTERISKDIR/sip_peers.conf" ] ; then
+	if [ -f "$ASTERISKDIR/sip_providers.conf" ] ; then
 		while read line
 		do
 			if [ -n "$section_found" ] ; then
@@ -457,13 +484,37 @@ restore_secret()
 				#we found the correct section
 				section_found=1
 			fi
-		done < $ASTERISKDIR/sip_peers.conf
+		done < $ASTERISKDIR/sip_providers.conf
+	fi
+}
+
+# Get PIN code for a mailbox from asterisk voicemail config file
+# $1 is the extension for the mailbox to get PIN for
+restore_pin()
+{
+	local section_found
+	local secret
+	if [ -f "$ASTERISKDIR/voicemail.conf" ] ; then
+		while read line
+		do
+			if [ -n "$section_found" ] ; then
+				if [ ! "${line##$1*}" ] ; then
+					# We found the mailbox
+					pin=$(echo $line | sed 's/;*[0-9]* => \([0-9]*\).*/\1/')
+					echo $pin
+					return
+				fi
+			elif [ "$line" = "[default]" ] ; then
+				# We found the correct section
+				section_found=1
+			fi
+		done < $ASTERISKDIR/voicemail.conf
 	fi
 }
 
 #
-# Add a single provider to sip_peers and sip_registrations based on provided input:
-# configure_provider(name, user, secret, domain, host, codecline)
+# configure_sip_provider()
+# Add a SIP provider to sip_providers.conf and sip_registrations.conf based on provided input:
 #
 configure_sip_provider()
 {
@@ -505,7 +556,7 @@ configure_sip_provider()
 		return
 	fi
 
-	echo "Configuring SIP provider $1"
+	echo "Configuring SIP Provider $1"
 
 	if [ -z "$host" ] ; then
 		host=$domain
@@ -519,48 +570,48 @@ configure_sip_provider()
 
 	# Select register template based on precence of voicesec util
 	if [ -e /usr/bin/voicesec ] ; then
-		cp "$TMPL_SIPPEERSEC" "$WORKDIR/sip_peer.tmp"
+		cp "$TMPL_SIPPROVIDERSEC" "$WORKDIR/sip_provider.tmp"
 		cp "$TMPL_SIPREGSEC" "$WORKDIR/sip_reg.tmp"
 	else
-		cp "$TMPL_SIPPEER" "$WORKDIR/sip_peer.tmp"
+		cp "$TMPL_SIPPROVIDER" "$WORKDIR/sip_provider.tmp"
 		cp "$TMPL_SIPREG" "$WORKDIR/sip_reg.tmp"
 	fi
 
-	# Construct a sip peer entry for provider
-	sed -i "s/|NAME|/$1/g"				$WORKDIR/sip_peer.tmp
-	sed -i "s/|AUTHUSER|/$(escape_sed_substitution $authuser)/g"		$WORKDIR/sip_peer.tmp
-	sed -i "s/|USER|/$(escape_sed_substitution $user)/"			$WORKDIR/sip_peer.tmp
-	sed -i "s/|SECRET|/$(escape_sed_substitution $secret)/"			$WORKDIR/sip_peer.tmp
-	sed -i "s/|HOST|/$host/"			$WORKDIR/sip_peer.tmp
-	sed -i "s/|FROMDOMAIN|/$domain/"		$WORKDIR/sip_peer.tmp
+	# Construct a sip peer entry for SIP Provider
+	sed -i "s/|NAME|/$1/g"				$WORKDIR/sip_provider.tmp
+	sed -i "s/|AUTHUSER|/$(escape_sed_substitution $authuser)/g"		$WORKDIR/sip_provider.tmp
+	sed -i "s/|USER|/$(escape_sed_substitution $user)/"			$WORKDIR/sip_provider.tmp
+	sed -i "s/|SECRET|/$(escape_sed_substitution $secret)/"			$WORKDIR/sip_provider.tmp
+	sed -i "s/|HOST|/$host/"			$WORKDIR/sip_provider.tmp
+	sed -i "s/|FROMDOMAIN|/$domain/"		$WORKDIR/sip_provider.tmp
 	sed -i "s/|TRANSPORT|/$transport/"		$WORKDIR/sip_peer.tmp
 
 	# Set or remove port
 	if [ -z "$port" ] ; then
-		sed -i "s/port=|PORT|//g"		$WORKDIR/sip_peer.tmp
+		sed -i "s/port=|PORT|//g"		$WORKDIR/sip_provider.tmp
 	else
-		sed -i "s/|PORT|/$port/g"		$WORKDIR/sip_peer.tmp
+		sed -i "s/|PORT|/$port/g"		$WORKDIR/sip_provider.tmp
 	fi
 
 	# Set or remove outboundproxy
 	if [ -z "$outboundproxy" ] ; then
-		sed -i "s/outboundproxy=|OUTBOUNDPROXY|//g"	$WORKDIR/sip_peer.tmp
+		sed -i "s/outboundproxy=|OUTBOUNDPROXY|//g"	$WORKDIR/sip_provider.tmp
 	else
-		sed -i "s/|OUTBOUNDPROXY|/$outboundproxy/g"	$WORKDIR/sip_peer.tmp
+		sed -i "s/|OUTBOUNDPROXY|/$outboundproxy/g"	$WORKDIR/sip_provider.tmp
 	fi
 
 	# Set or remove outboundproxyport
 	if [ -z "$outboundproxyport" ] ; then
-		sed -i "s/|OUTBOUNDPROXYPORT|//g"	$WORKDIR/sip_peer.tmp
+		sed -i "s/|OUTBOUNDPROXYPORT|//g"	$WORKDIR/sip_provider.tmp
 	else
-		sed -i "s/|OUTBOUNDPROXYPORT|/:$outboundproxyport/g"	$WORKDIR/sip_peer.tmp
+		sed -i "s/|OUTBOUNDPROXYPORT|/:$outboundproxyport/g"	$WORKDIR/sip_provider.tmp
 	fi
 
 	# Force ulaw/alaw if fax, otherwise read selected codecs
 	if [ -z "$is_fax" -o "$is_fax" = "1" ] ; then
-		sed -i "s/|ALLOW|/allow = ulaw\nallow = alaw/"	$WORKDIR/sip_peer.tmp
+		sed -i "s/|ALLOW|/allow = ulaw\nallow = alaw/"	$WORKDIR/sip_provider.tmp
 	else
-		sed -i "s/|ALLOW|/$(read_codecs_ptime $1)/"		$WORKDIR/sip_peer.tmp
+		sed -i "s/|ALLOW|/$(read_codecs_ptime $1)/"		$WORKDIR/sip_provider.tmp
 	fi
 
 	# Autoframing
@@ -570,12 +621,12 @@ configure_sip_provider()
 	sed -i "s/|AUTOFRAMING|/$autoframing/"			$WORKDIR/sip_peer.tmp
 
 	# Set registered extension so that incoming calls match the correct peer                     
-	sed -i "s/|CONTACT_USER|/$(format_sip_contact $1 $user)/g"      $WORKDIR/sip_peer.tmp 
+	sed -i "s/|CONTACT_USER|/$(format_sip_contact $1 $user)/g"      $WORKDIR/sip_provider.tmp 
 
-	# Add provider configuration to the temp file containing all provider configs.
-	cat $WORKDIR/sip_peer.tmp >> $WORKDIR/sip_peers.tmp
+	# Add SIP Provider configuration to the temp file containing all SIP Provider configs.
+	cat $WORKDIR/sip_provider.tmp >> $WORKDIR/sip_providers.tmp
 
-	# Register provider with SIP Service Provider
+	# Register SIP Provider with SIP Service Provider
 	sed -i "s/|TRANSPORT|/$transport/g"		$WORKDIR/sip_reg.tmp	
 	sed -i "s/|PROVIDER|/$1/g"			$WORKDIR/sip_reg.tmp	
 	sed -i "s/|USER|/$(escape_sed_substitution $user)/g"			$WORKDIR/sip_reg.tmp
@@ -593,11 +644,11 @@ configure_sip_provider()
 	fi
 	sed -i "s/|CONTACT_USER|/$(format_sip_contact $1 $user)/g"	$WORKDIR/sip_reg.tmp
 
-	# Add provider registration info to temp file containing all provider registrations
+	# Add SIP Provider registration info to temp file containing all SIP Provider registrations
 	cat $WORKDIR/sip_reg.tmp >> $WORKDIR/sip_registrations.tmp
 
 	# Clean up temporary files
-	rm -f $WORKDIR/sip_peer.tmp
+	rm -f $WORKDIR/sip_provider.tmp
 	rm -f $WORKDIR/sip_reg.tmp
 }
 
@@ -618,17 +669,365 @@ encrypt_password()
 }
 
 #
-# Create extensions.tmp and configure general dialplan settings
+# Configure mailbox
 #
-create_extensions()
+configure_mailbox()
 {
-	echo "Configuring dialplan"
+	local pin
+	local enabled
+	local user
+	local extension
+
+	config_get pin $1 pin
+	config_get enabled $1 enabled
+	config_get user $1 user
+
+	local cfgtype	
+	config_get cfgtype "$user" TYPE
+	if [ "$cfgtype" == "sip_service_provider" ] ; then
+		config_get extension $user user
+	else
+		config_get extension $user extension
+	fi
+
+	if [ -z "$pin" ] ; then
+		pin=$(restore_pin $extension)
+	fi
+		
+	echo "Setting up Mailbox for User $user"
+	cp "$TMPL_VOICEMAIL_MAILBOX" "$WORKDIR/mailbox.tmp"
+
+	# Construct a mailbox
+	if [ -z "$enabled" -o "$enabled" = "0" ] ; then
+		# Comment out the mailbox entry.
+		# This allows us to keep the PIN code once the mailbox is re-enabled
+		sed -i "s/|ENABLED|/;/g"		$WORKDIR/mailbox.tmp
+	else
+		sed -i "s/|ENABLED|//g"			$WORKDIR/mailbox.tmp
+	fi
+	sed -i "s/|EXTENSION|/$extension/g"	$WORKDIR/mailbox.tmp
+	sed -i "s/|PIN|/$pin/g"				$WORKDIR/mailbox.tmp
+
+	cat $WORKDIR/mailbox.tmp >> $WORKDIR/voicemail.tmp
+	rm -f $WORKDIR/mailbox.tmp
+}
+
+#
+# Check if an enabled mailbox exists for the given user
+#
+mailbox_check_enabled()
+{
+	[ "$#" -ge 1 ] || return 0
+
+	local section cfgtype mailbox_user
+	[ -z "$CONFIG_SECTIONS" ] && return 0
+	for section in ${CONFIG_SECTIONS}; do
+		config_get cfgtype "$section" TYPE
+		[ -n "mailbox" -a "x$cfgtype" != "xmailbox" ] && continue
+		config_get mailbox_user $section user
+		if [ "$mailbox_user" = "$1" ] ; then
+			local enabled
+			config_get enabled $section enabled
+			echo "$enabled"
+			break
+		fi
+	done
+}
+
+#
+# Configure IVR
+#
+configure_ivr()
+{
+	local name
+	local enabled
+	local extension
+	local sound_file
+
+	config_get name $1 name
+	config_get enabled $1 enabled
+	config_get extension $1 extension
+	config_get sound_file $1 sound_file
+
+	if [ -z "$enabled" -o "$enabled" = "0" ] ; then
+		return
+	fi
+	
+	echo "Configuring IVR $name"
+	echo "[$1]" >> 										$WORKDIR/ivrs.tmp
+	echo "exten => $extension,1,Answer()" >>						$WORKDIR/extensions_local.tmp
+	echo "exten => $extension,n,Goto($1,s,1)" >>						$WORKDIR/extensions_local.tmp
+
+	# Find all tone selections belonging to the IVR being configured
+	local section cfgtype
+	num_selections=0
+	[ -z "$CONFIG_SECTIONS" ] && return 0
+	for section in ${CONFIG_SECTIONS}; do
+		config_get cfgtype "$section" TYPE
+		[ -n "tone_selection" -a "x$cfgtype" != "xtone_selection" ] && continue
+		local ts_owner ts_enabled ts_user ts_number ts_extension
+
+		config_get ts_owner $section owner
+		config_get ts_enabled $section enabled
+		config_get ts_user $section user
+		config_get ts_number $section number
+
+		if [ "$ts_owner" = "$1" ] ; then
+			if [ -z "$ts_enabled" -o "$ts_enabled" = "0" ] ; then
+				continue
+			fi
+
+			config_get ts_extension $ts_user extension
+			if [ -z "$ts_extension" ] ; then
+				echo "User $ts_user has no extension"
+				continue
+			fi
+			echo "exten => $ts_number,1,Goto(local_extensions,$ts_extension,1)" >>	$WORKDIR/ivrs.tmp
+			num_selections=$((num_selection+1))
+		fi
+	done
+
+	echo "exten => s,1,NoOp()" >>					$WORKDIR/ivrs.tmp
+	if [ $num_selections -eq 0 ] ; then
+		if ! [ -z $sound_file -o "x$sound_file" == "x-" ] ; then
+			echo "exten => s,n,Playback($sound_file)" >>	$WORKDIR/ivrs.tmp
+		fi
+		echo "exten => s,n,Goto(hangup,h,2)" >>			$WORKDIR/ivrs.tmp
+	else
+		if ! [ -z $sound_file -o "x$sound_file" == "x-" ] ; then
+			echo "exten => s,n,Background($sound_file)" >>	$WORKDIR/ivrs.tmp
+		fi
+		echo "exten => s,n,WaitExten(10)" >>			$WORKDIR/ivrs.tmp
+		echo "exten => i,1,Goto($1,s,1)" >>			$WORKDIR/ivrs.tmp
+		echo "exten => t,1,Goto($1,s,1)" >>			$WORKDIR/ivrs.tmp
+	fi
+	echo "" >>							$WORKDIR/ivrs.tmp
+}
+
+#
+# Configure Call Queue
+#
+configure_queue()
+{
+	local name enabled strategy extension members
+
+	config_get name $1 name
+	config_get enabled $1 enabled
+	config_get strategy $1 strategy
+	config_get extension $1 extension
+	config_get members $1 members
+
+	if [ -z "$enabled" -o "$enabled" = "0" ] ; then
+		continue
+	fi
+
+	echo "Configuring Call Queue $name"
+
+	echo "exten => $extension,1,Answer()"			>> $WORKDIR/extensions_local.tmp
+	echo "exten => $extension,n,Queue($1)"			>> $WORKDIR/extensions_local.tmp
+
+	
+	cp "$TMPL_QUEUE" "$WORKDIR/queue.tmp"
+	sed -i "s/|SECTION|/$1/g"				$WORKDIR/queue.tmp
+	sed -i "s/|STRATEGY|/$strategy/g"			$WORKDIR/queue.tmp
+
+	for member in $(echo $members | tr " ")
+	do
+		local out=""
+		re='^[0-9]+$'
+		num=${member#brcm}
+		if [ -z "${num##[0-9]*}" ] ; then
+			out="BRCM/$num"
+		else
+			local sip_user
+			config_get sip_user $member user
+			if ! [ -z $sip_user ] ; then
+				out="SIP/$sip_user"
+			fi
+		fi
+		if ! [ -z $out ] ; then
+			echo "member => $out"			>> $WORKDIR/queue.tmp
+		fi
+	done
+
+	cat $WORKDIR/queue.tmp					>> $WORKDIR/queues.tmp
+	rm -f							$WORKDIR/queue.tmp
+}
+
+#
+# Configure SIP user
+#
+configure_sip_user()
+{
+	local enabled
+	local name
+	local extension
+	local user
+	local secret
+	local qualify
+	local host
+	local sip_provider
+
+	config_get enabled $1 enabled
+	config_get name $1 name
+	config_get extension $1 extension
+	config_get user $1 user
+	config_get secret $1 secret
+	config_get qualify $1 qualify
+	config_get host $1 host
+	config_get sip_provider $1 sip_provider
+
+	if [ -z "$enabled" -o "$enabled" = "0" ] ; then
+		return
+	fi
+
+	if [ -z "$user" ] ; then
+		echo "SIP user has no username configured, ignored"
+		return
+	fi
+
+	#If no sip_provider is configured, use local_extensions context
+	local provider_enabled
+	local provider_user
+	if [ "$sip_provider" == "-" ] ; then
+		sip_provider="local_extensions"
+	else
+		config_get provider_enabled $sip_provider enabled
+		config_get provider_user $sip_provider user
+		if [ -z "$provider_enabled" -o "$provider_enabled" = "0" -o -z "$provider_user" ] ; then
+			sip_provider="local_extensions"
+		fi
+	fi
+
+	#Use dynamic host as default
+	if [ -z "$host" ] ; then
+		host=dynamic
+	fi
+
+	#Use default value for qualify
+	if [ -z "$qualify" ] ; then
+		qualify=yes
+	fi
+
+	echo "Configuring SIP User $user"
+	cp "$TMPL_SIPUSER" "$WORKDIR/sip_user.tmp"
+	
+	# Construct a sip peer entry for user
+	sed -i "s/|NAME|/$(escape_sed_substitution $name)/g"		$WORKDIR/sip_user.tmp
+	sed -i "s/|EXTENSION|/$extension/g"				$WORKDIR/sip_user.tmp
+	sed -i "s/|USER|/$(escape_sed_substitution $user)/g"		$WORKDIR/sip_user.tmp
+	sed -i "s/|SECRET|/$(escape_sed_substitution $secret)/g"	$WORKDIR/sip_user.tmp
+	sed -i "s/|HOST|/$host/g"					$WORKDIR/sip_user.tmp
+	sed -i "s/|QUALIFY|/$qualify/g"					$WORKDIR/sip_user.tmp
+	sed -i "s/|CONTEXT|/$sip_provider/g"				$WORKDIR/sip_user.tmp
+	sed -i "s/|ALLOW|/$(read_codecs $1)/"				$WORKDIR/sip_user.tmp
+
+	# Add SIP User configuration to the temp file containing all SIP User configs.
+	cat $WORKDIR/sip_user.tmp >> $WORKDIR/sip_users.tmp
+	rm -f $WORKDIR/sip_user.tmp
+}
+
+#
+# Install call filter macros
+#
+configure_call_filter()
+{
+	configure_call_filter_helper $1 "incoming"
+	echo "" >>						$WORKDIR/call_filter_macros.tmp
+	configure_call_filter_helper $1 "outgoing"
+	echo "" >>						$WORKDIR/call_filter_macros.tmp
+}
+
+#
+# Helper function used by configure_call_filter
+#
+configure_call_filter_helper()
+{
+	local sip_provider filter_mode goto_label
+	[ "$#" -ge 2 ] || return 0
+	
+	direction=$2
+	if ! [ "x$direction" != "xincoming" -o "x$direction" != "xoutgoing" ] ; then
+		return
+	fi
+
+	echo "[macro-$1-$direction-call-filter]" >>		$WORKDIR/call_filter_macros.tmp
+	echo "exten => s,1,Set(CALL_BLOCKED=0)" >>		$WORKDIR/call_filter_macros.tmp
+
+	config_get filter_mode $1 $direction
+	if [ "x$filter_mode" == "xblacklist" ] ; then
+		goto_label="block"
+	fi
+	if [ "x$filter_mode" == "xwhitelist" ] ; then
+		goto_label="pass"
+	fi
+
+	if [ -z $goto_label ] ; then
+		return
+	fi
+
+	local section cfgtype owner tmp
+	for section in ${CONFIG_SECTIONS}; do
+		config_get cfgtype "$section" TYPE
+		[ "x$cfgtype" != "xcall_filter_rule" ] && continue
+		config_get owner $section owner
+		if [ "x$owner" == "x$1" ] ; then
+			local rule_direction rule_user rule_extension rule_enabled
+			config_get rule_direction $section direction
+			config_get rule_user $section user
+			config_get rule_extension $section extension
+			config_get rule_enabled $section enabled
+
+			[ "x$rule_direction" != "x$direction" ] && continue
+
+			[ -z "$rule_enabled" -o "$rule_enabled" = "0" ] && continue
+		
+			if [ "x$rule_direction" == "xoutgoing" ] ; then
+				if [ "x$rule_user" == "x*" ] ; then
+					tmp="exten => s,n,GotoIf($[\"\${DIAL_EXTEN}\"=\"$rule_extension\"]?$goto_label)"
+					echo $tmp >>		$WORKDIR/call_filter_macros.tmp
+				else
+					tmp="exten => s,n,GotoIf($[$[\"\${DIAL_EXTEN}\"=\"$rule_extension\"] &"
+					tmp="$tmp $[\"\${CHANNEL}\":\"$rule_user/[0-9]+|$rule_user-[0-9]+\">0]]?$goto_label)"
+					echo $tmp >>		$WORKDIR/call_filter_macros.tmp
+				fi
+			fi
+			
+			if [ "x$rule_direction" == "xincoming" ] ; then
+				tmp="exten => s,n,GotoIf($[\"\${CALLERID(num)}\"=\"$rule_extension\"]?$goto_label)"
+				echo $tmp >>			$WORKDIR/call_filter_macros.tmp
+			fi
+		fi
+	done
+	
+	if [ "x$filter_mode" == "xblacklist" ] ; then
+		echo "exten => s,n,Goto(pass)" >>		$WORKDIR/call_filter_macros.tmp
+	fi
+	echo "exten => s,n(block),Set(CALL_BLOCKED=1)" >>	$WORKDIR/call_filter_macros.tmp
+	echo "exten => s,n(pass),NoOp()" >>			$WORKDIR/call_filter_macros.tmp
+}
+
+#
+# Configure dialplan special features
+#
+configure_extensions()
+{
+	echo "Configuring Dialplan"
 	local custom_incoming_enabled
 	local custom_hangup_enabled
 	local callforward_enabled
+	local extension_all_ports
+	local test_audio_extension
+	local test_echo_extension
+	local record_message
+
 	config_get custom_incoming_enabled custom_dialplan custom_incoming_enabled
 	config_get custom_hangup_enabled custom_dialplan custom_hangup_enabled
+	config_get extension_all_ports custom_dialplan all_ports_extension
+	config_get test_audio_extension custom_dialplan test_audio_extension
+	config_get test_echo_extension custom_dialplan test_echo_extension
 	config_get callforward_enabled features callforward_enabled
+	config_get record_message features record_message
 
 	if [ -z "$custom_incoming_enabled" -o "$custom_incoming_enabled" = "0" ] ; then
 		sed -i "s/|CUSTOM_INCOMING|/NoOp()/"					$WORKDIR/extensions.tmp
@@ -647,12 +1046,36 @@ create_extensions()
 	else
 		sed -i "s/|INCOMING_HANDLER|/Goto(call_line,\${EXTEN},1))/"		$WORKDIR/extensions.tmp
 	fi
+
+	if [ -n "$extension_all_ports" ] ; then
+		local all_lines="BRCM/0&BRCM/1&BRCM/2&BRCM/3&BRCM/4&BRCM/5&BRCM/6"
+		echo "exten => $extension_all_ports,1,Dial($all_lines)"		>> $WORKDIR/extensions_local.tmp
+		echo "exten => $extension_all_ports,n,Hangup()"			>> $WORKDIR/extensions_local.tmp
+	fi
+
+	if [ -n "$test_audio_extension" ] ; then
+		echo "exten => $test_audio_extension,1,Playback(tt-monkeys)"	>> $WORKDIR/extensions_local.tmp
+		echo "exten => $test_audio_extension,n,Hangup()"		>> $WORKDIR/extensions_local.tmp
+	fi
+
+	if [ -n "$test_echo_extension" ] ; then
+		echo "exten => $test_echo_extension,1,Echo()"			>> $WORKDIR/extensions_local.tmp
+		echo "exten => $test_echo_extension,n,Hangup()"			>> $WORKDIR/extensions_local.tmp
+	fi
+
+	
+	if [ -n "$record_message" ] ; then
+		echo "exten => $record_message,1,Playback(beep)"		>> $WORKDIR/extensions_local.tmp
+		echo "exten => $record_message,n,Record(\"/usr/lib/asterisk/recordings/user-recording\${STRFTIME(\${EPOCH},,%C%y%m%d-%T)}.gsm)"	>> $WORKDIR/extensions_local.tmp
+		echo "exten => $record_message,n,Playback(auth-thankyou)"	>> $WORKDIR/extensions_local.tmp
+		echo "exten => $record_message,n,Hangup()"			>> $WORKDIR/extensions_local.tmp
+	fi
 }
 
 #
-# Create dialplan settings for each enabled SIP-provider
+# Create dialplan settings for each enabled SIP Provider
 #
-create_extensions_provider()
+configure_extensions_provider()
 {
 	local enabled
 	local displayname
@@ -683,19 +1106,19 @@ create_extensions_provider()
 	config_get callreturn_enabled "features" callreturn_enabled
 	config_get redial_enabled "features" redial_enabled
 
-	# check if provider is disabled
+	# check if SIP Provider is disabled
 	config_get enabled $1 enabled
 	if [ -z "$enabled" -o "$enabled" = "0" ] ; then
 		return
 	fi
 
-	# check that provider has a configured user
+	# check that SIP Provider has a configured user
 	config_get user $1 user
 	if [ -z "$user" ] ; then
 		return
 	fi
 
-	echo "Configuring dialplan for $1"
+	echo "Configuring dialplan for SIP Provider $1"
 
 	config_get displayname $1 displayname
 	[ -z "$displayname" ] && displayname=$user
@@ -706,6 +1129,18 @@ create_extensions_provider()
 		custom_outgoing="Macro(custom-outgoing)"
 	fi
 
+	# check call filters for outgoing calls
+	local call_filter call_filter_macro call_filter_enabled
+	call_filter_macro="Set(CALL_BLOCKED=0)"
+	config_get call_filter $1 call_filter
+	if ! [ -z "$call_filter" ] ; then
+		# check if call filter is enabled
+		config_get call_filter_enabled $call_filter enabled
+		if [ "x$call_filter_enabled" = "x1" ] ; then
+			call_filter_macro="Macro($call_filter-outgoing-call-filter)"
+		fi	
+	fi
+		
 	#Set congestion tone (default to congestion)
 	config_get congestiontone "SIP" congestiontone
 	if [ -z "$congestiontone" ] ; then
@@ -748,6 +1183,7 @@ create_extensions_provider()
 	#common settings
 	sed -i "s/|PROVIDER|/$1/g"			$WORKDIR/extensions_provider.tmp
 	sed -i "s/|CUSTOM_OUTGOING|/$custom_outgoing/"	$WORKDIR/extensions_provider.tmp
+	sed -i "s/|CALL_FILTER|/$call_filter_macro/"	$WORKDIR/extensions_provider.tmp
 	sed -i "s/|DISPLAYNAME|/$(escape_sed_substitution $displayname)/"		$WORKDIR/extensions_provider.tmp
 
 	#cbbs settings
@@ -900,6 +1336,7 @@ configure_brcm()
 	local jbimpl
 	local dtmfcompatibility
 	local dialoutmsec
+	local cw_enable
 
 	config_get country BRCM country
 	config_get jbenable BRCM jbenable
@@ -908,9 +1345,14 @@ configure_brcm()
 	config_get jbimpl BRCM jbimpl
 	config_get dtmfmode SIP dtmfmode
 	config_get dialoutmsec BRCM dialoutmsec
+	config_get cw_enable BRCM cw_enable
 
 	if [ -z "$dialoutmsec" ] ; then
 		dialoutmsec=4000
+	fi
+
+	if [ -z "$cw_enable" ] ; then
+		cw_enable=yes
 	fi
 
 	sed -i "s/|COUNTRY|/$country/"				$WORKDIR/brcm.tmp
@@ -926,6 +1368,7 @@ configure_brcm()
 		dtmfcompatibility="0"
 	fi
 	sed -i "s/|DTMFCOMPATIBILITY|/$dtmfcompatibility/"      $WORKDIR/brcm.tmp
+	sed -i "s/|CW_ENABLE|/$cw_enable/"			$WORKDIR/brcm.tmp
 }
 
 #
@@ -935,6 +1378,7 @@ configure_brcm_line()
 {
 	echo "Configuring BRCM line $1"
 	local sip_provider
+	local ptime
 	local silence
 	local ecan
 	local noise
@@ -944,6 +1388,8 @@ configure_brcm_line()
 	local jitter_target
 	local txgain
 	local rxgain
+	local codecs
+	local is_fax
 	local autodial
 	local autodial_timeout
 	local dialtone_timeout
@@ -951,6 +1397,7 @@ configure_brcm_line()
 	local callwaiting
 
 	config_get sip_provider $1 sip_provider
+	config_get ptime $1 ptime
 	config_get silence $1 vad
 	config_get ecan $1 echo_cancel
 	config_get noise $1 noise
@@ -986,23 +1433,25 @@ configure_brcm_line()
 	fi
 
 	cp $TMPL_BRCM_LINE $WORKDIR/brcm_line.tmp
-	sed -i "s/|SECTION|/$1/"					$WORKDIR/brcm_line.tmp
-	sed -i "s/|CONTEXT|/$sip_provider/g"				$WORKDIR/brcm_line.tmp
-	sed -i "s/|SILENCE|/$silence/"					$WORKDIR/brcm_line.tmp
-	sed -i "s/|ECHOCANCEL|/$ecan/"					$WORKDIR/brcm_line.tmp
-	sed -i "s/|COMFORTNOISE|/$noise/"				$WORKDIR/brcm_line.tmp
-	sed -i "s/|JITTERFIXED|/$jitter_fixed/"				$WORKDIR/brcm_line.tmp
-	sed -i "s/|JITTERMIN|/$jitter_min/"				$WORKDIR/brcm_line.tmp
-	sed -i "s/|JITTERMAX|/$jitter_max/"				$WORKDIR/brcm_line.tmp
-	sed -i "s/|JITTERTARGET|/$jitter_target/"			$WORKDIR/brcm_line.tmp
-	sed -i "s/|TXGAIN|/$txgain/"					$WORKDIR/brcm_line.tmp
-	sed -i "s/|RXGAIN|/$rxgain/"					$WORKDIR/brcm_line.tmp
-	sed -i "s/|DIALTONE_EXTENSION_HINT|/$1/"			$WORKDIR/brcm_line.tmp
-	sed -i "s/|AUTODIAL|/$autodial/"				$WORKDIR/brcm_line.tmp
-	sed -i "s/|AUTODIAL_TIMEOUT|/$autodial_timeout/"		$WORKDIR/brcm_line.tmp
-	sed -i "s/|DTMFRELAY|/$dtmfmode/"      				$WORKDIR/brcm_line.tmp
-	sed -i "s/|DIALTONE_TIMEOUT|/$dialtone_timeout/"		$WORKDIR/brcm_line.tmp
-	sed -i "s/|CALLWAITING|/$callwaiting/"				$WORKDIR/brcm_line.tmp
+	sed -i "s/|SECTION|/$1/"				$WORKDIR/brcm_line.tmp
+	sed -i "s/|CONTEXT|/$sip_provider/g"			$WORKDIR/brcm_line.tmp
+	sed -i "s/|PERIOD|/$ptime/"				$WORKDIR/brcm_line.tmp
+	sed -i "s/|SILENCE|/$silence/"				$WORKDIR/brcm_line.tmp
+	sed -i "s/|ECHOCANCEL|/$ecan/"				$WORKDIR/brcm_line.tmp
+	sed -i "s/|COMFORTNOISE|/$noise/"			$WORKDIR/brcm_line.tmp
+	sed -i "s/|JITTERFIXED|/$jitter_fixed/"			$WORKDIR/brcm_line.tmp
+	sed -i "s/|JITTERMIN|/$jitter_min/"			$WORKDIR/brcm_line.tmp
+	sed -i "s/|JITTERMAX|/$jitter_max/"			$WORKDIR/brcm_line.tmp
+	sed -i "s/|JITTERTARGET|/$jitter_target/"		$WORKDIR/brcm_line.tmp
+	sed -i "s/|TXGAIN|/$txgain/"				$WORKDIR/brcm_line.tmp
+	sed -i "s/|RXGAIN|/$rxgain/"				$WORKDIR/brcm_line.tmp
+	sed -i "s/|ALLOW|/$codecs/"				$WORKDIR/brcm_line.tmp
+	sed -i "s/|DIALTONE_EXTENSION_HINT|/$1/"		$WORKDIR/brcm_line.tmp
+	sed -i "s/|AUTODIAL|/$autodial/"			$WORKDIR/brcm_line.tmp
+	sed -i "s/|AUTODIAL_TIMEOUT|/$autodial_timeout/"	$WORKDIR/brcm_line.tmp
+	sed -i "s/|DTMFRELAY|/$dtmfmode/"			$WORKDIR/brcm_line.tmp
+	sed -i "s/|DIALTONE_TIMEOUT|/$dialtone_timeout/"	$WORKDIR/brcm_line.tmp
+	sed -i "s/|CALLWAITING|/$callwaiting/"			$WORKDIR/brcm_line.tmp
 
 
 	#Configure BRCM line with codecs according to the SIP line settings
@@ -1018,13 +1467,192 @@ configure_brcm_line()
 	rm -f							$WORKDIR/brcm_line.tmp
 }
 
+#
+# Configure voicemail.conf
+#
+configure_voicemail()
+{
+	echo "Configuring Voice Mail"
+	local extension
+
+	config_get extension voicemail extension
+
+	echo "exten => $extension,1,Answer(500)"				>> $WORKDIR/extensions_local.tmp
+	echo "exten => $extension,n,VoiceMailMain(@default)"	>> $WORKDIR/extensions_local.tmp
+}
+
+configure_language()
+{
+	local voice_pack
+	config_get voice_pack language voice_pack
+
+	if [ -z "$voice_pack" ] ; then
+		return 1
+	fi
+	
+	dstpath="/usr/lib/asterisk"
+	if [ -f $voice_pack ]; then
+		workdir=`mktemp -d`
+		echo "Found new voice-pack"
+		unpack_archive $voice_pack "sounds" $workdir
+		if [ $? -eq 0 ] ; then
+			if [ -d "$dstpath/sounds" ]; then
+				# Remove existing voice-pack
+				echo "Permanently removing old voice-pack"
+				rm -rf $dstpath/sounds
+			fi
+			# Install new voice-pack
+			echo "Installing new voice-pack"
+			mv $workdir/sounds $dstpath
+		else
+			echo "Unpack failed"
+		fi
+		# Clean-up
+		rm -rf $workdir
+	fi
+}
+
+#
+# Unpack archive of type tar.gz containing a single file or directory
+# 
+# $1 : Absolute path to archive
+# $2 : Name of contained file/dir
+# $3 : Destination path
+#
+unpack_archive()
+{
+	archive=$1
+
+	if [ -f $archive ]; then
+		# Move archive to tmp workdir
+		extractdir=`mktemp -d`
+		mv $archive $extractdir
+		filename=$(basename $archive)
+		echo "Verifying archive"
+		# Check if valid gzip archive
+		gunzip -t $extractdir/$filename 2>/dev/null
+		if [ $? -ne 0 ] ; then
+			# Corrupt file or not a gzip archive
+			echo "Corrupt or incorrectly compressed archive"
+			# Remove it
+			rm $extractdir/$filename
+			rm -rf $extractdir
+			return 1
+		fi
+		# Decompress
+		mv $extractdir/$filename $extractdir/archive.tar.gz
+		gunzip -f $extractdir/archive.tar.gz 2>/dev/null
+		if [ $? -ne 0 ] ; then
+			# Decompress failed
+			rm $extractdir/archive.tar.gz
+			rm -rf $extractdir
+			return 1
+		fi
+		# Make sure the tarball contains just a single file or directory
+		valid=1
+		listing=$(mktemp)
+		tar -tf $extractdir/archive.tar > $listing 2>/dev/null
+		if [ $? -ne 0 ] ; then
+			# Something went wrong
+			echo "Archive is not a compressed tarball"
+			rm $extractdir/archive.tar
+			rm -rf $extractdir
+			return 1
+		fi
+		while read i
+		do
+			# Each path in listing should start with '$2/'
+			len=${#2}
+			len=$((len+1))
+			if ! [ "x${i:0:$len}" == "x$2/" ] ; then
+				valid=0
+				break
+			fi
+		done < $listing
+		rm -f $listing
+		if [ $valid -eq 0 ] ; then
+			echo "Invalid archive"
+			rm $extractdir/archive.tar
+			rm -rf $extractdir
+			return 1
+		fi
+		# Extract
+		echo "Extracting archive"
+		cd $3 >/dev/null
+		tar -xf $extractdir/archive.tar 2>/dev/null
+		cd - >/dev/null
+		# Clean-up
+		rm -f archive.tar archive.tar.gz
+	fi
+	rm -rf $extractdir
+	return 0
+}
+
+configure_moh()
+{
+	local sound_file
+	config_get sound_file moh sound_file
+
+	if [ -z "$sound_file" ] ; then
+		return
+	fi
+
+	if [ -f $sound_file ]; then
+		# Move sound file to /usr/lib/asterisk/moh
+		echo "Found new MOH sound file"
+		path="/usr/lib/asterisk/moh"
+		if ! [ -d "$path" ] ; then
+			mkdir -p $path
+			if [ $? -ne 0 ] ; then
+				echo "Cannot create $path"
+				return 1
+			fi
+		fi
+		mv $sound_file $path/music.gsm
+		if [ $? -eq 0 ] ; then
+			echo "Installed new MOH sound file as music.gsm"
+		fi
+	fi
+}
+
+configure_custom_sounds()
+{
+	local sound_pack
+	config_get sound_pack custom_sounds sound_pack
+
+	if [ -z "$sound_pack" ] ; then
+		return 1
+	fi
+	
+	dstpath="/usr/lib/asterisk"
+	if [ -f $sound_pack ]; then
+		workdir=`mktemp -d`
+		echo "Found new custom sound-pack"
+		unpack_archive $sound_pack "custom" $workdir
+		if [ $? -eq 0 ] ; then
+			if [ -d "$dstpath/custom" ]; then
+				# Remove existing custom sound-pack
+				echo "Permanently removing old custom sound-pack"
+				rm -rf $dstpath/custom
+			fi
+			# Install new custom sound-pack
+			echo "Installing new custom sound-pack"
+			mv $workdir/custom $dstpath
+		else
+			echo "Unpack failed"
+		fi
+		# Clean-up
+		rm -rf $workdir
+	fi
+}
+
 #Create an extension "hint" to allow dialtone to be set according to sip provider reg status
 create_extensions_dialtone()
 {
 	local sip_provider
 	config_get sip_provider $1 sip_provider
 
-	#If line is configured with an active sip provider, setup dialtone extension
+	#If line is configured with an active SIP Provider, setup dialtone extension
 	if [ -n "$sip_provider" -a "$sip_provider" != "-" ] ; then
 		config_get enabled $sip_provider enabled
 		if [ -n "$enabled" -a "$enabled" = "1" ] ; then
@@ -1119,48 +1747,92 @@ start() {
 	config_foreach set_line_name brcm_line
 	uci_commit voice
 
+	#######################################
+	# Create temporary files from templates
+	#######################################
+	cp $TMPL_EXTENSIONS		$WORKDIR/extensions.tmp
+	cp $TMPL_EXTENSIONS_INCOMING	$WORKDIR/extensions_incoming.tmp
+	cp $TMPL_EXTENSIONS_LOCAL	$WORKDIR/extensions_local.tmp
+	cp $TMPL_EXTENSIONS_DIALTONE	$WORKDIR/extensions_dialtone.tmp
+	cp $TMPL_EXTENSIONS_LOCAL_LINE	$WORKDIR/extensions_local_line.tmp
+	create_extensions_local
+	cp $TMPL_SIP			$WORKDIR/sip.tmp
+	cp $TMPL_RTP			$WORKDIR/rtp.tmp
+	cp $TMPL_STUN			$WORKDIR/res_stun_monitor.tmp
+	cp $TMPL_BRCM			$WORKDIR/brcm.tmp
+	cp $TMPL_CODECS			$WORKDIR/codecs.tmp
+	cp $TMPL_VOICEMAIL		$WORKDIR/voicemail.tmp
+	touch				$WORKDIR/sip_providers.tmp
+	touch				$WORKDIR/sip_registrations.tmp
+	touch				$WORKDIR/sip_users.tmp
+	touch				$WORKDIR/features.tmp
+	touch				$WORKDIR/call_filter_macros.tmp
+	touch				$WORKDIR/ivrs.tmp
+	touch 				$WORKDIR/queues.tmp
+
+	###########################
+	# Call Filter configuration
+	###########################
+	config_foreach configure_call_filter call_filter
+
 	#########################
 	# Dialplan configuration
 	#########################
-	cp $TMPL_EXTENSIONS		$WORKDIR/extensions.tmp
-	cp $TMPL_EXTENSIONS_INCOMING	$WORKDIR/extensions_incoming.tmp
-	cp $TMPL_EXTENSIONS_DIALTONE	$WORKDIR/extensions_dialtone.tmp
-	cp $TMPL_EXTENSIONS_LOCAL	$WORKDIR/extensions_local.tmp
-	cp $TMPL_EXTENSIONS_LOCAL_LINE	$WORKDIR/extensions_local_line.tmp
-	create_extensions
-	config_foreach create_extensions_provider sip_service_provider
-	config_foreach create_extensions_dialtone brcm_line
-	create_extensions_local
-	cat $WORKDIR/extensions_incoming.tmp >> $WORKDIR/extensions.tmp
-	cat $WORKDIR/extensions_dialtone.tmp >> $WORKDIR/extensions.tmp
-	cat $WORKDIR/extensions_local.tmp >> $WORKDIR/extensions.tmp
-	rm -f $WORKDIR/extensions_incoming.tmp
-	rm -f $WORKDIR/extensions_dialtone.tmp
-	rm -f $WORKDIR/extensions_local.tmp
+	configure_extensions
 
-	####################
-	# SIP configuration
-	####################
-	cp $TMPL_SIP $WORKDIR/sip.tmp
-	touch $WORKDIR/sip_peers.tmp
-	touch $WORKDIR/sip_registrations.tmp
-	cp $TMPL_RTP $WORKDIR/rtp.tmp
-	cp $TMPL_STUN $WORKDIR/res_stun_monitor.tmp
-	touch $WORKDIR/features.tmp
-
+	############################
+	# SIP Provider configuration
+	############################
 	config_foreach configure_sip sip_advanced
 	config_foreach configure_sip_provider sip_service_provider
 	config_foreach configure_direct_dial direct_dial
 	config_foreach encrypt_password sip_service_provider
+	config_foreach configure_extensions_provider sip_service_provider
+
+	########################
+	# SIP User configuration
+	########################
+	config_foreach configure_sip_user sip_user
+	config_foreach configure_sip_user_extension sip_user
 
 	#####################
 	# BRCM configuration
 	#####################
-	cp $TMPL_BRCM $WORKDIR/brcm.tmp
-	cp $TMPL_CODECS $WORKDIR/codecs.tmp
 	configure_brcm
 	config_foreach configure_brcm_line brcm_line
+	config_foreach create_extensions_dialtone brcm_line
 	configure_codecs
+
+	###########################
+	# Voicemail configuration
+	###########################
+	configure_voicemail
+	config_foreach configure_mailbox mailbox
+
+	######
+	# IVR 
+	######
+	config_foreach configure_ivr ivr
+
+	##############
+	# Call Queues
+	##############
+	config_foreach configure_queue queue
+
+	###########
+	# Language
+	###########
+	configure_language
+
+	###############
+	# Music on hold
+	###############
+	configure_moh
+
+	###############
+	# Custom Sounds
+	###############
+	configure_custom_sounds
 
 	####################
 	# Log configuration
@@ -1171,6 +1843,14 @@ start() {
 	#########################
 	# Finish up configuration
 	#########################
+	cat $WORKDIR/ivrs.tmp >>		$WORKDIR/extensions.tmp
+	cat $WORKDIR/call_filter_macros.tmp >>	$WORKDIR/extensions.tmp
+	cat $WORKDIR/extensions_incoming.tmp >> $WORKDIR/extensions.tmp
+	cat $WORKDIR/extensions_dialtone.tmp >> $WORKDIR/extensions.tmp
+	cat $WORKDIR/extensions_local.tmp >> $WORKDIR/extensions.tmp
+	rm -f $WORKDIR/extensions_incoming.tmp
+	rm -f $WORKDIR/extensions_dialtone.tmp
+	rm -f $WORKDIR/extensions_local.tmp
 	assemble_and_copy_config
 	pbx_fix_ownership
 	config_unset
