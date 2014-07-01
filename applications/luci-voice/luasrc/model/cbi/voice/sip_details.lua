@@ -73,8 +73,12 @@ e.parse = parse_enabled
 
 target = s:option(ListValue, "target", "Incoming calls to")
 target:value('direct', 'Direct')
-target:value('queue', 'Queue')
-target:value('ivr', 'IVR')
+if vc.has_package("luci-app-voice-queues") then
+	target:value('queue', 'Queue')
+end
+if vc.has_package("luci-app-voice-ivr") then
+	target:value('ivr', 'IVR')
+end
 target.default = 'direct'
 
 -- Create a set of checkboxes for lines to call
@@ -98,29 +102,35 @@ vc.foreach_user({'sip'},
         end
 )
 
-queue = s:option(ListValue, "call_queue", "&nbsp;")
-queue:depends('target', 'queue')
-m.uci:foreach("voice", "queue",
-	function(v)
-		queue:value(v['.name'], v['name'])
-	end
-)
+if vc.has_package("luci-app-voice-queues") then
+	queue = s:option(ListValue, "call_queue", "&nbsp;")
+	queue:depends('target', 'queue')
+	m.uci:foreach("voice", "queue",
+		function(v)
+			queue:value(v['.name'], v['name'])
+		end
+	)
+end
 
-ivr = s:option(ListValue, "call_ivr", "&nbsp;")
-ivr:depends('target', 'ivr')
-m.uci:foreach("voice", "ivr",
-	function(v)
-		ivr:value(v['.name'], v['name'])
-	end
-)
+if vc.has_package("luci-app-voice-ivr") then
+	ivr = s:option(ListValue, "call_ivr", "&nbsp;")
+	ivr:depends('target', 'ivr')
+	m.uci:foreach("voice", "ivr",
+		function(v)
+			ivr:value(v['.name'], v['name'])
+		end
+	)
+end
 
-call_filter = s:option(ListValue, "call_filter", "Call filter")
-call_filter:value("-", "-")
-m.uci:foreach("voice", "call_filter",
-	function(s1)
-		call_filter:value(s1[".name"], s1["name"])
-	end
-)
+if vc.has_package("luci-app-voice-call-filters") then
+	call_filter = s:option(ListValue, "call_filter", "Call filter")
+	call_filter:value("-", "-")
+	m.uci:foreach("voice", "call_filter",
+		function(s1)
+			call_filter:value(s1[".name"], s1["name"])
+		end
+	)
+end
 
 domain = s:option(Value, 'domain', 'SIP domain name')
 function domain.validate(self, value, section)

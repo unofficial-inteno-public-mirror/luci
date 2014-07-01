@@ -163,5 +163,16 @@ function common.get_custom_sounds()
 	return files
 end
 
+function common.has_package(name)
+	out = luci.sys.exec("opkg find " .. name)
+	lines = string.split(out, "\n")
+	for i, line in ipairs(lines) do
+		if line and line:sub(0, #name) == name then
+			return true
+		end
+	end
+	return false
+end
+
 return common
 
