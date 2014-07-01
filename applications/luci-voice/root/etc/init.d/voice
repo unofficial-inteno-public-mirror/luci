@@ -1,6 +1,6 @@
 #!/bin/sh /etc/rc.common
 #
-# This file is part of luci-app-voice-client,
+# This file is part of luci-app-voice,
 # its purpose is to (re)create asterisk configuration files
 # from luci config file(s).
 #
@@ -48,7 +48,7 @@ MD5SUMSFILE=/tmp/$MODULENAME-sums.$$
 TMPL_EXTENSIONS=$TEMPLATEDIR/extensions.conf.TEMPLATE
 TMPL_EXTENSIONS_EXTRA=$TEMPLATEDIR/extensions_extra.conf.TEMPLATE
 TMPL_EXTENSIONS_MACRO=$TEMPLATEDIR/extensions_macro.conf.TEMPLATE
-TMPL_EXTENSIONS_ACCOUNT=$TEMPLATEDIR/extensions_account.TEMPLATE
+TMPL_EXTENSIONS_PROVIDER=$TEMPLATEDIR/extensions_provider.TEMPLATE
 TMPL_EXTENSIONS_INCOMING=$TEMPLATEDIR/extensions_incoming.TEMPLATE
 TMPL_EXTENSIONS_INCOMING_LINE=$TEMPLATEDIR/extensions_incoming_line.TEMPLATE
 TMPL_EXTENSIONS_LOCAL=$TEMPLATEDIR/extensions_local.TEMPLATE
@@ -216,7 +216,7 @@ read_codecs_ptime()
 }
 
 # read lines that should receive incoming calls from
-# a SIP account.
+# a SIP provider.
 # returns a list of lines, formatted to replace a tag with sed
 # in a Dial() command
 read_lines()
@@ -231,7 +231,7 @@ read_lines()
 }
 
 # Read BRCM lines that should receive incoming calls for
-# a SIP account. Append line number to SIP user (second argument) 
+# a SIP provider. Append line number to SIP user (second argument) 
 # to create a contact string. This string (user_XYZ) will then be
 # used as extension in:
 # "register => user[:secret[:authuser]]@host[:port][/extension]"
@@ -438,7 +438,7 @@ configure_sip()
 }
 
 # Get password from existing sip_peers config file
-# $1 is sipaccount to get password for
+# $1 is sip provider to get password for
 restore_secret()
 {
 	local section_found
@@ -462,10 +462,10 @@ restore_secret()
 }
 
 #
-# Add a single account to sip_peers and sip_registrations based on provided input:
-# configure_account(name, user, secret, domain, host, codecline)
+# Add a single provider to sip_peers and sip_registrations based on provided input:
+# configure_provider(name, user, secret, domain, host, codecline)
 #
-configure_sip_account()
+configure_sip_provider()
 {
 	local enabled
 	local domain
@@ -501,11 +501,11 @@ configure_sip_account()
 	fi
 
 	if [ -z "$user" ] ; then
-		echo "SIP account $1 has no user configured, ignored"
+		echo "SIP provider $1 has no user configured, ignored"
 		return
 	fi
 
-	echo "Configuring SIP account $1"
+	echo "Configuring SIP provider $1"
 
 	if [ -z "$host" ] ; then
 		host=$domain
@@ -526,7 +526,7 @@ configure_sip_account()
 		cp "$TMPL_SIPREG" "$WORKDIR/sip_reg.tmp"
 	fi
 
-	# Construct a sip peer entry for account
+	# Construct a sip peer entry for provider
 	sed -i "s/|NAME|/$1/g"				$WORKDIR/sip_peer.tmp
 	sed -i "s/|AUTHUSER|/$(escape_sed_substitution $authuser)/g"		$WORKDIR/sip_peer.tmp
 	sed -i "s/|USER|/$(escape_sed_substitution $user)/"			$WORKDIR/sip_peer.tmp
@@ -572,12 +572,12 @@ configure_sip_account()
 	# Set registered extension so that incoming calls match the correct peer                     
 	sed -i "s/|CONTACT_USER|/$(format_sip_contact $1 $user)/g"      $WORKDIR/sip_peer.tmp 
 
-	# Add account configuration to the temp file containing all account configs.
+	# Add provider configuration to the temp file containing all provider configs.
 	cat $WORKDIR/sip_peer.tmp >> $WORKDIR/sip_peers.tmp
 
-	# Register account with SIP Service Provider
+	# Register provider with SIP Service Provider
 	sed -i "s/|TRANSPORT|/$transport/g"		$WORKDIR/sip_reg.tmp	
-	sed -i "s/|ACCOUNT|/$1/g"			$WORKDIR/sip_reg.tmp	
+	sed -i "s/|PROVIDER|/$1/g"			$WORKDIR/sip_reg.tmp	
 	sed -i "s/|USER|/$(escape_sed_substitution $user)/g"			$WORKDIR/sip_reg.tmp
 	sed -i "s/|SECRET|/$(escape_sed_substitution $secret)/"			$WORKDIR/sip_reg.tmp
 	sed -i "s/|DOMAIN|/$domain/g"			$WORKDIR/sip_reg.tmp	 
@@ -593,7 +593,7 @@ configure_sip_account()
 	fi
 	sed -i "s/|CONTACT_USER|/$(format_sip_contact $1 $user)/g"	$WORKDIR/sip_reg.tmp
 
-	# Add account registration info to temp file containing all account registrations
+	# Add provider registration info to temp file containing all provider registrations
 	cat $WORKDIR/sip_reg.tmp >> $WORKDIR/sip_registrations.tmp
 
 	# Clean up temporary files
@@ -650,9 +650,9 @@ create_extensions()
 }
 
 #
-# Create dialplan settings for each enabled SIP-account
+# Create dialplan settings for each enabled SIP-provider
 #
-create_extensions_account()
+create_extensions_provider()
 {
 	local enabled
 	local displayname
@@ -683,13 +683,13 @@ create_extensions_account()
 	config_get callreturn_enabled "features" callreturn_enabled
 	config_get redial_enabled "features" redial_enabled
 
-	# check if account is disabled
+	# check if provider is disabled
 	config_get enabled $1 enabled
 	if [ -z "$enabled" -o "$enabled" = "0" ] ; then
 		return
 	fi
 
-	# check that account has a configured user
+	# check that provider has a configured user
 	config_get user $1 user
 	if [ -z "$user" ] ; then
 		return
@@ -743,47 +743,47 @@ create_extensions_account()
 	[ -z "$redial" ] && redial="redial"
 
 	# create tempfile for outgoing, transfer and callforwarding contexts
-	cp $TMPL_EXTENSIONS_ACCOUNT			$WORKDIR/extensions_account.tmp
+	cp $TMPL_EXTENSIONS_PROVIDER			$WORKDIR/extensions_provider.tmp
 	
 	#common settings
-	sed -i "s/|ACCOUNT|/$1/g"			$WORKDIR/extensions_account.tmp
-	sed -i "s/|CUSTOM_OUTGOING|/$custom_outgoing/"	$WORKDIR/extensions_account.tmp
-	sed -i "s/|DISPLAYNAME|/$(escape_sed_substitution $displayname)/"		$WORKDIR/extensions_account.tmp
+	sed -i "s/|PROVIDER|/$1/g"			$WORKDIR/extensions_provider.tmp
+	sed -i "s/|CUSTOM_OUTGOING|/$custom_outgoing/"	$WORKDIR/extensions_provider.tmp
+	sed -i "s/|DISPLAYNAME|/$(escape_sed_substitution $displayname)/"		$WORKDIR/extensions_provider.tmp
 
 	#cbbs settings
-	sed -i "s/|CBBS_KEY|/$(escape_sed_substitution $cbbs_key)/"		$WORKDIR/extensions_account.tmp
-	sed -i "s/|MAX_RETRIES|/$cbbs_maxretry/"	$WORKDIR/extensions_account.tmp
-	sed -i "s/|RETRYTIME|/$cbbs_retrytime/"		$WORKDIR/extensions_account.tmp
-	sed -i "s/|WAITTIME|/$cbbs_waittime/"		$WORKDIR/extensions_account.tmp
-	sed -i "s/|CONGESTIONTONE|/$congestiontone/"	$WORKDIR/extensions_account.tmp
+	sed -i "s/|CBBS_KEY|/$(escape_sed_substitution $cbbs_key)/"		$WORKDIR/extensions_provider.tmp
+	sed -i "s/|MAX_RETRIES|/$cbbs_maxretry/"	$WORKDIR/extensions_provider.tmp
+	sed -i "s/|RETRYTIME|/$cbbs_retrytime/"		$WORKDIR/extensions_provider.tmp
+	sed -i "s/|WAITTIME|/$cbbs_waittime/"		$WORKDIR/extensions_provider.tmp
+	sed -i "s/|CONGESTIONTONE|/$congestiontone/"	$WORKDIR/extensions_provider.tmp
 
 	# Confifure call forwarding if enabled
 	if [ -n "$callforward_enabled" -a "$callforward_enabled" = "1" ] ; then
-		echo "exten => $cfim_on,1,	Macro(create_cfim,$1,\${REPLACE(EXTEN:$cfim_on_len,*#-)})" >>	$WORKDIR/extensions_account.tmp
-		echo "exten => $cfim_off,1,	Macro(delete_cfim,$1)" >>					$WORKDIR/extensions_account.tmp
-		echo "exten => $cfbs_on,1,	Macro(create_cfbs,$1,\${REPLACE(EXTEN:$cfbs_on_len,*#-)})" >>	$WORKDIR/extensions_account.tmp
-		echo "exten => $cfbs_off,1,	Macro(delete_cfbs,$1)" >>					$WORKDIR/extensions_account.tmp
+		echo "exten => $cfim_on,1,	Macro(create_cfim,$1,\${REPLACE(EXTEN:$cfim_on_len,*#-)})" >>	$WORKDIR/extensions_provider.tmp
+		echo "exten => $cfim_off,1,	Macro(delete_cfim,$1)" >>					$WORKDIR/extensions_provider.tmp
+		echo "exten => $cfbs_on,1,	Macro(create_cfbs,$1,\${REPLACE(EXTEN:$cfbs_on_len,*#-)})" >>	$WORKDIR/extensions_provider.tmp
+		echo "exten => $cfbs_off,1,	Macro(delete_cfbs,$1)" >>					$WORKDIR/extensions_provider.tmp
 	fi
 
 	# Configure call return if enabled
 	if [ -n "$callreturn_enabled" -a "$callreturn_enabled" = "1" ] ; then
-		echo "exten => $call_return,1,	Macro(call_return,$1)" >>	$WORKDIR/extensions_account.tmp
+		echo "exten => $call_return,1,	Macro(call_return,$1)" >>	$WORKDIR/extensions_provider.tmp
 	fi
 	
 	# Configure redial if enabled
 	if [ -n "$redial_enabled" -a "$redial_enabled" = "1" ] ; then
-		echo "exten => $redial,1,	Macro(redial,$1)" >>	$WORKDIR/extensions_account.tmp
+		echo "exten => $redial,1,	Macro(redial,$1)" >>	$WORKDIR/extensions_provider.tmp
 	fi
-	echo "" >>					$WORKDIR/extensions_account.tmp
+	echo "" >>					$WORKDIR/extensions_provider.tmp
 
-	cat $WORKDIR/extensions_account.tmp >> 		$WORKDIR/extensions.tmp
-	rm -f						$WORKDIR/extensions_account.tmp
+	cat $WORKDIR/extensions_provider.tmp >> 		$WORKDIR/extensions.tmp
+	rm -f						$WORKDIR/extensions_provider.tmp
 
 	# create direct dial extensions, if any are defined
 	config_get direct_dial $1 direct_dial
 	if [ -n "$direct_dial" ] ; then
 		cp $TMPL_EXTENSIONS_DIRECT					$WORKDIR/extensions_direct.tmp
-		sed -i "s/|ACCOUNT|/$1/"					$WORKDIR/extensions_direct.tmp
+		sed -i "s/|PROVIDER|/$1/"					$WORKDIR/extensions_direct.tmp
 		for i in $direct_dial ; do
 			echo "Adding direct dial extension $i for $1"
 			echo "exten => $i,1,Goto($1-outgoing,\${EXTEN},1)" >>	$WORKDIR/extensions_direct.tmp
@@ -934,7 +934,7 @@ configure_brcm()
 configure_brcm_line()
 {
 	echo "Configuring BRCM line $1"
-	local sip_account
+	local sip_provider
 	local silence
 	local ecan
 	local noise
@@ -947,10 +947,10 @@ configure_brcm_line()
 	local autodial
 	local autodial_timeout
 	local dialtone_timeout
-	local sip_account_enabled
+	local sip_provider_enabled
 	local callwaiting
 
-	config_get sip_account $1 sip_account
+	config_get sip_provider $1 sip_provider
 	config_get silence $1 vad
 	config_get ecan $1 echo_cancel
 	config_get noise $1 noise
@@ -965,10 +965,10 @@ configure_brcm_line()
 	config_get dialtone_timeout $1 dialtone_timeout
 	config_get callwaiting $1 callwaiting
 
-	#If line is configured with no sip_account, or sip_account is disabled, use local_extensions context
-	config_get sip_account_enabled $sip_account enabled
-	if [ "$sip_account" == "-" -o -z "$sip_account_enabled" -o "$sip_account_enabled" == "0" ] ; then
-		sip_account="local_extensions"
+	#If line is configured with no sip_provider, or sip_provider is disabled, use local_extensions context
+	config_get sip_provider_enabled $sip_provider enabled
+	if [ "$sip_provider" == "-" -o -z "$sip_provider_enabled" -o "$sip_provider_enabled" == "0" ] ; then
+		sip_provider="local_extensions"
 	fi
 
 	#If autodial timeout is not set, use 60 seconds.
@@ -987,7 +987,7 @@ configure_brcm_line()
 
 	cp $TMPL_BRCM_LINE $WORKDIR/brcm_line.tmp
 	sed -i "s/|SECTION|/$1/"					$WORKDIR/brcm_line.tmp
-	sed -i "s/|CONTEXT|/$sip_account/g"				$WORKDIR/brcm_line.tmp
+	sed -i "s/|CONTEXT|/$sip_provider/g"				$WORKDIR/brcm_line.tmp
 	sed -i "s/|SILENCE|/$silence/"					$WORKDIR/brcm_line.tmp
 	sed -i "s/|ECHOCANCEL|/$ecan/"					$WORKDIR/brcm_line.tmp
 	sed -i "s/|COMFORTNOISE|/$noise/"				$WORKDIR/brcm_line.tmp
@@ -1007,11 +1007,11 @@ configure_brcm_line()
 
 	#Configure BRCM line with codecs according to the SIP line settings
 	local is_fax
-	config_get is_fax $sip_account is_fax
+	config_get is_fax $sip_provider is_fax
 	if [ -z "$is_fax" -o "$is_fax" = "1" ] ; then
 		sed -i "s/|ALLOW|/allow = ulaw\nallow = alaw/"	$WORKDIR/brcm_line.tmp
 	else
-		sed -i "s/|ALLOW|/$(read_codecs $sip_account)/"	$WORKDIR/brcm_line.tmp
+		sed -i "s/|ALLOW|/$(read_codecs $sip_provider)/"	$WORKDIR/brcm_line.tmp
 	fi
 
 	cat $WORKDIR/brcm_line.tmp >>				$WORKDIR/brcm.tmp
@@ -1021,14 +1021,14 @@ configure_brcm_line()
 #Create an extension "hint" to allow dialtone to be set according to sip provider reg status
 create_extensions_dialtone()
 {
-	local sip_account
-	config_get sip_account $1 sip_account
+	local sip_provider
+	config_get sip_provider $1 sip_provider
 
-	#If line is configured with an active sip account, setup dialtone extension
-	if [ -n "$sip_account" -a "$sip_account" != "-" ] ; then
-		config_get enabled $sip_account enabled
+	#If line is configured with an active sip provider, setup dialtone extension
+	if [ -n "$sip_provider" -a "$sip_provider" != "-" ] ; then
+		config_get enabled $sip_provider enabled
 		if [ -n "$enabled" -a "$enabled" = "1" ] ; then
-			echo "exten => $1,hint,SIP/$sip_account" >>     $WORKDIR/extensions_dialtone.tmp
+			echo "exten => $1,hint,SIP/$sip_provider" >>     $WORKDIR/extensions_dialtone.tmp
 		fi
 	fi
 }
@@ -1128,7 +1128,7 @@ start() {
 	cp $TMPL_EXTENSIONS_LOCAL	$WORKDIR/extensions_local.tmp
 	cp $TMPL_EXTENSIONS_LOCAL_LINE	$WORKDIR/extensions_local_line.tmp
 	create_extensions
-	config_foreach create_extensions_account sip_service_provider
+	config_foreach create_extensions_provider sip_service_provider
 	config_foreach create_extensions_dialtone brcm_line
 	create_extensions_local
 	cat $WORKDIR/extensions_incoming.tmp >> $WORKDIR/extensions.tmp
@@ -1149,7 +1149,7 @@ start() {
 	touch $WORKDIR/features.tmp
 
 	config_foreach configure_sip sip_advanced
-	config_foreach configure_sip_account sip_service_provider
+	config_foreach configure_sip_provider sip_service_provider
 	config_foreach configure_direct_dial direct_dial
 	config_foreach encrypt_password sip_service_provider
 

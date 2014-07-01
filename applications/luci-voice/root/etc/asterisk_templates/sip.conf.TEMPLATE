@@ -2,14 +2,12 @@
 context=incoming_calls
 allowoverlap=yes
 allowtransfer=yes
-realm=asterisk
 bindaddr=0.0.0.0
 srvlookup=yes
 maxexpiry=600
 minexpiry=60
-defaultexpiry=|DEFAULTEXPIRY|
 qualifyfreq=55
-alwaysauthreject = yes
+alwaysauthreject=yes
 t1min=100
 timert1=500
 timerb=16000
@@ -23,6 +21,9 @@ nat=yes
 directmedia=no
 sipdebug=no
 session-timers=refuse
+
+realm=|REALM|
+defaultexpiry=|DEFAULTEXPIRY|
 useragent=|USERAGENT|
 bindport=|BINDPORT|
 externhost=|EXTERNHOST|
@@ -54,4 +55,5 @@ transport=udp|TCPTRANSPORT||TLSTRANSPORT|
 
 [authentication]
 
-#include sip_peers.conf
+#include sip_providers.conf
+#include sip_users.conf

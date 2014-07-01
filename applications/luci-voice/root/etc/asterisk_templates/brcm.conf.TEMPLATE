@@ -98,3 +98,6 @@ hfmaxdelay=500
 ;jitter_max=0
 ;jitter_target=0
 
+; Call waiting enabled yes/no
+cw_enable=|CW_ENABLE|
+
