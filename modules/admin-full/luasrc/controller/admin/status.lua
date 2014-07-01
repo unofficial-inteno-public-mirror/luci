@@ -25,10 +25,11 @@ function index()
 		entry({user, "status", "iptables"}, call("action_iptables"), _("Firewall"), 2).leaf = true
 		entry({user, "status", "routes"}, template("admin_status/routes"), _("Routes"), 3)
 
-		entry({user, "status", "logs"}, call("action_syslog"), _("Logs"), 4).subindex = true
+		entry({user, "status", "logs"}, call("action_syslog"), _("Logs and Info"), 4).subindex = true
 		entry({user, "status", "logs", "syslog"}, call("action_syslog"), _("System Log"), 4)
 		entry({user, "status", "logs", "dmesg"}, call("action_dmesg"), _("Kernel Log"), 5)
 		entry({user, "status", "logs", "tr069log"}, call("action_tr069log"), _("TR-069 Log"), 10)
+		entry({user, "status", "logs", "packageinfo"}, call("action_packageinfo"), _("Package Info"), 20)
 
 		entry({user, "status", "processes"}, cbi("admin_status/processes"), _("Processes"), 20)
 
@@ -67,6 +68,11 @@ function action_tr069log()
 	end
 
 	luci.template.render("admin_status/tr069log", {tr069log=tr069log})
+end
+
+function action_packageinfo()
+	local packageinfo = luci.sys.exec("opkg list 2>/dev/null")
+	luci.template.render("admin_status/packageinfo", {packageinfo=packageinfo})
 end
 
 function action_iptables()
