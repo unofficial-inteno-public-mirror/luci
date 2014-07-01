@@ -40,11 +40,6 @@ s.anonymous = true
 s.addremove = false
 upload = s:option(FileUpload, "sound_pack", "Sound", "The files must be contained in a single directory called custom and compressed as <strong>tar.gz</strong>")
 
-s = m:section(TypedSection, "moh", "Music on hold", "Upload a sound file to be played when a call is put on hold or placed in a queue")
-s.anonymous = true
-s.addremove = false
-upload = s:option(FileUpload, 'sound_file', 'Sound', "The sound file must be in GSM format with a sample rate of 8 kHz. Use <tt>sox source.wav -r 8000 -c 1 music.gsm</tt> to convert.")
-
 s = m:section(TypedSection, "language", "Language", "Upload sound files to be used for various voice services")
 s.anonymous = true
 s.addremove = false
