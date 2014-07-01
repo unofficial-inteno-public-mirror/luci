@@ -35,6 +35,9 @@ end
 
 -- Show line title
 title = s:option(DummyValue, "name", "Line")
+function title.cfgvalue(self, section)
+	return vc.user2name(section)
+end
 
 -- Show line extension
 exten = s:option(Value, "extension", "Extension")

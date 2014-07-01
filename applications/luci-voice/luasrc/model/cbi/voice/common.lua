@@ -52,6 +52,10 @@ function common.foreach_user(types, func)
 			m.uci:foreach("voice", "brcm_line",
 				function(s1)
 					if lineCount < allCount then
+						-- Make sure name is set
+						if not s1["name"] then
+							s1["name"] = common.line2name(lineCount)
+						end
 						func(s1)
 					end
 					lineCount = lineCount + 1
@@ -79,6 +83,14 @@ function common.foreach_user(types, func)
 				end
 			)
 		end
+	end
+end
+
+function common.line2name(lineno)
+	if lineno < 4 then
+		return "DECT" .. (lineCount + 1)
+	else
+		return "Tel" .. (lineCount - 3)
 	end
 end
 
