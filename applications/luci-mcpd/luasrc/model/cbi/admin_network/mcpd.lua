@@ -42,7 +42,7 @@ uci:foreach("network", "interface",
 		local islan = section["is_lan"]
 		local typ = section["type"]
 		local ifname = section["ifname"]
-		if ifc ~= "loopback" and islan ~= "1" and typ ~= "alias" and not ifname:match("^@") then
+		if ifc ~= "loopback" and islan ~= "1" and typ ~= "alias" and (ifname and not ifname:match("^@")) then
 			iface:value(ifc)
 		end
 	end)
