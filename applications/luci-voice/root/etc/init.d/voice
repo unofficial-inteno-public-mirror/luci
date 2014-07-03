@@ -4,24 +4,6 @@
 # its purpose is to (re)create asterisk configuration files
 # from luci config file(s).
 #
-# Based on luci-pbx package
-# Copyright 2011 Iordan Iordanov <iiordanov (AT) gmail.com>
-#
-#    This file is part of luci-pbx.
-#
-#    luci-pbx is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
-#
-#    luci-pbx is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License
-#    along with luci-pbx.  If not, see <http://www.gnu.org/licenses/>.
-
 . /lib/functions.sh
 . /lib/functions/network.sh
 
@@ -584,7 +566,7 @@ configure_sip_provider()
 	sed -i "s/|SECRET|/$(escape_sed_substitution $secret)/"			$WORKDIR/sip_provider.tmp
 	sed -i "s/|HOST|/$host/"			$WORKDIR/sip_provider.tmp
 	sed -i "s/|FROMDOMAIN|/$domain/"		$WORKDIR/sip_provider.tmp
-	sed -i "s/|TRANSPORT|/$transport/"		$WORKDIR/sip_peer.tmp
+	sed -i "s/|TRANSPORT|/$transport/"		$WORKDIR/sip_provider.tmp
 
 	# Set or remove port
 	if [ -z "$port" ] ; then
@@ -631,7 +613,7 @@ configure_sip_provider()
 	sed -i "s/|PROVIDER|/$1/g"			$WORKDIR/sip_reg.tmp	
 	sed -i "s/|USER|/$(escape_sed_substitution $user)/g"			$WORKDIR/sip_reg.tmp
 	sed -i "s/|SECRET|/$(escape_sed_substitution $secret)/"			$WORKDIR/sip_reg.tmp
-	sed -i "s/|DOMAIN|/$domain/g"			$WORKDIR/sip_reg.tmp	 
+	sed -i "s/|DOMAIN|/$domain/g"			$WORKDIR/sip_reg.tmp
 	if [ -n "$authuser" ] ; then
 		sed -i "s/|AUTHUSER|/:$(escape_sed_substitution $authuser)/"	$WORKDIR/sip_reg.tmp
 	else
@@ -1229,28 +1211,115 @@ configure_extensions_provider()
 		rm -f								$WORKDIR/extensions_direct.tmp
 	fi
 
-	# read a list of lines that should be dialled on incoming calls
-	incoming_lines=$(read_lines $1)
-
 	# create tempfile for incoming context
-	cp $TMPL_EXTENSIONS_INCOMING_LINE				$WORKDIR/extensions_incoming_line.tmp
-	sed -i "s/|CONTACT_USER|/$(format_sip_contact $1 $user)/g"	$WORKDIR/extensions_incoming_line.tmp
-	sed -i "s/|LINES|/$incoming_lines/"				$WORKDIR/extensions_incoming_line.tmp
-	cat $WORKDIR/extensions_incoming_line.tmp >>			$WORKDIR/extensions_incoming.tmp
-	rm -f								$WORKDIR/extensions_incoming_line.tmp
+	tmp=$(mktemp)
+
+	# check call filters for incoming calls
+	call_filter_macro="Set(CALL_BLOCKED=0)"
+	# check if call filter is enabled
+	if [ "x$call_filter_enabled" = "x1" ] ; then
+		call_filter_macro="Macro($call_filter-incoming-call-filter)"
+	fi	
+
+	echo "exten => $user,1,$call_filter_macro" >>						$tmp
+	echo "exten => $user,n,GotoIf($[\"\${CALL_BLOCKED}\"=\"1\"]?blocked)" >>		$tmp
+
+	local call_lines call_ivr call_queue oh_profile extension
+	echo "exten => $user,n,Set(__TRANSFER_CONTEXT=transfer_\${CHANNEL(peername)})" >>	$tmp
+	config_get call_lines $1 call_lines
+	config_get call_queue $1 call_queue
+	config_get call_ivr $1 call_ivr
+	if ! [ -z $call_lines ] ; then
+		# read a list of lines that should be dialled on incoming calls
+		incoming_lines=$(read_lines $1)
+		echo "exten => $user,n,Dial($incoming_lines,$DIAL_TIMEOUT)" >>		$tmp
+	fi
+	if ! [ -z $call_queue ] ; then
+		# Get opening hours profile
+		config_get oh_profile $call_queue opening_hours_profile
+		config_get extension $call_queue extension
+	fi
+	if ! [ -z $call_ivr ] ; then
+		# Get opening hours profile
+		config_get oh_profile $call_ivr opening_hours_profile
+		config_get extension $call_ivr extension
+	fi
+	if ! [ -z $oh_profile ] ; then
+		local invert label
+		config_get invert $oh_profile invert
+		if [ "$invert" == "1" ] ; then
+			label="closed"
+		else
+			label="open"
+		fi
+		# Find all timespans belonging to the opening hours profile
+	        local section cfgtype
+	        [ -z "$CONFIG_SECTIONS" ] && return 0
+	        for section in ${CONFIG_SECTIONS}; do
+	                config_get cfgtype "$section" TYPE
+	                [ -n "timespan" -a "x$cfgtype" != "xtimespan" ] && continue
+	                local owner
+	
+	                config_get owner $section owner
+	                if [ "$owner" == "$oh_profile" ] ; then
+	                        local tr dow dom months
+	                        config_get tr $section time_range
+	                        config_get dow $section days_of_week
+	                        config_get dom $section days_of_month
+	                        config_get months $section months
+	
+	                        echo "exten => $user,n,GotoIfTime($tr,$dow,$dom,$months,/usr/share/zoneinfo/CET?$label)" >> $tmp
+	                fi
+	        done
+		if [ "$invert" == "0" ] ; then
+			echo "exten => $user,n,Goto(closed)" >>					$tmp
+		fi
+
+	fi
+	
+	if [ -z $call_lines ] ; then
+		# Connect calls to queue or IVR only during opening hours	
+		if ! [ -z $extension ] ; then
+			echo "exten => $user,n(open),Goto(local_extensions,$extension,1)" >>	$tmp
+		fi
+		# Goto voicemail after hours
+		echo "exten => $user,n(closed),NoOp()" >> 					$tmp
+	fi
+
+	# Check if voicemail is enabled
+	local has_voicemail
+	has_voicemail=$(mailbox_check_enabled $1)
+	if [ "$has_voicemail" = "1" ] ; then
+		echo "exten => $user,n,VoiceMail($user,u)" >>					$tmp
+	fi
+	echo "exten => $user,n,Goto(end)" >>							$tmp
+	echo "exten => $user,n(blocked),Set(result=\${SHELL(/usr/lib/asterisk/log_call.sh Incoming \${CALLERID(num)} Blocked)})" >> $tmp
+	echo "exten => $user,n,Playback(tt-monkeys)" >>						$tmp
+	echo "exten => $user,n(end),Hangup()" >>						$tmp
+	cat $tmp >>										$WORKDIR/extensions_incoming.tmp
+	rm -f											$tmp
 }
 
-create_local_extension()
+#
+# Create a local extension for a BRCM Line
+#
+configure_brcm_line_extension()
 {
+	local line
 	local extension
-
 	local cbbs_enabled
         local cbbs_key
 	local cbbs_maxretry
 	local cbbs_retrytime
 	local cbbs_waittime
 	
-	config_get extension "brcm$1" extension
+	line=${1:4}
+	config_get extension $1 extension
+
+	if [ -z "$line" ] ; then
+		return
+	fi
+
 	if [ -n "$extension" ] ; then
 		echo "Configuring local extension $extension"
 
@@ -1270,7 +1339,8 @@ create_local_extension()
 	
 		cp $TMPL_EXTENSIONS_LOCAL_LINE			$WORKDIR/extensions_local_line.tmp
 		sed -i "s/|EXTEN|/$extension/g"			$WORKDIR/extensions_local_line.tmp
-		sed -i "s/|LINE|/$1/g"				$WORKDIR/extensions_local_line.tmp
+		sed -i "s/|LINE|/$line/g"			$WORKDIR/extensions_local_line.tmp
+		sed -i "s/|TIMEOUT|/$DIAL_TIMEOUT/g"		$WORKDIR/extensions_local_line.tmp
 
 		#cbbs settings                                                                                                                                                              
 		sed -i "s/|CBBS_KEY|/$(escape_sed_substitution $cbbs_key)/"	$WORKDIR/extensions_local_line.tmp
@@ -1278,41 +1348,56 @@ create_local_extension()
 		sed -i "s/|RETRYTIME|/$cbbs_retrytime/"				$WORKDIR/extensions_local_line.tmp
 		sed -i "s/|WAITTIME|/$cbbs_waittime/"				$WORKDIR/extensions_local_line.tmp
 		sed -i "s/|CONGESTIONTONE|/$congestiontone/"			$WORKDIR/extensions_local_line.tmp
+
+		mailbox_enabled=$(mailbox_check_enabled $1)
+
+		if [ "$mailbox_enabled" = "1" ] ; then
+			echo "Enabling Mailbox for BRCM line $1"
+			sed -i "s/|VOICEMAIL|/VoiceMail($extension,u)/g"	$WORKDIR/extensions_local_line.tmp
+		else
+			sed -i "s/|VOICEMAIL|/NoOp()/g"				$WORKDIR/extensions_local_line.tmp
+		fi
 	
 		cat $WORKDIR/extensions_local_line.tmp >>	$WORKDIR/extensions_local.tmp
 		rm -f 						$WORKDIR/extensions_local_line.tmp
 	fi
 }
 
-create_extensions_local()
+#
+# Create a local extension for a SIP User
+#
+configure_sip_user_extension()
 {
-	echo "Configuring local extensions"
-	local extension_all_ports
-	local test_audio_extension
-	local test_echo_extension
-	local all_lines="BRCM/0&BRCM/1&BRCM/2&BRCM/3&BRCM/4&BRCM/5&BRCM/6"
-	config_get extension_all_ports custom_dialplan all_ports_extension
-	config_get test_audio_extension custom_dialplan test_audio_extension
-	config_get test_echo_extension custom_dialplan test_echo_extension
-
-	if [ -n "$extension_all_ports" ] ; then
-		echo "exten => $extension_all_ports,1,Dial($all_lines)"		>> $WORKDIR/extensions_local.tmp
-		echo "exten => $extension_all_ports,n,Hangup()"			>> $WORKDIR/extensions_local.tmp
-	fi
-	if [ -n "$test_audio_extension" ] ; then
-		echo "exten => $test_audio_extension,1,Playback(tt-monkeys)"	>> $WORKDIR/extensions_local.tmp
-		echo "exten => $test_audio_extension,n,Hangup()"		>> $WORKDIR/extensions_local.tmp
-	fi
-	if [ -n "$test_echo_extension" ] ; then
-		echo "exten => $test_echo_extension,1,Echo()"			>> $WORKDIR/extensions_local.tmp
-		echo "exten => $test_echo_extension,n,Hangup()"			>> $WORKDIR/extensions_local.tmp
-	fi
-
-	#Add extensions for all brcm lines (up to 10)
+	local enabled
+	local user
 	local extension
-	for i in 0 1 2 3 4 5 6 7 8 9 ; do
-		create_local_extension $i
-	done
+	local mailbox_enabled
+
+	config_get enabled $1 enabled
+	config_get user $1 user
+	config_get extension $1 extension
+
+	if [ -z "$enabled" -o "$enabled" = "0" ] ; then
+		return
+	fi
+
+	if [ -z "$user" ] ; then
+		return
+	fi
+
+	if [ -z "$extension" ] ; then
+		return
+	fi
+
+	mailbox_enabled=$(mailbox_check_enabled $1)
+
+	echo "Configuring extension for SIP User $user"
+	echo "exten => $extension,1,Dial(SIP/$user,$DIAL_TIMEOUT)"				>> $WORKDIR/extensions_local.tmp
+	if [ "$mailbox_enabled" = "1" ] ; then
+		echo "Enabling Mailbox for SIP User $user"
+		echo "exten => $extension,n,VoiceMail($extension,u)"	>> $WORKDIR/extensions_local.tmp
+	fi
+	echo "exten => $extension,n,Hangup()"						>> $WORKDIR/extensions_local.tmp
 }
 
 configure_codecs()
@@ -1393,6 +1478,7 @@ configure_brcm_line()
 	local autodial
 	local autodial_timeout
 	local dialtone_timeout
+	local sip_provider_user
 	local sip_provider_enabled
 	local callwaiting
 
@@ -1413,8 +1499,9 @@ configure_brcm_line()
 	config_get callwaiting $1 callwaiting
 
 	#If line is configured with no sip_provider, or sip_provider is disabled, use local_extensions context
+	config_get sip_provider_user $sip_provider user
 	config_get sip_provider_enabled $sip_provider enabled
-	if [ "$sip_provider" == "-" -o -z "$sip_provider_enabled" -o "$sip_provider_enabled" == "0" ] ; then
+	if [ "$sip_provider" == "-" -o -z "$sip_provider_enabled" -o "$sip_provider_enabled" == "0" -o -z "$sip_provider_user" ] ; then
 		sip_provider="local_extensions"
 	fi
 
@@ -1449,8 +1536,8 @@ configure_brcm_line()
 	sed -i "s/|DIALTONE_EXTENSION_HINT|/$1/"		$WORKDIR/brcm_line.tmp
 	sed -i "s/|AUTODIAL|/$autodial/"			$WORKDIR/brcm_line.tmp
 	sed -i "s/|AUTODIAL_TIMEOUT|/$autodial_timeout/"	$WORKDIR/brcm_line.tmp
-	sed -i "s/|DTMFRELAY|/$dtmfmode/"			$WORKDIR/brcm_line.tmp
 	sed -i "s/|DIALTONE_TIMEOUT|/$dialtone_timeout/"	$WORKDIR/brcm_line.tmp
+	sed -i "s/|DTMFRELAY|/$dtmfmode/"			$WORKDIR/brcm_line.tmp
 	sed -i "s/|CALLWAITING|/$callwaiting/"			$WORKDIR/brcm_line.tmp
 
 
@@ -1754,8 +1841,6 @@ start() {
 	cp $TMPL_EXTENSIONS_INCOMING	$WORKDIR/extensions_incoming.tmp
 	cp $TMPL_EXTENSIONS_LOCAL	$WORKDIR/extensions_local.tmp
 	cp $TMPL_EXTENSIONS_DIALTONE	$WORKDIR/extensions_dialtone.tmp
-	cp $TMPL_EXTENSIONS_LOCAL_LINE	$WORKDIR/extensions_local_line.tmp
-	create_extensions_local
 	cp $TMPL_SIP			$WORKDIR/sip.tmp
 	cp $TMPL_RTP			$WORKDIR/rtp.tmp
 	cp $TMPL_STUN			$WORKDIR/res_stun_monitor.tmp
@@ -1800,6 +1885,7 @@ start() {
 	#####################
 	configure_brcm
 	config_foreach configure_brcm_line brcm_line
+	config_foreach configure_brcm_line_extension brcm_line
 	config_foreach create_extensions_dialtone brcm_line
 	configure_codecs
 
