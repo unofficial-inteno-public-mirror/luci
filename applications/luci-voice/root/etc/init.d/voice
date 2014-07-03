@@ -242,7 +242,9 @@ format_sip_contact()
 	local call_lines
 	config_get call_lines $1 call_lines
 	for i in $call_lines ; do
-		lines=$lines"$i"
+		if [ ${i:0:5} == "BRCM/" ] ; then
+			lines=$lines"${i:5}"
+		fi
 	done
 	if [ -n "$lines" ]; then
 		lines="_$lines"
@@ -600,7 +602,7 @@ configure_sip_provider()
 	if [ -z "$autoframing" ] ; then
 		autoframing=0
 	fi
-	sed -i "s/|AUTOFRAMING|/$autoframing/"			$WORKDIR/sip_peer.tmp
+	sed -i "s/|AUTOFRAMING|/$autoframing/"			$WORKDIR/sip_provider.tmp
 
 	# Set registered extension so that incoming calls match the correct peer                     
 	sed -i "s/|CONTACT_USER|/$(format_sip_contact $1 $user)/g"      $WORKDIR/sip_provider.tmp 
@@ -1096,6 +1098,7 @@ configure_extensions_provider()
 
 	# check that SIP Provider has a configured user
 	config_get user $1 user
+	user=$(format_sip_contact $1 $user)
 	if [ -z "$user" ] ; then
 		return
 	fi
@@ -1559,13 +1562,14 @@ configure_brcm_line()
 #
 configure_voicemail()
 {
-	echo "Configuring Voice Mail"
 	local extension
 
 	config_get extension voicemail extension
-
-	echo "exten => $extension,1,Answer(500)"				>> $WORKDIR/extensions_local.tmp
-	echo "exten => $extension,n,VoiceMailMain(@default)"	>> $WORKDIR/extensions_local.tmp
+	if [ -n "$extensions" ] ; then
+		echo "Configuring Voice Mail"
+		echo "exten => $extension,1,Answer(500)"		>> $WORKDIR/extensions_local.tmp
+		echo "exten => $extension,n,VoiceMailMain(@default)"	>> $WORKDIR/extensions_local.tmp
+	fi
 }
 
 configure_language()
