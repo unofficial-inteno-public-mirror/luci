@@ -1,6 +1,6 @@
 config 'brcm_line' 'brcm0'
 	option 'extension' '0000'
-	option 'sip_account' 'sip0'
+	option 'sip_provider' 'sip0'
 	option 'noise' '0'
 	option 'vad' '0'
 	option 'txgain' 0
@@ -10,7 +10,7 @@ config 'brcm_line' 'brcm0'
 
 config 'brcm_line' 'brcm1'
 	option 'extension' '1111'
-	option 'sip_account' 'sip0'
+	option 'sip_provider' 'sip0'
 	option 'noise' '0'
 	option 'vad' '0'
 	option 'txgain' 0
@@ -20,7 +20,7 @@ config 'brcm_line' 'brcm1'
 
 config 'brcm_line' 'brcm2'
 	option 'extension' '2222'
-	option 'sip_account' 'sip0'
+	option 'sip_provider' 'sip0'
 	option 'noise' '0'
 	option 'vad' '0'
 	option 'txgain' 0
@@ -30,7 +30,7 @@ config 'brcm_line' 'brcm2'
 
 config 'brcm_line' 'brcm3'
 	option 'extension' '3333'
-	option 'sip_account' 'sip0'
+	option 'sip_provider' 'sip0'
 	option 'noise' '0'
 	option 'vad' '0'
 	option 'txgain' 0
@@ -40,7 +40,7 @@ config 'brcm_line' 'brcm3'
 
 config 'brcm_line' 'brcm4'
 	option 'extension' '4444'
-	option 'sip_account' 'sip0'
+	option 'sip_provider' 'sip0'
 	option 'noise' '0'
 	option 'vad' '0'
 	option 'txgain' 0
@@ -50,7 +50,7 @@ config 'brcm_line' 'brcm4'
 
 config 'brcm_line' 'brcm5'
 	option 'extension' '5555'
-	option 'sip_account' 'sip0'
+	option 'sip_provider' 'sip0'
 	option 'noise' '0'
 	option 'vad' '0'
 	option 'txgain' 0
@@ -60,7 +60,7 @@ config 'brcm_line' 'brcm5'
 
 config 'brcm_line' 'brcm6'
 	option 'extension' '6666'
-	option 'sip_account' 'sip0'
+	option 'sip_provider' 'sip0'
 	option 'noise' '0'
 	option 'vad' '0'
 	option 'txgain' 0
@@ -70,7 +70,7 @@ config 'brcm_line' 'brcm6'
 
 config 'brcm_line' 'brcm7'
 	option 'extension' '7777'
-	option 'sip_account' 'sip0'
+	option 'sip_provider' 'sip0'
 	option 'noise' '0'
 	option 'vad' '0'
 	option 'txgain' 0
@@ -121,7 +121,7 @@ config 'features' 'features'
 
 config 'sip_service_provider' 'sip0'
 	option 'name' 'Account 1'
-	option 'enabled' '1'
+	option 'enabled' '0'
 	option 'codec0' 'alaw'
 	option 'codec1' 'ulaw'
 	option 'codec2' 'g729'

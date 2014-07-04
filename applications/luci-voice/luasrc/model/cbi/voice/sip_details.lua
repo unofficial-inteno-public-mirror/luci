@@ -73,10 +73,8 @@ e.parse = parse_enabled
 
 target = s:option(ListValue, "target", "Incoming calls to")
 target:value('direct', 'Direct')
-if vc.has_package("luci-app-voice-queues") then
+if vc.has_package("luci-app-voice-pbx") then
 	target:value('queue', 'Queue')
-end
-if vc.has_package("luci-app-voice-ivr") then
 	target:value('ivr', 'IVR')
 end
 target.default = 'direct'
@@ -102,7 +100,7 @@ vc.foreach_user({'sip'},
         end
 )
 
-if vc.has_package("luci-app-voice-queues") then
+if vc.has_package("luci-app-voice-pbx") then
 	queue = s:option(ListValue, "call_queue", "&nbsp;")
 	queue:depends('target', 'queue')
 	m.uci:foreach("voice", "queue",
@@ -110,9 +108,7 @@ if vc.has_package("luci-app-voice-queues") then
 			queue:value(v['.name'], v['name'])
 		end
 	)
-end
 
-if vc.has_package("luci-app-voice-ivr") then
 	ivr = s:option(ListValue, "call_ivr", "&nbsp;")
 	ivr:depends('target', 'ivr')
 	m.uci:foreach("voice", "ivr",
@@ -120,9 +116,7 @@ if vc.has_package("luci-app-voice-ivr") then
 			ivr:value(v['.name'], v['name'])
 		end
 	)
-end
 
-if vc.has_package("luci-app-voice-call-filters") then
 	call_filter = s:option(ListValue, "call_filter", "Call filter")
 	call_filter:value("-", "-")
 	m.uci:foreach("voice", "call_filter",

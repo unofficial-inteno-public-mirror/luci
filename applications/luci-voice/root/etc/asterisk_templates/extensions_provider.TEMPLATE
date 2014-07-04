@@ -4,8 +4,8 @@
 [|PROVIDER|]
 ; Main context, handles all normal calls for this Provider
 include => local_extensions
-include => |PROVIDER|-outgoing
 include => |PROVIDER|-callforwarding
+include => |PROVIDER|-outgoing
 
 [|PROVIDER|-transfer]
 ; Context used for call transfer for this Provider
