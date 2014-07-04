@@ -16,3 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with luci-pbx.  If not, see <http://www.gnu.org/licenses/>.
 ]]--
+m = SimpleForm("voice")
+m.reset = false
+m.submit = false
+return m
