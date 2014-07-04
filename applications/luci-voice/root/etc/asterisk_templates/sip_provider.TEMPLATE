@@ -16,6 +16,7 @@ transport	= |TRANSPORT|
 outboundproxy=|OUTBOUNDPROXY||OUTBOUNDPROXYPORT|
 registered_extension = |CONTACT_USER|
 autoframing	= |AUTOFRAMING|
+encryption	= |ENCRYPTION|
 disallow	= all
 |ALLOW|
 

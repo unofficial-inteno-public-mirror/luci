@@ -270,6 +270,7 @@ configure_sip()
 	local bindport
 	local rtpstart
 	local rtpend
+	local rtcpinterval
 	local dtmfmode
 	local blindxfer
 	local defaultexpiry
@@ -290,6 +291,7 @@ configure_sip()
 	config_get bindport $1 bindport
 	config_get rtpstart $1 rtpstart
 	config_get rtpend $1 rtpend
+	config_get rtcpinterval $1 rtcpinterval
 	config_get dtmfmode $1 dtmfmode
 	config_get blindxfer $1 blindxfer
 	config_get defaultexpiry $1 defaultexpiry
@@ -426,6 +428,13 @@ configure_sip()
 	sed -i "s/|RTPSTART|/$rtpstart/"		$WORKDIR/rtp.tmp
 	sed -i "s/|RTPEND|/$rtpend/"			$WORKDIR/rtp.tmp
 
+	# Set or remove rtcpinterval
+	if [ -z "$rtcpinterval" ] ; then
+		sed -i "/|RTCPINTERVAL|/d"		$WORKDIR/rtp.tmp
+	else
+		sed -i "s/|RTCPINTERVAL|/$rtcpinterval/g"		$WORKDIR/rtp.tmp
+	fi
+
 	# Set blind transfer key
 	cp $TMPL_FEATURES				$WORKDIR/features.tmp
 	sed -i "s/|BLINDXFER|/$(escape_sed_substitution $blindxfer)/"		$WORKDIR/features.tmp
@@ -513,6 +522,7 @@ configure_sip_provider()
 	local secret
 	local is_fax
 	local autoframing
+	local encryption
 
 	config_get enabled $1 enabled
 	config_get domain $1 domain
@@ -526,7 +536,8 @@ configure_sip_provider()
 	config_get is_fax $1 is_fax
 	config_get autoframing $1 autoframing
 	config_get transport $1 transport
-	
+	config_get encryption $1 encryption
+
 	if [ -z "$transport" ] ; then 
 		transport="udp" 
 	fi
@@ -589,6 +600,13 @@ configure_sip_provider()
 		sed -i "s/|OUTBOUNDPROXYPORT|//g"	$WORKDIR/sip_provider.tmp
 	else
 		sed -i "s/|OUTBOUNDPROXYPORT|/:$outboundproxyport/g"	$WORKDIR/sip_provider.tmp
+	fi
+
+	# Set or remove encryption
+	if [ -z "$encryption" ] ; then
+		sed -i "/|ENCRYPTION|/d"		$WORKDIR/sip_provider.tmp
+	else
+		sed -i "s/|ENCRYPTION|/$encryption/g"		$WORKDIR/sip_provider.tmp
 	fi
 
 	# Force ulaw/alaw if fax, otherwise read selected codecs
@@ -1178,11 +1196,9 @@ configure_extensions_provider()
 	sed -i "s/|WAITTIME|/$cbbs_waittime/"		$WORKDIR/extensions_provider.tmp
 	sed -i "s/|CONGESTIONTONE|/$congestiontone/"	$WORKDIR/extensions_provider.tmp
 
-	# Confifure call forwarding if enabled
+	# Configure call forwarding if enabled
 	if [ -n "$callforward_enabled" -a "$callforward_enabled" = "1" ] ; then
-		echo "exten => $cfim_on,1,	Macro(create_cfim,$1,\${REPLACE(EXTEN:$cfim_on_len,*#-)})" >>	$WORKDIR/extensions_provider.tmp
 		echo "exten => $cfim_off,1,	Macro(delete_cfim,$1)" >>					$WORKDIR/extensions_provider.tmp
-		echo "exten => $cfbs_on,1,	Macro(create_cfbs,$1,\${REPLACE(EXTEN:$cfbs_on_len,*#-)})" >>	$WORKDIR/extensions_provider.tmp
 		echo "exten => $cfbs_off,1,	Macro(delete_cfbs,$1)" >>					$WORKDIR/extensions_provider.tmp
 	fi
 
@@ -1202,9 +1218,15 @@ configure_extensions_provider()
 
 	# create direct dial extensions, if any are defined
 	config_get direct_dial $1 direct_dial
-	if [ -n "$direct_dial" ] ; then
+	if [ -n "$direct_dial" -o \( -n "$callforward_enabled" -a "$callforward_enabled" = "1" \) ] ; then
 		cp $TMPL_EXTENSIONS_DIRECT					$WORKDIR/extensions_direct.tmp
 		sed -i "s/|PROVIDER|/$1/"					$WORKDIR/extensions_direct.tmp
+
+		if [ -n "$callforward_enabled" -a "$callforward_enabled" = "1" ] ; then
+			echo "exten => _${cfim_on},1,	Macro(create_cfim,$1)" >>	$WORKDIR/extensions_direct.tmp
+			echo "exten => _${cfbs_on},1,	Macro(create_cfbs,$1)" >>	$WORKDIR/extensions_direct.tmp
+		fi
+
 		for i in $direct_dial ; do
 			echo "Adding direct dial extension $i for $1"
 			echo "exten => $i,1,Goto($1-outgoing,\${EXTEN},1)" >>	$WORKDIR/extensions_direct.tmp

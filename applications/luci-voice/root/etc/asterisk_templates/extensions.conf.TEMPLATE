@@ -14,7 +14,7 @@ exten => _X!,3,Hangup()
 exten => _[+0-9a-zA-Z].,1,	|CUSTOM_INCOMING|
 
 ; Store caller id, and write to call log
-exten => _[+0-9a-zA-Z].,n,	Set(DB(LASTCALLER/${ARG1})=${CALLERID(NUM)})
+exten => _[+0-9a-zA-Z].,n,	Set(DB(LASTCALLER/${CHANNEL(peername)})=${CALLERID(NUM)})
 exten => _[+0-9a-zA-Z].,n,	Set(result=${SHELL(/usr/lib/asterisk/log_call.sh Incoming ${CALLERID(NUM)})})
 
 ; Handle call - Goto(call_line,${EXTEN},1) or Macro(callhandler,${CHANNEL(peername)})
