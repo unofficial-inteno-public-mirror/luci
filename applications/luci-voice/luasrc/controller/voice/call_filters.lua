@@ -28,7 +28,7 @@ function index()
 		if user ~= "user"  then
 			entry({user, "services", "voice", "call_filters"},
 				arcombine(cbi("voice/call_filters"), cbi("voice/call_filter_details")),
-				_("Call Filters"), 80).leaf = true
+				_("Call Filters"), 23).leaf = true
 		end
 	end
 end

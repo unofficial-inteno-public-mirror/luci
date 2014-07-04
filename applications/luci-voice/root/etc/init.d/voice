@@ -176,7 +176,7 @@ read_codecs()
 	local codec
 
 	for i in 0 1 2 3 4 5; do
-		config_get codec "$1" "codec$i"
+		config_get codec $1 "codec$i"
 		if [ "$codec" == "-" ] || [ -z "$codec" ]; then
 			break
 		fi
@@ -1257,7 +1257,11 @@ configure_extensions_provider()
 	if ! [ -z $call_lines ] ; then
 		# read a list of lines that should be dialled on incoming calls
 		incoming_lines=$(read_lines $1)
-		echo "exten => $user,n,Dial($incoming_lines,$DIAL_TIMEOUT)" >>		$tmp
+		echo "exten => $user,n,Dial($incoming_lines,$DIAL_TIMEOUT)" >>				$tmp
+		echo "exten => $user,n,Goto(s-\${DIALSTATUS},1)" >>					$tmp
+		echo "exten => $user,n(busy),Macro(callhandler-noanswer,\${CHANNEL(peername)})" >>	$tmp
+		echo "exten => s-BUSY,1,	Goto($user,busy)" >>					$tmp
+		echo "exten => s-NOANSWER,1,	Goto($user,busy)" >>					$tmp
 	fi
 	if ! [ -z $call_queue ] ; then
 		# Get opening hours profile
@@ -1337,9 +1341,11 @@ configure_brcm_line_extension()
 	local cbbs_maxretry
 	local cbbs_retrytime
 	local cbbs_waittime
+	local sip_provider
 	
 	line=${1:4}
 	config_get extension $1 extension
+	config_get sip_provider $1 sip_provider
 
 	if [ -z "$line" ] ; then
 		return
@@ -1350,16 +1356,15 @@ configure_brcm_line_extension()
 
 		config_get cbbs_enabled "features" cbbs_enabled
 		# load cbbs settings if enabled                                                                                                                                             
-		if [ -z "$cbbs_enabled" -o "$cbbs_enabled" = "0" ] ; then
-			cbbs_key=""
-			cbbs_maxretry="0"
-			cbbs_retrytime="0"
-			cbbs_waittime="0"
-		else
-			config_get cbbs_key BRCM cbbs_key
-			config_get cbbs_maxretry BRCM cbbs_maxretry
-			config_get cbbs_retrytime BRCM cbbs_retrytime
-			config_get cbbs_waittime BRCM cbbs_waittime
+		cbbs_key=""
+		cbbs_maxretry="0"
+		cbbs_retrytime="0"
+		cbbs_waittime="0"
+		if [ -n "$cbbs_enabled" -a "$cbbs_enabled" = "1" -a -n "$sip_provider" ] ; then
+			config_get cbbs_key $sip_provider cbbs_key
+			config_get cbbs_maxretry $sip_provider cbbs_maxretry
+			config_get cbbs_retrytime $sip_provider cbbs_retrytime
+			config_get cbbs_waittime $sip_provider cbbs_waittime
 		fi
 	
 		cp $TMPL_EXTENSIONS_LOCAL_LINE			$WORKDIR/extensions_local_line.tmp
@@ -1446,7 +1451,6 @@ configure_brcm()
 	local jbimpl
 	local dtmfcompatibility
 	local dialoutmsec
-	local cw_enable
 
 	config_get country BRCM country
 	config_get jbenable BRCM jbenable
@@ -1455,14 +1459,9 @@ configure_brcm()
 	config_get jbimpl BRCM jbimpl
 	config_get dtmfmode SIP dtmfmode
 	config_get dialoutmsec BRCM dialoutmsec
-	config_get cw_enable BRCM cw_enable
 
 	if [ -z "$dialoutmsec" ] ; then
 		dialoutmsec=4000
-	fi
-
-	if [ -z "$cw_enable" ] ; then
-		cw_enable=yes
 	fi
 
 	sed -i "s/|COUNTRY|/$country/"				$WORKDIR/brcm.tmp
@@ -1478,7 +1477,6 @@ configure_brcm()
 		dtmfcompatibility="0"
 	fi
 	sed -i "s/|DTMFCOMPATIBILITY|/$dtmfcompatibility/"      $WORKDIR/brcm.tmp
-	sed -i "s/|CW_ENABLE|/$cw_enable/"			$WORKDIR/brcm.tmp
 }
 
 #
@@ -1557,7 +1555,6 @@ configure_brcm_line()
 	sed -i "s/|JITTERTARGET|/$jitter_target/"		$WORKDIR/brcm_line.tmp
 	sed -i "s/|TXGAIN|/$txgain/"				$WORKDIR/brcm_line.tmp
 	sed -i "s/|RXGAIN|/$rxgain/"				$WORKDIR/brcm_line.tmp
-	sed -i "s/|ALLOW|/$codecs/"				$WORKDIR/brcm_line.tmp
 	sed -i "s/|DIALTONE_EXTENSION_HINT|/$1/"		$WORKDIR/brcm_line.tmp
 	sed -i "s/|AUTODIAL|/$autodial/"			$WORKDIR/brcm_line.tmp
 	sed -i "s/|AUTODIAL_TIMEOUT|/$autodial_timeout/"	$WORKDIR/brcm_line.tmp

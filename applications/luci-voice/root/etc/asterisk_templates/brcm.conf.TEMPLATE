@@ -37,9 +37,6 @@ jbmaxsize = |JBMAXSIZE|
 ; This is a global setting.
 jbimpl = |JBIMPL|
 
-; DTMF compatibility mode forces the use of inband tones and lets them pass through to peer channel without letting Asterisk touch them
-dtmfcompatibility=|DTMFCOMPATIBILITY|
-
 ; Context used for outbound calls
 context=default
 
@@ -97,7 +94,4 @@ hfmaxdelay=500
 ;jitter_min=0
 ;jitter_max=0
 ;jitter_target=0
-
-; Call waiting enabled yes/no
-cw_enable=|CW_ENABLE|
 

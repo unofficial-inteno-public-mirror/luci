@@ -25,7 +25,7 @@ exten => _[+0-9a-zA-Z].,n,	Hangup()
 ; Receive calls after Callback - play something to caller
 ; Don't run callhandler macro, we have already done that once for this call
 exten => s,1,           Playback(queue-thankyou)
-exten => s,n,           Dial(${BRCMLINE},,tF(hangup,h,2))
+exten => s,n,           Dial(${BRCMLINE},,F(hangup,h,2))
 exten => s,n,		Hangup()
 
 [hangup]
