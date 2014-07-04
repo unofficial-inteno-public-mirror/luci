@@ -137,8 +137,9 @@ exten => s,n,			Hangup()
 ; Load Call Forwarding settings
 exten => s,1,			Set(linecfbs=${DB(CFBS/${ARG1})})
 exten => s,n,			GotoIf(${linecfbs}?call_cfbs)
-exten => s,n,			Hangup()
+exten => s,n,			Goto(done)
 
 ;Call CFBS
 exten => s,n(call_cfbs),	Dial(SIP/${linecfbs}@${ARG1})
-exten => s,n,			Hangup()
+
+exten => s,n(done),		NoOp()

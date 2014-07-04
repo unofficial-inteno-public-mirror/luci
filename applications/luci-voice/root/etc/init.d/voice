@@ -707,7 +707,11 @@ configure_mailbox()
 	else
 		sed -i "s/|ENABLED|//g"			$WORKDIR/mailbox.tmp
 	fi
-	sed -i "s/|EXTENSION|/$extension/g"	$WORKDIR/mailbox.tmp
+	if [ "$cfgtype" == "sip_service_provider" ] ; then
+		sed -i "s/|EXTENSION|/$(format_sip_contact $user $extension)/g"	$WORKDIR/mailbox.tmp
+	else
+		sed -i "s/|EXTENSION|/$extension/g"	$WORKDIR/mailbox.tmp
+	fi
 	sed -i "s/|PIN|/$pin/g"				$WORKDIR/mailbox.tmp
 
 	cat $WORKDIR/mailbox.tmp >> $WORKDIR/voicemail.tmp
@@ -1257,11 +1261,11 @@ configure_extensions_provider()
 	if ! [ -z $call_lines ] ; then
 		# read a list of lines that should be dialled on incoming calls
 		incoming_lines=$(read_lines $1)
-		echo "exten => $user,n,Dial($incoming_lines,$DIAL_TIMEOUT)" >>				$tmp
-		echo "exten => $user,n,Goto(s-\${DIALSTATUS},1)" >>					$tmp
-		echo "exten => $user,n(busy),Macro(callhandler-noanswer,\${CHANNEL(peername)})" >>	$tmp
-		echo "exten => s-BUSY,1,	Goto($user,busy)" >>					$tmp
-		echo "exten => s-NOANSWER,1,	Goto($user,busy)" >>					$tmp
+		echo "exten => $user,n,Dial($incoming_lines,$DIAL_TIMEOUT)" >>					$tmp
+		echo "exten => $user,n,GotoIf($[\"\${DIALSTATUS}\" = \"s-BUSY\"]?noanswer)" >>			$tmp
+		echo "exten => $user,n,GotoIf($[\"\${DIALSTATUS}\" = \"s-NOANSWER\"]?noanswer:success)" >>	$tmp
+		echo "exten => $user,n(noanswer),Macro(callhandler-noanswer,\${CHANNEL(peername)})" >>		$tmp
+		echo "exten => $user,n(success),NoOp()" >>							$tmp
 	fi
 	if ! [ -z $call_queue ] ; then
 		# Get opening hours profile
