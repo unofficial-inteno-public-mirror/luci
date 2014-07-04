@@ -27,9 +27,9 @@ exten => s,n,		Hangup()
 [macro-create_cfbs]
 ;
 ; ${ARG1} - Associated SIP peer
-; ${ARG2} - ${REPLACE(EXTEN:4,*#-)}
 ;
-exten => s,1,		Set(DB(CFBS/${ARG1})=${ARG2})
+exten => s,1,		Read(input,,,,,300)
+exten => s,n,		Set(DB(CFBS/${ARG1})=${input})
 exten => s,n,		Playback(beep)
 exten => s,n,		Hangup()
 
