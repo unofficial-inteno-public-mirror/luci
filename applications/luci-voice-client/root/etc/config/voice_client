@@ -121,7 +121,7 @@ config 'features' 'features'
 
 config 'sip_service_provider' 'sip0'
 	option 'name' 'Account 1'
-	option 'enabled' '1'
+	option 'enabled' '0'
 	option 'codec0' 'alaw'
 	option 'codec1' 'ulaw'
 	option 'codec2' 'g729'
