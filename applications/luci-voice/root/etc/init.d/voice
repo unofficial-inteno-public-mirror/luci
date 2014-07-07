@@ -684,6 +684,10 @@ configure_mailbox()
 	config_get enabled $1 enabled
 	config_get user $1 user
 
+	if [ -z $user -o "x$user" == "x-" ] ; then
+		return
+	fi
+
 	local cfgtype	
 	config_get cfgtype "$user" TYPE
 	if [ "$cfgtype" == "sip_service_provider" ] ; then
