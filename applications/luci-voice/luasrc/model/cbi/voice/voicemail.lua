@@ -73,6 +73,7 @@ e = s1:option(Flag, "enabled", "Mailbox Enabled")
 e.default = 0
 
 -- Settings -------------------------------------------------------------------
+vc.add_section("voicemail")
 voicemail = m:section(TypedSection, "voicemail", "Settings")
 voicemail.anonymous = true
 function voicemail.filter(self, section)

@@ -174,5 +174,14 @@ function common.has_package(name)
 	return false
 end
 
+function common.add_section(name)
+	x = uci.cursor()
+	s = x:get("voice", name)
+	if not s then
+		x:set("voice", name, name)
+		x:commit("voice")
+	end
+end
+
 return common
 
