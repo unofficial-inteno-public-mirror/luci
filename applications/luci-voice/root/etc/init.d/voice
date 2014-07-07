@@ -962,7 +962,7 @@ configure_call_filter_helper()
 	fi
 
 	echo "[macro-$1-$direction-call-filter]" >>		$WORKDIR/call_filter_macros.tmp
-	echo "exten => s,1,Set(CALL_BLOCKED=0)" >>		$WORKDIR/call_filter_macros.tmp
+	echo "exten => s,1,NoOp()" >>				$WORKDIR/call_filter_macros.tmp
 
 	config_get filter_mode $1 $direction
 	if [ "x$filter_mode" == "xblacklist" ] ; then
@@ -1013,8 +1013,36 @@ configure_call_filter_helper()
 	if [ "x$filter_mode" == "xblacklist" ] ; then
 		echo "exten => s,n,Goto(pass)" >>		$WORKDIR/call_filter_macros.tmp
 	fi
-	echo "exten => s,n(block),Set(CALL_BLOCKED=1)" >>	$WORKDIR/call_filter_macros.tmp
+	if [ "x$direction" == "xincoming" ] ; then
+		tmp="exten => s,n(block),Macro(callhandler-incoming-blocked,\${CALLERID(num)})"
+		echo $tmp >>					$WORKDIR/call_filter_macros.tmp
+	else
+		tmp="exten => s,n(block),Macro(callhandler-outgoing-blocked,\${DIAL_EXTEN})"
+		echo $tmp >>					$WORKDIR/call_filter_macros.tmp
+	fi
 	echo "exten => s,n(pass),NoOp()" >>			$WORKDIR/call_filter_macros.tmp
+}
+
+get_call_filter()
+{
+	provider=$1
+	direction=$2
+	macro="NoOp()"
+	
+	if ! [ "x$direction" != "xincoming" -o "x$direction" != "xoutgoing" ] ; then
+                echo $macro
+        fi
+
+	local call_filter enabled
+	config_get call_filter $provider call_filter
+	if ! [ -z "$call_filter" ] ; then
+		# check if call filter is enabled
+		config_get enabled $call_filter enabled
+		if [ "x$enabled" = "x1" ] ; then
+			macro="Macro($call_filter-$direction-call-filter)"
+		fi	
+	fi
+	echo $macro
 }
 
 #
@@ -1141,16 +1169,7 @@ configure_extensions_provider()
 	fi
 
 	# check call filters for outgoing calls
-	local call_filter call_filter_macro call_filter_enabled
-	call_filter_macro="Set(CALL_BLOCKED=0)"
-	config_get call_filter $1 call_filter
-	if ! [ -z "$call_filter" ] ; then
-		# check if call filter is enabled
-		config_get call_filter_enabled $call_filter enabled
-		if [ "x$call_filter_enabled" = "x1" ] ; then
-			call_filter_macro="Macro($call_filter-outgoing-call-filter)"
-		fi	
-	fi
+	call_filter_macro=$(get_call_filter $1 outgoing)
 		
 	#Set congestion tone (default to congestion)
 	config_get congestiontone "SIP" congestiontone
@@ -1248,14 +1267,8 @@ configure_extensions_provider()
 	tmp=$(mktemp)
 
 	# check call filters for incoming calls
-	call_filter_macro="Set(CALL_BLOCKED=0)"
-	# check if call filter is enabled
-	if [ "x$call_filter_enabled" = "x1" ] ; then
-		call_filter_macro="Macro($call_filter-incoming-call-filter)"
-	fi	
-
+	call_filter_macro=$(get_call_filter $1 incoming)
 	echo "exten => $user,1,$call_filter_macro" >>						$tmp
-	echo "exten => $user,n,GotoIf($[\"\${CALL_BLOCKED}\"=\"1\"]?blocked)" >>		$tmp
 
 	local call_lines call_ivr call_queue oh_profile extension
 	echo "exten => $user,n,Set(__TRANSFER_CONTEXT=transfer_\${CHANNEL(peername)})" >>	$tmp
@@ -1329,10 +1342,7 @@ configure_extensions_provider()
 	if [ "$has_voicemail" = "1" ] ; then
 		echo "exten => $user,n,VoiceMail($user,u)" >>					$tmp
 	fi
-	echo "exten => $user,n,Goto(end)" >>							$tmp
-	echo "exten => $user,n(blocked),Set(result=\${SHELL(/usr/lib/asterisk/log_call.sh Incoming \${CALLERID(num)} Blocked)})" >> $tmp
-	echo "exten => $user,n,Playback(tt-monkeys)" >>						$tmp
-	echo "exten => $user,n(end),Hangup()" >>						$tmp
+	echo "exten => $user,n,Hangup()" >>							$tmp
 	cat $tmp >>										$WORKDIR/extensions_incoming.tmp
 	rm -f											$tmp
 }
