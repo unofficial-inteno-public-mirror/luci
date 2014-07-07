@@ -35,6 +35,7 @@ s:option(DummyValue, "format", "Format")
 s.anonymous = true
 s.addremove = false
 
+vc.add_section("custom_sounds")
 s = m:section(TypedSection, "custom_sounds", "Upload Custom Sound", "Upload custom sound-pack to be used for IVRs")
 s.anonymous = true
 s.addremove = false
@@ -47,6 +48,7 @@ end
 
 upload = s:option(FileUpload, "sound_pack", "Sound", "The files must be contained in a single directory called custom and compressed as <strong>tar.gz</strong>")
 
+vc.add_section("language")
 s = m:section(TypedSection, "language", "Language", "Upload sound files to be used for various voice services")
 s.anonymous = true
 s.addremove = false
