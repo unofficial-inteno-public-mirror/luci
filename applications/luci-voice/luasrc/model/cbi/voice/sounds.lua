@@ -38,11 +38,25 @@ s.addremove = false
 s = m:section(TypedSection, "custom_sounds", "Upload Custom Sound", "Upload custom sound-pack to be used for IVRs")
 s.anonymous = true
 s.addremove = false
+function s.filter(self, section)
+	if section ~= "custom_sounds" then
+		return nil
+	end
+	return section
+end
+
 upload = s:option(FileUpload, "sound_pack", "Sound", "The files must be contained in a single directory called custom and compressed as <strong>tar.gz</strong>")
 
 s = m:section(TypedSection, "language", "Language", "Upload sound files to be used for various voice services")
 s.anonymous = true
 s.addremove = false
+function s.filter(self, section)
+	if section ~= "language" then
+		return nil
+	end
+	return section
+end
+
 upload = s:option(FileUpload, 'voice_pack', 'Voice-pack', "The voice-pack must contain a single directory named <strong>sounds</strong> and compressed as <strong>tar.gz</strong>")
 
 return m

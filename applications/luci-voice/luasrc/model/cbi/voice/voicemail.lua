@@ -75,6 +75,12 @@ e.default = 0
 -- Settings -------------------------------------------------------------------
 voicemail = m:section(TypedSection, "voicemail", "Settings")
 voicemail.anonymous = true
+function voicemail.filter(self, section)
+	if section ~= "voicemail" then
+		return nil
+	end
+	return section
+end
 
 extension = voicemail:option(Value, "extension", "Voice mail extension")
 extension.default = "6500"
