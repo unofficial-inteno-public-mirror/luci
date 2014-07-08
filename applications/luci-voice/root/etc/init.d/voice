@@ -753,21 +753,30 @@ configure_ivr()
 	local enabled
 	local extension
 	local sound_file
+	local opening_hours_profile
 
 	config_get name $1 name
 	config_get enabled $1 enabled
 	config_get extension $1 extension
 	config_get sound_file $1 sound_file
+	config_get opening_hours_profile $1 opening_hours_profile
 
 	if [ -z "$enabled" -o "$enabled" = "0" ] ; then
 		return
 	fi
+
+	opening_hours_profile_macro="NoOp()"
+	if [ -n $opening_hours_profile -a "x$opening_hours_profile" != "x-" ] ; then
+		opening_hours_profile_macro="Macro(check-$opening_hours_profile)"
+	fi
 	
 	echo "Configuring IVR $name"
-	echo "[$1]" >> 										$WORKDIR/ivrs.tmp
-	echo "exten => $extension,1,Answer()" >>						$WORKDIR/extensions_local.tmp
-	echo "exten => $extension,n,Goto($1,s,1)" >>						$WORKDIR/extensions_local.tmp
+	echo "[macro-$1]" >> 				$WORKDIR/macros.tmp
 
+	echo "exten => $extension,1,Macro($1)" >>	$WORKDIR/extensions_local.tmp
+	echo "exten => $extension,n,Hangup()" >>	$WORKDIR/extensions_local.tmp
+
+	tmp=$(mktemp)
 	# Find all tone selections belonging to the IVR being configured
 	local section cfgtype
 	num_selections=0
@@ -792,26 +801,31 @@ configure_ivr()
 				echo "User $ts_user has no extension"
 				continue
 			fi
-			echo "exten => $ts_number,1,Goto(local_extensions,$ts_extension,1)" >>	$WORKDIR/ivrs.tmp
+			echo "exten => s,n,GotoIf($[\"\${digit}\"=\"$ts_number\"]?local_extensions,$ts_extension,1)" >> $tmp
 			num_selections=$((num_selection+1))
 		fi
 	done
 
-	echo "exten => s,1,NoOp()" >>					$WORKDIR/ivrs.tmp
+	echo "exten => s,1,Set(OPEN=1)" >>					$WORKDIR/macros.tmp
+	echo "exten => s,n,$opening_hours_profile_macro" >>			$WORKDIR/macros.tmp
+	echo "exten => s,n,GotoIf($[\"\${OPEN}\"=\"0\"]?done)" >>		$WORKDIR/macros.tmp
+	echo "exten => s,n,Answer()" >>						$WORKDIR/macros.tmp
 	if [ $num_selections -eq 0 ] ; then
-		if ! [ -z $sound_file -o "x$sound_file" == "x-" ] ; then
-			echo "exten => s,n,Playback($sound_file)" >>	$WORKDIR/ivrs.tmp
+		if ! [ -z $sound_file -o "x$sound_file" == "x-" ] ; then	
+			echo "exten => s,n(intro),Playback($sound_file)" >>	$WORKDIR/macros.tmp
 		fi
-		echo "exten => s,n,Goto(hangup,h,2)" >>			$WORKDIR/ivrs.tmp
+		echo "exten => s,n,Goto(hangup,h,2)" >>				$WORKDIR/macros.tmp
 	else
-		if ! [ -z $sound_file -o "x$sound_file" == "x-" ] ; then
-			echo "exten => s,n,Background($sound_file)" >>	$WORKDIR/ivrs.tmp
+		if ! [ -z $sound_file -o "x$sound_file" == "x-" ] ; then	
+			echo "exten => s,n(intro),Background($sound_file)" >>	$WORKDIR/macros.tmp
 		fi
-		echo "exten => s,n,WaitExten(10)" >>			$WORKDIR/ivrs.tmp
-		echo "exten => i,1,Goto($1,s,1)" >>			$WORKDIR/ivrs.tmp
-		echo "exten => t,1,Goto($1,s,1)" >>			$WORKDIR/ivrs.tmp
+		echo "exten => s,n,Read(digit,,1,,,10)" >>			$WORKDIR/macros.tmp
+		cat $tmp >>							$WORKDIR/macros.tmp
+		echo "exten => s,n,Goto(intro)" >>				$WORKDIR/macros.tmp
 	fi
-	echo "" >>							$WORKDIR/ivrs.tmp
+	echo "exten => s,n(done),MacroExit()" >>				$WORKDIR/macros.tmp
+	echo "" >>								$WORKDIR/macros.tmp
+	rm -f $tmp
 }
 
 #
@@ -833,9 +847,8 @@ configure_queue()
 
 	echo "Configuring Call Queue $name"
 
-	echo "exten => $extension,1,Answer()"			>> $WORKDIR/extensions_local.tmp
-	echo "exten => $extension,n,Queue($1)"			>> $WORKDIR/extensions_local.tmp
-
+	echo "exten => $extension,1,Macro($1)" >>		$WORKDIR/extensions_local.tmp
+	echo "exten => $extension,n,Hangup()" >>		$WORKDIR/extensions_local.tmp
 	
 	cp "$TMPL_QUEUE" "$WORKDIR/queue.tmp"
 	sed -i "s/|SECTION|/$1/g"				$WORKDIR/queue.tmp
@@ -856,12 +869,29 @@ configure_queue()
 			fi
 		fi
 		if ! [ -z $out ] ; then
-			echo "member => $out"			>> $WORKDIR/queue.tmp
+			echo "member => $out" >>		$WORKDIR/queue.tmp
 		fi
 	done
 
-	cat $WORKDIR/queue.tmp					>> $WORKDIR/queues.tmp
+	cat $WORKDIR/queue.tmp >>				$WORKDIR/queues.tmp
 	rm -f							$WORKDIR/queue.tmp
+
+	echo "[macro-$1]" >>					$WORKDIR/macros.tmp
+	local opening_hours_profile
+	config_get opening_hours_profile $1 opening_hours_profile
+
+	opening_hours_profile_macro="NoOp()"
+	if [ -n $opening_hours_profile -a "x$opening_hours_profile" != "x-" ] ; then
+		opening_hours_profile_macro="Macro(check-$opening_hours_profile)"
+	fi
+
+	echo "exten => s,1,Set(OPEN=1)" >>					$WORKDIR/macros.tmp
+	echo "exten => s,n,$opening_hours_profile_macro" >>			$WORKDIR/macros.tmp
+	echo "exten => s,n,GotoIf($[\"\${OPEN}\"=\"0\"]?done)" >>		$WORKDIR/macros.tmp
+	echo "exten => s,n,Answer()" >>						$WORKDIR/macros.tmp
+	echo "exten => s,n,Queue($1)" >>					$WORKDIR/macros.tmp
+	echo "exten => s,n(done),MacroExit()" >>				$WORKDIR/macros.tmp
+	echo "" >>								$WORKDIR/macros.tmp
 }
 
 #
@@ -943,9 +973,9 @@ configure_sip_user()
 configure_call_filter()
 {
 	configure_call_filter_helper $1 "incoming"
-	echo "" >>						$WORKDIR/call_filter_macros.tmp
+	echo "" >>						$WORKDIR/macros.tmp
 	configure_call_filter_helper $1 "outgoing"
-	echo "" >>						$WORKDIR/call_filter_macros.tmp
+	echo "" >>						$WORKDIR/macros.tmp
 }
 
 #
@@ -961,8 +991,8 @@ configure_call_filter_helper()
 		return
 	fi
 
-	echo "[macro-$1-$direction-call-filter]" >>		$WORKDIR/call_filter_macros.tmp
-	echo "exten => s,1,NoOp()" >>				$WORKDIR/call_filter_macros.tmp
+	echo "[macro-$1-$direction-call-filter]" >>		$WORKDIR/macros.tmp
+	echo "exten => s,1,NoOp()" >>				$WORKDIR/macros.tmp
 
 	config_get filter_mode $1 $direction
 	if [ "x$filter_mode" == "xblacklist" ] ; then
@@ -995,32 +1025,32 @@ configure_call_filter_helper()
 			if [ "x$rule_direction" == "xoutgoing" ] ; then
 				if [ "x$rule_user" == "x*" ] ; then
 					tmp="exten => s,n,GotoIf($[\"\${DIAL_EXTEN}\"=\"$rule_extension\"]?$goto_label)"
-					echo $tmp >>		$WORKDIR/call_filter_macros.tmp
+					echo $tmp >>		$WORKDIR/macros.tmp
 				else
 					tmp="exten => s,n,GotoIf($[$[\"\${DIAL_EXTEN}\"=\"$rule_extension\"] &"
 					tmp="$tmp $[\"\${CHANNEL}\":\"$rule_user/[0-9]+|$rule_user-[0-9]+\">0]]?$goto_label)"
-					echo $tmp >>		$WORKDIR/call_filter_macros.tmp
+					echo $tmp >>		$WORKDIR/macros.tmp
 				fi
 			fi
 			
 			if [ "x$rule_direction" == "xincoming" ] ; then
 				tmp="exten => s,n,GotoIf($[\"\${CALLERID(num)}\"=\"$rule_extension\"]?$goto_label)"
-				echo $tmp >>			$WORKDIR/call_filter_macros.tmp
+				echo $tmp >>			$WORKDIR/macros.tmp
 			fi
 		fi
 	done
 	
 	if [ "x$filter_mode" == "xblacklist" ] ; then
-		echo "exten => s,n,Goto(pass)" >>		$WORKDIR/call_filter_macros.tmp
+		echo "exten => s,n,Goto(pass)" >>		$WORKDIR/macros.tmp
 	fi
 	if [ "x$direction" == "xincoming" ] ; then
 		tmp="exten => s,n(block),Macro(callhandler-incoming-blocked,\${CALLERID(num)})"
-		echo $tmp >>					$WORKDIR/call_filter_macros.tmp
+		echo $tmp >>					$WORKDIR/macros.tmp
 	else
 		tmp="exten => s,n(block),Macro(callhandler-outgoing-blocked,\${DIAL_EXTEN})"
-		echo $tmp >>					$WORKDIR/call_filter_macros.tmp
+		echo $tmp >>					$WORKDIR/macros.tmp
 	fi
-	echo "exten => s,n(pass),NoOp()" >>			$WORKDIR/call_filter_macros.tmp
+	echo "exten => s,n(pass),NoOp()" >>			$WORKDIR/macros.tmp
 }
 
 get_call_filter()
@@ -1043,6 +1073,45 @@ get_call_filter()
 		fi	
 	fi
 	echo $macro
+}
+
+configure_opening_hours_profile()
+{
+	echo "[macro-check-$1]" >>		$WORKDIR/macros.tmp
+	echo "exten => s,1,NoOp()" >>		$WORKDIR/macros.tmp
+	local invert label
+	config_get invert $1 invert
+	if [ "$invert" == "1" ] ; then
+		label="closed"
+	else
+		label="open"
+	fi
+	# Find all timespans belonging to the opening hours profile
+	local section cfgtype
+	[ -z "$CONFIG_SECTIONS" ] && return 0
+	for section in ${CONFIG_SECTIONS}; do
+	        config_get cfgtype "$section" TYPE
+	        [ -n "timespan" -a "x$cfgtype" != "xtimespan" ] && continue
+	        local owner
+	
+	        config_get owner $section owner
+	        if [ "$owner" == "$1" ] ; then
+	                local tr dow dom months
+	                config_get tr $section time_range
+	                config_get dow $section days_of_week
+	                config_get dom $section days_of_month
+	                config_get months $section months
+	
+	                echo "exten => s,n,GotoIfTime($tr,$dow,$dom,$months,/usr/share/zoneinfo/CET?$label)" >> $WORKDIR/macros.tmp
+	        fi
+	done
+	if [ "$invert" == "0" ] ; then
+		echo "exten => s,n,Goto(closed)" >>		$WORKDIR/macros.tmp
+	fi
+	echo "exten => s,n(open),Set(OPEN=1)" >>		$WORKDIR/macros.tmp
+	echo "exten => s,n,MacroExit()" >>			$WORKDIR/macros.tmp
+	echo "exten => s,n(closed),Set(OPEN=0)" >>		$WORKDIR/macros.tmp
+	echo "" >>						$WORKDIR/macros.tmp
 }
 
 #
@@ -1270,7 +1339,7 @@ configure_extensions_provider()
 	call_filter_macro=$(get_call_filter $1 incoming)
 	echo "exten => $user,1,$call_filter_macro" >>						$tmp
 
-	local call_lines call_ivr call_queue oh_profile extension
+	local call_lines call_ivr call_queue extension
 	echo "exten => $user,n,Set(__TRANSFER_CONTEXT=transfer_\${CHANNEL(peername)})" >>	$tmp
 	config_get call_lines $1 call_lines
 	config_get call_queue $1 call_queue
@@ -1285,63 +1354,19 @@ configure_extensions_provider()
 		echo "exten => $user,n(success),NoOp()" >>							$tmp
 	fi
 	if ! [ -z $call_queue ] ; then
-		# Get opening hours profile
-		config_get oh_profile $call_queue opening_hours_profile
-		config_get extension $call_queue extension
+		echo "exten => $user,n,Macro($call_queue)" >>					$tmp
 	fi
 	if ! [ -z $call_ivr ] ; then
-		# Get opening hours profile
-		config_get oh_profile $call_ivr opening_hours_profile
-		config_get extension $call_ivr extension
-	fi
-	if ! [ -z $oh_profile ] ; then
-		local invert label
-		config_get invert $oh_profile invert
-		if [ "$invert" == "1" ] ; then
-			label="closed"
-		else
-			label="open"
-		fi
-		# Find all timespans belonging to the opening hours profile
-	        local section cfgtype
-	        [ -z "$CONFIG_SECTIONS" ] && return 0
-	        for section in ${CONFIG_SECTIONS}; do
-	                config_get cfgtype "$section" TYPE
-	                [ -n "timespan" -a "x$cfgtype" != "xtimespan" ] && continue
-	                local owner
+		echo "exten => $user,n,Macro($call_ivr)" >>					$tmp
+	fi	
 	
-	                config_get owner $section owner
-	                if [ "$owner" == "$oh_profile" ] ; then
-	                        local tr dow dom months
-	                        config_get tr $section time_range
-	                        config_get dow $section days_of_week
-	                        config_get dom $section days_of_month
-	                        config_get months $section months
-	
-	                        echo "exten => $user,n,GotoIfTime($tr,$dow,$dom,$months,/usr/share/zoneinfo/CET?$label)" >> $tmp
-	                fi
-	        done
-		if [ "$invert" == "0" ] ; then
-			echo "exten => $user,n,Goto(closed)" >>					$tmp
-		fi
-
-	fi
-	
-	if [ -z $call_lines ] ; then
-		# Connect calls to queue or IVR only during opening hours	
-		if ! [ -z $extension ] ; then
-			echo "exten => $user,n(open),Goto(local_extensions,$extension,1)" >>	$tmp
-		fi
-		# Goto voicemail after hours
-		echo "exten => $user,n(closed),NoOp()" >> 					$tmp
-	fi
-
 	# Check if voicemail is enabled
 	local has_voicemail
 	has_voicemail=$(mailbox_check_enabled $1)
 	if [ "$has_voicemail" = "1" ] ; then
 		echo "exten => $user,n,VoiceMail($user,u)" >>					$tmp
 	fi
+
 	echo "exten => $user,n,Hangup()" >>							$tmp
 	cat $tmp >>										$WORKDIR/extensions_incoming.tmp
 	rm -f											$tmp
@@ -1602,7 +1627,7 @@ configure_voicemail()
 	local extension
 
 	config_get extension voicemail extension
-	if [ -n "$extensions" ] ; then
+	if [ -n "$extension" ] ; then
 		echo "Configuring Voice Mail"
 		echo "exten => $extension,1,Answer(500)"		>> $WORKDIR/extensions_local.tmp
 		echo "exten => $extension,n,VoiceMailMain(@default)"	>> $WORKDIR/extensions_local.tmp
@@ -1892,8 +1917,7 @@ start() {
 	touch				$WORKDIR/sip_registrations.tmp
 	touch				$WORKDIR/sip_users.tmp
 	touch				$WORKDIR/features.tmp
-	touch				$WORKDIR/call_filter_macros.tmp
-	touch				$WORKDIR/ivrs.tmp
+	touch				$WORKDIR/macros.tmp
 	touch 				$WORKDIR/queues.tmp
 
 	###########################
@@ -1946,6 +1970,11 @@ start() {
 	##############
 	config_foreach configure_queue queue
 
+	########################
+	# Opening Hours Profiles
+	########################
+	config_foreach configure_opening_hours_profile opening_hours_profile
+
 	###########
 	# Language
 	###########
@@ -1970,8 +1999,7 @@ start() {
 	#########################
 	# Finish up configuration
 	#########################
-	cat $WORKDIR/ivrs.tmp >>		$WORKDIR/extensions.tmp
-	cat $WORKDIR/call_filter_macros.tmp >>	$WORKDIR/extensions.tmp
+	cat $WORKDIR/macros.tmp >>		$WORKDIR/extensions.tmp
 	cat $WORKDIR/extensions_incoming.tmp >> $WORKDIR/extensions.tmp
 	cat $WORKDIR/extensions_dialtone.tmp >> $WORKDIR/extensions.tmp
 	cat $WORKDIR/extensions_local.tmp >> $WORKDIR/extensions.tmp
