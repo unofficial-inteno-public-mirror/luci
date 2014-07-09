@@ -79,14 +79,15 @@ exten => s,n,		Hangup()
 ; - offer call back busy subscriber if busy
 ;
 ; Arguments - used for CBBS:
-; ${ARG1} - SIP peer that we call through
-; ${ARG2} - Extension to call
-; ${ARG3} - Local channel to dial back on reply
-; ${ARG4} - Max retries
-; ${ARG5} - Retry interval
-; ${ARG6} - Wait time
-; ${ARG7} - Key to press to initiate cbbs
-; ${ARG8} - Tone to play on congestion
+; ${ARG1} - Channel type
+; ${ARG2} - Channel id (e.g. sip0)  that we call through
+; ${ARG3} - Extension to call
+; ${ARG4} - Local channel to dial back on reply
+; ${ARG5} - Max retries
+; ${ARG6} - Retry interval
+; ${ARG7} - Wait time
+; ${ARG8} - Key to press to initiate cbbs
+; ${ARG9} - Tone to play on congestion
 ;
 exten => s,1,			Goto(s-${DIALSTATUS},1)
 exten => s,n,			Hangup()
@@ -100,13 +101,13 @@ exten => s-BUSY,n,		Playback(beep)
 exten => s-BUSY,n,		Hangup()
 
 ;handle congestion
-exten => s-CONGESTION,1,	Playtones(${ARG8})
+exten => s-CONGESTION,1,	Playtones(${ARG9})
 exten => s-CONGESTION,n,	Wait(5)
 exten => s-CONGESTION,n,	Congestion()
 exten => s-CONGESTION,n,	Hangup()
 
 ;handle unavailable 
-exten => s-CHANUNAVAIL,1,	Playtones(${ARG8})
+exten => s-CHANUNAVAIL,1,	Playtones(${ARG9})
 exten => s-CHANUNAVAIL,n,	Wait(5)
 exten => s-CHANUNAVAIL,n,	Congestion()
 exten => s-CHANUNAVAIL,n,	Hangup()
