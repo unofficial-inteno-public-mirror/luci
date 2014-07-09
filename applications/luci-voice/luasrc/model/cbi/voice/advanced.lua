@@ -255,6 +255,13 @@ if m.uci.get("voice", "features", "cbbs_enabled") == "1" then
 	s.template  = "cbi/tblsection"
 	s.anonymous = true
 
+	function s.cfgsections(self)
+		sections = {}
+		table.insert(sections, "cbbs_localextensions")
+		for k,v in pairs(TypedSection.cfgsections(self)) do table.insert(sections,v) end
+		return sections
+	end
+
 	s:option(DummyValue, 'name', "SIP Account")
 
 	cbbs_key = s:option(Value, 'cbbs_key', "CBBS key", "Call Back Busy Subscriber key")

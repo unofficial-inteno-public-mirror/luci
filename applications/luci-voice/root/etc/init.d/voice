@@ -1380,15 +1380,13 @@ configure_brcm_line_extension()
 	local line
 	local extension
 	local cbbs_enabled
-        local cbbs_key
+	local cbbs_key
 	local cbbs_maxretry
 	local cbbs_retrytime
 	local cbbs_waittime
-	local sip_provider
 	
 	line=${1:4}
 	config_get extension $1 extension
-	config_get sip_provider $1 sip_provider
 
 	if [ -z "$line" ] ; then
 		return
@@ -1403,11 +1401,11 @@ configure_brcm_line_extension()
 		cbbs_maxretry="0"
 		cbbs_retrytime="0"
 		cbbs_waittime="0"
-		if [ -n "$cbbs_enabled" -a "$cbbs_enabled" = "1" -a -n "$sip_provider" ] ; then
-			config_get cbbs_key $sip_provider cbbs_key
-			config_get cbbs_maxretry $sip_provider cbbs_maxretry
-			config_get cbbs_retrytime $sip_provider cbbs_retrytime
-			config_get cbbs_waittime $sip_provider cbbs_waittime
+		if [ -n "$cbbs_enabled" -a "$cbbs_enabled" = "1" ] ; then
+			config_get cbbs_key "cbbs_localextensions" cbbs_key
+			config_get cbbs_maxretry "cbbs_localextensions" cbbs_maxretry
+			config_get cbbs_retrytime "cbbs_localextensions" cbbs_retrytime
+			config_get cbbs_waittime "cbbs_localextensions" cbbs_waittime
 		fi
 	
 		cp $TMPL_EXTENSIONS_LOCAL_LINE			$WORKDIR/extensions_local_line.tmp
