@@ -69,7 +69,11 @@ function account_name.cfgvalue(self, section)
 	return v
 end
 
-e = s1:option(Flag, "enabled", "Mailbox Enabled")
+e = s1:option(DummyValue, "enabled", "Mailbox Enabled")
+function e.cfgvalue(self, section)
+	enabled = Value.cfgvalue(self, section)
+	return enabled == "1" and "Yes" or "No"
+end
 e.default = 0
 
 -- Settings -------------------------------------------------------------------

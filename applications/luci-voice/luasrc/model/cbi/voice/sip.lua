@@ -87,28 +87,12 @@ end
 
 account_name = s:option(DummyValue, "name", "SIP Account")
 
--- Parse function for enabled Flags, perform validation
--- to make sure the account is not used for outgoing calls from
--- some line. If it is, we should not allow it to be disabled.
-function parse_enabled(self, section)
-	Flag.parse(self, section)
-	local fvalue = self:formvalue(section)
-                                                                                                                                         
-	if not fvalue then
-		vc.foreach_user({'brcm', 'sip'},
-			function(v)
-				name = v['.name']
-				if v.sip_account == section then
-					m.uci:set("voice", name, "sip_account", "-")
-				end
-			end
-		)
-	end
+e = s:option(DummyValue, "enabled", "Account Enabled")
+function e.cfgvalue(self, section)
+	enabled = Value.cfgvalue(self, section)
+	return enabled == "1" and "Yes" or "No"
 end
-
-e = s:option(Flag, "enabled", "Account Enabled")
 e.default = 0
-e.parse = parse_enabled
 
 s:option(DummyValue, "user", "Username")
 s:option(DummyValue, 'domain', 'SIP domain name')
