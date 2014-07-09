@@ -35,7 +35,15 @@ else
 	end
 end
 
-s:option(Value, "name", "Name", "Display name")
+name = s:option(Value, "name", "Name", "Display name")
+function name.parse(self, section)
+	Value.parse(self, section)
+	local value = self:formvalue(section)
+	if not value or #value == 0 then
+		self.add_error(self, section, "missing", "Name is mandatory")
+	end	
+end
+
 invert = s:option(Flag, "invert", "Invert", "Specify timespans when closed.")
 invert.default = 1
 
@@ -87,6 +95,13 @@ function tr.validate(self, value, section)
 	end
 	return value
 end
+function tr.parse(self, section)
+	Value.parse(self, section)
+	local value = self:formvalue(section)
+	if not value or #value == 0 then
+		self.add_error(self, section, "missing", "Time Range is mandatory")
+	end	
+end
 
 dow = s:option(Value, "days_of_week", "Days of Week")
 function dow.validate(self, value, section)
@@ -113,6 +128,13 @@ function dow.validate(self, value, section)
 	end
 	return value
 end
+function dow.parse(self, section)
+	Value.parse(self, section)
+	local value = self:formvalue(section)
+	if not value or #value == 0 then
+		self.add_error(self, section, "missing", "Days of Week is mandatory")
+	end	
+end
 
 dom = s:option(Value, "days_of_month", "Days of Month")
 function dom.validate(self, value, section)
@@ -130,6 +152,13 @@ function dom.validate(self, value, section)
 		end
 	end
 	return value
+end
+function dom.parse(self, section)
+	Value.parse(self, section)
+	local value = self:formvalue(section)
+	if not value or #value == 0 then
+		self.add_error(self, section, "missing", "Days of Month is mandatory")
+	end	
 end
 
 mon = s:option(Value, "months", "Months")
@@ -156,6 +185,13 @@ function mon.validate(self, value, section)
 		return nil, "Invalid months format"
 	end
 	return value
+end
+function mon.parse(self, section)
+	Value.parse(self, section)
+	local value = self:formvalue(section)
+	if not value or #value == 0 then
+		self.add_error(self, section, "missing", "Months is mandatory")
+	end	
 end
 
 return m

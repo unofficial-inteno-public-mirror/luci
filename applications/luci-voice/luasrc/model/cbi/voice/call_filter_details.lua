@@ -50,6 +50,13 @@ else
 end
 
 name = s:option(Value, "name", "Name")
+function name.parse(self, section)
+	Value.parse(self, section)
+	local value = self:formvalue(section)
+	if not value or #value == 0 then
+		self.add_error(self, section, "missing", "Name is mandatory")
+	end	
+end
 
 s:option(Flag, "enabled", "Enabled")
 
@@ -134,6 +141,13 @@ function exten.validate(self, value, section)
 		return nil, value .. " is not a valid extension"
 	end
 	return value
+end
+function exten.parse(self, section)
+	Value.parse(self, section)
+	local value = self:formvalue(section)
+	if not value or #value == 0 then
+		self.add_error(self, section, "missing", "Extension is mandatory")
+	end	
 end
 
 enabled = s:option(Flag, "enabled", "Enabled")
