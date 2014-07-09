@@ -13,13 +13,13 @@ function remove_recording(self, section)
 	luci.http.redirect(luci.dispatcher.build_url("admin/services/voice/voice"))
 end
 
-number = m.uci:get("voice", "features", "record_message")
-local description
-if number then
-	description = "Call " .. number .. " to record a new message"
-else
-	description = "No extension configured for recording messages"
+number = m.uci:get("voice", "custom_dialplan", "record_message_extension")
+if not number then
+	number = "#99999"
+	m.uci:set("voice", "custom_dialplan", "record_message_extension", number)
+	m.uci:commit("voice")
 end
+description = "Call " .. number .. " to record a new message"
 
 s = m:section(Table, vc.get_recordings(), "Recordings", description)
 s.template = "cbi/tblsection"
