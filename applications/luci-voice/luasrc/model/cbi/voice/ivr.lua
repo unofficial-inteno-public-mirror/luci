@@ -40,7 +40,7 @@ end
 -- proceed to detailed editor.
 function s.create(self, section)
 	section_nr = get_new_section_number()
-	data = { name = "Untitled IVR" }
+	data = { name = "Untitled IVR", enabled = 0, opening_hours_profile = "-",  }
 	newQueue = m.uci:section("voice", "ivr", "ivr" .. section_nr, data)
 	luci.http.redirect(s.extedit % newQueue)
 end

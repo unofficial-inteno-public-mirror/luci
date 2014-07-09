@@ -49,7 +49,7 @@ end
 -- and proceed to detailed editor.
 function s1.create(self, section)
 	section_number = get_new_section_number()
-	data = {}
+	data = { name = "Untitled Conference Room", id = math.random(0,99999), enabled = 0 }
 	newAccount = m.uci:section("voice", "conference_room", "conference_room" .. section_number , data)
 	luci.http.redirect(s1.extedit % newAccount)
 end

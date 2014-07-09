@@ -88,7 +88,7 @@ end
 -- user presses the "Add" button.
 function s.create(self, section)
 	section_number = get_new_section_number()
-	data = { owner = arg[1], enabled = 1 }
+	data = { owner = arg[1], enabled = 0 }
 	newSelection = m.uci:section("voice", "call_filter_rule", "call_filter_rule" .. section_number , data)
 end
 
@@ -118,7 +118,9 @@ end
 -- SIP users
 vc.foreach_user({'sip'},
         function(v)
-                user:value("SIP/" .. v['user'], v['name'])
+		if v['user'] and v['name'] then
+	                user:value("SIP/" .. v['user'], v['name'])
+		end
         end
 )
 user.default = "*"

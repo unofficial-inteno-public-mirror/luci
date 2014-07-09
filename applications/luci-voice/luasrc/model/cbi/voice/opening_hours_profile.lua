@@ -65,7 +65,7 @@ end
 -- and proceed to detailed editor.
 function s.create(self, section)
 	section_number = get_new_section_number()
-	data = { owner = arg[1] }
+	data = { owner = arg[1], time_range = "*", days_of_week = "*", days_of_month = "*", months = "*" }
 	newSelection = m.uci:section("voice", "timespan", "timespan" .. section_number , data)
 end
 

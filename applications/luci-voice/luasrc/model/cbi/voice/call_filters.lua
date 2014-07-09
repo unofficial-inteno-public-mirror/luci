@@ -41,7 +41,7 @@ end
 -- proceed to detailed editor.
 function s.create(self, section)
 	section_nr = get_new_section_number()
-	data = { name = "Untitled Call Filter" }
+	data = { name = "Untitled Call Filter", enabled = 0, incoming = "blacklist", outgoing = "blacklist" }
 	newQueue = m.uci:section("voice", "call_filter", "call_filter" .. section_nr, data)
 	luci.http.redirect(s.extedit % newQueue)
 end
