@@ -95,7 +95,7 @@ function common.line2name(lineno)
 end
 
 function common.user2name(user)
-	name = ""
+	local name
 	common.foreach_user({'brcm', 'sip', 'queue', 'ivr'},
 		function(v)
 			if v['.name'] == user then
@@ -112,7 +112,11 @@ function common.user2name(user)
 			end
 		end
 	)
-	return name
+	if name then
+		return name
+	else
+		return ""
+	end
 end
 
 function common.get_recordings()

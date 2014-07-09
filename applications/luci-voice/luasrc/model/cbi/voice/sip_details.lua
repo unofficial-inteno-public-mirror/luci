@@ -96,7 +96,9 @@ end
 -- SIP users
 vc.foreach_user({'sip'},
         function(v)
-                lines:value("SIP/" .. v['user'], v['name'])
+		if v['user'] then
+	                lines:value("SIP/" .. v['user'], v['name'])
+		end
         end
 )
 
