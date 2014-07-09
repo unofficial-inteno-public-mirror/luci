@@ -38,7 +38,14 @@ else
 	end
 end
 
-s:option(Value, "name", "Name")
+name = s:option(Value, "name", "Name")
+function name.parse(self, section)
+	Value.parse(self, section)
+	local value = self:formvalue(section)
+	if not value or #value == 0 then
+		self.add_error(self, section, "missing", "Name is mandatory")
+	end	
+end
 
 id = s:option(Value, "id", "ID", "Conference room ID")
 function id.validate(self, value, section)

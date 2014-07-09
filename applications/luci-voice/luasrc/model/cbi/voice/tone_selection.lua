@@ -43,6 +43,13 @@ function number.validate(self, value, section)
 	end
 	return value
 end
+function number.parse(self, section)
+	Value.parse(self, section)
+	local value = self:formvalue(section)
+	if not value or #value == 0 then
+		self.add_error(self, section, "missing", "Number is mandatory")
+	end	
+end
 
 -- Enabled checkbox
 e = s:option(Flag, "enabled", "Enabled")

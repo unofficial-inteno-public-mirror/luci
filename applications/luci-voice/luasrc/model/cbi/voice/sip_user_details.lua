@@ -44,16 +44,38 @@ e = s:option(Flag, "enabled", "Account Enabled")
 e.default = 0
 e.parse = parse_enabled
 
-s:option(Value, "name", "Name", "Display name used in Caller Id")
+name = s:option(Value, "name", "Name", "Display name used in Caller Id")
+function name.parse(self, section)
+	Value.parse(self, section)
+	local value = self:formvalue(section)
+	if not value or #value == 0 then
+		self.add_error(self, section, "missing", "Name is mandatory")
+	end	
+end
 
 -- Extension, must be unique
 extension = s:option(Value, "extension", "Extension", "Extension for this user")
 function extension.validate(self, value, section)
 	return vc.validate_extension(value, arg[1])
 end
+function extension.parse(self, section)
+	Value.parse(self, section)
+	local value = self:formvalue(section)
+	if not value or #value == 0 then
+		self.add_error(self, section, "missing", "Extension is mandatory")
+	end	
+end
 
 -- Create a set of checkboxes for lines to call
 user = s:option(Value, "user", "Username", "The User id for the account (defaultuser)")
+function user.parse(self, section)
+	Value.parse(self, section)
+	local value = self:formvalue(section)
+	if not value or #value == 0 then
+		self.add_error(self, section, "missing", "User is mandatory")
+	end	
+end
+
 pwd = s:option(Value, "secret", "Password",
 	"When your password is saved, it disappears from this field and is not displayed\
 	for your protection. The previously saved password will be changed only when you\

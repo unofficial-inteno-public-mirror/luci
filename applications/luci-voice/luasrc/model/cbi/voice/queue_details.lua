@@ -35,7 +35,14 @@ else
 	end
 end
 
-s:option(Value, "name", "Name", "Display name")
+name = s:option(Value, "name", "Name", "Display name")
+function name.parse(self, section)
+	Value.parse(self, section)
+	local value = self:formvalue(section)
+	if not value or #value == 0 then
+		self.add_error(self, section, "missing", "Name is mandatory")
+	end	
+end
 
 opening_hours = s:option(ListValue, "opening_hours_profile", "Opening Hours Profile")
 opening_hours:value("-", "-")
@@ -53,6 +60,13 @@ e.default = 0
 extension = s:option(Value, "extension", "Extension", "Extension to call this queue")
 function extension.validate(self, value, section)
 	return vc.validate_extension(value, section)
+end
+function extension.parse(self, section)
+	Value.parse(self, section)
+	local value = self:formvalue(section)
+	if not value or #value == 0 then
+		self.add_error(self, section, "missing", "Extension is mandatory")
+	end	
 end
 
 -- Create dropdown to choose queue strategy
