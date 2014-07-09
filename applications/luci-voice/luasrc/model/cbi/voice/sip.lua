@@ -113,35 +113,48 @@ e.parse = parse_enabled
 s:option(DummyValue, "user", "Username")
 s:option(DummyValue, 'domain', 'SIP domain name')
 
-l = s:option(DummyValue, "call_lines", "Incoming calls to line")
+l = s:option(DummyValue, "target", "Incoming calls to")
 function l.cfgvalue(self, section)
 	local v	= ""
-	local l = Value.cfgvalue(self, section)	
-	if l then
-		lines = string.split(l, " ")
-		for i,l in ipairs(lines) do
-			info = string.split(l, "/")
-			if i > 1 then
-				v = v .. ", "
-			end
-			if (info[1] == "SIP") then
-				vc.foreach_user({'sip'},
-					function(s1)
-						if (s1['user'] == info[2]) then
-							v = v .. s1['name']
-							return
+	local target = Value.cfgvalue(self, section)
+	if target == "direct" then
+		local l = m.uci:get("voice", section, "call_lines")
+		if l then
+			lines = string.split(l, " ")
+			for i,l in ipairs(lines) do
+				info = string.split(l, "/")
+				if i > 1 then
+					v = v .. ", "
+				end
+				if (info[1] == "SIP") then
+					vc.foreach_user({'sip'},
+						function(s1)
+							if (s1['user'] == info[2] and s1['name']) then
+								v = v .. s1['name']
+								return
+							end
 						end
+					)
+				elseif (info[1] == "BRCM") then
+					lineId = tonumber(info[2]:match("%d+"))
+				
+					if (lineId < dectCount) then
+						v = v .. "DECT " .. lineId + 1
+					else
+						v = v .. "Tel " .. lineId - dectCount + 1
 					end
-				)
-			elseif (info[1] == "BRCM") then
-				lineId = tonumber(info[2]:match("%d+"))
-			
-				if (lineId < dectCount) then
-					v = v .. "DECT " .. lineId + 1
-				else
-					v = v .. "Tel " .. lineId - dectCount + 1
 				end
 			end
+		end
+	elseif target == "queue" then
+		q = m.uci:get("voice", section, "call_queue")
+		if q then
+			v = vc.user2name(q)
+		end
+	elseif target == "ivr" then
+		i = m.uci:get("voice", section, "call_ivr")
+		if i then
+			v = vc.user2name(i)
 		end
 	end
 	return v
