@@ -61,7 +61,11 @@ queue_name = s:option(DummyValue, "name", "IVR")
 
 extension = s:option(DummyValue, "extension", "Extension")
 
-e = s:option(Flag, "enabled", "Enabled")
+e = s:option(DummyValue, "enabled", "Enabled")
+function e.cfgvalue(self, section)
+	enabled = Value.cfgvalue(self, section)
+	return enabled == "1" and "Yes" or "No"
+end
 e.default = 0
 
 return m

@@ -116,7 +116,11 @@ function s.remove(self, section)
 end
 
 s:option(DummyValue, "number", "Number")
-s:option(Flag, "enabled", "Enabled")
+enabled = s:option(DummyValue, "enabled", "Enabled")
+function enabled.cfgvalue(self, section)
+	enabled = Value.cfgvalue(self, section)
+	return enabled == "1" and "Yes" or "No"
+end
 user = s:option(DummyValue, "user", "User")
 function user.cfgvalue(self, section)
 	t = Value.cfgvalue(self, section)

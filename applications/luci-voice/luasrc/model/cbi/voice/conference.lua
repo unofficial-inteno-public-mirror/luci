@@ -61,6 +61,10 @@ end
 
 s1:option(DummyValue, "name", "Name")
 s1:option(DummyValue, "id", "ID")
-s1:option(Flag, "enabled", "Enabled")
+e = s1:option(DummyValue, "enabled", "Enabled")
+function e.cfgvalue(self, section)
+	enabled = Value.cfgvalue(self, section)
+	return enabled == "1" and "Yes" or "No"
+end
 
 return m

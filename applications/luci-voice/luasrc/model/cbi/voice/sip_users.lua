@@ -69,7 +69,11 @@ end
 
 account_name = s:option(DummyValue, "name", "SIP User")
 
-e = s:option(Flag, "enabled", "Account Enabled")
+e = s:option(DummyValue, "enabled", "Account Enabled")
+function e.cfgvalue(self, section)
+	enabled = Value.cfgvalue(self, section)
+	return enabled == "1" and "Yes" or "No"
+end
 e.default = 0
 
 s:option(DummyValue, "user", "Username")
