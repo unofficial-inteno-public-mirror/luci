@@ -40,7 +40,7 @@ end
 -- proceed to detailed editor.
 function s.create(self, section)
 	profile_section_nr = get_new_section_number()
-	data = {}
+	data = { name = "Untitled Profile" }
 	newProfile = m.uci:section("voice", "opening_hours_profile", "opening_hours_profile" .. profile_section_nr, data)
 
 	local ts_section_nr = 0

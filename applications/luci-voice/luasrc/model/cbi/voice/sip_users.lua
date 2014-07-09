@@ -49,7 +49,7 @@ end
 function s.create(self, section)
 	if section_count < 8 then
 		section_number = get_new_section_number()
-		data = { name = "New SIP user" }
+		data = { name = "New SIP user", enabled = 0 }
 		newAccount = m.uci:section("voice", "sip_user", "sip_user" .. section_number, data)
 		luci.http.redirect(s.extedit % newAccount)
 	end
