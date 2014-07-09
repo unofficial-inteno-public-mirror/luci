@@ -1126,15 +1126,15 @@ configure_extensions()
 	local extension_all_ports
 	local test_audio_extension
 	local test_echo_extension
-	local record_message
+	local record_message_extension
 
 	config_get custom_incoming_enabled custom_dialplan custom_incoming_enabled
 	config_get custom_hangup_enabled custom_dialplan custom_hangup_enabled
 	config_get extension_all_ports custom_dialplan all_ports_extension
 	config_get test_audio_extension custom_dialplan test_audio_extension
 	config_get test_echo_extension custom_dialplan test_echo_extension
+	config_get record_message_extension custom_dialplan record_message_extension
 	config_get callforward_enabled features callforward_enabled
-	config_get record_message features record_message
 
 	if [ -z "$custom_incoming_enabled" -o "$custom_incoming_enabled" = "0" ] ; then
 		sed -i "s/|CUSTOM_INCOMING|/NoOp()/"					$WORKDIR/extensions.tmp
@@ -1171,11 +1171,11 @@ configure_extensions()
 	fi
 
 	
-	if [ -n "$record_message" ] ; then
-		echo "exten => $record_message,1,Playback(beep)"		>> $WORKDIR/extensions_local.tmp
-		echo "exten => $record_message,n,Record(\"/usr/lib/asterisk/recordings/user-recording\${STRFTIME(\${EPOCH},,%C%y%m%d-%T)}.gsm)"	>> $WORKDIR/extensions_local.tmp
-		echo "exten => $record_message,n,Playback(auth-thankyou)"	>> $WORKDIR/extensions_local.tmp
-		echo "exten => $record_message,n,Hangup()"			>> $WORKDIR/extensions_local.tmp
+	if [ -n "$record_message_extension" ] ; then
+		echo "exten => $record_message_extension,1,Playback(beep)"		>> $WORKDIR/extensions_local.tmp
+		echo "exten => $record_message_extension,n,Record(\"/usr/lib/asterisk/recordings/user-recording\${STRFTIME(\${EPOCH},,%C%y%m%d-%T)}.gsm)"	>> $WORKDIR/extensions_local.tmp
+		echo "exten => $record_message_extension,n,Playback(auth-thankyou)"	>> $WORKDIR/extensions_local.tmp
+		echo "exten => $record_message_extension,n,Hangup()"			>> $WORKDIR/extensions_local.tmp
 	fi
 }
 
