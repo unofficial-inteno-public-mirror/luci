@@ -49,7 +49,7 @@ end
 
 -- Show call waiting setting        
 cw = s:option(Flag, "callwaiting", "Call Waiting")
-cw.default = "1"
+cw.default = "0"
 cw.disabled = "0"
 cw.enabled = "1"
 
