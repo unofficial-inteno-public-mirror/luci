@@ -87,6 +87,15 @@ function voicemail.filter(self, section)
 	return section
 end
 
+timeout = voicemail:option(Value, "timeout", "Timeout", "Number of seconds to ring before incoming call is transferred to voicemail")
+timeout.default = "30"
+function timeout.validate(self, value, section)
+	if not value:match("^%d+$") then
+		return nil, "Invalid timeout format"
+	end
+	return value
+end
+
 extension = voicemail:option(Value, "extension", "Voice mail extension")
 extension.default = "6500"
 function extension.validate(self, value, section)
