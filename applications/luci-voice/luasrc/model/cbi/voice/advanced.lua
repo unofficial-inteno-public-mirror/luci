@@ -250,6 +250,13 @@ if m.uci.get("voice", "features", "callforward_enabled") == "1" then
 end
 
 -- Call Back Busy Subscriber
+-- Make sure that the 'cbbs_localextensions' section exists and that it has a name
+vc.add_section("cbbs_localextensions")
+name = m.uci:get("voice", "cbbs_localextensions", "name")
+if not name then
+	m.uci:set("voice", "cbbs_localextensions", "name", "Local Extensions")
+	m.uci:commit("voice")
+end
 if m.uci.get("voice", "features", "cbbs_enabled") == "1" then
 	s = m:section(TypedSection, "sip_service_provider", "Call Back Busy Subscriber")
 	s.template  = "cbi/tblsection"
