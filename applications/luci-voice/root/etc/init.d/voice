@@ -14,7 +14,6 @@ SERIAL=$(cat /proc/nvram/SerialNumber)
 BASEMAC=$(cat /proc/nvram/BaseMacAddr | sed 's/ //g')
 MODULENAME=voice
 USERAGENT="Inteno_${SERIAL}_${BASEMAC}"
-DIAL_TIMEOUT=30
 
 ASTUSER=nobody
 ASTGROUP=nogroup
@@ -1347,7 +1346,7 @@ configure_extensions_provider()
 	if ! [ -z $call_lines ] ; then
 		# read a list of lines that should be dialled on incoming calls
 		incoming_lines=$(read_lines $1)
-		echo "exten => $user,n,Dial($incoming_lines,$DIAL_TIMEOUT)" >>					$tmp
+		echo "exten => $user,n,Dial($incoming_lines,$(get_voicemail_timeout))" >>					$tmp
 		echo "exten => $user,n,GotoIf($[\"\${DIALSTATUS}\" = \"s-BUSY\"]?noanswer)" >>			$tmp
 		echo "exten => $user,n,GotoIf($[\"\${DIALSTATUS}\" = \"s-NOANSWER\"]?noanswer:success)" >>	$tmp
 		echo "exten => $user,n(noanswer),Macro(callhandler-noanswer,\${CHANNEL(peername)})" >>		$tmp
@@ -1411,7 +1410,7 @@ configure_brcm_line_extension()
 		cp $TMPL_EXTENSIONS_LOCAL_LINE			$WORKDIR/extensions_local_line.tmp
 		sed -i "s/|EXTEN|/$extension/g"			$WORKDIR/extensions_local_line.tmp
 		sed -i "s/|LINE|/$line/g"			$WORKDIR/extensions_local_line.tmp
-		sed -i "s/|TIMEOUT|/$DIAL_TIMEOUT/g"		$WORKDIR/extensions_local_line.tmp
+		sed -i "s/|TIMEOUT|/$(get_voicemail_timeout)/g"	$WORKDIR/extensions_local_line.tmp
 
 		#cbbs settings                                                                                                                                                              
 		sed -i "s/|CBBS_KEY|/$(escape_sed_substitution $cbbs_key)/"	$WORKDIR/extensions_local_line.tmp
@@ -1463,7 +1462,7 @@ configure_sip_user_extension()
 	mailbox_enabled=$(mailbox_check_enabled $1)
 
 	echo "Configuring extension for SIP User $user"
-	echo "exten => $extension,1,Dial(SIP/$user,$DIAL_TIMEOUT)"				>> $WORKDIR/extensions_local.tmp
+	echo "exten => $extension,1,Dial(SIP/$user,$(get_voicemail_timeout))"		>> $WORKDIR/extensions_local.tmp
 	if [ "$mailbox_enabled" = "1" ] ; then
 		echo "Enabling Mailbox for SIP User $user"
 		echo "exten => $extension,n,VoiceMail($extension,u)"	>> $WORKDIR/extensions_local.tmp
@@ -1629,6 +1628,18 @@ configure_voicemail()
 		echo "Configuring Voice Mail"
 		echo "exten => $extension,1,Answer(500)"		>> $WORKDIR/extensions_local.tmp
 		echo "exten => $extension,n,VoiceMailMain(@default)"	>> $WORKDIR/extensions_local.tmp
+	fi
+}
+
+get_voicemail_timeout()
+{
+	local timeout
+	config_get timeout voicemail timeout
+	# Check that timeout is set and that it is a number
+	if [ -n "$timeout" -a "$timeout" -eq "$timeout" ] 2>/dev/null ; then
+		echo "$timeout"
+	else
+		echo ""
 	fi
 }
 
