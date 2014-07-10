@@ -44,7 +44,7 @@ function name.parse(self, section)
 	end	
 end
 
-invert = s:option(Flag, "invert", "Invert", "Specify timespans when closed.")
+invert = s:option(Flag, "invert", "Invert", "Invert timespans below, i.e. specify timespans when closed.")
 invert.default = 1
 
 s = m:section(TypedSection, "timespan", "Timespans", "Specify as 00:00-23:59; mon-sun; 1-31; jan-dec.<br/> Use * as wildcard.")
