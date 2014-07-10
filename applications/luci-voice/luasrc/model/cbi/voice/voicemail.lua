@@ -23,7 +23,7 @@ local vc = require "luci.model.cbi.voice.common"
 
 -- Voice Mail for SIP providers
 m = Map ("voice", "Voice Mail")
-s1 = m:section(TypedSection, "mailbox")
+s1 = m:section(TypedSection, "mailbox", "Mailboxes")
 s1.template  = "cbi/tblsection"
 s1.anonymous = true
 s1.addremove = true
@@ -60,7 +60,7 @@ function s1.remove(self, section)
 	TypedSection.remove(self, section)
 end
 
-account_name = s1:option(DummyValue, "user", "User")
+account_name = s1:option(DummyValue, "user", "Belongs to")
 function account_name.cfgvalue(self, section)
 	local v = vc.user2name(Value.cfgvalue(self, section))
 	if not v or v:len() == 0 then
@@ -69,7 +69,7 @@ function account_name.cfgvalue(self, section)
 	return v
 end
 
-e = s1:option(DummyValue, "enabled", "Mailbox Enabled")
+e = s1:option(DummyValue, "enabled", "Enabled")
 function e.cfgvalue(self, section)
 	enabled = Value.cfgvalue(self, section)
 	return enabled == "1" and "Yes" or "No"

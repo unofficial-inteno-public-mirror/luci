@@ -121,7 +121,7 @@ function enabled.cfgvalue(self, section)
 	enabled = Value.cfgvalue(self, section)
 	return enabled == "1" and "Yes" or "No"
 end
-user = s:option(DummyValue, "user", "User")
+user = s:option(DummyValue, "user", "Call")
 function user.cfgvalue(self, section)
 	t = Value.cfgvalue(self, section)
 	return vc.user2name(t)

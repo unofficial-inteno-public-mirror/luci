@@ -60,12 +60,12 @@ end
 
 s:option(Flag, "enabled", "Enabled")
 
-incoming = s:option(ListValue, "incoming", "Incoming")
+incoming = s:option(ListValue, "incoming", "Incoming", "Mode used when defining rules for filtering incoming calls")
 incoming:value("blacklist", "Blacklist")
 incoming:value("whitelist", "Whitelist")
 incoming.default = "blacklist"
 
-outgoing = s:option(ListValue, "outgoing", "Outgoing")
+outgoing = s:option(ListValue, "outgoing", "Outgoing", "Mode used when defining rules for filtering outgoing calls")
 outgoing:value("blacklist", "Blacklist")
 outgoing:value("whitelist", "Whitelist")
 outgoing.default = "blacklist"
@@ -109,7 +109,7 @@ direction:value("outgoing", "Outgoing")
 direction:value("incoming", "Incoming")
 direction.default = "outgoing"
 
-user = s:option(ListValue, "user", "User")
+user = s:option(ListValue, "user", "Origin")
 user:value("*", "Any")
 line_nr = 0
 -- DECT

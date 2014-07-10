@@ -55,7 +55,7 @@ end
 e = s:option(Flag, "enabled", "Enabled")
 e.default = 0
 
-user = s:option(ListValue, "user", "User", "User to get connected to. Can be either a SIP user, a physical line, a call queue or an other IVR")
+user = s:option(ListValue, "user", "Call", "User to get connected to. Can be either a SIP user, a physical line, a call queue or an other IVR")
 lineCount = 0
 
 vc.foreach_user({'brcm', 'sip', 'queue', 'ivr'},
