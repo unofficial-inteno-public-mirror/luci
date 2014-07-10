@@ -241,7 +241,7 @@ format_sip_contact()
 	local call_lines
 	config_get call_lines $1 call_lines
 	for i in $call_lines ; do
-		if [ ${i:0:5} == "BRCM/" ] ; then
+		if [ "${i:0:5}" == "BRCM/" ] ; then
 			lines=$lines"${i:5}"
 		fi
 	done
@@ -683,7 +683,7 @@ configure_mailbox()
 	config_get enabled $1 enabled
 	config_get user $1 user
 
-	if [ -z $user -o "x$user" == "x-" ] ; then
+	if [ -z "$user" -o "x$user" == "x-" ] ; then
 		return
 	fi
 
@@ -765,7 +765,7 @@ configure_ivr()
 	fi
 
 	opening_hours_profile_macro="NoOp()"
-	if [ -n $opening_hours_profile -a "x$opening_hours_profile" != "x-" ] ; then
+	if [ -n "$opening_hours_profile" -a "x$opening_hours_profile" != "x-" ] ; then
 		opening_hours_profile_macro="Macro(check-$opening_hours_profile)"
 	fi
 	
@@ -809,7 +809,7 @@ configure_ivr()
 	echo "exten => s,n,$opening_hours_profile_macro" >>			$WORKDIR/macros.tmp
 	echo "exten => s,n,GotoIf($[\"\${OPEN}\"=\"0\"]?done)" >>		$WORKDIR/macros.tmp
 	echo "exten => s,n,Answer()" >>						$WORKDIR/macros.tmp
-	if [ $num_selections -eq 0 ] ; then
+	if [ "$num_selections" -eq 0 ] ; then
 		if ! [ -z $sound_file -o "x$sound_file" == "x-" ] ; then	
 			echo "exten => s,n(intro),Playback($sound_file)" >>	$WORKDIR/macros.tmp
 		fi
@@ -880,7 +880,7 @@ configure_queue()
 	config_get opening_hours_profile $1 opening_hours_profile
 
 	opening_hours_profile_macro="NoOp()"
-	if [ -n $opening_hours_profile -a "x$opening_hours_profile" != "x-" ] ; then
+	if [ -n "$opening_hours_profile" -a "x$opening_hours_profile" != "x-" ] ; then
 		opening_hours_profile_macro="Macro(check-$opening_hours_profile)"
 	fi
 
@@ -1001,7 +1001,7 @@ configure_call_filter_helper()
 		goto_label="pass"
 	fi
 
-	if [ -z $goto_label ] ; then
+	if [ -z "$goto_label" ] ; then
 		return
 	fi
 
@@ -1324,7 +1324,7 @@ configure_extensions_provider()
 
 		for i in $direct_dial ; do
 			echo "Adding direct dial extension $i for $1"
-			echo "exten => $i,1,Goto($1-outgoing,\${EXTEN},1)" >>	$WORKDIR/extensions_direct.tmp
+			echo "exten => _$i,1,Goto($1-outgoing,\${EXTEN},1)" >>	$WORKDIR/extensions_direct.tmp
 		done
 		echo "" >>							$WORKDIR/extensions_direct.tmp
 		cat $WORKDIR/extensions_direct.tmp >> 				$WORKDIR/extensions.tmp
@@ -1343,7 +1343,7 @@ configure_extensions_provider()
 	config_get call_lines $1 call_lines
 	config_get call_queue $1 call_queue
 	config_get call_ivr $1 call_ivr
-	if ! [ -z $call_lines ] ; then
+	if ! [ -z "$call_lines" ] ; then
 		# read a list of lines that should be dialled on incoming calls
 		incoming_lines=$(read_lines $1)
 		echo "exten => $user,n,Dial($incoming_lines,$(get_voicemail_timeout))" >>					$tmp
@@ -1352,10 +1352,10 @@ configure_extensions_provider()
 		echo "exten => $user,n(noanswer),Macro(callhandler-noanswer,\${CHANNEL(peername)})" >>		$tmp
 		echo "exten => $user,n(success),NoOp()" >>							$tmp
 	fi
-	if ! [ -z $call_queue ] ; then
+	if ! [ -z "$call_queue" ] ; then
 		echo "exten => $user,n,Macro($call_queue)" >>					$tmp
 	fi
-	if ! [ -z $call_ivr ] ; then
+	if ! [ -z "$call_ivr" ] ; then
 		echo "exten => $user,n,Macro($call_ivr)" >>					$tmp
 	fi	
 	
@@ -1653,7 +1653,7 @@ configure_language()
 	fi
 	
 	dstpath="/usr/lib/asterisk"
-	if [ -f $voice_pack ]; then
+	if [ -f "$voice_pack" ]; then
 		workdir=`mktemp -d`
 		echo "Found new voice-pack"
 		unpack_archive $voice_pack "sounds" $workdir
@@ -1685,7 +1685,7 @@ unpack_archive()
 {
 	archive=$1
 
-	if [ -f $archive ]; then
+	if [ -f "$archive" ]; then
 		# Move archive to tmp workdir
 		extractdir=`mktemp -d`
 		mv $archive $extractdir
@@ -1693,7 +1693,7 @@ unpack_archive()
 		echo "Verifying archive"
 		# Check if valid gzip archive
 		gunzip -t $extractdir/$filename 2>/dev/null
-		if [ $? -ne 0 ] ; then
+		if [ "$?" -ne 0 ] ; then
 			# Corrupt file or not a gzip archive
 			echo "Corrupt or incorrectly compressed archive"
 			# Remove it
@@ -1704,7 +1704,7 @@ unpack_archive()
 		# Decompress
 		mv $extractdir/$filename $extractdir/archive.tar.gz
 		gunzip -f $extractdir/archive.tar.gz 2>/dev/null
-		if [ $? -ne 0 ] ; then
+		if [ "$?" -ne 0 ] ; then
 			# Decompress failed
 			rm $extractdir/archive.tar.gz
 			rm -rf $extractdir
@@ -1714,7 +1714,7 @@ unpack_archive()
 		valid=1
 		listing=$(mktemp)
 		tar -tf $extractdir/archive.tar > $listing 2>/dev/null
-		if [ $? -ne 0 ] ; then
+		if [ "$?" -ne 0 ] ; then
 			# Something went wrong
 			echo "Archive is not a compressed tarball"
 			rm $extractdir/archive.tar
@@ -1732,7 +1732,7 @@ unpack_archive()
 			fi
 		done < $listing
 		rm -f $listing
-		if [ $valid -eq 0 ] ; then
+		if [ "$valid" -eq 0 ] ; then
 			echo "Invalid archive"
 			rm $extractdir/archive.tar
 			rm -rf $extractdir
@@ -1759,19 +1759,19 @@ configure_moh()
 		return
 	fi
 
-	if [ -f $sound_file ]; then
+	if [ -f "$sound_file" ]; then
 		# Move sound file to /usr/lib/asterisk/moh
 		echo "Found new MOH sound file"
 		path="/usr/lib/asterisk/moh"
 		if ! [ -d "$path" ] ; then
 			mkdir -p $path
-			if [ $? -ne 0 ] ; then
+			if [ "$?" -ne 0 ] ; then
 				echo "Cannot create $path"
 				return 1
 			fi
 		fi
 		mv $sound_file $path/music.gsm
-		if [ $? -eq 0 ] ; then
+		if [ "$?" -eq 0 ] ; then
 			echo "Installed new MOH sound file as music.gsm"
 		fi
 	fi
@@ -1787,11 +1787,11 @@ configure_custom_sounds()
 	fi
 	
 	dstpath="/usr/lib/asterisk"
-	if [ -f $sound_pack ]; then
+	if [ -f "$sound_pack" ]; then
 		workdir=`mktemp -d`
 		echo "Found new custom sound-pack"
 		unpack_archive $sound_pack "custom" $workdir
-		if [ $? -eq 0 ] ; then
+		if [ "$?" -eq 0 ] ; then
 			if [ -d "$dstpath/custom" ]; then
 				# Remove existing custom sound-pack
 				echo "Permanently removing old custom sound-pack"
