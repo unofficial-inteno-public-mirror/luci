@@ -1511,29 +1511,9 @@ function wifidev.name(self)
 end
 
 function wifidev.version(self)
-	local version = "0"
-	local name, idx = self:name():match("^([a-z]+)(%d+)")
-	idx = tonumber(idx)
-	if name == "wl" then
-		local nm = 0
-
-		local fd = nxo.open("/proc/bus/pci/devices", "r")
-		if fd then
-			local ln
-			for ln in fd:linesource() do
-				if ln:match("wl$") then
-					if nm == idx then
-						version = ln:match("^%S+%s+%S%S%S%S([0-9a-f]+)")
-						break
-					else
-						nm = nm + 1
-					end
-				end
-			end
-			fd:close()
-		end
-	end
-	return version
+        local version = "0"
+	version=sys.exec("wlctl -i %s revinfo | awk 'FNR == 2 {print}' | cut -d\"x\" -f2 " %self:name())
+	return version:gsub("\n$", "")  
 end
 
 function wifidev.is_ac(self)
