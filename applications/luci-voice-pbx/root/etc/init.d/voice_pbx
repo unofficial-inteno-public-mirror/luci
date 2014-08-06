@@ -1310,6 +1310,7 @@ configure_brcm_line()
 	local codecs
 	local is_fax
 	local dialtone_timeout
+	local extension
 
 	config_get sip_provider $1 sip_provider
 	config_get ptime $1 ptime
@@ -1323,6 +1324,7 @@ configure_brcm_line()
 	config_get txgain $1 txgain
 	config_get rxgain $1 rxgain
 	config_get dialtone_timeout $1 dialtone_timeout
+	config_get extension $1 extension
 
 	#If line is configured with no sip_provider, use local_extensions context
 	local provider_enabled
@@ -1364,6 +1366,7 @@ configure_brcm_line()
 	sed -i "s/|DIALTONE_EXTENSION_HINT|/$1/"		$WORKDIR/brcm_line.tmp
 	sed -i "s/|DIALTONE_TIMEOUT|/$dialtone_timeout/"	$WORKDIR/brcm_line.tmp
 	sed -i "s/|DTMFRELAY|/$dtmfmode/"			$WORKDIR/brcm_line.tmp
+	sed -i "s/|CALLERID|/$extension/"			$WORKDIR/brcm_line.tmp
 
 	cat $WORKDIR/brcm_line.tmp >>				$WORKDIR/brcm.tmp
 	rm -f							$WORKDIR/brcm_line.tmp

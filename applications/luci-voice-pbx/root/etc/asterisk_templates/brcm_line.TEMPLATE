@@ -1,6 +1,6 @@
 [|SECTION|]
 ;language=|LANGUAGE|
-;callerid=|CALLERID|
+callerid=|CALLERID|
 ;autodial=|AUTODIAL|
 dialtone_timeoutmsec=|DIALTONE_TIMEOUT|
 ;jitter_fixed=|JITTERFIXED|
