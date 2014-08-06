@@ -1093,14 +1093,14 @@ configure_extensions_provider()
 	echo "exten => $user,n,GotoIf($[\"\${CALL_BLOCKED}\"=\"1\"]?blocked)" >>		$tmp
 
 	local call_lines call_ivr call_queue oh_profile extension
-	echo "exten => $user,n,Set(__TRANSFER_CONTEXT=transfer_\${CHANNEL(peername)})" >>	$tmp
+	echo "exten => $user,n,Set(__TRANSFER_CONTEXT=\${CHANNEL(peername)}-transfer)" >>	$tmp
 	config_get call_lines $1 call_lines
 	config_get call_queue $1 call_queue
 	config_get call_ivr $1 call_ivr
 	if ! [ -z $call_lines ] ; then
 		# read a list of lines that should be dialled on incoming calls
 		incoming_lines=$(read_lines $1)
-		echo "exten => $user,n,Dial($incoming_lines,$DIAL_TIMEOUT)" >>		$tmp
+		echo "exten => $user,n,Dial($incoming_lines,$DIAL_TIMEOUT,t)" >>		$tmp
 	fi
 	if ! [ -z $call_queue ] ; then
 		# Get opening hours profile
@@ -1189,7 +1189,7 @@ configure_brcm_line_extension()
 
 	mailbox_enabled=$(mailbox_check_enabled $1)
 
-	echo "exten => $extension,1,Dial(BRCM/$line,$DIAL_TIMEOUT)"				>> $WORKDIR/extensions_local.tmp
+	echo "exten => $extension,1,Dial(BRCM/$line,$DIAL_TIMEOUT,t)"				>> $WORKDIR/extensions_local.tmp
 	if [ "$mailbox_enabled" = "1" ] ; then
 		echo "Enabling Mailbox for BRCM line $1"
 		echo "exten => $extension,n,VoiceMail($extension,u)"	>> $WORKDIR/extensions_local.tmp
@@ -1226,7 +1226,7 @@ configure_sip_user_extension()
 	mailbox_enabled=$(mailbox_check_enabled $1)
 
 	echo "Configuring extension for SIP User $user"
-	echo "exten => $extension,1,Dial(SIP/$user,$DIAL_TIMEOUT)"				>> $WORKDIR/extensions_local.tmp
+	echo "exten => $extension,1,Dial(SIP/$user,$DIAL_TIMEOUT,t)"				>> $WORKDIR/extensions_local.tmp
 	if [ "$mailbox_enabled" = "1" ] ; then
 		echo "Enabling Mailbox for SIP User $user"
 		echo "exten => $extension,n,VoiceMail($extension,u)"	>> $WORKDIR/extensions_local.tmp
