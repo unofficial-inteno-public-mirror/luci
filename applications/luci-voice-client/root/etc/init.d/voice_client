@@ -281,6 +281,8 @@ configure_sip()
 	local defaultexpiry
 	local registertimeout
 	local registerattempts
+	local registertimeoutbackoff
+	local registerattemptsbackoff
 	local remotehold
 	local tos_sip
 	local tos_audio
@@ -300,6 +302,8 @@ configure_sip()
 	config_get defaultexpiry $1 defaultexpiry
 	config_get registertimeout $1 registertimeout
 	config_get registerattempts $1 registerattempts
+	config_get registertimeoutbackoff $1 registertimeoutbackoff
+	config_get registerattemptsbackoff $1 registerattemptsbackoff
 	config_get register403timeout $1 register403timeout
 	config_get remotehold $1 remotehold
 	config_get tos_sip $1 tos_sip
@@ -349,6 +353,18 @@ configure_sip()
 		sed -i "s/registerattempts=|REGISTERATTEMPTS|/;registerattempts=/g"	$WORKDIR/sip.tmp
 	else
 		sed -i "s/|REGISTERATTEMPTS|/$registerattempts/g"			$WORKDIR/sip.tmp
+	fi
+
+	if [ -z "$registertimeoutbackoff" ] ; then
+		sed -i "s/registertimeoutbackoff=|REGISTERTIMEOUTBACKOFF|/;registertimeoutbackoff=/g"    $WORKDIR/sip.tmp
+	else
+		sed -i "s/|REGISTERTIMEOUTBACKOFF|/$registertimeoutbackoff/g"                             $WORKDIR/sip.tmp
+	fi
+
+	if [ -z "$registerattemptsbackoff" ] ; then
+		sed -i "s/registerattemptsbackoff=|REGISTERATTEMPTSBACKOFF|/;registerattemptsbackoff=/g"  $WORKDIR/sip.tmp
+	else
+		sed -i "s/|REGISTERATTEMPTSBACKOFF|/$registerattemptsbackoff/g"                           $WORKDIR/sip.tmp
 	fi
 
 	if [ -z "$register403timeout" ] ; then
