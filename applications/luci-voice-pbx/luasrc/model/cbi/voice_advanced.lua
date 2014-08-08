@@ -114,6 +114,27 @@ if advanced_register_settings then
 		end
 		return nil, "Register Attempts must be at least 1"
 	end
+
+	registerattemptsbackoff = sip:option(Value, 'registerattemptsbackoff', "Register Back-off Attempts", "Number of registration attempts before entering back-off state (Set to 0 or empty to disable)");
+	registerattemptsbackoff.default = 0
+	registerattemptsbackoff.optional = true
+	function registerattemptsbackoff.validate(self, value, section)
+		if datatypes.min(value,0) then
+			return value
+		end
+		return nil, "Register Back-off Attempts must be at least 0"
+	end
+
+	registertimeoutbackoff = sip:option(Value, 'registertimeoutbackoff', "Register Back-off Timeout", "Time before giving up a registration attempt in back-off state");
+	registertimeoutbackoff.default = 512
+	registertimeoutbackoff.optional = true
+	function registertimeoutbackoff.validate(self, value, section)
+		if datatypes.min(value,1) then
+			return value
+		end
+		return nil, "Register Back-off Timeout must be at least 1 second"
+	end
+
 end
 
 remotehold = sip:option(Flag, 'remotehold', "Remote Hold", "Send hold events to proxy (Let network handle music on hold)")
