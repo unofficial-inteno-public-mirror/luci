@@ -3,6 +3,7 @@
 ;
 [|PROVIDER|]
 ; Main context, handles all normal calls for this Provider
+include => clir
 include => local_extensions
 include => |PROVIDER|-callforwarding
 include => |PROVIDER|-outgoing

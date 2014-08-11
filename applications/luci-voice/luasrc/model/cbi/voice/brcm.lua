@@ -53,6 +53,12 @@ cw.default = "0"
 cw.disabled = "0"
 cw.enabled = "1"
 
+-- Show CLIR setting
+clir = s:option(Flag, "clir", "CLIR")
+clir.default = "0"
+clir.disabled = "0"
+clir.enabled = "1"
+
 -- Show SIP account selection
 sip_provider = s:option(ListValue, "sip_provider", "Call out using SIP provider")
 m.uci:foreach("voice", "sip_service_provider",

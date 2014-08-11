@@ -1142,6 +1142,7 @@ configure_extensions()
 	local test_audio_extension
 	local test_echo_extension
 	local record_message_extension
+	local clir
 
 	config_get custom_incoming_enabled custom_dialplan custom_incoming_enabled
 	config_get custom_hangup_enabled custom_dialplan custom_hangup_enabled
@@ -1150,6 +1151,7 @@ configure_extensions()
 	config_get test_echo_extension custom_dialplan test_echo_extension
 	config_get record_message_extension custom_dialplan record_message_extension
 	config_get callforward_enabled features callforward_enabled
+	config_get clir features clir
 
 	if [ -z "$custom_incoming_enabled" -o "$custom_incoming_enabled" = "0" ] ; then
 		sed -i "s/|CUSTOM_INCOMING|/NoOp()/"					$WORKDIR/extensions.tmp
@@ -1192,6 +1194,15 @@ configure_extensions()
 		echo "exten => $record_message_extension,n,Playback(auth-thankyou)"	>> $WORKDIR/extensions_local.tmp
 		echo "exten => $record_message_extension,n,Hangup()"			>> $WORKDIR/extensions_local.tmp
 	fi
+
+	# CLIR feature access code
+	if [ -n "$clir" -a "$clir" != "" ] ; then
+		sed -i "s/|CLIR_FAC_SET|//"		$WORKDIR/extensions.tmp
+		sed -i "s/|CLIR|/$clir/"		$WORKDIR/extensions.tmp
+	else
+		sed -i "s/|CLIR_FAC_SET|/;/"		$WORKDIR/extensions.tmp
+	fi
+	echo "" >> $WORKDIR/extensions.tmp
 }
 
 #
@@ -1561,6 +1572,7 @@ configure_brcm_line()
 	local sip_provider_user
 	local sip_provider_enabled
 	local callwaiting
+	local clir
 
 	config_get sip_provider $1 sip_provider
 	config_get ptime $1 ptime
@@ -1577,6 +1589,7 @@ configure_brcm_line()
 	config_get autodial_timeout $1 autodial_timeout
 	config_get dialtone_timeout $1 dialtone_timeout
 	config_get callwaiting $1 callwaiting
+	config_get clir $1 clir
 
 	#If line is configured with no sip_provider, or sip_provider is disabled, use local_extensions context
 	config_get sip_provider_user $sip_provider user
@@ -1599,6 +1612,10 @@ configure_brcm_line()
 		callwaiting=1
 	fi
 
+	if [ -z "$clir" ] ; then
+		clir=0
+	fi
+
 	cp $TMPL_BRCM_LINE $WORKDIR/brcm_line.tmp
 	sed -i "s/|SECTION|/$1/"				$WORKDIR/brcm_line.tmp
 	sed -i "s/|CONTEXT|/$sip_provider/g"			$WORKDIR/brcm_line.tmp
@@ -1618,6 +1635,7 @@ configure_brcm_line()
 	sed -i "s/|DIALTONE_TIMEOUT|/$dialtone_timeout/"	$WORKDIR/brcm_line.tmp
 	sed -i "s/|DTMFRELAY|/$dtmfmode/"			$WORKDIR/brcm_line.tmp
 	sed -i "s/|CALLWAITING|/$callwaiting/"			$WORKDIR/brcm_line.tmp
+	sed -i "s/|CLIR|/$clir/"				$WORKDIR/brcm_line.tmp
 
 
 	#Configure BRCM line with codecs according to the SIP line settings
