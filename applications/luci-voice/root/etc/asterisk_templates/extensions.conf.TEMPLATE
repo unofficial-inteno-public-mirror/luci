@@ -34,3 +34,8 @@ exten => s,n,		Hangup()
 exten => h,1,		Hangup()
 exten => h,2,		|CUSTOM_HANGUP|
 exten => h,3,		Hangup()
+
+[clir]
+|CLIR_FAC_ENABLED|exten => _|CLIR|.,1,      Set(CALLERID(name-pres)=prohib_not_screened)
+|CLIR_FAC_ENABLED|exten => _|CLIR|.,n,      Set(CALLERID(name-pres)=prohib_not_screened)
+|CLIR_FAC_ENABLED|exten => _|CLIR|.,n,      Goto(${EXTEN:4},1)

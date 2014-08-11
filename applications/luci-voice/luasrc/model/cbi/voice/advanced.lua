@@ -327,6 +327,18 @@ if m.uci.get("voice", "features", "cbbs_enabled") == "1" then
 	end
 end
 
+-- CLIR (Calling Line Identification Restriction)
+features = m:section(TypedSection, "features")
+features.template = "cbi/tblsection"
+features.anonymous = true
+clir = features:option(Value, 'clir', "CLIR", "Calling Line Identification Restriction activation (per call). Example: #31#")
+function clir.validate(self, value, section)
+	if datatypes.phonedigit(value) then
+		return value
+	end
+	return nil, "Not a valid key combination for CLIR"
+end
+
 -- BRCM advanced common settings ----------------------------------------------
 brcm = m:section(TypedSection, "brcm_advanced", "Advanced Line settings")
 brcm.anonymous = true
