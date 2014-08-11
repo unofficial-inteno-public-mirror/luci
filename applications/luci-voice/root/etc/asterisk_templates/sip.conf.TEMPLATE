@@ -30,6 +30,8 @@ externhost=|EXTERNHOST|
 dtmfmode=|DTMFMODE|
 registertimeout=|REGISTERTIMEOUT|
 registerattempts=|REGISTERATTEMPTS|
+registertimeoutbackoff=|REGISTERTIMEOUTBACKOFF|
+registerattemptsbackoff=|REGISTERATTEMPTSBACKOFF|
 register403timeout=|REGISTER403TIMEOUT|
 remotehold=|REMOTEHOLD|
 
