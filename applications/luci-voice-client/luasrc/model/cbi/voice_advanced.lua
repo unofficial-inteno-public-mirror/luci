@@ -366,6 +366,18 @@ function dialoutmsec.validate(self, value, section)
 	return nil, "Inter-digit timeout must be a positive number of milliseconds"
 end
 
+-- CLIR (Calling Line Identification Restriction)
+features = m:section(TypedSection, "features")
+features.template = "cbi/tblsection"
+features.anonymous = true
+clir = features:option(Value, 'clir', "CLIR", "Calling Line Identification Restriction activation (per call). Example: #31#")
+function clir.validate(self, value, section)
+	if datatypes.phonedigit(value) then
+		return value
+	end
+	return nil, "Not a valid key combination for CLIR"
+end
+
 -- BRCM advanced line settings ----------------------------------------------
 
 line = m:section(TypedSection, "brcm_line")

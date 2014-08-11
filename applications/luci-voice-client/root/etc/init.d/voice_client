@@ -660,9 +660,11 @@ create_extensions()
 	local custom_incoming_enabled
 	local custom_hangup_enabled
 	local callforward_enabled
+	local clir
 	config_get custom_incoming_enabled custom_dialplan custom_incoming_enabled
 	config_get custom_hangup_enabled custom_dialplan custom_hangup_enabled
 	config_get callforward_enabled features callforward_enabled
+	config_get clir features clir
 
 	if [ -z "$custom_incoming_enabled" -o "$custom_incoming_enabled" = "0" ] ; then
 		sed -i "s/|CUSTOM_INCOMING|/NoOp()/"					$WORKDIR/extensions.tmp
@@ -681,6 +683,15 @@ create_extensions()
 	else
 		sed -i "s/|INCOMING_HANDLER|/Goto(call_line,\${EXTEN},1))/"		$WORKDIR/extensions.tmp
 	fi
+	
+	# CLIR feature access code
+	if [ -n "$clir" -a "$clir" != "" ] ; then
+		sed -i "s/|CLIR_FAC_SET|//"		$WORKDIR/extensions.tmp
+		sed -i "s/|CLIR|/$clir/"		$WORKDIR/extensions.tmp
+	else
+		sed -i "s/|CLIR_FAC_SET|/;/"		$WORKDIR/extensions.tmp
+	fi
+	echo "" >> $WORKDIR/extensions.tmp
 }
 
 #
@@ -705,6 +716,7 @@ create_extensions_account()
 	local incoming_lines
 	local direct_dial
 	local congestiontone
+	local clir
 
 	local callforward_enabled
 	local cbbs_enabled
@@ -790,7 +802,7 @@ create_extensions_account()
 	sed -i "s/|RETRYTIME|/$cbbs_retrytime/"		$WORKDIR/extensions_account.tmp
 	sed -i "s/|WAITTIME|/$cbbs_waittime/"		$WORKDIR/extensions_account.tmp
 	sed -i "s/|CONGESTIONTONE|/$congestiontone/"	$WORKDIR/extensions_account.tmp
-
+	
 	# Confifure call forwarding if enabled
 	if [ -n "$callforward_enabled" -a "$callforward_enabled" = "1" ] ; then
 		echo "exten => $cfim_off,1,	Macro(delete_cfim,$1)" >>					$WORKDIR/extensions_account.tmp
@@ -987,6 +999,7 @@ configure_brcm_line()
 	local dialtone_timeout
 	local sip_account_enabled
 	local callwaiting
+	local clir
 
 	config_get sip_account $1 sip_account
 	config_get silence $1 vad
@@ -1002,6 +1015,7 @@ configure_brcm_line()
 	config_get autodial_timeout $1 autodial_timeout
 	config_get dialtone_timeout $1 dialtone_timeout
 	config_get callwaiting $1 callwaiting
+	config_get clir $1 clir
 
 	#If line is configured with no sip_account, or sip_account is disabled, use local_extensions context
 	config_get sip_account_enabled $sip_account enabled
@@ -1023,6 +1037,10 @@ configure_brcm_line()
 		callwaiting=1
 	fi
 
+	if [ -z "$clir" ] ; then
+		clir=0
+	fi
+
 	cp $TMPL_BRCM_LINE $WORKDIR/brcm_line.tmp
 	sed -i "s/|SECTION|/$1/"					$WORKDIR/brcm_line.tmp
 	sed -i "s/|CONTEXT|/$sip_account/g"				$WORKDIR/brcm_line.tmp
@@ -1041,6 +1059,7 @@ configure_brcm_line()
 	sed -i "s/|DTMFRELAY|/$dtmfmode/"      				$WORKDIR/brcm_line.tmp
 	sed -i "s/|DIALTONE_TIMEOUT|/$dialtone_timeout/"		$WORKDIR/brcm_line.tmp
 	sed -i "s/|CALLWAITING|/$callwaiting/"				$WORKDIR/brcm_line.tmp
+	sed -i "s/|CLIR|/$clir/"					$WORKDIR/brcm_line.tmp
 
 
 	#Configure BRCM line with codecs according to the SIP line settings
