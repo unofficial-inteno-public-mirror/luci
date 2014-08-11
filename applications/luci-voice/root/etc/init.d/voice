@@ -1155,7 +1155,7 @@ configure_extensions()
 
 	if [ -n "$extension_all_ports" ] ; then
 		local all_lines="BRCM/0&BRCM/1&BRCM/2&BRCM/3&BRCM/4&BRCM/5&BRCM/6"
-		echo "exten => $extension_all_ports,1,Dial($all_lines)"		>> $WORKDIR/extensions_local.tmp
+		echo "exten => $extension_all_ports,1,Dial($all_lines,,t)"	>> $WORKDIR/extensions_local.tmp
 		echo "exten => $extension_all_ports,n,Hangup()"			>> $WORKDIR/extensions_local.tmp
 	fi
 
@@ -1339,14 +1339,14 @@ configure_extensions_provider()
 	echo "exten => $user,1,$call_filter_macro" >>						$tmp
 
 	local call_lines call_ivr call_queue extension
-	echo "exten => $user,n,Set(__TRANSFER_CONTEXT=transfer_\${CHANNEL(peername)})" >>	$tmp
+	echo "exten => $user,n,Set(__TRANSFER_CONTEXT=\${CHANNEL(peername)}-transfer)" >>	$tmp
 	config_get call_lines $1 call_lines
 	config_get call_queue $1 call_queue
 	config_get call_ivr $1 call_ivr
 	if ! [ -z "$call_lines" ] ; then
 		# read a list of lines that should be dialled on incoming calls
 		incoming_lines=$(read_lines $1)
-		echo "exten => $user,n,Dial($incoming_lines,$(get_voicemail_timeout))" >>					$tmp
+		echo "exten => $user,n,Dial($incoming_lines,$(get_voicemail_timeout),t)" >>					$tmp
 		echo "exten => $user,n,GotoIf($[\"\${DIALSTATUS}\" = \"s-BUSY\"]?noanswer)" >>			$tmp
 		echo "exten => $user,n,GotoIf($[\"\${DIALSTATUS}\" = \"s-NOANSWER\"]?noanswer:success)" >>	$tmp
 		echo "exten => $user,n(noanswer),Macro(callhandler-noanswer,\${CHANNEL(peername)})" >>		$tmp
@@ -1462,7 +1462,7 @@ configure_sip_user_extension()
 	mailbox_enabled=$(mailbox_check_enabled $1)
 
 	echo "Configuring extension for SIP User $user"
-	echo "exten => $extension,1,Dial(SIP/$user,$(get_voicemail_timeout))"		>> $WORKDIR/extensions_local.tmp
+	echo "exten => $extension,1,Dial(SIP/$user,$(get_voicemail_timeout),t)"		>> $WORKDIR/extensions_local.tmp
 	if [ "$mailbox_enabled" = "1" ] ; then
 		echo "Enabling Mailbox for SIP User $user"
 		echo "exten => $extension,n,VoiceMail($extension,u)"	>> $WORKDIR/extensions_local.tmp
