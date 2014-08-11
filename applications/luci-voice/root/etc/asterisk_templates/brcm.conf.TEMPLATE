@@ -89,7 +89,6 @@ hfmaxdelay=500
 ; Unused/undocumented settings, do not uncomment/change these
 ;
 ;language=
-;callerid=
 ;jitter_fixed=0
 ;jitter_min=0
 ;jitter_max=0
