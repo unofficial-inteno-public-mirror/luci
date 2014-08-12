@@ -1036,20 +1036,23 @@ configure_call_filter_helper()
 			[ "x$rule_direction" != "x$direction" ] && continue
 
 			[ -z "$rule_enabled" -o "$rule_enabled" = "0" ] && continue
+
+			# Regular expression for matching calling or called number
+			regexp="$rule_extension[0-9]*"
 		
 			if [ "x$rule_direction" == "xoutgoing" ] ; then
 				if [ "x$rule_user" == "x*" ] ; then
-					tmp="exten => s,n,GotoIf($[\"\${DIAL_EXTEN}\"=\"$rule_extension\"]?$goto_label)"
+					tmp="exten => s,n,GotoIf($[\"\${DIAL_EXTEN}\":\"$regexp\">0]?$goto_label)"
 					echo $tmp >>		$WORKDIR/macros.tmp
 				else
-					tmp="exten => s,n,GotoIf($[$[\"\${DIAL_EXTEN}\"=\"$rule_extension\"] &"
+					tmp="exten => s,n,GotoIf($[$[\"\${DIAL_EXTEN}\":\"$regexp\">0] &"
 					tmp="$tmp $[\"\${CHANNEL}\":\"$rule_user/[0-9]+|$rule_user-[0-9]+\">0]]?$goto_label)"
 					echo $tmp >>		$WORKDIR/macros.tmp
 				fi
 			fi
 			
 			if [ "x$rule_direction" == "xincoming" ] ; then
-				tmp="exten => s,n,GotoIf($[\"\${CALLERID(num)}\"=\"$rule_extension\"]?$goto_label)"
+				tmp="exten => s,n,GotoIf($[\"\${CALLERID(num)}\":\"$regexp\">0]?$goto_label)"
 				echo $tmp >>			$WORKDIR/macros.tmp
 			fi
 		fi

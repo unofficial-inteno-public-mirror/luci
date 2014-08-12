@@ -70,7 +70,7 @@ outgoing:value("blacklist", "Blacklist")
 outgoing:value("whitelist", "Whitelist")
 outgoing.default = "blacklist"
 
-s = m:section(TypedSection, "call_filter_rule", "Rules")
+s = m:section(TypedSection, "call_filter_rule", "Rules", "Specify rules for incoming or outgoing calls. If a rule is created for number 123 it will match all numbers starting with 123.")
 function s.filter(self, section)
         owner = m.uci:get("voice", section, 'owner')
 	if owner == arg[1] then
