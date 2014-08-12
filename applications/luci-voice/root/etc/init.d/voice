@@ -1439,7 +1439,6 @@ configure_brcm_line_extension()
 	
 		cp $TMPL_EXTENSIONS_LOCAL_LINE			$WORKDIR/extensions_local_line.tmp
 		sed -i "s/|EXTEN|/$extension/g"			$WORKDIR/extensions_local_line.tmp
-		sed -i "s/|CALLERID|/$extension/g"		$WORKDIR/extensions_local_line.tmp
 		sed -i "s/|LINE|/$line/g"			$WORKDIR/extensions_local_line.tmp
 		sed -i "s/|TIMEOUT|/$(get_voicemail_timeout)/g"	$WORKDIR/extensions_local_line.tmp
 
@@ -1556,6 +1555,7 @@ configure_brcm()
 configure_brcm_line()
 {
 	echo "Configuring BRCM line $1"
+	local extension
 	local sip_provider
 	local ptime
 	local silence
@@ -1577,6 +1577,7 @@ configure_brcm_line()
 	local callwaiting
 	local clir
 
+	config_get extension $1 extension
 	config_get sip_provider $1 sip_provider
 	config_get ptime $1 ptime
 	config_get silence $1 vad
@@ -1621,6 +1622,7 @@ configure_brcm_line()
 
 	cp $TMPL_BRCM_LINE $WORKDIR/brcm_line.tmp
 	sed -i "s/|SECTION|/$1/"				$WORKDIR/brcm_line.tmp
+	sed -i "s/|CALLERID|/$extension/g"			$WORKDIR/brcm_line.tmp
 	sed -i "s/|CONTEXT|/$sip_provider/g"			$WORKDIR/brcm_line.tmp
 	sed -i "s/|PERIOD|/$ptime/"				$WORKDIR/brcm_line.tmp
 	sed -i "s/|SILENCE|/$silence/"				$WORKDIR/brcm_line.tmp
