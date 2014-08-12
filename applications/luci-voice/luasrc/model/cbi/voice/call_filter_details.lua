@@ -60,12 +60,12 @@ end
 
 s:option(Flag, "enabled", "Enabled")
 
-incoming = s:option(ListValue, "incoming", "Incoming", "Mode used when defining rules for filtering incoming calls")
+incoming = s:option(ListValue, "incoming", "Incoming Filter Mode", "Mode used when defining rules for filtering incoming calls")
 incoming:value("blacklist", "Blacklist")
 incoming:value("whitelist", "Whitelist")
 incoming.default = "blacklist"
 
-outgoing = s:option(ListValue, "outgoing", "Outgoing", "Mode used when defining rules for filtering outgoing calls")
+outgoing = s:option(ListValue, "outgoing", "Outgoing Filter Mode", "Mode used when defining rules for filtering outgoing calls")
 outgoing:value("blacklist", "Blacklist")
 outgoing:value("whitelist", "Whitelist")
 outgoing.default = "blacklist"
@@ -135,7 +135,7 @@ user.custom = false
 user:depends("direction", "outgoing")
 user.rmempty = true
 
-exten = s:option(Value, "extension", "Extension")
+exten = s:option(Value, "extension", "Called/Calling Number")
 function exten.validate(self, value, section)
 	if not datatypes.phonedigit(value) then
 		return nil, value .. " is not a valid extension"
