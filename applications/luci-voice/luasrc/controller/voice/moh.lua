@@ -26,7 +26,77 @@ function index()
 
 	for k, user in pairs(users) do
 		if user ~= "user"  then
-			entry({user, "services", "voice", "moh"},	cbi("voice/moh"),	"MOH",	26)
+			entry({user, "services", "voice", "moh"},	call("action_moh"),	"MOH",	26)
 		end
 	end
+end
+
+function action_moh()
+	local sys = require "luci.sys"                                                                   
+        local fs  = require "luci.fs"
+	local nixio = require "nixio"
+
+	local upload_tmp = "/tmp/sound.moh"
+	local dest =  "/usr/lib/asterisk/moh"
+	local filename
+
+	local fp
+	luci.http.setfilehandler(
+		function(meta, chunk, eof)
+			if not fp then
+				if meta and meta.name == "sound" then
+					filename = meta.file
+					fp = io.open(upload_tmp, "w")
+				end
+			end
+			if chunk then
+				fp:write(chunk)
+			end
+			if eof then
+				fp:close()
+			end
+		end
+	)
+
+	function reload_moh()
+		sys.exec("touch /etc/asterisk/musiconhold.conf")
+		sys.exec("asterisk -rx 'moh reload'")
+	end
+
+	if luci.http.formvalue("upload") then
+		local upload = luci.http.formvalue("sound")
+		if upload and #upload > 0 then
+			-- Create destination dir if it doesn't already exist
+			stat = nixio.fs.stat(dest, "type")
+			if not stat then
+				nixio.fs.mkdir(dest)
+			end
+			-- Move upload
+			nixio.fs.move(upload_tmp, dest .. "/" .. filename)
+			-- Reload asterisk musiconhold module
+			reload_moh()
+		end
+	end
+	if luci.http.formvalue("remove") and luci.http.formvalue("file") then
+		file = luci.http.formvalue("file")
+		-- Check that user is not trying to delete a file outside of the moh directory
+		if file == file:gsub("../", "") then
+			nixio.fs.unlink(dest .. "/" .. file)
+			reload_moh()
+		end
+	end	
+
+	-- Read list of files
+	local sound_files = {}
+	stat = nixio.fs.stat(dest, "type")
+	if stat then
+		for e in nixio.fs.dir(dest) do
+			table.insert(sound_files, e)
+		end
+	end
+	
+	luci.template.render("voice/moh", {
+		sounds = {},
+		sound_files = sound_files
+	})
 end

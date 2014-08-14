@@ -161,6 +161,9 @@ assemble_and_copy_config()
 
 	compare_configs_and_copy_changed
 
+	# Force reload
+	touch					$ASTERISKDIR/musiconhold.conf
+
 	[ ! -d $ASTERISKDIR/manager.d ] && mkdir -p $ASTERISKDIR/manager.d/
 
 	# Get rid of the working directory
@@ -1790,33 +1793,6 @@ unpack_archive()
 	return 0
 }
 
-configure_moh()
-{
-	local sound_file
-	config_get sound_file moh sound_file
-
-	if [ -z "$sound_file" ] ; then
-		return
-	fi
-
-	if [ -f "$sound_file" ]; then
-		# Move sound file to /usr/lib/asterisk/moh
-		echo "Found new MOH sound file"
-		path="/usr/lib/asterisk/moh"
-		if ! [ -d "$path" ] ; then
-			mkdir -p $path
-			if [ "$?" -ne 0 ] ; then
-				echo "Cannot create $path"
-				return 1
-			fi
-		fi
-		mv $sound_file $path/music.gsm
-		if [ "$?" -eq 0 ] ; then
-			echo "Installed new MOH sound file as music.gsm"
-		fi
-	fi
-}
-
 configure_custom_sounds()
 {
 	local sound_pack
@@ -2028,11 +2004,6 @@ start() {
 	# Language
 	###########
 	configure_language
-
-	###############
-	# Music on hold
-	###############
-	configure_moh
 
 	###############
 	# Custom Sounds

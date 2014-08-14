@@ -3,4 +3,4 @@
 [default]
 mode=files
 directory=/usr/lib/asterisk/moh
-
+random=yes
