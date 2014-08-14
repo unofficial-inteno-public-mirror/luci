@@ -162,7 +162,7 @@ end
 s:option(Value, "displayname", "Display Name", "Display name used in Caller Id")
 
 -- Create and populate dropdowns with available codec choices                            
-codecs = {ulaw = "G.711MuLaw", alaw = "G.711ALaw", g729 = "G.729a", g723 = "G.723.1", g726 = "G.726_32"}
+codecs = {ulaw = "G.711MuLaw", alaw = "G.711ALaw", g729 = "G.729a", g723 = "G.723.1", g726 = "G.726_32", g722 = "G.722"}
 i = 0
 for a, b in pairs(codecs) do
 	if i == 0 then
@@ -187,7 +187,8 @@ ptimes = {
 	alaw = {min = 10, max = 150, default = 20, increment = 10},
 	g729 = {min = 10, max = 230, default = 20, increment = 10},
 	g723 = {min = 30, max = 300, default = 30, increment = 30},
-	g726 = {min = 10, max = 300, default = 20, increment = 10}
+	g726 = {min = 10, max = 300, default = 20, increment = 10},
+	g722 = {min = 10, max = 300, default = 20, increment = 10}
 }
 
 for a, b in pairs(codecs) do

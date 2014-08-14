@@ -107,7 +107,7 @@ sip_provider:value("-", "-")
 sip_provider.default = "-"
 
 -- Create and populate dropdowns with available codec choices                            
-codecs = {ulaw = "G.711MuLaw", alaw = "G.711ALaw", g729 = "G.729a", g723 = "G.723.1", g726 = "G.726_32"}
+codecs = {ulaw = "G.711MuLaw", alaw = "G.711ALaw", g729 = "G.729a", g723 = "G.723.1", g726 = "G.726_32", g722 = "G.722"}
 i = 0
 for a, b in pairs(codecs) do
 	if i == 0 then
