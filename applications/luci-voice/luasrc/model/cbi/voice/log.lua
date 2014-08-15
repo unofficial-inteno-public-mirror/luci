@@ -49,14 +49,14 @@ end
 
 voice_map = Map ("voice")
 function render_call_button(section, line_nr, title)
-	sip_account = voice_map.uci:get("voice", "brcm"..line_nr, "sip_account")
-	if not sip_account then
+	sip_provider = voice_map.uci:get("voice", "brcm"..line_nr, "sip_provider")
+	if not sip_provider then
 		return
 	end
 
 	btn = section:option(Button, "btn"..line_nr, title)
 	btn.write = create_call_file
-	btn.context = sip_account.."-outgoing"
+	btn.context = sip_provider.."-outgoing"
 	btn.line = line_nr
 end
 

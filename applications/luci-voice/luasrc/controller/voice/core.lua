@@ -30,7 +30,7 @@ function index()
 			entry({user, "status", "voice"},			cbi("voice/status"),	"SIP Registration",	80)
 		else
 			entry({user, "services", "voice"},			cbi("voice/country"),	"Voice",		1)
-			entry({user, "services", "voice", "log"},		cbi("voice/log"),	"Call Log",		80)
+			entry({user, "services", "voice", "log"},		cbi("voice/log"),	"Call Log",		80).leaf = true
 			entry({user, "services", "voice", "sip"},
 				arcombine(cbi("voice/sip"), cbi("voice/sip_details")),
 				_("SIP Providers"), 10).leaf = true
