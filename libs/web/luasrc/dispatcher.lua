@@ -162,19 +162,21 @@ function authenticator.htmlauth(validator, accs, default)
 		local _ubus
 		local _ubuscache = { }
 		local i = 1
+		local clntno = "client-%d" %i
 		local ip
 
 		_ubus = bus.connect()
 		_ubuscache["clients"] = _ubus:call("router", "clients", { })
 		_ubus:close()
 
-		while _ubuscache["clients"][i] do
-		        ip = _ubuscache["clients"][i]["ipaddr"]
+		while _ubuscache["clients"][clntno] do
+		        ip = _ubuscache["clients"][clntno]["ipaddr"]
 		        if ip and ip == userip then
 				lansupport = true
 				break
 		        end
 		        i = i + 1
+			clntno = "client-%d" %i
 		end
 	end
 
