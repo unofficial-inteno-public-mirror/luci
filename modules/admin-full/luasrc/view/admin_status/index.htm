@@ -264,7 +264,11 @@ You may obtain a copy of the License at
 					else if (ifc.Wname.search("wwan") != "-1")
 					{
 						si.innerHTML = String.format('<img src="<%=resource%>/icons/wwan.png" />');
-					}					
+					}
+					else if (ifc.Wname.search("wl") != "-1")
+					{
+						si.innerHTML = String.format('<img src="<%=resource%>/icons/wifi.png" />');
+					}
 					else
 					{
 						si.innerHTML = String.format('<img src="<%=resource%>/icons/ethernetwan.png" />');

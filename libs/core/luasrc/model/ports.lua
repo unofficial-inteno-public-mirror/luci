@@ -131,6 +131,8 @@ function l2name (self, ifname)
 		end)
 	elseif ifname:match("^wwan%d") then
 		l2name = "WWAN"
+	elseif ifname:match("^wl%d") then
+		l2name = sys.exec("wlctl -i %q ssid | awk '{print$3}' | sed 's/\"//g'" %ifname)
 	elseif ifname:match("br-") or ifname:match("pppo") then
 		local vif = self:Wname(ifname)
 		if vif:match("^atm%d.1$")  then

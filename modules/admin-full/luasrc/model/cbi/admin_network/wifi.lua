@@ -815,12 +815,22 @@ if hwtype == "broadcom" then
 	--mode:value("wds", translate("WDS"))
 	--mode:value("monitor", translate("Monitor"))
 
+	function mode.write(self, section, value)
+		if value == "sta" then
+			wdev:set("apsta", "1")
+		else
+			wdev:set("apsta", "0")
+		end
+		self.map:set(section, "mode", value)
+	end
+
 	hidden = s:taboption("general", Flag, "hidden", translate("Hide <abbr title=\"Extended Service Set Identifier\">ESSID</abbr>"))
 	hidden:depends({mode="ap"})
 	hidden:depends({mode="adhoc"})
 	hidden:depends({mode="wds"})
 
 	bssmax = s:taboption("general", Value, "bss_max", translate("Maximum Client"))
+	bssmax:depends("mode", "ap")
 	bssmax.default = "16"
 
 	function bssmax.validate(self, value, section)
@@ -847,6 +857,7 @@ if hwtype == "broadcom" then
 	s:taboption("advanced", Flag, "wmm_bss_disable", translate("Disable WMM Advertise"))
 
 	mf = s:taboption("macfilter", ListValue, "macfilter", translate("MAC-Address Filter"))
+	mf:depends("mode", "ap")
 	mf:value("0", translate("Disable"))
 	mf:value("2", translate("Allow listed only"))
 	mf:value("1", translate("Allow all except listed"))
@@ -936,12 +947,12 @@ encr:value("wep-open",   translate("WEP Open System"), {mode="ap"}, {mode="sta"}
 encr:value("wep-shared", translate("WEP Shared Key"),  {mode="ap"}, {mode="sta"}, {mode="ap-wds"}, {mode="sta-wds"}, {mode="adhoc"}, {mode="ahdemo"}, {mode="wds"})
 
 if hwtype == "broadcom" then
-	encr:value("psk", "WPA-PSK", {mode="ap"}, {mode="wds"})
-	encr:value("psk2", "WPA2-PSK", {mode="ap"}, {mode="wds"})
-	encr:value("pskmixedpsk2", "WPA-PSK/WPA2-PSK Mixed Mode", {mode="ap"}, {mode="wds"})
+	encr:value("psk", "WPA-PSK", {mode="ap"}, {mode="sta"}, {mode="wds"})
+	encr:value("psk2", "WPA2-PSK", {mode="ap"}, {mode="sta"}, {mode="wds"})
+	encr:value("pskmixedpsk2", "WPA-PSK/WPA2-PSK Mixed Mode", {mode="ap"}, {mode="sta"}, {mode="wds"})
 	encr:value("wpa", "WPA-EAP", {mode="ap"})
 	encr:value("wpa2", "WPA2-EAP", {mode="ap"})
-	encr:value("wpamixedwpa2", "WPA-EAP/WPA2-EAP Mixed Mode", {mode="ap"})
+	encr:value("wpamixedwpa2", "WPA-EAP/WPA2-EAP Mixed Mode", {mode="ap"}, {mode="sta"})
 end
 
 encr.write = function(self, section, value)
