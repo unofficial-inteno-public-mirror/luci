@@ -16,14 +16,14 @@ local vc = require "luci.model.cbi.voice.common"
 arg[1] = arg[1] or ""
 
 -- Create a map and a section
-m = Map("voice", "Opening Hours Profile")
+m = Map("voice_client", "Opening Hours Profile")
 m.redirect = dsp.build_url("admin/services/voice/opening_hours")
 s = m:section(NamedSection, arg[1], "opening_hours_profile")
 s.anonymous = true
 s.addremove = false
 
 -- Set page title, or redirect if we have nothing to edit
-if m.uci:get("voice", arg[1]) ~= "opening_hours_profile" then
+if m.uci:get("voice_client", arg[1]) ~= "opening_hours_profile" then
 	luci.http.redirect(m.redirect)
 	return
 else
@@ -49,7 +49,7 @@ invert.default = 1
 
 s = m:section(TypedSection, "timespan", "Timespans", "Specify as 00:00-23:59; mon-sun; 1-31; jan-dec.<br/> Use * as wildcard.")
 function s.filter(self, section)
-        owner = m.uci:get("voice", section, 'owner')
+        owner = m.uci:get("voice_client", section, 'owner')
 	if owner == arg[1] then
 		return true
 	end
@@ -62,7 +62,7 @@ s.addremove = true
 -- Find the lowest free section number
 function get_new_section_number()
         local section_nr = 0
-        while m.uci:get("voice", "timespan" .. section_nr) do
+        while m.uci:get("voice_client", "timespan" .. section_nr) do
                 section_nr = section_nr + 1
         end
         return section_nr
@@ -74,7 +74,7 @@ end
 function s.create(self, section)
 	section_number = get_new_section_number()
 	data = { owner = arg[1], time_range = "*", days_of_week = "*", days_of_month = "*", months = "*" }
-	newSelection = m.uci:section("voice", "timespan", "timespan" .. section_number , data)
+	newSelection = m.uci:section("voice_client", "timespan", "timespan" .. section_number , data)
 end
 
 -- Called when an account is being deleted

@@ -22,7 +22,7 @@ local vc = require "luci.model.cbi.voice.common"
 
 default_extension = 0
 
-m = Map ("voice", "FXS and DECT Settings")
+m = Map("voice_client", "FXS and DECT Settings")
 s = m:section(TypedSection, "brcm_line")
 s.template  = "cbi/tblsection"
 s.anonymous = true
@@ -60,8 +60,8 @@ clir.disabled = "0"
 clir.enabled = "1"
 
 -- Show SIP account selection
-sip_provider = s:option(ListValue, "sip_provider", "Call out using SIP provider")
-m.uci:foreach("voice", "sip_service_provider",
+sip_provider = s:option(ListValue, "sip_account", "Call out using SIP provider")
+m.uci:foreach("voice_client", "sip_service_provider",
 	function(s1)
 		if s1.enabled == "1" then
 			sip_provider:value(s1['.name'], s1.name)

@@ -12,7 +12,7 @@ You may obtain a copy of the License at
 -- http://luci.subsignal.org/trac/browser/luci/trunk/applications/luci-radvd/luasrc/model/cbi/radvd.lua?rev=6
 local ds = require "luci.dispatcher"
 
-m = Map ("voice", "Opening Hours")
+m = Map("voice_client", "Opening Hours")
 s = m:section(TypedSection, "opening_hours_profile")
 s.template = "voice/tblsection_refresh"
 s.anonymous = true
@@ -20,7 +20,7 @@ s.addremove = true
 s.extedit = ds.build_url("admin/services/voice/opening_hours/%s")
 
 section_count = 0
-m.uci:foreach("voice", "opening_hours_profile",
+m.uci:foreach("voice_client", "opening_hours_profile",
 	function(s1)
 		section_count = section_count + 1
 	end
@@ -29,7 +29,7 @@ m.uci:foreach("voice", "opening_hours_profile",
 -- Find the lowest free section number
 function get_new_section_number()
 	local section_nr = 0
-	while m.uci:get("voice", "opening_hours_profile" .. section_nr) do
+	while m.uci:get("voice_client", "opening_hours_profile" .. section_nr) do
 		section_nr = section_nr + 1
 	end
 	return section_nr
@@ -41,20 +41,20 @@ end
 function s.create(self, section)
 	profile_section_nr = get_new_section_number()
 	data = { name = "Untitled Profile" }
-	newProfile = m.uci:section("voice", "opening_hours_profile", "opening_hours_profile" .. profile_section_nr, data)
+	newProfile = m.uci:section("voice_client", "opening_hours_profile", "opening_hours_profile" .. profile_section_nr, data)
 
 	local ts_section_nr = 0
-	while m.uci:get("voice", "timespan" .. ts_section_nr) do
+	while m.uci:get("voice_client", "timespan" .. ts_section_nr) do
 		ts_section_nr = ts_section_nr + 1
 	end
 	data = { owner = "opening_hours_profile" .. profile_section_nr, name = "Always open", time_range = "*", days_of_week = "*", days_of_month = "*", months = "*" }
-	newTimespan = m.uci:section("voice", "timespan", "timespan" .. ts_section_nr, data)
+	newTimespan = m.uci:section("voice_client", "timespan", "timespan" .. ts_section_nr, data)
 	luci.http.redirect(s.extedit % newProfile)
 end
 
 -- Called when a profile is being deleted
 function s.remove(self, section)
-	m.uci:foreach("voice", "timespan",
+	m.uci:foreach("voice_client", "timespan",
 		function(s1)
 			if s1["owner"] == section then
 				m.uci:delete("voice", s1[".name"])

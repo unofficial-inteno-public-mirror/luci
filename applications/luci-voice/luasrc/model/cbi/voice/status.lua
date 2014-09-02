@@ -11,7 +11,7 @@ function get_status()
 	json_data = luci.json.decode(ubus_data)
 	sip_data = json_data.sip
 
-	u:foreach("voice", "sip_service_provider",
+	u:foreach("voice_client", "sip_service_provider",
 		function(sip_account)
 			accountname = sip_account['.name']
 			if not sip_account.enabled or sip_account.enabled ~= "1" then

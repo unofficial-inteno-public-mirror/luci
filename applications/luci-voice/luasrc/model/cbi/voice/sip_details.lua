@@ -21,14 +21,14 @@ local dsp = require "luci.dispatcher"
 arg[1] = arg[1] or ""
 
 -- Create a map and a section
-m = Map("voice", "SIP Account")
+m = Map("voice_client", "SIP Account")
 m.redirect = dsp.build_url("admin/services/voice/sip")
 s = m:section(NamedSection, arg[1], "sip_service_provider")
 s.anonymous = true
 s.addremove = false
 
 -- Set page title, or redirect if we have nothing to edit
-if m.uci:get("voice", arg[1]) ~= "sip_service_provider" then
+if m.uci:get("voice_client", arg[1]) ~= "sip_service_provider" then
 	luci.http.redirect(m.redirect)
 	return
 else
@@ -52,7 +52,7 @@ function parse_enabled(self, section)
 			function(v)
 				name = v['.name']
 				if v.sip_account == section then
-					m.uci:set("voice", name, "sip_account", "-")
+					m.uci:set("voice_client", name, "sip_account", "-")
 				end
 			end
 		)
@@ -105,7 +105,7 @@ vc.foreach_user({'sip'},
 if vc.has_package("luci-app-voice-pbx") then
 	queue = s:option(ListValue, "call_queue", "&nbsp;")
 	queue:depends('target', 'queue')
-	m.uci:foreach("voice", "queue",
+	m.uci:foreach("voice_client", "queue",
 		function(v)
 			queue:value(v['.name'], v['name'])
 		end
@@ -113,7 +113,7 @@ if vc.has_package("luci-app-voice-pbx") then
 
 	ivr = s:option(ListValue, "call_ivr", "&nbsp;")
 	ivr:depends('target', 'ivr')
-	m.uci:foreach("voice", "ivr",
+	m.uci:foreach("voice_client", "ivr",
 		function(v)
 			ivr:value(v['.name'], v['name'])
 		end
@@ -121,7 +121,7 @@ if vc.has_package("luci-app-voice-pbx") then
 
 	call_filter = s:option(ListValue, "call_filter", "Call filter")
 	call_filter:value("-", "-")
-	m.uci:foreach("voice", "call_filter",
+	m.uci:foreach("voice_client", "call_filter",
 		function(s1)
 			call_filter:value(s1[".name"], s1["name"])
 		end

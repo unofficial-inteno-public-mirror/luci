@@ -47,9 +47,9 @@ function back_to_log(self, section)
 	luci.http.redirect(luci.dispatcher.build_url("admin/services/voice/log"))
 end
 
-voice_map = Map ("voice")
+voice_map = Map("voice_client")
 function render_call_button(section, line_nr, title)
-	sip_provider = voice_map.uci:get("voice", "brcm"..line_nr, "sip_provider")
+	sip_provider = voice_map.uci:get("voice_client", "brcm"..line_nr, "sip_account")
 	if not sip_provider then
 		return
 	end

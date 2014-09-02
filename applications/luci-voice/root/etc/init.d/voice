@@ -683,8 +683,8 @@ encrypt_password()
 			echo "Encrypting password for $1"
 			/usr/bin/voicesec -e $secret > /usr/lib/asterisk/voicesec_$1
 		fi
-		uci_remove voice $1 secret
-		uci_commit voice
+		uci_remove voice_client $1 secret
+		uci_commit voice_client
 	fi
 }
 
@@ -1581,7 +1581,7 @@ configure_brcm_line()
 	local clir
 
 	config_get extension $1 extension
-	config_get sip_provider $1 sip_provider
+	config_get sip_provider $1 sip_account
 	config_get ptime $1 ptime
 	config_get silence $1 vad
 	config_get ecan $1 echo_cancel
@@ -1828,7 +1828,7 @@ configure_custom_sounds()
 create_extensions_dialtone()
 {
 	local sip_provider
-	config_get sip_provider $1 sip_provider
+	config_get sip_provider $1 sip_account
 
 	#If line is configured with an active SIP Provider, setup dialtone extension
 	if [ -n "$sip_provider" -a "$sip_provider" != "-" ] ; then
@@ -1867,11 +1867,11 @@ set_line_name()
 {
 	line_number=${1:4}
 	if [ "$line_number" -lt "$dectCount" ] ; then
-		uci_set voice $1 name "DECT $(( $line_number + 1 ))"
+		uci_set voice_client $1 name "DECT $(( $line_number + 1 ))"
 	elif [ "$line_number" -lt "$allCount" ] ; then
-		uci_set voice $1 name "Tel $(( $line_number - $dectCount + 1 ))"
+		uci_set voice_client $1 name "Tel $(( $line_number - $dectCount + 1 ))"
 	else
-		uci_set voice $1 name $1
+		uci_set voice_client $1 name $1
 	fi
 }
 
@@ -1917,13 +1917,13 @@ start() {
 	mkdir -p $WORKDIR
 	mkdir -p $WORKDIR/ssl
 	# Load config file
-	config_load voice
+	config_load voice_client
 
 	########################################################
 	# Set line names according to whats reported by brcminfo
 	########################################################
 	config_foreach set_line_name brcm_line
-	uci_commit voice
+	uci_commit voice_client
 
 	#######################################
 	# Create temporary files from templates

@@ -19,14 +19,14 @@ local vc = require "luci.model.cbi.voice.common"
 arg[1] = arg[1] or ""
 
 -- Create a map and a section
-m = Map("voice", "SIP User")
+m = Map("voice_client", "SIP User")
 m.redirect = dsp.build_url("admin/services/voice/sip_users")
 s = m:section(NamedSection, arg[1], "sip_user")
 s.anonymous = true
 s.addremove = false
 
 -- Set page title, or redirect if we have nothing to edit
-if m.uci:get("voice", arg[1]) ~= "sip_user" then
+if m.uci:get("voice_client", arg[1]) ~= "sip_user" then
 	luci.http.redirect(m.redirect)
 	return
 else
@@ -97,7 +97,7 @@ end
 
 -- Create and populate dropdown with available sip provider choices
 sip_provider = s:option(ListValue, "sip_provider", "Call out using SIP provider")
-m.uci:foreach("voice", "sip_service_provider",
+m.uci:foreach("voice_client", "sip_service_provider",
 	function(s1)
 		if s1.enabled == "1" then
 			sip_provider:value(s1['.name'], s1.name)

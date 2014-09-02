@@ -12,7 +12,7 @@ You may obtain a copy of the License at
 -- http://luci.subsignal.org/trac/browser/luci/trunk/applications/luci-radvd/luasrc/model/cbi/radvd.lua?rev=6
 local ds = require "luci.dispatcher"
 
-m = Map ("voice", "Call Queues")
+m = Map("voice_client", "Call Queues")
 s = m:section(TypedSection, "queue")
 s.template = "voice/tblsection_refresh"
 s.anonymous = true
@@ -20,7 +20,7 @@ s.addremove = true
 s.extedit = ds.build_url("admin/services/voice/queues/%s")
 
 section_count = 0
-m.uci:foreach("voice", "queue",
+m.uci:foreach("voice_client", "queue",
 	function(s1)
 		section_count = section_count + 1
 	end
@@ -29,7 +29,7 @@ m.uci:foreach("voice", "queue",
 -- Find the lowest free section number
 function get_new_section_number()
 	local section_nr = 0
-	while m.uci:get("voice", "queue" .. section_nr) do
+	while m.uci:get("voice_client", "queue" .. section_nr) do
 		section_nr = section_nr + 1
 	end
 	return section_nr
@@ -41,7 +41,7 @@ end
 function s.create(self, section)
 	section_nr = get_new_section_number()
 	data = { name = "Untitled Call Queue", opening_hours_profile = "-", enabled = 0 }
-	newQueue = m.uci:section("voice", "queue", "queue" .. section_nr, data)
+	newQueue = m.uci:section("voice_client", "queue", "queue" .. section_nr, data)
 	luci.http.redirect(s.extedit % newQueue)
 end
 

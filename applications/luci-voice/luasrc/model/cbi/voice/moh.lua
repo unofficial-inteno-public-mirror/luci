@@ -1,7 +1,7 @@
 local dsp = require "luci.dispatcher"
 local vc = require "luci.model.cbi.voice.common"
 
-m = Map ("voice", translate("Music On Hold"))
+m = Map("voice_client", translate("Music On Hold"))
 
 vc.add_section("moh")
 s = m:section(TypedSection, "moh", "MOH", "Upload a sound file to be played when a call is put on hold or placed in a queue")

@@ -17,7 +17,7 @@
     along with luci-pbx.  If not, see <http://www.gnu.org/licenses/>.
 ]]--
 
-m = Map ("voice", translate("Custom dialplan settings"),
+m = Map("voice_client", translate("Custom dialplan settings"),
 "Allows specification of extra entries in the local dialplan. This will be included for all lines.")
 
 s = m:section(TypedSection, "dialplan")

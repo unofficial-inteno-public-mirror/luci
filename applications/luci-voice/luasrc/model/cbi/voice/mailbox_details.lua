@@ -19,7 +19,7 @@ local vc = require "luci.model.cbi.voice.common"
 arg[1] = arg[1] or ""
 
 -- Create a map and a section
-m = Map("voice", "Mailbox")
+m = Map("voice_client", "Mailbox")
 m.redirect = dsp.build_url("admin/services/voice/voicemail")
 s = m:section(NamedSection, arg[1], "mailbox")
 s.anonymous = true
@@ -27,7 +27,7 @@ s.addremove = false
 
 function user_has_mailbox(user)
 	v = false
-	m.uci.foreach("voice", "mailbox",
+	m.uci.foreach("voice_client", "mailbox",
 		function(s1)
 			if s1['user'] == user then
 				v = true
@@ -39,7 +39,7 @@ end
 
 create_new = false
 -- Set page title, or redirect if we have nothing to edit
-if m.uci:get("voice", arg[1]) ~= "mailbox" then
+if m.uci:get("voice_client", arg[1]) ~= "mailbox" then
 	luci.http.redirect(m.redirect)
 	return
 else
@@ -56,7 +56,7 @@ end
 user = s:option(ListValue, "user", "User")
 current_user = nil
 if not create_new then
-	current_user = m.uci:get("voice", arg[1], "user")
+	current_user = m.uci:get("voice_client", arg[1], "user")
 end
 user:value("-", "-")
 vc.foreach_user({'brcm', 'sip'},
@@ -66,7 +66,7 @@ vc.foreach_user({'brcm', 'sip'},
 		end
 	end
 )
-m.uci:foreach("voice", "sip_service_provider",
+m.uci:foreach("voice_client", "sip_service_provider",
 	function(v)
 		if not user_has_mailbox(v['.name']) or v['.name'] == current_user then
 			user:value(v['.name'], v['name'])
@@ -75,7 +75,7 @@ m.uci:foreach("voice", "sip_service_provider",
 )
 function user.validate(self, value, section)
 	ok = true
-	m.uci:foreach("voice", "mailbox",
+	m.uci:foreach("voice_client", "mailbox",
 		function(s1)
 			if s1['.name'] ~= section and s1['user'] ~= '-' and s1['user'] == value then
 				ok = false

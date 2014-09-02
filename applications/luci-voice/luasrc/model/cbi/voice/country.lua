@@ -1,6 +1,6 @@
 local dsp = require "luci.dispatcher"
 
-m = Map ("voice", translate("BRCM Country Settings"))
+m = Map("voice_client", translate("BRCM Country Settings"))
 function m.on_before_apply(self)
 	redirect = dsp.build_url("admin/system/reboot")
 	luci.http.redirect(redirect)

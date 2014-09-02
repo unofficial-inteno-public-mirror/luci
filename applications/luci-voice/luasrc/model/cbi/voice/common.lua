@@ -45,11 +45,11 @@ function common.validate_extension(extension, user)
 end
 
 function common.foreach_user(types, func)
-	m = luci.cbi.Map("voice", nil)
+	m = luci.cbi.Map("voice_client", nil)
 	for _,t in pairs(types) do
 		if t == 'brcm' then
 			lineCount = 0
-			m.uci:foreach("voice", "brcm_line",
+			m.uci:foreach("voice_client", "brcm_line",
 				function(s1)
 					if lineCount < allCount then
 						-- Make sure name is set
@@ -63,21 +63,21 @@ function common.foreach_user(types, func)
 			)
 		end
 		if t == 'sip' then
-			m.uci:foreach("voice", "sip_user",
+			m.uci:foreach("voice_client", "sip_user",
 				function(s1)
 					func(s1)
 				end
 			)
 		end
 		if t == 'queue' then
-			m.uci:foreach("voice", "queue",
+			m.uci:foreach("voice_client", "queue",
 				function(s1)
 					func(s1)
 				end
 			)
 		end
 		if t == 'ivr' then
-			m.uci:foreach("voice", "ivr",
+			m.uci:foreach("voice_client", "ivr",
 				function(s1)
 					func(s1)
 				end
@@ -104,7 +104,7 @@ function common.user2name(user)
 			end
 		end
 	)
-	m.uci:foreach("voice", "sip_service_provider",
+	m.uci:foreach("voice_client", "sip_service_provider",
 		function(v)
 			if v['.name'] == user then
 				name = v['name']
@@ -180,10 +180,10 @@ end
 
 function common.add_section(name)
 	x = uci.cursor()
-	s = x:get("voice", name)
+	s = x:get("voice_client", name)
 	if not s then
-		x:set("voice", name, name)
-		x:commit("voice")
+		x:set("voice_client", name, name)
+		x:commit("voice_client")
 	end
 end
 

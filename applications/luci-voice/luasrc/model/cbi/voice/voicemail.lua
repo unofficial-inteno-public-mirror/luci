@@ -22,7 +22,7 @@ local ds = require "luci.dispatcher"
 local vc = require "luci.model.cbi.voice.common"
 
 -- Voice Mail for SIP providers
-m = Map ("voice", "Voice Mail")
+m = Map("voice_client", "Voice Mail")
 s1 = m:section(TypedSection, "mailbox", "Mailboxes")
 s1.template  = "cbi/tblsection"
 s1.anonymous = true
@@ -30,7 +30,7 @@ s1.addremove = true
 s1.extedit = ds.build_url("admin/services/voice/voicemail/%s")
 
 section_count = 0
-m.uci:foreach("voice", "mailbox",
+m.uci:foreach("voice_client", "mailbox",
 	function(s1)
 		section_count = section_count + 1
 	end
@@ -39,7 +39,7 @@ m.uci:foreach("voice", "mailbox",
 -- Find the lowest free section number
 function get_new_section_number()
 	local section_nr = 0
-	while m.uci:get("voice", "mailbox" .. section_nr) do
+	while m.uci:get("voice_client", "mailbox" .. section_nr) do
 		section_nr = section_nr + 1
 	end
 	return section_nr
@@ -51,7 +51,7 @@ end
 function s1.create(self, section)
 	section_number = get_new_section_number()
 	data = { user = "-", enabled = 0 }
-	newAccount = m.uci:section("voice", "mailbox", "mailbox" .. section_number , data)
+	newAccount = m.uci:section("voice_client", "mailbox", "mailbox" .. section_number , data)
 	luci.http.redirect(s1.extedit % newAccount)
 end
 

@@ -1,7 +1,7 @@
 local dsp = require "luci.dispatcher"
 local vc = require "luci.model.cbi.voice.common"
 
-m = Map ("voice", translate("Sounds"))
+m = Map("voice_client", translate("Sounds"))
 
 function remove_recording(self, section)
 	for i,v in pairs(vc.get_recordings()) do
@@ -13,11 +13,11 @@ function remove_recording(self, section)
 	luci.http.redirect(luci.dispatcher.build_url("admin/services/voice/voice"))
 end
 
-number = m.uci:get("voice", "custom_dialplan", "record_message_extension")
+number = m.uci:get("voice_client", "custom_dialplan", "record_message_extension")
 if not number then
 	number = "#99999"
-	m.uci:set("voice", "custom_dialplan", "record_message_extension", number)
-	m.uci:commit("voice")
+	m.uci:set("voice_client", "custom_dialplan", "record_message_extension", number)
+	m.uci:commit("voice_client")
 end
 description = "Call " .. number .. " to record a new message"
 

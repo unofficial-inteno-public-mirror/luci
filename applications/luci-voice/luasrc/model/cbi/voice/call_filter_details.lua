@@ -16,7 +16,7 @@ local vc = require "luci.model.cbi.voice.common"
 arg[1] = arg[1] or ""
 
 -- Create a map and a section
-m = Map("voice", "Call Filter")
+m = Map("voice_client", "Call Filter")
 m.redirect = dsp.build_url("admin/services/voice/call_filters")
 s = m:section(NamedSection, arg[1], "call_filter")
 s.anonymous = true
@@ -24,7 +24,7 @@ s.addremove = false
 
 function num_call_filters(sip_provider)
 	count = 0
-	m.uci.foreach("voice", "call_filter",
+	m.uci.foreach("voice_client", "call_filter",
 		function(s1)
 			if s1['sip_provider'] == sip_provider then
 				count = count + 1
@@ -36,7 +36,7 @@ end
 
 -- Set page title, or redirect if we have nothing to edit
 create_new = false
-if m.uci:get("voice", arg[1]) ~= "call_filter" then
+if m.uci:get("voice_client", arg[1]) ~= "call_filter" then
 	luci.http.redirect(m.redirect)
 	return
 else
@@ -72,7 +72,7 @@ outgoing.default = "blacklist"
 
 s = m:section(TypedSection, "call_filter_rule", "Rules", "Specify rules for incoming or outgoing calls. If a rule is created for number 123 it will match all numbers starting with 123.")
 function s.filter(self, section)
-        owner = m.uci:get("voice", section, 'owner')
+        owner = m.uci:get("voice_client", section, 'owner')
 	if owner == arg[1] then
 		return true
 	end
@@ -85,7 +85,7 @@ s.addremove = true
 -- Find the lowest free section number
 function get_new_section_number()
         local section_nr = 0
-        while m.uci:get("voice", "call_filter_rule" .. section_nr) do
+        while m.uci:get("voice_client", "call_filter_rule" .. section_nr) do
                 section_nr = section_nr + 1
         end
         return section_nr
@@ -96,7 +96,7 @@ end
 function s.create(self, section)
 	section_number = get_new_section_number()
 	data = { owner = arg[1], enabled = 0 }
-	newSelection = m.uci:section("voice", "call_filter_rule", "call_filter_rule" .. section_number , data)
+	newSelection = m.uci:section("voice_client", "call_filter_rule", "call_filter_rule" .. section_number , data)
 end
 
 -- Called when a call filter rule is being deleted

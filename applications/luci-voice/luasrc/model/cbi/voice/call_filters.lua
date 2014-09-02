@@ -13,7 +13,7 @@ You may obtain a copy of the License at
 local ds = require "luci.dispatcher"
 local vc = require "luci.model.cbi.voice.common"
 
-m = Map ("voice", "Call Filters")
+m = Map("voice_client", "Call Filters")
 s = m:section(TypedSection, "call_filter")
 s.template = "voice/tblsection_refresh"
 s.anonymous = true
@@ -21,7 +21,7 @@ s.addremove = true
 s.extedit = ds.build_url("admin/services/voice/call_filters/%s")
 
 section_count = 0
-m.uci:foreach("voice", "call_filter",
+m.uci:foreach("voice_client", "call_filter",
 	function(s1)
 		section_count = section_count + 1
 	end
@@ -30,7 +30,7 @@ m.uci:foreach("voice", "call_filter",
 -- Find the lowest free section number
 function get_new_section_number()
 	local section_nr = 0
-	while m.uci:get("voice", "call_filter" .. section_nr) do
+	while m.uci:get("voice_client", "call_filter" .. section_nr) do
 		section_nr = section_nr + 1
 	end
 	return section_nr
@@ -42,14 +42,14 @@ end
 function s.create(self, section)
 	section_nr = get_new_section_number()
 	data = { name = "Untitled Call Filter", enabled = 0, incoming = "blacklist", outgoing = "blacklist" }
-	newQueue = m.uci:section("voice", "call_filter", "call_filter" .. section_nr, data)
+	newQueue = m.uci:section("voice_client", "call_filter", "call_filter" .. section_nr, data)
 	luci.http.redirect(s.extedit % newQueue)
 end
 
 -- Called when a call filter is being deleted
 function s.remove(self, section)
 	-- Remove all rules belonging to this call filter
-	m.uci:foreach("voice", "call_filter_rule",
+	m.uci:foreach("voice_client", "call_filter_rule",
 		function(s1)
 			if s1["owner"] == section then
 				m.uci:delete("voice", s1[".name"])

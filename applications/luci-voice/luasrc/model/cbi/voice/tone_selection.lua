@@ -16,15 +16,15 @@ local vc = require "luci.model.cbi.voice.common"
 arg[1] = arg[1] or ""
 
 -- Create a map and a section
-m = Map("voice", "Tone Selection")
-owner = m.uci:get("voice", arg[1], "owner") or ""
+m = Map("voice_client", "Tone Selection")
+owner = m.uci:get("voice_client", arg[1], "owner") or ""
 m.redirect = dsp.build_url("admin/services/voice/ivr/" .. owner)
 s = m:section(NamedSection, arg[1], "ivr")
 s.anonymous = true
 s.addremove = false
 
 -- Set page title, or redirect if we have nothing to edit
-if m.uci:get("voice", arg[1]) ~= "tone_selection" then
+if m.uci:get("voice_client", arg[1]) ~= "tone_selection" then
 	luci.http.redirect(m.redirect)
 	return
 else

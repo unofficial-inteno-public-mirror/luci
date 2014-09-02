@@ -21,7 +21,7 @@
 local ds = require "luci.dispatcher"
 local vc = require "luci.model.cbi.voice.common"
 
-m = Map ("voice", "SIP Service Providers")
+m = Map("voice_client", "SIP Service Providers")
 s = m:section(TypedSection, "sip_service_provider")
 s.template = "voice/tblsection_refresh"
 s.anonymous = true
@@ -29,7 +29,7 @@ s.addremove = true
 s.extedit = ds.build_url("admin/services/voice/sip/%s")
 
 section_count = 0
-m.uci:foreach("voice", "sip_service_provider",
+m.uci:foreach("voice_client", "sip_service_provider",
 	function(s1)
 		section_count = section_count + 1
 	end
@@ -38,7 +38,7 @@ m.uci:foreach("voice", "sip_service_provider",
 -- Find the lowest free section number
 function get_new_section_number()
 	local section_nr = 0
-	while m.uci:get("voice", "sip" .. section_nr) do
+	while m.uci:get("voice_client", "sip" .. section_nr) do
 		section_nr = section_nr + 1
 	end
 	return section_nr
@@ -51,7 +51,7 @@ function s.create(self, section)
 	if section_count < 8 then
 		section_number = get_new_section_number()
 		data = { name = "Account " .. section_number + 1, enabled = 0 }
-		newAccount = m.uci:section("voice", "sip_service_provider", "sip" .. section_number, data)
+		newAccount = m.uci:section("voice_client", "sip_service_provider", "sip" .. section_number, data)
 		luci.http.redirect(s.extedit % newAccount)
 	end
 end
@@ -63,22 +63,22 @@ function s.remove(self, section)
 		function(v)
 			name = v['.name']
 			if v.sip_account == section then
-				m.uci:set("voice", name, "sip_account", "-")
+				m.uci:set("voice_client", name, "sip_account", "-")
 			end
 		end
 	)
 	-- Remove call filters associated to this account
-	m.uci:foreach("voice", "call_filter",
+	m.uci:foreach("voice_client", "call_filter",
 		function(s1)
 			if s1['sip_provider'] == section then
-				m.uci:set("voice", s1[".name"], "sip_provider", "-")
+				m.uci:set("voice_client", s1[".name"], "sip_provider", "-")
 			end
 		end
 	)
-	m.uci:foreach("voice", "mailbox",
+	m.uci:foreach("voice_client", "mailbox",
 		function(s1)
 			if s1["user"] == section then
-				m.uci:set("voice", s1[".name"], "user", "-")
+				m.uci:set("voice_client", s1[".name"], "user", "-")
 			end
 		end
 	)
@@ -102,7 +102,7 @@ function l.cfgvalue(self, section)
 	local v	= ""
 	local target = Value.cfgvalue(self, section)
 	if target == "direct" then
-		local l = m.uci:get("voice", section, "call_lines")
+		local l = m.uci:get("voice_client", section, "call_lines")
 		if l then
 			lines = string.split(l, " ")
 			for i,l in ipairs(lines) do
@@ -131,12 +131,12 @@ function l.cfgvalue(self, section)
 			end
 		end
 	elseif target == "queue" then
-		q = m.uci:get("voice", section, "call_queue")
+		q = m.uci:get("voice_client", section, "call_queue")
 		if q then
 			v = vc.user2name(q)
 		end
 	elseif target == "ivr" then
-		i = m.uci:get("voice", section, "call_ivr")
+		i = m.uci:get("voice_client", section, "call_ivr")
 		if i then
 			v = vc.user2name(i)
 		end

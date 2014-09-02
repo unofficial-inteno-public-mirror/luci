@@ -16,14 +16,14 @@ local vc = require "luci.model.cbi.voice.common"
 arg[1] = arg[1] or ""
 
 -- Create a map and a section
-m = Map("voice", "IVR")
+m = Map("voice_client", "IVR")
 m.redirect = dsp.build_url("admin/services/voice/ivr")
 s = m:section(NamedSection, arg[1], "ivr")
 s.anonymous = true
 s.addremove = false
 
 -- Set page title, or redirect if we have nothing to edit
-if m.uci:get("voice", arg[1]) ~= "ivr" then
+if m.uci:get("voice_client", arg[1]) ~= "ivr" then
 	luci.http.redirect(m.redirect)
 	return
 else
@@ -46,7 +46,7 @@ end
 
 opening_hours = s:option(ListValue, "opening_hours_profile", "Opening Hours Profile")
 opening_hours:value("-", "-")
-m.uci:foreach("voice", "opening_hours_profile",
+m.uci:foreach("voice_client", "opening_hours_profile",
 	function(v)
 		opening_hours:value(v['.name'], v['name'])
 	end
@@ -80,7 +80,7 @@ end
 
 s = m:section(TypedSection, "tone_selection", "Tone Selections")
 function s.filter(self, section)
-        owner = m.uci:get("voice", section, 'owner')
+        owner = m.uci:get("voice_client", section, 'owner')
 	if owner == arg[1] then
 		return true
 	end
@@ -94,7 +94,7 @@ s.extedit = ds.build_url("admin/services/voice/ivr_details/%s")
 -- Find the lowest free section number
 function get_new_section_number()
         local section_nr = 0
-        while m.uci:get("voice", "tone_selection" .. section_nr) do
+        while m.uci:get("voice_client", "tone_selection" .. section_nr) do
                 section_nr = section_nr + 1
         end
         return section_nr
@@ -106,7 +106,7 @@ end
 function s.create(self, section)
 	section_number = get_new_section_number()
 	data = { owner = arg[1] }
-	newSelection = m.uci:section("voice", "tone_selection", "tone_selection" .. section_number , data)
+	newSelection = m.uci:section("voice_client", "tone_selection", "tone_selection" .. section_number , data)
 	luci.http.redirect(s.extedit % newSelection)
 end
 

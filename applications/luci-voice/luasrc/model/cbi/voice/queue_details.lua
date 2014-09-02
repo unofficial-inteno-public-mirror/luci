@@ -16,14 +16,14 @@ local vc = require "luci.model.cbi.voice.common"
 arg[1] = arg[1] or ""
 
 -- Create a map and a section
-m = Map("voice", "Call Queue")
+m = Map("voice_client", "Call Queue")
 m.redirect = dsp.build_url("admin/services/voice/queues")
 s = m:section(NamedSection, arg[1], "queue")
 s.anonymous = true
 s.addremove = false
 
 -- Set page title, or redirect if we have nothing to edit
-if m.uci:get("voice", arg[1]) ~= "queue" then
+if m.uci:get("voice_client", arg[1]) ~= "queue" then
 	luci.http.redirect(m.redirect)
 	return
 else
@@ -46,7 +46,7 @@ end
 
 opening_hours = s:option(ListValue, "opening_hours_profile", "Opening Hours Profile")
 opening_hours:value("-", "-")
-m.uci:foreach("voice", "opening_hours_profile",
+m.uci:foreach("voice_client", "opening_hours_profile",
 	function(v)
 		opening_hours:value(v['.name'], v['name'])
 	end

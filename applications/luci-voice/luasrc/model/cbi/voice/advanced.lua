@@ -22,7 +22,7 @@ require("luci.tools.webadmin")
 local datatypes = require("luci.cbi.datatypes")
 local vc = require "luci.model.cbi.voice.common"
 
-m = Map ("voice", translate("Advanced settings"))
+m = Map("voice_client", translate("Advanced settings"))
 
 -- SIP common settings --------------------------------------------------------
 sip = m:section(TypedSection, "sip_advanced", "Advanced SIP settings")
@@ -101,7 +101,7 @@ end
 realm = sip:option(Value, 'realm', "Realm", "Realm for digest authentication, set this to your host name or domain name");
 localnet = sip:option(DynamicList, 'localnet', "Localnet", "Network addresses that are considered inside of the NATted network");
 
-advanced_register_settings = m.uci.get("voice", "features", "advanced_register_settings") == "1"
+advanced_register_settings = m.uci.get("voice_client", "features", "advanced_register_settings") == "1"
 if advanced_register_settings then
 	registertimeout = sip:option(Value, 'registertimeout', "Register Timeout", "Time before giving up a registration attempt");
 	registertimeout.default = 30
@@ -192,8 +192,8 @@ s:option(DummyValue, 'name', "SIP Account")
 s:option(DynamicList, "direct_dial", "Define number series with a prefix and a total length. Example: 0520XXXXXX (a 10 digit number starting with 0520)")
 
 -- Call Return and Redial
-callreturn_enabled = m.uci.get("voice", "features", "callreturn_enabled") == "1"
-redial_enabled = m.uci.get("voice", "features", "redial_enabled") == "1"
+callreturn_enabled = m.uci.get("voice_client", "features", "callreturn_enabled") == "1"
+redial_enabled = m.uci.get("voice_client", "features", "redial_enabled") == "1"
 
 if callreturn_enabled and redial_enabled then
 	s = m:section(TypedSection, "sip_service_provider", "Call Return and Redial", "Key combinations for Call Return and Redial activation")
@@ -230,7 +230,7 @@ if redial_enabled then
 end
 
 -- Call Forwarding settings
-if m.uci.get("voice", "features", "callforward_enabled") == "1" then
+if m.uci.get("voice_client", "features", "callforward_enabled") == "1" then
 	s = m:section(TypedSection, "sip_service_provider", "Call Forwarding", "Key combinations for Call Forwarding activation/deactivation")
 	s.template  = "cbi/tblsection"
 	s.anonymous = true
@@ -272,12 +272,12 @@ end
 -- Call Back Busy Subscriber
 -- Make sure that the 'cbbs_localextensions' section exists and that it has a name
 vc.add_section("cbbs_localextensions")
-name = m.uci:get("voice", "cbbs_localextensions", "name")
+name = m.uci:get("voice_client", "cbbs_localextensions", "name")
 if not name then
-	m.uci:set("voice", "cbbs_localextensions", "name", "Local Extensions")
-	m.uci:commit("voice")
+	m.uci:set("voice_client", "cbbs_localextensions", "name", "Local Extensions")
+	m.uci:commit("voice_client")
 end
-if m.uci.get("voice", "features", "cbbs_enabled") == "1" then
+if m.uci.get("voice_client", "features", "cbbs_enabled") == "1" then
 	s = m:section(TypedSection, "sip_service_provider", "Call Back Busy Subscriber")
 	s.template  = "cbi/tblsection"
 	s.anonymous = true

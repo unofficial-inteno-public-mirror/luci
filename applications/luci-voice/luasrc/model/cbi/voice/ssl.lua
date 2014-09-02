@@ -17,7 +17,7 @@
     along with luci-pbx.  If not, see <http://www.gnu.org/licenses/>.
 ]]--
 
-m = Map ("voice", "TLS/SSL")
+m = Map("voice_client", "TLS/SSL")
 
 ssl = m:section(TypedSection, "sip_advanced", "")
 ssl.anonymous = true

@@ -20,7 +20,7 @@
 -- http://luci.subsignal.org/trac/browser/luci/trunk/applications/luci-radvd/luasrc/model/cbi/radvd.lua?rev=6
 local ds = require "luci.dispatcher"
 
-m = Map ("voice", "SIP Users")
+m = Map("voice_client", "SIP Users")
 s = m:section(TypedSection, "sip_user")
 s.template  = "cbi/tblsection"
 s.anonymous = true
@@ -28,7 +28,7 @@ s.addremove = true
 s.extedit = ds.build_url("admin/services/voice/sip_users/%s")
 
 section_count = 0
-m.uci:foreach("voice", "sip_user",
+m.uci:foreach("voice_client", "sip_user",
 	function(s1)
 		section_count = section_count + 1
 	end
@@ -37,7 +37,7 @@ m.uci:foreach("voice", "sip_user",
 -- Find the lowest free section number
 function get_new_section_number()
 	local section_nr = 0
-	while m.uci:get("voice", "sip_user" .. section_nr) do
+	while m.uci:get("voice_client", "sip_user" .. section_nr) do
 		section_nr = section_nr + 1
 	end
 	return section_nr
@@ -50,17 +50,17 @@ function s.create(self, section)
 	if section_count < 8 then
 		section_number = get_new_section_number()
 		data = { name = "New SIP user", enabled = 0 }
-		newAccount = m.uci:section("voice", "sip_user", "sip_user" .. section_number, data)
+		newAccount = m.uci:section("voice_client", "sip_user", "sip_user" .. section_number, data)
 		luci.http.redirect(s.extedit % newAccount)
 	end
 end
 
 -- Called when an account is being deleted
 function s.remove(self, section)
-	m.uci:foreach("voice", "mailbox",
+	m.uci:foreach("voice_client", "mailbox",
 		function(s1)
 			if s1["user"] == section then
-				m.uci:set("voice", s1[".name"], "user", "-")
+				m.uci:set("voice_client", s1[".name"], "user", "-")
 			end
 		end
 	)
