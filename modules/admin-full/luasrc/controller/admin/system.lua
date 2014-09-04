@@ -36,8 +36,9 @@ function index()
 		end
 
 		if user ~= "user" then
+			entry( {user, "mntbrowser"}, template("cbi/mntbrowser") ).leaf = true
 			entry({user, "system", "flashops"}, call("action_flashops"), _("Backup / Flash Firmware"), 70)
-			entry({user, "system", "flashops", "backupfiles"}, form("admin_system/backupfiles"))		
+			entry({user, "system", "flashops", "backupfiles"}, cbi("admin_system/backupselectedfiles"))
 		elseif reset_avail then
 			entry({user, "system", "reset"}, call("action_reset"), _("Factory Reset"), 89)
 			
@@ -87,7 +88,9 @@ function action_flashops()
 
 	local restore_cmd = "tar -xzC/ >/dev/null 2>&1"
 	local backup_cmd  = "sysupgrade --create-backup - 2>/dev/null"
+	local backup_selected_cmd  = "sysupgrade --create-backup-selected - 2>/dev/null"
 	local image_tmp   = "/tmp/firmware.img"
+	local backup_tar   = "/tmp/backup.tgz"
 
 	local function image_supported()
 		-- XXX: yay...
@@ -142,7 +145,7 @@ function action_flashops()
 				if meta and meta.name == "image" then
 					fp = io.open(image_tmp, "w")
 				else
-					fp = io.popen(restore_cmd, "w")
+					fp = io.open(backup_tar, "w")
 				end
 			end
 			if chunk then
@@ -154,7 +157,25 @@ function action_flashops()
 		end
 	)
 
-	if luci.http.formvalue("backup") then
+	if luci.http.formvalue("backup_selected") then
+		--
+		-- Assemble file list, generate backup from selected configs
+		--
+
+		local guser = luci.dispatcher.context.path[1]
+		local reader
+		if luci.http.formvalue("save_method") == "download" then
+			luci.sys.exec("rm -f /tmp/backup_target_mntdir")
+			reader = ltn12_popen(backup_selected_cmd)
+			luci.http.header('Content-Disposition', 'attachment; filename="backup-%s-%s.tar.gz"' % {
+				luci.sys.hostname(), os.date("%Y-%m-%d")})
+			luci.http.prepare_content("application/x-targz")
+			luci.ltn12.pump.all(reader, luci.http.write)
+		else
+			luci.sys.exec(backup_selected_cmd)
+			luci.http.redirect(luci.dispatcher.build_url("%s/system/flashops" %guser))
+		end
+	elseif luci.http.formvalue("backup") then
 		--
 		-- Assemble file list, generate backup
 		--
@@ -169,6 +190,8 @@ function action_flashops()
 		--
 		local upload = luci.http.formvalue("archive")
 		if upload and #upload > 0 then
+			luci.sys.exec("tar -xzC/ -f %s" %backup_tar)
+			luci.sys.exec("rm -f %s" %backup_tar)
 			luci.template.render("admin_system/applyreboot")
 			luci.sys.reboot()
 		end
