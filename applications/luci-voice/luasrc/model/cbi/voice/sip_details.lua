@@ -42,7 +42,7 @@ end
 -- Change sip_account setting for lines using a disabled account
 -- For new and disabled accounts that are being enabled,
 -- ensure that user has supplied a password
-old_enabled_val = m.uci:get_bool("voice", s.section, "enabled")
+old_enabled_val = m.uci:get_bool("voice_client", s.section, "enabled")
 function parse_enabled(self, section)                                                                                                                           
 	Flag.parse(self, section)
 	local fvalue = self:formvalue(section)

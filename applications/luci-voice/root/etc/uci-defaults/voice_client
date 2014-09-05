@@ -21,7 +21,7 @@ EOF
 uci -q batch <<-EOF >/dev/null
 	delete ucitrack.@voice_client[-1]
 	add ucitrack voice_client
-	set ucitrack.@voice_client[-1].init=voice
+	set ucitrack.@voice_client[-1].init=voice_client
 	add_list ucitrack.@voice_client[-1].affects=asterisk
 	commit ucitrack
 EOF
