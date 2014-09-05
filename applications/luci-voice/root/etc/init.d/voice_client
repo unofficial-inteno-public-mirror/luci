@@ -729,11 +729,7 @@ configure_mailbox()
 	else
 		sed -i "s/|ENABLED|//g"			$WORKDIR/mailbox.tmp
 	fi
-	if [ "$cfgtype" == "sip_service_provider" ] ; then
-		sed -i "s/|EXTENSION|/$(format_sip_contact $user $extension)/g"	$WORKDIR/mailbox.tmp
-	else
-		sed -i "s/|EXTENSION|/$extension/g"	$WORKDIR/mailbox.tmp
-	fi
+	sed -i "s/|EXTENSION|/$extension/g"		$WORKDIR/mailbox.tmp
 	sed -i "s/|PIN|/$pin/g"				$WORKDIR/mailbox.tmp
 
 	cat $WORKDIR/mailbox.tmp >> $WORKDIR/voicemail.tmp
@@ -1219,6 +1215,7 @@ configure_extensions_provider()
 	local enabled
 	local displayname
 	local user
+	local user_without_suffix
 	local cbbs_key
 	local cbbs_maxretry
 	local cbbs_retrytime
@@ -1253,6 +1250,7 @@ configure_extensions_provider()
 
 	# check that SIP Provider has a configured user
 	config_get user $1 user
+	user_without_suffix=$user
 	user=$(format_sip_contact $1 $user)
 	if [ -z "$user" ] ; then
 		return
@@ -1396,7 +1394,7 @@ configure_extensions_provider()
 	local has_voicemail
 	has_voicemail=$(mailbox_check_enabled $1)
 	if [ "$has_voicemail" = "1" ] ; then
-		echo "exten => $user,n,VoiceMail($user,u)" >>					$tmp
+		echo "exten => $user,n,VoiceMail($user_without_suffix,u)" >>					$tmp
 	fi
 
 	echo "exten => $user,n(endcall),Hangup()" >>						$tmp
