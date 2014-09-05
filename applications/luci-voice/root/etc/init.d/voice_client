@@ -1380,10 +1380,10 @@ configure_extensions_provider()
 		# read a list of lines that should be dialled on incoming calls
 		incoming_lines=$(read_lines $1)
 		echo "exten => $user,n,Dial($incoming_lines,$(get_voicemail_timeout),t)" >>					$tmp
-		echo "exten => $user,n,GotoIf($[\"\${DIALSTATUS}\" = \"s-BUSY\"]?noanswer)" >>			$tmp
-		echo "exten => $user,n,GotoIf($[\"\${DIALSTATUS}\" = \"s-NOANSWER\"]?noanswer:success)" >>	$tmp
-		echo "exten => $user,n(noanswer),Macro(callhandler-noanswer,\${CHANNEL(peername)})" >>		$tmp
-		echo "exten => $user,n(success),NoOp()" >>							$tmp
+		echo "exten => $user,n,GotoIf($[\"\${DIALSTATUS}\"=\"ANSWER\"]?endcall)" >>		$tmp
+		echo "exten => $user,n,GotoIf($[\"\${DIALSTATUS}\"=\"BUSY\"]?noanswer)" >>		$tmp
+		echo "exten => $user,n,GotoIf($[\"\${DIALSTATUS}\"=\"NOANSWER\"]?noanswer:endcall)" >>	$tmp
+		echo "exten => $user,n(noanswer),Macro(callhandler-noanswer,\${CHANNEL(peername)})" >>	$tmp
 	fi
 	if ! [ -z "$call_queue" ] ; then
 		echo "exten => $user,n,Macro($call_queue)" >>					$tmp
@@ -1399,7 +1399,7 @@ configure_extensions_provider()
 		echo "exten => $user,n,VoiceMail($user,u)" >>					$tmp
 	fi
 
-	echo "exten => $user,n,Hangup()" >>							$tmp
+	echo "exten => $user,n(endcall),Hangup()" >>						$tmp
 	cat $tmp >>										$WORKDIR/extensions_incoming.tmp
 	rm -f											$tmp
 }
@@ -1495,12 +1495,13 @@ configure_sip_user_extension()
 	mailbox_enabled=$(mailbox_check_enabled $1)
 
 	echo "Configuring extension for SIP User $user"
-	echo "exten => $extension,1,Dial(SIP/$user,$(get_voicemail_timeout),t)"		>> $WORKDIR/extensions_local.tmp
+	echo "exten => $extension,1,Dial(SIP/$user,$(get_voicemail_timeout),t)" >>		$WORKDIR/extensions_local.tmp
+	echo "exten => $extension,n,GotoIf($[\"\${DIALSTATUS}\"=\"ANSWER\"]?endcall)" >>	$WORKDIR/extensions_local.tmp
 	if [ "$mailbox_enabled" = "1" ] ; then
 		echo "Enabling Mailbox for SIP User $user"
-		echo "exten => $extension,n,VoiceMail($extension,u)"	>> $WORKDIR/extensions_local.tmp
+		echo "exten => $extension,n,VoiceMail($extension,u)" >>				$WORKDIR/extensions_local.tmp
 	fi
-	echo "exten => $extension,n,Hangup()"						>> $WORKDIR/extensions_local.tmp
+	echo "exten => $extension,n(endcall),Hangup()" >>					$WORKDIR/extensions_local.tmp
 }
 
 configure_codecs()
