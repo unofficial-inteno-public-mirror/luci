@@ -113,19 +113,13 @@ end
 
 function get_zones(self)
 	local zones = { }
-	local znl = { }
 
 	uci_r:foreach("firewall", "zone",
 		function(s)
 			if s.name then
-				znl[s.name] = zone(s['.name'])
+				zones[#zones+1] = zone(s['.name'])
 			end
 		end)
-
-	local z
-	for z in utl.kspairs(znl) do
-		zones[#zones+1] = znl[z]
-	end
 
 	return zones
 end
