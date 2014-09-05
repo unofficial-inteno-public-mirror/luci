@@ -907,7 +907,7 @@ configure_queue()
 	echo "exten => s,n,$opening_hours_profile_macro" >>			$WORKDIR/macros.tmp
 	echo "exten => s,n,GotoIf($[\"\${OPEN}\"=\"0\"]?done)" >>		$WORKDIR/macros.tmp
 	echo "exten => s,n,Answer()" >>						$WORKDIR/macros.tmp
-	echo "exten => s,n,Queue($1)" >>					$WORKDIR/macros.tmp
+	echo "exten => s,n,Queue($1,R)" >>					$WORKDIR/macros.tmp
 	echo "exten => s,n(done),MacroExit()" >>				$WORKDIR/macros.tmp
 	echo "" >>								$WORKDIR/macros.tmp
 }
