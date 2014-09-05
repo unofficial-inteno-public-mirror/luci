@@ -4,10 +4,10 @@
 	local ezl = { }
 	local _, z
 	for _, z in ipairs(fw:get_zones()) do
-		if z:name() ~= "wan" then
-			izl[#izl+1] = z
-		elseif z:name() ~= "lan" then
+		if z:masq() then
 			ezl[#ezl+1] = z
+		else
+			izl[#izl+1] = z
 		end
 	end
 -%>
