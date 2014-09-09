@@ -49,25 +49,10 @@ You may obtain a copy of the License at
 			local name = translatef("Broadcom 802.11%s Wireless Controller", bands)
 			local nm   = 0
 
-			local fd = nixio.open("/proc/bus/pci/devices", "r")
-			if fd then
-				local ln
-				for ln in fd:linesource() do
-					if ln:match("wl$") then
-						if nm == idx then
-							local version = ln:match("^%S+%s+%S%S%S%S([0-9a-f]+)")
-							name = translatef(
-								"Broadcom BCM%04x 802.11 Wireless Controller",
-								tonumber(version, 16)
-							)
+			local pcid = sys.exec("wlctl -i %s revinfo | awk 'FNR == 2 {print}' | cut -d'x' -f2" %ifname)
 
-							break
-						else
-							nm = nm + 1
-						end
-					end
-				end
-				fd:close()
+			if pcid then
+				name = translatef("Broadcom BCM%s 802.11 Wireless Controller" %pcid)
 			end
 
 			return name
