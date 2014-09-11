@@ -70,4 +70,24 @@ m.uci:foreach("voice_client", "sip_service_provider",
 sip_provider:value("-", "-")
 sip_provider.default = "-"
 
+autodial = s:option(Value, "autodial", "Hotline number*")
+function autodial.validate(self, value, section)
+    if datatypes.phonedigit(value) then
+        return value
+    else
+        return nil, value .. " is not a valid number"
+    end
+end
+
+autodial_timeout = s:option(Value, "autodial_timeout", "Hotline delay (milliseconds)*")
+function autodial_timeout.validate(self, value, section)
+    if datatypes.uinteger(value) then
+        return value
+    end
+    return nil, "Hotline delay must be a positive number of milliseconds"                                                                           
+end
+
+comment = m:section(SimpleSection, "", "* Automatically dial a predetermined number after a delay, if user has not pressed any button(s). Leave empty to disable.")
+comment.anonymous = true
+
 return m
