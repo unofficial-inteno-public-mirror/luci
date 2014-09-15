@@ -149,6 +149,28 @@ remotehold.optional = true
 remotehold.disabled = "no"                              
 remotehold.enabled = "yes"
 
+srvlookup = sip:option(Flag, 'srvlookup', "SRV Lookup", "Enable DNS SRV lookup")
+srvlookup.optional = true
+srvlookup.disabled = "no"
+srvlookup.enabled = "yes"
+srvlookup.default = "yes"
+
+dnsmgr = sip:option(Flag, 'dnsmgr', "DNS Manager", "Enable Asterisk DNS manager")
+dnsmgr.optional = true
+dnsmgr.disabled = "no"
+dnsmgr.enabled = "yes"
+dnsmgr.default = "no"
+
+dnsmgr_refresh_interval = sip:option(Value, 'dnsmgr_refresh_interval', "DNS Manager Refresh Interval", "Refresh intervall")
+dnsmgr_refresh_interval.optional = true
+dnsmgr_refresh_interval.default = "300"
+function dnsmgr_refresh_interval.validate(self, value, section)
+	if datatypes.range(value,10,3600) then
+		return value
+	end
+	return nil, "DNS manager refresh interval must be in range 10-3600 seconds"
+end
+
 contact_line_suffix = sip:option(Flag, 'contact_line_suffix', "Line suffix in contact header", "Add a suffix indicating which lines are called to the sip contact header")
 contact_line_suffix.optional = true
 

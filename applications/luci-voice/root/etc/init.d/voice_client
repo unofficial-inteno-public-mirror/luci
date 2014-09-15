@@ -46,6 +46,7 @@ TMPL_SIPREGSEC=$TEMPLATEDIR/sip_registration_voicesec.TEMPLATE
 TMPL_SIPUSER=$TEMPLATEDIR/sip_user.TEMPLATE
 TMPL_RTP=$TEMPLATEDIR/rtp.conf.TEMPLATE
 TMPL_STUN=$TEMPLATEDIR/res_stun_monitor.conf.TEMPLATE
+TMPL_DNSMGR=$TEMPLATEDIR/dnsmgr.conf.TEMPLATE
 
 TMPL_VOICEMAIL=$TEMPLATEDIR/voicemail.conf.TEMPLATE
 TMPL_VOICEMAIL_MAILBOX=$TEMPLATEDIR/voicemail_mailbox.TEMPLATE
@@ -155,6 +156,7 @@ assemble_and_copy_config()
 	mv $WORKDIR/voicemail.tmp		$WORKDIR/voicemail.conf
         mv $WORKDIR/logger.tmp			$WORKDIR/logger.conf
 	mv $WORKDIR/queues.tmp			$WORKDIR/queues.conf
+	mv $WORKDIR/dnsmgr.tmp			$WORKDIR/dnsmgr.conf
 
 	# At this point, $WORKDIR should contain a complete, working config.
 	clean_up_asterisk_config_dir
@@ -288,6 +290,9 @@ configure_sip()
 	local realm
 	local localnet
 	local stun_server
+	local dnsmgr
+	local dnsmgr_refresh_interval
+	local srvlookup
 
 	config_get useragent $1 useragent
 	config_get externhost $1 externhost
@@ -314,6 +319,9 @@ configure_sip()
 	config_get tls_cipher $1 tls_cipher
 	config_get tls_version $1 tls_version
 	config_get stun_server $1 stun_server
+	config_get dnsmgr $1 dnsmgr
+	config_get dnsmgr_refresh_interval $1 dnsmgr_refresh_interval
+	config_get srvlookup $1 srvlookup
 
 	[ -z "$useragent" ] && useragent="$USERAGENT"
 
@@ -404,6 +412,22 @@ configure_sip()
 	else
 		sed -i "s/|TOS_TEXT|/$(escape_sed_substitution $tos_text)/g"		$WORKDIR/sip.tmp
 	fi
+
+	if [ -z "$srvlookup" ] ; then
+		srvlookup=yes
+	fi
+	sed -i "s/|SRVLOOKUP|/$srvlookup/g"						$WORKDIR/sip.tmp
+
+	# DNS manager
+	if [ -z "$dnsmgr" ] ; then
+		dnsmgr=no
+	fi
+	sed -i "s/|ENABLE|/$dnsmgr/g"							$WORKDIR/dnsmgr.tmp
+
+	if [ -z "$dnsmgr_refresh_interval" ] ; then
+		dnsmgr_refresh_interval=300
+	fi
+	sed -i "s/|REFRESHINTERVAL|/$dnsmgr_refresh_interval/g"				$WORKDIR/dnsmgr.tmp
 
 	# Enable TLS if used by a sip_service_provider
 	local tlsenable="no"
@@ -1940,6 +1964,7 @@ start() {
 	cp $TMPL_BRCM			$WORKDIR/brcm.tmp
 	cp $TMPL_CODECS			$WORKDIR/codecs.tmp
 	cp $TMPL_VOICEMAIL		$WORKDIR/voicemail.tmp
+	cp $TMPL_DNSMGR			$WORKDIR/dnsmgr.tmp
 	touch				$WORKDIR/sip_providers.tmp
 	touch				$WORKDIR/sip_registrations.tmp
 	touch				$WORKDIR/sip_users.tmp
