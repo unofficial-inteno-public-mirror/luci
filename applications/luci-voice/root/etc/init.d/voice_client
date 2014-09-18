@@ -215,13 +215,21 @@ read_codecs_ptime()
 # read lines that should receive incoming calls from a SIP Provider
 # returns a list of lines, formatted to replace a tag with sed
 # in a Dial() command
+#
+# For backwards compatibility, if i is only a number (not prefixed by
+#	"SIP/" or "BRCM/") then add "BRCM/"
+#
 read_lines()
 {
 	local lines=""
 	local call_lines
 	config_get call_lines $1 call_lines
 	for i in $call_lines ; do
-		lines=$lines"$i&"
+		case $i in
+			''|*[!0-9]*)	lines=$lines"$i&" ;;
+			*) 				lines=$lines"BRCM/$i&" ;;
+		esac
+		
 	done
 	lines=$(escape_sed_substitution $lines)
 	echo "${lines%??}"
