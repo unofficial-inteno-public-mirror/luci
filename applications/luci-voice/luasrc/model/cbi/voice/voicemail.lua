@@ -69,6 +69,8 @@ function account_name.cfgvalue(self, section)
 	return v
 end
 
+s1:option(DummyValue, "boxnumber", "Boxnumber")
+
 e = s1:option(DummyValue, "enabled", "Enabled")
 function e.cfgvalue(self, section)
 	enabled = Value.cfgvalue(self, section)

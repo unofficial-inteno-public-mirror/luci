@@ -88,8 +88,31 @@ function user.validate(self, value, section)
 	return value
 end
 
+boxnumber = s:option(Value, "boxnumber", "Boxnumber", "Used as login when accessing the mailbox")
+function boxnumber.parse(self, section)
+	Value.parse(self, section)
+	local value = self:formvalue(section)
+	if not value or #value == 0 then
+		self.add_error(self, section, "missing", "Boxnumber is mandatory")
+	end     
+end
+function boxnumber.validate(self, value, section)
+	ok = true
+	m.uci:foreach("voice_client", "mailbox",
+		function(v)
+			if v['.name'] ~= section and v['boxnumber'] == value then
+				ok = false
+			end
+		end
+	)
+	if not ok then
+		return nil, "Boxnumber already used by another mailbox"
+	end
+	return value
+end
+
 pin = s:option(Value, "pin", "PIN", "Enter a new PIN code for accessing the mailbox.\
-	If no value is entered the PIN code will remain unchanged.")
+	If no value is entered the PIN code will remain unchanged")
 pin.password = false
 pin.rmempty = true
 function pin.validate(self, value, section)

@@ -718,24 +718,18 @@ encrypt_password()
 configure_mailbox()
 {
 	local pin
+	local boxnumber
 	local enabled
 	local user
-	local extension
 
 	config_get pin $1 pin
+	config_get boxnumber $1 boxnumber
 	config_get enabled $1 enabled
 	config_get user $1 user
 
+	# Check mailbox owner
 	if [ -z "$user" -o "x$user" == "x-" ] ; then
 		return
-	fi
-
-	local cfgtype	
-	config_get cfgtype "$user" TYPE
-	if [ "$cfgtype" == "sip_service_provider" ] ; then
-		config_get extension $user user
-	else
-		config_get extension $user extension
 	fi
 
 	if [ -z "$pin" ] ; then
@@ -753,7 +747,7 @@ configure_mailbox()
 	else
 		sed -i "s/|ENABLED|//g"			$WORKDIR/mailbox.tmp
 	fi
-	sed -i "s/|EXTENSION|/$extension/g"		$WORKDIR/mailbox.tmp
+	sed -i "s/|BOXNUMBER|/$boxnumber/g"		$WORKDIR/mailbox.tmp
 	sed -i "s/|PIN|/$pin/g"				$WORKDIR/mailbox.tmp
 
 	cat $WORKDIR/mailbox.tmp >> $WORKDIR/voicemail.tmp
@@ -761,9 +755,9 @@ configure_mailbox()
 }
 
 #
-# Check if an enabled mailbox exists for the given user
+# Lookup mailbox for the given user
 #
-mailbox_check_enabled()
+mailbox_find()
 {
 	[ "$#" -ge 1 ] || return 0
 
@@ -776,10 +770,13 @@ mailbox_check_enabled()
 		if [ "$mailbox_user" = "$1" ] ; then
 			local enabled
 			config_get enabled $section enabled
-			echo "$enabled"
-			break
+			if [ "x$enabled" == "x1" ] ; then
+				echo "$section"
+				return 0
+			fi
 		fi
 	done
+	return 1
 }
 
 #
@@ -1418,10 +1415,11 @@ configure_extensions_provider()
 	fi	
 	
 	# Check if voicemail is enabled
-	local has_voicemail
-	has_voicemail=$(mailbox_check_enabled $1)
-	if [ "$has_voicemail" = "1" ] ; then
-		echo "exten => $user,n,VoiceMail($user_without_suffix,u)" >>					$tmp
+	mailbox=$(mailbox_find $1)
+	if [ $? -eq 0 ] ; then
+		local boxnumber
+		config_get boxnumber $mailbox boxnumber
+		echo "exten => $user,n,VoiceMail($boxnumber)" >>				$tmp
 	fi
 
 	echo "exten => $user,n(endcall),Hangup()" >>						$tmp
@@ -1477,11 +1475,12 @@ configure_brcm_line_extension()
 		sed -i "s/|WAITTIME|/$cbbs_waittime/"				$WORKDIR/extensions_local_line.tmp
 		sed -i "s/|CONGESTIONTONE|/$congestiontone/"			$WORKDIR/extensions_local_line.tmp
 
-		mailbox_enabled=$(mailbox_check_enabled $1)
-
-		if [ "$mailbox_enabled" = "1" ] ; then
+		mailbox=$(mailbox_find $1)
+		if [ $? -eq 0 ] ; then
+			local boxnumber
+			config_get boxnumber $mailbox boxnumber
 			echo "Enabling Mailbox for BRCM line $1"
-			sed -i "s/|VOICEMAIL|/VoiceMail($extension,u)/g"	$WORKDIR/extensions_local_line.tmp
+			sed -i "s/|VOICEMAIL|/VoiceMail($boxnumber)/g"		$WORKDIR/extensions_local_line.tmp
 		else
 			sed -i "s/|VOICEMAIL|/NoOp()/g"				$WORKDIR/extensions_local_line.tmp
 		fi
@@ -1517,14 +1516,15 @@ configure_sip_user_extension()
 		return
 	fi
 
-	mailbox_enabled=$(mailbox_check_enabled $1)
-
 	echo "Configuring extension for SIP User $user"
 	echo "exten => $extension,1,Dial(SIP/$user,$(get_voicemail_timeout),t)" >>		$WORKDIR/extensions_local.tmp
 	echo "exten => $extension,n,GotoIf($[\"\${DIALSTATUS}\"=\"ANSWER\"]?endcall)" >>	$WORKDIR/extensions_local.tmp
-	if [ "$mailbox_enabled" = "1" ] ; then
+	mailbox=$(mailbox_find $1)
+	if [ $? -eq 0 ] ; then
+		local boxnumber
+		config_get boxnumber $mailbox boxnumber
 		echo "Enabling Mailbox for SIP User $user"
-		echo "exten => $extension,n,VoiceMail($extension,u)" >>				$WORKDIR/extensions_local.tmp
+		echo "exten => $extension,n,VoiceMail($boxnumber)" >>				$WORKDIR/extensions_local.tmp
 	fi
 	echo "exten => $extension,n(endcall),Hangup()" >>					$WORKDIR/extensions_local.tmp
 }
