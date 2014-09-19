@@ -23,7 +23,4 @@ silencethreshold=128
 ; Max number of failed login attempts
 maxlogins=3
 
-[zonemessages]
-european=Europe/Copenhagen|'vm-received' a d b 'digits/at' HM
-
 [default]
