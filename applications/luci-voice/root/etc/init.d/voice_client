@@ -1148,7 +1148,7 @@ configure_opening_hours_profile()
 	                config_get dom $section days_of_month
 	                config_get months $section months
 	
-	                echo "exten => s,n,GotoIfTime($tr,$dow,$dom,$months,/usr/share/zoneinfo/CET?$label)" >> $WORKDIR/macros.tmp
+	                echo "exten => s,n,GotoIfTime($tr,$dow,$dom,$months,?$label)" >> $WORKDIR/macros.tmp
 	        fi
 	done
 	if [ "$invert" == "0" ] ; then

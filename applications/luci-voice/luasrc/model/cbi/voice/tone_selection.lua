@@ -50,6 +50,20 @@ function number.parse(self, section)
 		self.add_error(self, section, "missing", "Number is mandatory")
 	end	
 end
+function number.validate(self, value, section)
+	ok = true
+	m.uci:foreach("voice_client", "tone_selection",
+		function(v)
+			if v['.name'] ~= section and v['number'] == value then
+				ok = false
+			end
+		end
+	)
+	if not ok then
+		return nil, "Number already used for another tone selection"
+	end
+	return value
+end
 
 -- Enabled checkbox
 e = s:option(Flag, "enabled", "Enabled")

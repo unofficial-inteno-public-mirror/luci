@@ -10,7 +10,7 @@ function remove_recording(self, section)
 			break
 		end
 	end
-	luci.http.redirect(luci.dispatcher.build_url("admin/services/voice/voice"))
+	luci.http.redirect(luci.dispatcher.build_url("admin/services/voice/sounds"))
 end
 
 number = m.uci:get("voice_client", "custom_dialplan", "record_message_extension")
