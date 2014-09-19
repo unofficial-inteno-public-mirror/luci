@@ -1834,7 +1834,10 @@ function wifinet.noise(self)
 end
 
 function wifinet.country(self)
-	return sys.exec("wlctl -i %q country | awk '{print$1}'" %self:ifname()) or "00"
+	local cntwlc = sys.exec("wlctl -i %q country | awk '{print$2}' | tr -d '()'" %self:ifname())
+	local cntuci = sys.exec("uci get wireless.%s.country | cut -d'/' -f1" %self:get("device"))
+	local country = cntwlc:match("(%S+)/%d+") or cntuci
+	return country or "UNKNOWN"
 end
 
 function wifinet.txpower(self)
