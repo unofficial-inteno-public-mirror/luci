@@ -1087,7 +1087,7 @@ function protocol.get_interface(self)
 		return interface("br-" .. self.sid, self)
 	elseif self:is_anywan() then
 		local ifn = nil
-		local frstifn
+		local frstifn = ""
 		for ifn in utl.imatch(_uci_real:get("network", self.sid, "ifname")) do
 			ifn = ifn:match("^[^:/]+")
 			if ifn then
