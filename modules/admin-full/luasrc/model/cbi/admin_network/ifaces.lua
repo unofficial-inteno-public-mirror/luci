@@ -479,7 +479,7 @@ if guser == "admin" then
 		-- check if selected interface is used by a bridge
 		if not net:is_floating() and ifname_multi and ifname_multi:formvalue(section) then
 			local ifn = ifname_multi:formvalue(section)
-			local there, intface, netname, ifname, typ, adv
+			local exnet, there, intface, netname, ifname, typ, adv
 			m.uci:foreach("network", "interface",
 			function (s)
 				intface = s[".name"]
@@ -489,27 +489,23 @@ if guser == "admin" then
 				if intface == net:name() or there then
 					return
 				end
-				netname = intface or "-"
+
+				if intface then
+					netname = intface
+					exnet = nw:get_network(netname)
+
+				end
 
 				if typ  == "bridge" and ifname then
 					for iface in ifname:gmatch("%S+") do
 						for nif in ut.imatch(ifn) do
 							if iface == nif then
-								if there then
-									there = there .. ", " .. nif
-									adv = "are"
-								else
-									there = nif
-									adv = "is"
-								end
+								exnet:del_interface(iface)
 							end
 						end
 					end
 				end
 			end)
-			if there then
-				return nil, translate("%s %s used by '%s'" %{there, adv, netname})
-			end
 		end
 
 		if value == net:proto() then

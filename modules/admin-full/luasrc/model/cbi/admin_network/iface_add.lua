@@ -97,7 +97,7 @@ function newproto.validate(self, value, section)
 		
 		-- check if selected interface is used by a bridge
 		if ifn == (br and mifname:formvalue(section)) then
-			local there, intface, ifname, typ, adv
+			local exnet, there, intface, ifname, typ, adv
 			uci:foreach("network", "interface",
 			function (s)
 				if there then
@@ -107,25 +107,20 @@ function newproto.validate(self, value, section)
 				typ = s["type"]
 				ifname = s["ifname"]
 
+				if intface then
+					exnet = nw:get_network(intface)
+				end
+
 				if typ  == "bridge" and ifname then
 					for iface in ifname:gmatch("%S+") do
 						for nif in utl.imatch(ifn) do
 							if iface == nif then
-								if there then 
-									there = there .. ", " .. nif
-									adv = "are"
-								else
-									there = nif
-									adv = "is"
-								end
+								exnet:del_interface(iface)
 							end
 						end
 					end
 				end
 			end)
-			if there then
-				return nil, translate("%s %s used by '%s'" %{there, adv, intface})
-			end
 		end
 
 		for ifn in utl.imatch(ifn) do
