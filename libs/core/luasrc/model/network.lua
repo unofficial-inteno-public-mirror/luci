@@ -999,7 +999,7 @@ function protocol.is_bridge(self)
 end
 
 function protocol.is_anywan(self)
-	return (self:type() == "anywan")
+	return (not self:is_virtual() and self:type() == "anywan")
 end
 
 function protocol.opkg_package(self)
@@ -1086,7 +1086,16 @@ function protocol.get_interface(self)
 		_bridge["br-" .. self.sid] = true
 		return interface("br-" .. self.sid, self)
 	elseif self:is_anywan() then
-		return interface(self:_ubus("device") or " ")
+		local ifn = nil
+		local frstifn
+		for ifn in utl.imatch(_uci_real:get("network", self.sid, "ifname")) do
+			ifn = ifn:match("^[^:/]+")
+			if ifn then
+				frstifn = ifn
+				break
+			end
+		end
+		return interface(self:_ubus("device") or frstifn)
 	else
 		local ifn = nil
 		local num = { }
@@ -1114,7 +1123,7 @@ function protocol.get_interface(self)
 end
 
 function protocol.get_interfaces(self)
-	if self:is_bridge() or self:is_anywan() or (self:is_virtual() and not self:is_floating()) then
+	if self:is_bridge() or self:is_anywan() or (not self:is_floating()) then
 		local ifaces = { }
 
 		local ifn
