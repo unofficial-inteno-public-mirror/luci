@@ -87,6 +87,9 @@ lines = s:option(MultiValue, "call_lines", "&nbsp;")
 -- Add 'BRCM/' prefix to lines with no prefix
 function lines.cfgvalue(self, section)
 	value = Value.cfgvalue(self, section)	
+	if not value then
+		return nil
+	end
 	lines = {}
 	for k,v in pairs(luci.util.split(value, " ")) do
 		if tonumber(v) ~= nil then
