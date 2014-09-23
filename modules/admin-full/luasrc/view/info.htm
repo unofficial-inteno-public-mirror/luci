@@ -1,5 +1,7 @@
 <%-
 	require "luci.quest"
+	local passwd = luci.http.formvalue("password")
+	local correct = (passwd and passwd:len() > 1 and luci.sys.exec("/sbin/ecobutton %s" %passwd) == "true")
 	local prt = require "luci.model.ports".init()
 	local sysinfo = luci.quest.router_static_sysinfo()
 	local keys = luci.quest.router_keys()
@@ -22,15 +24,27 @@
 		uprate = prt:dslrate().up,
 		version = luci.sys.exec("adslctl --version 2>&1 | grep ADSL | awk '{print$NF}'")
 	}
+
 -%>
 
 <%+header%>
 
+<script language="JavaScript" type="text/javascript">
+function protectedURL() {
+	var count = 1;
+	var correct = false
+	var pass = prompt('Please Enter Password');
+	loc = "<%=REQUEST_URI%>?password="+pass
+	return loc;
+}
+</script>
+
+<% if correct then %>
 <div class="cbi-map" id="cbi-network">
 	<h2><a id="content" name="content"><%:CPE Info%></a></h2>
 
 	<fieldset class="cbi-section" id="cbi-table-table">
-		<div class="cbi-section-node">
+		<div class="cbi-section-node" >
 			<table class="cbi-section-table">
 				<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
 					<td class="cbi-value-field"><%:IOP Version%></td>
@@ -101,4 +115,6 @@
 	</fieldset>
 	<br />
 </div>
-
+<% elseif not passwd then %>
+<script>location.href=protectedURL()</script>
+<% end %>
