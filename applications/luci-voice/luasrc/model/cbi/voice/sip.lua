@@ -104,31 +104,29 @@ function l.cfgvalue(self, section)
 	if target == "direct" then
 		local l = m.uci:get("voice_client", section, "call_lines")
 		if l then
-			lines = string.split(l, " ")
-			for i,l in ipairs(lines) do
-				info = string.split(l, "/")
-				if i > 1 then
-					v = v .. ", "
-				end
-				if (info[1] == "SIP") then
+			lines = {}
+			for i,l in ipairs(string.split(l, " ")) do
+				if (l:sub(1,3) == "SIP") then				
+					user = l:sub(5)
 					vc.foreach_user({'sip'},
 						function(s1)
-							if (s1['user'] == info[2] and s1['name']) then
-								v = v .. s1['name']
+							if (s1['user'] == user and s1['name']) then
+								table.insert(lines, s1['name'])
 								return
 							end
 						end
 					)
-				elseif (info[1] == "BRCM") then
-					lineId = tonumber(info[2]:match("%d+"))
+				else
+					lineId = tonumber(l:match("%d+"))
 				
 					if (lineId < dectCount) then
-						v = v .. "DECT " .. lineId + 1
+						table.insert(lines, "DECT " .. lineId + 1)
 					else
-						v = v .. "Tel " .. lineId - dectCount + 1
+						table.insert(lines, "Tel " .. lineId - dectCount + 1)
 					end
 				end
 			end
+			return table.concat(lines, ", ")
 		end
 	elseif target == "queue" then
 		q = m.uci:get("voice_client", section, "call_queue")

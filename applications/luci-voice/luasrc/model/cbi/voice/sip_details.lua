@@ -14,6 +14,7 @@ $Id: forward-details.lua 8962 2012-08-09 10:03:32Z jow $
 
 local datatypes = require("luci.cbi.datatypes")
 local vc = require "luci.model.cbi.voice.common"
+require "luci.util"
 
 
 local dsp = require "luci.dispatcher"
@@ -81,6 +82,22 @@ target.default = 'direct'
 
 -- Create a set of checkboxes for lines to call
 lines = s:option(MultiValue, "call_lines", "&nbsp;")
+
+-- Backwards compatibility
+-- Add 'BRCM/' prefix to lines with no prefix
+function lines.cfgvalue(self, section)
+	value = Value.cfgvalue(self, section)	
+	lines = {}
+	for k,v in pairs(luci.util.split(value, " ")) do
+		if tonumber(v) ~= nil then
+			table.insert(lines, "BRCM/" .. v)
+		else
+			table.insert(lines, v)
+		end
+	end
+	return table.concat(lines, " ")
+end
+
 lines:depends('target', 'direct')
 line_nr = 0
 -- DECT
