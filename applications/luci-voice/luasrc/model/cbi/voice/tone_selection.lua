@@ -52,9 +52,10 @@ function number.parse(self, section)
 end
 function number.validate(self, value, section)
 	ok = true
+	owner = m.uci:get("voice_client", section, "owner")
 	m.uci:foreach("voice_client", "tone_selection",
 		function(v)
-			if v['.name'] ~= section and v['number'] == value then
+			if v['.name'] ~= section and v['owner'] == owner and v['number'] == value then
 				ok = false
 			end
 		end
