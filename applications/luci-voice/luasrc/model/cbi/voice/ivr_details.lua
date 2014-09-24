@@ -104,6 +104,9 @@ end
 -- user presses the "Add" button. We create a new section,
 -- and proceed to detailed editor.
 function s.create(self, section)
+	if m.save == false then
+		return
+	end
 	section_number = get_new_section_number()
 	data = { owner = arg[1] }
 	newSelection = m.uci:section("voice_client", "tone_selection", "tone_selection" .. section_number , data)

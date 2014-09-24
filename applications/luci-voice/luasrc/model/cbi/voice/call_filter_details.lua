@@ -94,6 +94,9 @@ end
 -- This function is called when a new call filter rule should be configured i.e. when
 -- user presses the "Add" button.
 function s.create(self, section)
+	if m.save == false then
+		return
+	end
 	section_number = get_new_section_number()
 	data = { owner = arg[1], enabled = 0 }
 	newSelection = m.uci:section("voice_client", "call_filter_rule", "call_filter_rule" .. section_number , data)

@@ -50,7 +50,7 @@ function s.remove(self, section)
 	m.uci:foreach("voice_client", "tone_selection", 
 		function(s1)
 			if s1["owner"] == section then
-				m.uci:delete("voice", s1[".name"])
+				m.uci:delete("voice_client", s1[".name"])
 			end
 		end
 	)
