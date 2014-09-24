@@ -1,0 +1,121 @@
+<%#
+LuCI - Lua Configuration Interface
+Copyright 2008 Steven Barth <steven@midlink.org>
+Copyright 2008 Jo-Philipp Wich <xm@leipzig.freifunk.net>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+	http://www.apache.org/licenses/LICENSE-2.0
+-%>
+
+<%+header%>
+<h2><a id="content" name="content"><%:Sounds%></a></h2>
+
+<% if msg and #msg ~= 0 then %>
+<div class="cbi-section-error">
+	<ul><li><%=msg%></li></ul>
+</div>
+<% end %>
+
+<fieldset class="cbi-section" id="cbi-table-table">
+	<legend><%:Recordings%></legend>
+	<div class="cbi-section-descr">Custom recorded messages. Currently used for IVRs. Call <%=record_message_extension%> to record a new message.</div>
+	<div class="cbi-section-node">
+		<table class="cbi-section-table">
+			<tr class="cbi-section-table-titles"><th class="cbi-section-table-cell">Timestamp</th><th class="cbi-section-table-cell">Format</th><th class="cbi-section-table-cell">Remove</th></tr>
+			<tr class="cbi-section-table-descr"><th class="cbi-section-table-cell"></th><th class="cbi-section-table-cell"></th></tr>
+			<% for k, v in pairs(recordings) do %>
+			<tr class="cbi-section-table-row cbi-rowstyle-1">
+				<td class="cbi-value-field">
+					<div><%=v.timestamp%></div>
+				</td>
+
+				<td class="cbi-value-field">
+					<div><%=v.format%></div>
+				</td>
+
+				<td class="cbi-value-field">
+					<div>
+						<form method="post" action="<%=REQUEST_URI%>">
+							<input type="hidden" name="file" value="<%=v.file%>" />
+							<input class="cbi-button cbi-input-button" type="submit" name="remove_recording"  value="Remove" />
+						</form>
+					</div>
+				</td>
+			</tr>
+			<% end %>
+		</table>
+	</div>
+</fieldset>
+
+<fieldset class="cbi-section" id="cbi-table-table">
+	<legend><%:Extra%></legend>
+	<div class="cbi-section-descr">Extra sound files. Currently used for IVRs.</div>
+	<div class="cbi-section-node">
+		<table class="cbi-section-table">
+			<tr class="cbi-section-table-titles"><th class="cbi-section-table-cell">File</th><th class="cbi-section-table-cell">Remove</th></tr>
+			<tr class="cbi-section-table-descr"><th class="cbi-section-table-cell"></th><th class="cbi-section-table-cell"></th></tr>
+			<% for k, v in pairs(extra_sounds) do %>
+			<tr class="cbi-section-table-row cbi-rowstyle-1">
+				<td class="cbi-value-field">
+					<div><%=v.file%></div>
+				</td>
+
+				<td class="cbi-value-field">
+					<div>
+						<form method="post" action="<%=REQUEST_URI%>">
+							<input type="hidden" name="file" value="<%=v.file%>" />
+							<input class="cbi-button cbi-input-button" type="submit" name="remove_extra"  value="Remove" />
+						</form>
+					</div>
+				</td>
+			</tr>
+			<% end %>
+		</table>
+	</div>
+
+	<form method="post" action="<%=REQUEST_URI%>" enctype="multipart/form-data">
+		<div class="cbi-section-node">
+			<div class="cbi-value cbi-value-last">
+				<label class="cbi-value-title" for="extra_sound"><%:Upload%></label>
+				<div class="cbi-value-field">
+					<input type="file" name="extra_sound" id="extra_sound" />
+					<input type="submit" class="cbi-button cbi-input-apply" name="upload" value="<%:Upload%>" />
+
+					<div class="cbi-value-description">
+						<span class="cbi-value-helpicon"><img src="/luci-static/resources/cbi/help.gif" alt="help" /></span>
+					The sound file must be in GSM format with a sample rate of 8 kHz.<br/>Use sox source.wav -r 8000 -c 1 music.gsm to convert
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+
+</fieldset>
+
+<fieldset class="cbi-section" id="cbi-table-table">
+	<legend><%:Language%></legend>
+
+	<form method="post" action="<%=REQUEST_URI%>" enctype="multipart/form-data">
+		<div class="cbi-section-descr"><%:Replace system sound files. Sound files for common languages can be found%> <a href="http://downloads.asterisk.org/pub/telephony/sounds/">here</a>.</div>
+		<div class="cbi-section-node">
+			<div class="cbi-value cbi-value-last">
+				<label class="cbi-value-title" for="sound_pack"><%:Upload%></label>
+				<div class="cbi-value-field">
+					<input type="file" name="sound_pack" id="sound_pack" />
+					<input type="submit" class="cbi-button cbi-input-apply" name="upload" value="<%:Upload%>" />
+					<div class="cbi-value-description">
+						<span class="cbi-value-helpicon"><img src="/luci-static/resources/cbi/help.gif" alt="help" /></span>
+					
+					The sound pack must be compressed as <strong>tar.gz</strong>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+
+</fieldset>
+
+<%+footer%>

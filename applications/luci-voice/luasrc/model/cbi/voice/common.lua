@@ -137,9 +137,9 @@ function common.get_recordings()
 	return recordings
 end
 
-function common.get_custom_sounds()
+function common.get_extra_sounds()
 	local files = {}
-	path = "/usr/lib/asterisk/custom"
+	path = "/usr/lib/asterisk/extra"
 	i = 0
 	if nixio.fs.stat(path) then
 		for e in nixio.fs.dir(path) do

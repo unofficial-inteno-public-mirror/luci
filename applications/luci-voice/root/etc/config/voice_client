@@ -93,6 +93,7 @@ config 'dialplan' 'custom_dialplan'
 	option 'all_ports_extension' '#123456'
 	option 'test_audio_extension' '#123457'
 	option 'test_echo_extension' '#123458'
+	option 'record_message_extension' '#999999'
 
 config 'sip_advanced' 'SIP'
 	option 'rtpstart' '10000'

@@ -74,8 +74,8 @@ sound_file:value("-", "-")
 for _,v in pairs(vc.get_recordings()) do
 	sound_file:value("/usr/lib/asterisk/recordings/" .. v["name"], v["timestamp"])
 end
-for _,v in pairs(vc.get_custom_sounds()) do
-	sound_file:value("/usr/lib/asterisk/custom/" .. v["name"], v["name"])
+for _,v in pairs(vc.get_extra_sounds()) do
+	sound_file:value("/usr/lib/asterisk/extra/" .. v["name"], v["name"])
 end
 
 s = m:section(TypedSection, "tone_selection", "Tone Selections")
