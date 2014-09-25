@@ -1384,7 +1384,7 @@ configure_extensions_provider()
 
 		for i in $direct_dial ; do
 			echo "Adding direct dial extension $i for $1"
-			if "${i:0:1}" != "_" ; then
+			if [ "${i:0:1}" != "_" ] ; then
 				i="_$i"
 			fi
 			echo "exten => $i,1,Goto($1-outgoing,\${EXTEN},1)" >>	$WORKDIR/extensions_direct.tmp
