@@ -101,7 +101,18 @@ l = s:option(DummyValue, "target", "Incoming calls to")
 function l.cfgvalue(self, section)
 	local v	= ""
 	local target = Value.cfgvalue(self, section)
-	if target == "direct" then
+
+	if target == "queue" then
+		q = m.uci:get("voice_client", section, "call_queue")
+		if q then
+			v = vc.user2name(q)
+		end
+	elseif target == "ivr" then
+		i = m.uci:get("voice_client", section, "call_ivr")
+		if i then
+			v = vc.user2name(i)
+		end
+	else
 		local l = m.uci:get("voice_client", section, "call_lines")
 		if l then
 			lines = {}
@@ -127,17 +138,7 @@ function l.cfgvalue(self, section)
 				end
 			end
 			return table.concat(lines, ", ")
-		end
-	elseif target == "queue" then
-		q = m.uci:get("voice_client", section, "call_queue")
-		if q then
-			v = vc.user2name(q)
-		end
-	elseif target == "ivr" then
-		i = m.uci:get("voice_client", section, "call_ivr")
-		if i then
-			v = vc.user2name(i)
-		end
+		end		
 	end
 	return v
 end
