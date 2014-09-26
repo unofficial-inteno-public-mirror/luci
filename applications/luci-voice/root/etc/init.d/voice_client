@@ -301,6 +301,9 @@ configure_sip()
 	local dnsmgr
 	local dnsmgr_refresh_interval
 	local srvlookup
+	local registertimeoutguardsecs
+	local registertimeoutguardlimit
+	local registertimeoutguradpct
 
 	config_get useragent $1 useragent
 	config_get externhost $1 externhost
@@ -331,6 +334,9 @@ configure_sip()
 	config_get dnsmgr $1 dnsmgr
 	config_get dnsmgr_refresh_interval $1 dnsmgr_refresh_interval
 	config_get srvlookup $1 srvlookup
+	config_get registertimeoutguardsecs $1 registertimeoutguardsecs
+	config_get registertimeoutguardlimit $1 registertimeoutguardlimit
+	config_get registertimeoutguardpct $1 registertimeoutguardpct
 
 	[ -z "$useragent" ] && useragent="$USERAGENT"
 
@@ -365,6 +371,24 @@ configure_sip()
 		sed -i "s/registertimeout=|REGISTERTIMEOUT|/;registertimeout=/g"	$WORKDIR/sip.tmp
 	else
 		sed -i "s/|REGISTERTIMEOUT|/$registertimeout/g"				$WORKDIR/sip.tmp
+	fi
+
+	if [ -z "$registertimeoutguardsecs" ] ; then
+		sed -i "s/registertimeoutguardsecs=|REGISTERTIMEOUTGUARDSECS|/;registertimeoutguardsecs=/g"	$WORKDIR/sip.tmp
+	else
+		sed -i "s/|REGISTERTIMEOUTGUARDSECS|/$registertimeoutguardsecs/g"				$WORKDIR/sip.tmp
+	fi
+
+	if [ -z "$registertimeoutguardlimit" ] ; then
+		sed -i "s/registertimeoutguardlimit=|REGISTERTIMEOUTGUARDLIMIT|/;registertimeoutguardlimit=/g"	$WORKDIR/sip.tmp
+	else
+		sed -i "s/|REGISTERTIMEOUTGUARDLIMIT|/$registertimeoutguardlimit/g"				$WORKDIR/sip.tmp
+	fi
+
+	if [ -z "$registertimeoutguardpct" ] ; then
+		sed -i "s/registertimeoutguardpct=|REGISTERTIMEOUTGUARDPCT|/;registertimeoutguardpct=/g"	$WORKDIR/sip.tmp
+	else
+		sed -i "s/|REGISTERTIMEOUTGUARDPCT|/$registertimeoutguardpct/g"					$WORKDIR/sip.tmp
 	fi
 
 	if [ -z "$registerattempts" ] ; then
