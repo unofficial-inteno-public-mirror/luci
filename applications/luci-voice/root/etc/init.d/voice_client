@@ -1650,7 +1650,7 @@ configure_brcm_line()
 	fi
 
 	if [ -z "$callwaiting" ] ; then
-		callwaiting=1
+		callwaiting=0
 	fi
 
 	if [ -z "$clir" ] ; then
