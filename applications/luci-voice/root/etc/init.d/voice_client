@@ -303,7 +303,7 @@ configure_sip()
 	local srvlookup
 	local registertimeoutguardsecs
 	local registertimeoutguardlimit
-	local registertimeoutguradpct
+	local registertimeoutguardpct
 
 	config_get useragent $1 useragent
 	config_get externhost $1 externhost
