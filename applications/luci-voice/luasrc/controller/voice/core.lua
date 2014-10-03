@@ -26,7 +26,7 @@ function index()
 
 	for k, user in pairs(users) do
 		if user == "user"  then
-			entry({user, "services", "voice"},			cbi("voice/country"),	"Voice",		1)
+			entry({user, "services", "voice"},			cbi("voice/log"),	"Voice",		1)
 			entry({user, "status", "voice"},			cbi("voice/status"),	"SIP Registration",	80)
 		else
 			entry({user, "services", "voice"},			cbi("voice/country"),	"Voice",		1)

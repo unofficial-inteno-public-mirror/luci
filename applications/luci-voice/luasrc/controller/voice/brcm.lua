@@ -22,12 +22,10 @@
 module("luci.controller.voice.brcm", package.seeall)
 
 function index()
-	local users = { "admin", "support", "user" }
+	local users = { "admin", "support" }
 
 	for k, user in pairs(users) do
-		if user ~= "user" then
-			entry({user, "services", "voice", "country"},		cbi("voice/country"),	"Country",	2)
-			entry({user, "services", "voice", "brcm"},		cbi("voice/brcm"),	"Lines",	3)
-		end
+		entry({user, "services", "voice", "country"},		cbi("voice/country"),	"Country",	2)
+		entry({user, "services", "voice", "brcm"},		cbi("voice/brcm"),	"Lines",	3)
 	end
 end
