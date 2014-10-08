@@ -6,6 +6,10 @@
 #
 . /lib/functions.sh
 . /lib/functions/network.sh
+HOOKS=/usr/lib/inithooks/voice_client
+if [ -f "$HOOKS" ] ; then
+	. $HOOKS
+fi
 
 START=60
 
@@ -67,6 +71,12 @@ TMPL_BRCM=$TEMPLATEDIR/brcm.conf.TEMPLATE
 TMPL_BRCM_LINE=$TEMPLATEDIR/brcm_line.TEMPLATE
 
 TMPL_MEETME=$TEMPLATEDIR/meetme.conf.TEMPLATE
+
+run_hook()
+{
+	h="$1_hook"
+	type -F $h &>/dev/null && echo "Running $1 hook" && $h
+}
 
 # Escape special characters in a string that is being passed to sed
 escape_sed_substitution()
@@ -1841,6 +1851,7 @@ configure_logger()
 }
 
 start() {
+	run_hook preinit
 	mkdir -p $WORKDIR
 	mkdir -p $WORKDIR/ssl
 	# Load config file
@@ -1947,6 +1958,7 @@ start() {
 	assemble_and_copy_config
 	pbx_fix_ownership
 	config_unset
+	run_hook postinit
 	return
 }
 
