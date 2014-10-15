@@ -310,125 +310,30 @@ if hwtype == "broadcom" then
 	ch:value("auto", translate("Auto"))
 
 
-	function detailed_name(chnspec)
+	function set_channel_val_dep(chnspec)
 		local channel
 		if chnspec:match("/80") then
 			channel = chnspec:sub(0, chnspec:find("/") - 1)
+			ch:value(chnspec, channel, {band="a", bandwidth="80"})
 		elseif chnspec:match("l") then
 			channel = chnspec:sub(0, chnspec:find("l") - 1) .. " @lower sideband"
+			ch:value(chnspec, channel, {bandwidth="40"})
 		elseif chnspec:match("u") then
 			channel = chnspec:sub(0, chnspec:find("u") - 1) .. " @upper sideband"
+			ch:value(chnspec, channel, {bandwidth="40"})
 		else
 			channel = chnspec
+			ch:value(chnspec, channel, {bandwidth="20"})
 		end
-		return channel
 	end
 
-	--[[for chn in wdev:channels(wdev:get("country"), wdev:get("band"), wdev:get("bandwidth")) do
-		if chn ~= "" then
-			ch:value(chn, detailed_name(chn))
+	for _, bwh in pairs({"20", "40", "80"}) do
+		for chn in wdev:channels(country:formvalue(wdev:name()) or wdev:get("country"), band:formvalue(wdev:name()) or wdev:get("band"), bwh) do
+			if chn ~= "" then
+				set_channel_val_dep(chn)
+			end
 		end
-	end]]
-	ch:value("1", detailed_name("1"), {band="b", bandwidth="20"})
-	ch:value("2", detailed_name("2"), {band="b", bandwidth="20"})
-	ch:value("3", detailed_name("3"), {band="b", bandwidth="20"})
-	ch:value("4", detailed_name("4"), {band="b", bandwidth="20"})
-	ch:value("5", detailed_name("5"), {band="b", bandwidth="20"})
-	ch:value("6", detailed_name("6"), {band="b", bandwidth="20"})
-	ch:value("7", detailed_name("7"), {band="b", bandwidth="20"})
-	ch:value("8", detailed_name("8"), {band="b", bandwidth="20"})
-	ch:value("9", detailed_name("9"), {band="b", bandwidth="20"})
-	ch:value("10", detailed_name("10"), {band="b", bandwidth="20"})
-	ch:value("11", detailed_name("11"), {band="b", bandwidth="20"})
-	ch:value("12", detailed_name("12"), {band="b", bandwidth="20"}) -- not in US
-	ch:value("13", detailed_name("13"), {band="b", bandwidth="20"}) -- not in US
-	ch:value("5u", detailed_name("5u"), {band="b", bandwidth="40"})
-	ch:value("6u", detailed_name("6u"), {band="b", bandwidth="40"})
-	ch:value("7u", detailed_name("7u"), {band="b", bandwidth="40"})
-	ch:value("8u", detailed_name("8u"), {band="b", bandwidth="40"})
-	ch:value("9u", detailed_name("9u"), {band="b", bandwidth="40"})
-	ch:value("10u", detailed_name("10u"), {band="b", bandwidth="40"})
-	ch:value("11u", detailed_name("11u"), {band="b", bandwidth="40"})
-	ch:value("12u", detailed_name("12u"), {band="b", bandwidth="40"}) -- not in US
-	ch:value("13u", detailed_name("13u"), {band="b", bandwidth="40"}) -- not in US
-	ch:value("1l", detailed_name("1l"), {band="b", bandwidth="40"})
-	ch:value("2l", detailed_name("2l"), {band="b", bandwidth="40"})
-	ch:value("3l", detailed_name("3l"), {band="b", bandwidth="40"})
-	ch:value("4l", detailed_name("4l"), {band="b", bandwidth="40"})
-	ch:value("5l", detailed_name("5l"), {band="b", bandwidth="40"})
-	ch:value("6l", detailed_name("6l"), {band="b", bandwidth="40"})
-	ch:value("7l", detailed_name("7l"), {band="b", bandwidth="40"})
-	ch:value("8l", detailed_name("8l"), {band="b", bandwidth="40"}) -- not in US
-	ch:value("9l", detailed_name("9l"), {band="b", bandwidth="40"}) -- not in US
-	ch:value("36", detailed_name("36"), {band="a", bandwidth="20"})
-	ch:value("40", detailed_name("40"), {band="a", bandwidth="20"})
-	ch:value("44", detailed_name("44"), {band="a", bandwidth="20"})
-	ch:value("48", detailed_name("48"), {band="a", bandwidth="20"})
-	ch:value("52", detailed_name("52"), {band="a", bandwidth="20"})
-	ch:value("56", detailed_name("56"), {band="a", bandwidth="20"})
-	ch:value("60", detailed_name("60"), {band="a", bandwidth="20"})
-	ch:value("64", detailed_name("64"), {band="a", bandwidth="20"})
-	ch:value("100", detailed_name("100"), {band="a", bandwidth="20"})
-	ch:value("104", detailed_name("104"), {band="a", bandwidth="20"})
-	ch:value("108", detailed_name("108"), {band="a", bandwidth="20"})
-	ch:value("112", detailed_name("112"), {band="a", bandwidth="20"})
-	ch:value("116", detailed_name("116"), {band="a", bandwidth="20"})
-	ch:value("120", detailed_name("120"), {band="a", bandwidth="20"}) -- not in US
-	ch:value("124", detailed_name("124"), {band="a", bandwidth="20"}) -- not in US
-	ch:value("128", detailed_name("128"), {band="a", bandwidth="20"}) -- not in US
-	ch:value("132", detailed_name("132"), {band="a", bandwidth="20"})
-	ch:value("136", detailed_name("136"), {band="a", bandwidth="20"})
-	ch:value("140", detailed_name("140"), {band="a", bandwidth="20"})
-	ch:value("144", detailed_name("144"), {band="a", bandwidth="20", country="US"})
-	ch:value("149", detailed_name("149"), {band="a", bandwidth="20", country="US"})
-	ch:value("153", detailed_name("153"), {band="a", bandwidth="20", country="US"})
-	ch:value("157", detailed_name("157"), {band="a", bandwidth="20", country="US"})
-	ch:value("161", detailed_name("161"), {band="a", bandwidth="20", country="US"})
-	ch:value("165", detailed_name("165"), {band="a", bandwidth="20", country="US"})
-	ch:value("40u", detailed_name("40u"), {band="a", bandwidth="40"})
-	ch:value("48u", detailed_name("48u"), {band="a", bandwidth="40"})
-	ch:value("56u", detailed_name("56u"), {band="a", bandwidth="40"})
-	ch:value("64u", detailed_name("64u"), {band="a", bandwidth="40"})
-	ch:value("104u", detailed_name("104u"), {band="a", bandwidth="40"})
-	ch:value("112u", detailed_name("112u"), {band="a", bandwidth="40"})
-	ch:value("120u", detailed_name("120u"), {band="a", bandwidth="40"}) -- not in US
-	ch:value("128u", detailed_name("128u"), {band="a", bandwidth="40"}) -- not in US
-	ch:value("136u", detailed_name("136u"), {band="a", bandwidth="40"})
-	ch:value("144u", detailed_name("144u"), {band="a", bandwidth="40", country="US"})
-	ch:value("153u", detailed_name("153u"), {band="a", bandwidth="40", country="US"})
-	ch:value("161u", detailed_name("161u"), {band="a", bandwidth="40", country="US"})
-	ch:value("36l", detailed_name("36l"), {band="a", bandwidth="40"})
-	ch:value("44l", detailed_name("44l"), {band="a", bandwidth="40"})
-	ch:value("52l", detailed_name("52l"), {band="a", bandwidth="40"})
-	ch:value("60l", detailed_name("60l"), {band="a", bandwidth="40"})
-	ch:value("100l", detailed_name("100l"), {band="a", bandwidth="40"})
-	ch:value("108l", detailed_name("108l"), {band="a", bandwidth="40"})
-	ch:value("116l", detailed_name("116l"), {band="a", bandwidth="40"}) -- not in US
-	ch:value("124l", detailed_name("124l"), {band="a", bandwidth="40"}) -- not in US
-	ch:value("132l", detailed_name("132l"), {band="a", bandwidth="40"})
-	ch:value("140l", detailed_name("140l"), {band="a", bandwidth="40", country="US"})
-	ch:value("149l", detailed_name("149l"), {band="a", bandwidth="40", country="US"})
-	ch:value("157l", detailed_name("157l"), {band="a", bandwidth="40", country="US"})
-	ch:value("36/80", detailed_name("36"), {band="a", bandwidth="80"})
-	ch:value("40/80", detailed_name("40"), {band="a", bandwidth="80"})
-	ch:value("44/80", detailed_name("44"), {band="a", bandwidth="80"})
-	ch:value("48/80", detailed_name("48"), {band="a", bandwidth="80"})
-	ch:value("52/80", detailed_name("52"), {band="a", bandwidth="80"})
-	ch:value("56/80", detailed_name("56"), {band="a", bandwidth="80"})
-	ch:value("60/80", detailed_name("60"), {band="a", bandwidth="80"})
-	ch:value("64/80", detailed_name("64"), {band="a", bandwidth="80"})
-	ch:value("100/80", detailed_name("100"), {band="a", bandwidth="80"})
-	ch:value("104/80", detailed_name("104"), {band="a", bandwidth="80"})
-	ch:value("108/80", detailed_name("108"), {band="a", bandwidth="80"})
-	ch:value("112/80", detailed_name("112"), {band="a", bandwidth="80"})
-	ch:value("132/80", detailed_name("132"), {band="a", bandwidth="80"})
-	ch:value("136/80", detailed_name("136"), {band="a", bandwidth="80"})
-	ch:value("140/80", detailed_name("140"), {band="a", bandwidth="80"})
-	ch:value("144/80", detailed_name("144"), {band="a", bandwidth="80"})
-	ch:value("149/80", detailed_name("149"), {band="a", bandwidth="80"})
-	ch:value("153/80", detailed_name("153"), {band="a", bandwidth="80"})
-	ch:value("157/80", detailed_name("157"), {band="a", bandwidth="80"})
-	ch:value("161/80", detailed_name("161"), {band="a", bandwidth="80"})
+	end
 
 	if wdev:get("channel") == "auto" then
 		ach = s:taboption("advanced", Button, "__autoch")
