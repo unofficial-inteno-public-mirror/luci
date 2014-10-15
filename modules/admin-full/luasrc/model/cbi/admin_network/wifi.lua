@@ -293,9 +293,15 @@ if hwtype == "broadcom" then
 	if wdev:hwmodes().ac then
 		bw:value("80", "80MHz", {band="a", country="US"}, {band="a", country="EU/13"})
 	end
+	if wdev:bands():match("b") then
+		bw.default = "20"
+	else
+		bw.default = "40"
+	end
 
 	mode = s:taboption("advanced", ListValue, "hwmode", translate("Mode"))
-	mode:value("auto", "Auto", {band="b"})
+	mode:value("auto", "Auto")
+	mode:value("11a", "802.11a", {band="a", bandwidth="20"})
 	mode:value("11b", "802.11b", {band="b", bandwidth="20"})
 	mode:value("11bg", "802.11b+g", {band="b", bandwidth="20"})
 	mode:value("11g", "802.11g", {band="b", bandwidth="20"})
