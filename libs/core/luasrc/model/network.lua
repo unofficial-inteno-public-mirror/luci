@@ -1823,7 +1823,7 @@ end
 function wifinet.frequency(self)
 --	freqs = {"2.412", "2.417", "2.422", "2.427", "2.432", "2.437", "2.442", "2.447", "2.452", "2.457", "2.462", "2.467", "2.472", "2.484"}
 --	return freqs[self:channel()]
-	return sys.exec("wlctl -i %q status | grep 'Chanspec' | awk -F' ' '{print$2}' | awk -F'G' '{print$1}'" %self:ifname())
+	return (tonumber(self:channel()) >= 36) and "5" or "2.4"
 end
 
 function wifinet.bitrate(self)
