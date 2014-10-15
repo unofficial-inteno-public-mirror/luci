@@ -829,22 +829,22 @@ function encr.write(self, section, value)
 	self.map:set(section, "encryption", e)
 end
 
-function cipher.cfgvalue(self, section)
-	local v = tostring(ListValue.cfgvalue(encr, section))
-	if v and v:match("%+") then
-		v = v:gsub("^[^%+]+%+", "")
-		if v == "aes" then v = "ccmp"
-		elseif v == "tkip+aes" then v = "tkip+ccmp"
-		elseif v == "aes+tkip" then v = "tkip+ccmp"
-		elseif v == "ccmp+tkip" then v = "tkip+ccmp"
-		end
-	end
-	return v
-end
+--function cipher.cfgvalue(self, section)
+--	local v = tostring(ListValue.cfgvalue(encr, section))
+--	if v and v:match("%+") then
+--		v = v:gsub("^[^%+]+%+", "")
+--		if v == "aes" then v = "ccmp"
+--		elseif v == "tkip+aes" then v = "tkip+ccmp"
+--		elseif v == "aes+tkip" then v = "tkip+ccmp"
+--		elseif v == "ccmp+tkip" then v = "tkip+ccmp"
+--		end
+--	end
+--	return v
+--end
 
-function cipher.write(self, section)
-	return encr:write(section)
-end
+--function cipher.write(self, section)
+--	return encr:write(section)
+--end
 
 
 encr:value("none", "No Encryption")
