@@ -5,3 +5,9 @@ dist/
 *.swp
 /docs
 build/po2lmo
+.built
+.built_check
+.configured*
+.dep_files
+.prepared*
+ipkg-brcm63xx_ref_nand/
