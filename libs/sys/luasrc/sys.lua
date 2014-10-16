@@ -411,6 +411,30 @@ function net.mac_hints(callback)
 	end
 end
 
+--- Returns a two-dimensional table of mac clients.
+-- @return  Table of table containing known hosts from various sources.
+--          Each entry contains the values in the following order:
+--          [ "mac", "name" ]
+function net.mac_clients(callback)
+	if callback then
+		_clients(1, function(mac, v4, v6, name)
+			name = name or nixio.getnameinfo(v4 or v6, nil, 100) or v4
+			if name and name ~= mac then
+				callback(mac, name or nixio.getnameinfo(v4 or v6, nil, 100) or v4)
+			end
+		end)
+	else
+		local rv = { }
+		_clients(1, function(mac, v4, v6, name)
+			name = name or nixio.getnameinfo(v4 or v6, nil, 100) or v4
+			if name and name ~= mac then
+				rv[#rv+1] = { mac, name or nixio.getnameinfo(v4 or v6, nil, 100) or v4 }
+			end
+		end)
+		return rv
+	end
+end
+
 --- Returns a two-dimensional table of IPv4 address hints.
 -- @return  Table of table containing known hosts from various sources.
 --          Each entry contains the values in the following order:
