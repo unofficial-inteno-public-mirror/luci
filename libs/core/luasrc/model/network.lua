@@ -1525,6 +1525,10 @@ function wifidev.version(self)
 	return version:gsub("\n$", "")  
 end
 
+function wifidev.is_sta_capable(self)
+	return sys.exec("wlctl -i %q cap" %self.sid):match(" sta ")
+end
+
 function wifidev.is_ac(self)
 	return (tonumber(sys.exec("db -q get hw.%s.is_ac" %self:version())) == 1)
 end

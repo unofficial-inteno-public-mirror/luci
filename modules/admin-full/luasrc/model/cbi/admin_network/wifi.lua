@@ -19,6 +19,9 @@ local nt = require "luci.sys".net
 local fs = require "nixio.fs"
 
 local guser = luci.dispatcher.context.path[1]
+local adminst = (guser == "admin")
+local support = (guser == "support")
+local enduser = (guser == "user")
 
 arg[1] = arg[1] or ""
 
@@ -62,7 +65,6 @@ function m.parse(map)
 		wdev:set("disabled", nil)
 
 		nw:commit("wireless")
---		luci.sys.call("(env -i /sbin/wifi down; env -i /sbin/wifi up) >/dev/null 2>/dev/null")
 		luci.sys.call("env -i /sbin/wifi %s %s >/dev/null 2>/dev/null" %{action, wnet:ifname()})
 
 		luci.http.redirect(luci.dispatcher.build_url("admin/network/wireless", arg[1]))
@@ -79,65 +81,18 @@ end
 m.title = luci.util.pcdata(wnet:get_i18n())
 
 
-local function txpower_list(iw)
-	local list = iw.txpwrlist or { }
-	local off  = tonumber(iw.txpower_offset) or 0
-	local new  = { }
-	local prev = -1
-	local _, val
-	for _, val in ipairs(list) do
-		local dbm = val.dbm + off
-		local mw  = math.floor(10 ^ (dbm / 10))
-		if mw ~= prev then
-			prev = mw
-			new[#new+1] = {
-				display_dbm = dbm,
-				display_mw  = mw,
-				driver_dbm  = val.dbm,
-				driver_mw   = val.mw
-			}
-		end
-	end
-	return new
-end
-
-local function txpower_current(pwr, list)
-	pwr = tonumber(pwr)
-	if pwr ~= nil then
-		local _, item
-		for _, item in ipairs(list) do
-			if item.driver_dbm >= pwr then
-				return item.driver_dbm
-			end
-		end
-	end
-	return (list[#list] and list[#list].driver_dbm) or pwr or 0
-end
-
-local iw = luci.sys.wifi.getiwinfo(arg[1])
-local hw_modes      = iw.hwmodelist or { }
-local tx_power_list = txpower_list(iw)
-local tx_power_cur  = txpower_current(wdev:get("txpower"), tx_power_list)
-
 s = m:section(NamedSection, wdev:name(), "wifi-device", translate("Device Configuration"))
 s.addremove = false
 
 s:tab("general", translate("General Setup"))
 s:tab("macfilter", translate("MAC-Filter"))
 s:tab("advanced", translate("Advanced Settings"))
-if guser ~= "user" then
+if not enduser then
 s:tab("antenna", translate("Antenna Selection"))
 end
---s:tab("bridge", translate("Wireless Bridge"))
-if guser == "admin" then
+if adminst then
 s:tab("anyfi", "Anyfi.net")
 end
-
---[[
-back = s:option(DummyValue, "_overview", translate("Overview"))
-back.value = ""
-back.titleref = luci.dispatcher.build_url("admin", "network", "wireless")
-]]
 
 st = s:taboption("general", DummyValue, "__status", translate("Status"))
 st.template = "admin_network/wifi_status"
@@ -178,27 +133,6 @@ if has_sta then
 	ch = s:taboption("advanced", DummyValue, "choice", translate("Channel"))
 	ch.value = translatef("Locked to channel %d used by %s",
 		has_sta:channel(), has_sta:shortname())
-else
-	ch = s:taboption("advanced", ListValue, "channel", translate("Channel"))
-	ch:value("auto", translate("Auto"))
-	ch:value("1", translate("1"))
-	ch:value("2", translate("2"))
-	ch:value("3", translate("3"))
-	ch:value("4", translate("4"))
-	ch:value("5", translate("5"))
-	ch:value("6", translate("6"))
-	ch:value("7", translate("7"))
-	ch:value("8", translate("8"))
-	ch:value("9", translate("9"))
-	ch:value("10", translate("10"))
-	ch:value("11", translate("11"))
-	ch:value("12", translate("12"))
-	ch:value("13", translate("13"))
---	for _, f in ipairs(iw and iw.freqlist or luci.sys.wifi.channels()) do
---		if not f.restricted then
---			ch:value(f.channel, "%i (%.3f GHz)" %{ f.channel, f.mhz / 1000 })
---		end
---	end
 end
 ]]
 
@@ -349,7 +283,7 @@ if hwtype == "broadcom" then
 		ach.inputstyle = "apply"
 	end
 
-if guser ~= "user" then
+if not enduser then
 	timer = s:taboption("advanced", Value, "scantimer", translate("Auto Channel Timer"), "min")
 	timer:depends("channel", "auto")
 	timer.default = 15
@@ -398,7 +332,7 @@ end
 	rxcps:value("0", "Disable")	
 	rxcps:value("1", "Enable")
 
-if guser ~= "user" then
+if not enduser then
 	rxcpsqt = s:taboption("advanced", Value, "rxchainps_qt", translate("RX Chain Power Save Quite Time"))
 	rxcpsqt.default = 10
 	rxcpspps = s:taboption("advanced", Value, "rxchainps_pps", translate("RX Chain Power Save PPS"))
@@ -452,7 +386,7 @@ end
 	wa:value("1", "Enable")
 	wa:value("0", "Disable")
 
-if guser ~= "user" then
+if not enduser then
 	if wdev:antenna().txant then
 		ant1 = s:taboption("antenna", ListValue, "txantenna", translate("Transmitter Antenna"))
 		ant1.widget = "radio"
@@ -473,14 +407,7 @@ if guser ~= "user" then
 		ant2.default = "3"
 	end
 end
-
---	wdsmode = s:taboption("bridge", ListValue, "wdsmode", translate("WDS Mode"), "Selecting Automatic WDS mode will dynamically grant WDS membership to anyone")
---	wdsmode:value("0", translate("Manual"))
---	wdsmode:value("1", translate("Automatic"))
---	wdslist = s:taboption("bridge", DynamicList, "wdslist", translate("WDS Connection List"))
---	wdslist:depends({wdsmode="0"})
---	wdstimo = s:taboption("bridge", Value, "wdstimo", translate("WDS Link Detection Timeout"), "min")
-end
+end -- hwtype == "broadcom" --
 
 function anyfi_bandwidth_is_valid(value)
 	if not tonumber(value) or tonumber(value) < 1 or tonumber(value) > 100 then
@@ -491,7 +418,9 @@ function anyfi_bandwidth_is_valid(value)
 end
 
 ------------------- Anyfi.net global configuration ------------------
-if guser == "admin" and (fs.access("/sbin/anyfid") or fs.access("/sbin/myfid")) then
+local anyfi_controller
+
+if adminst and (fs.access("/sbin/anyfid") or fs.access("/sbin/myfid")) then
 
 	anyfi_cntrl = s:taboption("anyfi", Value, "anyfi_controller", "Controller", translate("A Fully Qualified Domain Name or IP address (e.g. demo.anyfi.net)"))
 	anyfi_cntrl.rmempty = true
@@ -509,13 +438,15 @@ if guser == "admin" and (fs.access("/sbin/anyfid") or fs.access("/sbin/myfid")) 
 		m.uci:delete("anyfi", "controller", "hostname")
 		m.uci:commit("anyfi")
 	end
+
+	anyfi_controller = anyfi_cntrl:formvalue(wdev:name())
 end
---local anyfi_controller = anyfi_cntrl:formvalue(wdev:name()) or m.uci:get("anyfi", "controller", "hostname")
-local anyfi_controller = m.uci:get("anyfi", "controller", "hostname")
+
+anyfi_controller = (not anyfi_controller) and m.uci:get("anyfi", "controller", "hostname")
 
 ------------------- Anyfi.net device configuration ------------------
 
-if guser == "admin" and os.execute("/sbin/anyfi-probe " .. hwtype .. " >/dev/null") == 0 and anyfi_controller and anyfi_controller ~= "" then
+if adminst and os.execute("/sbin/anyfi-probe " .. hwtype .. " >/dev/null") == 0 and anyfi_controller and anyfi_controller ~= "" then
 	anyfi_floor = s:taboption("anyfi", Value, "anyfi_floor", "Floor",
 				  translate("The percentage of available spectrum and backhaul that mobile users are allowed to consume even if there is competition with the primary user"))
 
@@ -582,13 +513,12 @@ ssid = s:taboption("general", Value, "ssid", translate("<abbr title=\"Extended S
 mode = s:taboption("general", ListValue, "mode", translate("Mode"))
 mode.override_values = true
 mode:value("ap", translate("Access Point"))
---mode:value("sta", translate("Client"))
---mode:value("adhoc", translate("Ad-Hoc"))
+if wdev:is_sta_capable() then
+mode:value("sta", translate("Client"))
+end
 
-bssid = s:taboption("general", Value, "bssid", translate("<abbr title=\"Basic Service Set Identifier\">BSSID</abbr>"))
 
-
-local network_msg = (guser ~= "user") and " or fill out the <em>create</em> field to define a new network." or "."
+local network_msg = (not enduser) and " or fill out the <em>create</em> field to define a new network." or "."
 network = s:taboption("general", Value, "network", translate("Network"),
 	translate("Choose the network(s) you want to attach to this wireless interface%s" %network_msg))
 
@@ -633,9 +563,6 @@ end
 -------------------- Broadcom Interface ----------------------
 
 if hwtype == "broadcom" then
-	--mode:value("wds", translate("WDS"))
-	--mode:value("monitor", translate("Monitor"))
-
 	function mode.write(self, section, value)
 		if value == "sta" then
 			wdev:set("apsta", "1")
@@ -645,10 +572,13 @@ if hwtype == "broadcom" then
 		self.map:set(section, "mode", value)
 	end
 
+--	autoconf = s:taboption("general", Flag, "autoconf", translate("Auto-Configure"), translate("If a wireless Client interface on this router associates with a remote wireless AP via WPS," ..
+--	" overwrite SSID and security settings of this interface with the credentials received from the associated AP"))
+--	autoconf:depends({mode="ap"})
+--	autoconf.rmempty = true
+
 	hidden = s:taboption("general", Flag, "hidden", translate("Hide <abbr title=\"Extended Service Set Identifier\">ESSID</abbr>"))
 	hidden:depends({mode="ap"})
-	hidden:depends({mode="adhoc"})
-	hidden:depends({mode="wds"})
 
 	bssmax = s:taboption("general", Value, "bss_max", translate("Maximum Client"))
 	bssmax:depends("mode", "ap")
@@ -687,41 +617,49 @@ if hwtype == "broadcom" then
 	ml:depends({macfilter="2"})
 	ml:depends({macfilter="1"})
 	nt.mac_hints(function(mac, name) ml:value(mac, "%s (%s)" %{ mac, name }) end)
-
-	bssid:depends({mode="wds"})
-	bssid:depends({mode="adhoc"})
 end
 
 
 ------------------- WiFI-Encryption -------------------
 
-if hwtype == "broadcom" then
-	wps = s:taboption("encryption", Flag, "wps_pbc", translate("Enable WPS Push Button"))
-	wps:depends({encryption="none"})
-	wps:depends({encryption="psk2"})
-	wps:depends({encryption="pskmixedpsk2"})
+wps = s:taboption("encryption", Flag, "wps_pbc", translate("Enable WPS Push Button"))
+wps:depends({encryption="none"})
+wps:depends({encryption="psk2"})
+wps:depends({encryption="pskmixedpsk2"})
+
+function wps.write(self, section, value)
+	local val = tonumber(value)
+	local mode = tostring(mode:formvalue(section)) or wnet:get("mode")
+	if val == 1 then
+		if mode == "sta" then
+			self.map.uci:foreach("wireless", "wifi-iface",
+				function(s)
+					self.map.uci:set("wireless", s['.name'], "wps_pbc", "0")
+				end)
+		else
+			self.map.uci:foreach("wireless", "wifi-iface",
+				function(s)
+					if s.mode == "sta" then
+						self.map.uci:set("wireless", s['.name'], "wps_pbc", "0")
+					end
+				end)
+		end
+	end
+	self.map:set(section, "wps_pbc", value)
 end
 
 encr = s:taboption("encryption", ListValue, "encryption", translate("Encryption"))
 encr.override_values = true
 encr.override_depends = true
-encr:depends({mode="ap"})
-encr:depends({mode="sta"})
-encr:depends({mode="adhoc"})
-encr:depends({mode="ahdemo"})
-encr:depends({mode="ap-wds"})
-encr:depends({mode="sta-wds"})
-encr:depends({mode="mesh"})
-encr:depends({mode="wds"})
-
-cipher = s:taboption("encryption", ListValue, "cipher", translate("Cipher"))
-cipher:depends({encryption="psk"})
-cipher:depends({encryption="psk2"})
-cipher:depends({encryption="pskmixedpsk2"})
-cipher:value("auto", translate("auto"))
-cipher:value("ccmp", translate("Force CCMP (AES)"))
-cipher:value("tkip", translate("Force TKIP"))
-cipher:value("tkip+ccmp", translate("Force TKIP and CCMP (AES)"))
+encr:value("none", "No Encryption")
+encr:value("wep-open",   translate("WEP Open System"), {mode="ap"}, {mode="sta"})
+encr:value("wep-shared", translate("WEP Shared Key"),  {mode="ap"}, {mode="sta"})
+encr:value("psk", "WPA-PSK", {mode="ap"}, {mode="sta"})
+encr:value("psk2", "WPA2-PSK", {mode="ap"}, {mode="sta"})
+encr:value("pskmixedpsk2", "WPA-PSK/WPA2-PSK Mixed Mode", {mode="ap"})
+encr:value("wpa", "WPA-EAP", {mode="ap"})
+encr:value("wpa2", "WPA2-EAP", {mode="ap"})
+encr:value("wpamixedwpa2", "WPA-EAP/WPA2-EAP Mixed Mode", {mode="ap"})
 
 function encr.cfgvalue(self, section)
 	local v = tostring(ListValue.cfgvalue(self, section))
@@ -731,49 +669,6 @@ function encr.cfgvalue(self, section)
 		return (v:gsub("%+.+$", ""))
 	end
 	return v
-end
-
-function encr.write(self, section, value)
-	local e = tostring(encr:formvalue(section))
-	local c = tostring(cipher:formvalue(section))
-	if value == "wpa" or value == "wpa2"  then
-		self.map.uci:delete("wireless", section, "key")
-	end
-	if e and (c == "tkip" or c == "ccmp" or c == "tkip+ccmp") then
-		e = e .. "+" .. c
-	end
-	self.map:set(section, "encryption", e)
-end
-
---function cipher.cfgvalue(self, section)
---	local v = tostring(ListValue.cfgvalue(encr, section))
---	if v and v:match("%+") then
---		v = v:gsub("^[^%+]+%+", "")
---		if v == "aes" then v = "ccmp"
---		elseif v == "tkip+aes" then v = "tkip+ccmp"
---		elseif v == "aes+tkip" then v = "tkip+ccmp"
---		elseif v == "ccmp+tkip" then v = "tkip+ccmp"
---		end
---	end
---	return v
---end
-
---function cipher.write(self, section)
---	return encr:write(section)
---end
-
-
-encr:value("none", "No Encryption")
-encr:value("wep-open",   translate("WEP Open System"), {mode="ap"}, {mode="sta"}, {mode="ap-wds"}, {mode="sta-wds"}, {mode="adhoc"}, {mode="ahdemo"}, {mode="wds"})
-encr:value("wep-shared", translate("WEP Shared Key"),  {mode="ap"}, {mode="sta"}, {mode="ap-wds"}, {mode="sta-wds"}, {mode="adhoc"}, {mode="ahdemo"}, {mode="wds"})
-
-if hwtype == "broadcom" then
-	encr:value("psk", "WPA-PSK", {mode="ap"}, {mode="sta"}, {mode="wds"})
-	encr:value("psk2", "WPA2-PSK", {mode="ap"}, {mode="sta"}, {mode="wds"})
-	encr:value("pskmixedpsk2", "WPA-PSK/WPA2-PSK Mixed Mode", {mode="ap"}, {mode="sta"}, {mode="wds"})
-	encr:value("wpa", "WPA-EAP", {mode="ap"})
-	encr:value("wpa2", "WPA2-EAP", {mode="ap"})
-	encr:value("wpamixedwpa2", "WPA-EAP/WPA2-EAP Mixed Mode", {mode="ap"}, {mode="sta"})
 end
 
 encr.write = function(self, section, value)
@@ -792,13 +687,19 @@ encr.write = function(self, section, value)
 	end
 end
 
+cipher = s:taboption("encryption", ListValue, "cipher", translate("Cipher"))
+cipher:depends({encryption="psk"})
+cipher:depends({encryption="psk2"})
+cipher:depends({encryption="pskmixedpsk2"})
+cipher:value("auto", translate("auto"))
+cipher:value("ccmp", translate("Force CCMP (AES)"))
+cipher:value("tkip", translate("Force TKIP"))
+cipher:value("tkip+ccmp", translate("Force TKIP and CCMP (AES)"))
+
 radius_server = s:taboption("encryption", Value, "radius_server", translate("Radius-Authentication-Server"))
 radius_server:depends({mode="ap", encryption="wpa"})
 radius_server:depends({mode="ap", encryption="wpa2"})
 radius_server:depends({mode="ap", encryption="wpamixedwpa2"})
-radius_server:depends({mode="ap-wds", encryption="wpa"})
-radius_server:depends({mode="ap-wds", encryption="wpa2"})
-radius_server:depends({mode="ap-wds", encryption="wpamixedwpa2"})
 radius_server.rmempty = true
 radius_server.datatype = "host"
 
@@ -806,9 +707,6 @@ radius_port = s:taboption("encryption", Value, "radius_port", translate("Radius-
 radius_port:depends({mode="ap", encryption="wpa"})
 radius_port:depends({mode="ap", encryption="wpa2"})
 radius_port:depends({mode="ap", encryption="wpamixedwpa2"})
-radius_port:depends({mode="ap-wds", encryption="wpa"})
-radius_port:depends({mode="ap-wds", encryption="wpa2"})
-radius_port:depends({mode="ap-wds", encryption="wpamixedwpa2"})
 radius_port.rmempty = true
 radius_port.datatype = "port"
 radius_port.default = 1812
@@ -817,9 +715,6 @@ radius_secret = s:taboption("encryption", Value, "radius_secret", translate("Rad
 radius_secret:depends({mode="ap", encryption="wpa"})
 radius_secret:depends({mode="ap", encryption="wpa2"})
 radius_secret:depends({mode="ap", encryption="wpamixedwpa2"})
-radius_secret:depends({mode="ap-wds", encryption="wpa"})
-radius_secret:depends({mode="ap-wds", encryption="wpa2"})
-radius_secret:depends({mode="ap-wds", encryption="wpamixedwpa2"})
 radius_secret.rmempty = true
 radius_secret.password = true
 
@@ -941,7 +836,6 @@ for slot=1,4 do
 
 	function wepkey.write(self, section, value)
 		if value and (#value == 5 or #value == 13) then
-			--value = "s:" .. value
 			value = value
 		end
 		return Value.write(self, section, value)
@@ -958,11 +852,9 @@ if fs.access("/sbin/myfid") and anyfi_controller and anyfi_controller ~= "" then
 	anyfi_status.rmempty = true
 	anyfi_status:depends({mode="ap", encryption="psk"})
 	anyfi_status:depends({mode="ap", encryption="psk2"})
-	anyfi_status:depends({mode="ap", encryption="psk-mixed"})
 	anyfi_status:depends({mode="ap", encryption="pskmixedpsk2"})
 	anyfi_status:depends({mode="ap", encryption="wpa"})
 	anyfi_status:depends({mode="ap", encryption="wpa2"})
-	anyfi_status:depends({mode="ap", encryption="wpa-mixed"})
 	anyfi_status:depends({mode="ap", encryption="wpamixedwpa2"})
 
 	function anyfi_status.remove(self, section)
