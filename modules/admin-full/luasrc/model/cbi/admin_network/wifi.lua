@@ -117,10 +117,17 @@ local htcaps = wdev:get("ht_capab") and true or false
 -- NanoFoo
 local nsantenna = wdev:get("antenna")
 
--- Check whether there is a client interface on the same radio,
--- if yes, lock the channel choice as the station will dicatate the freq
+
+local has_apsta = nil
 local has_sta = nil
-local _, net
+local _, dev, net
+-- Check whether there is a client interface on this router
+for _, dev in ipairs(nw:get_wifidevs()) do
+	if dev:get("apsta") == "1" then
+		has_apsta = dev
+	end
+end
+-- Check whether there is a client interface on the same radio
 for _, net in ipairs(wdev:get_wifinets()) do
 	if net:mode() == "sta" and net:id() ~= wnet:id() then
 		has_sta = net
@@ -130,6 +137,7 @@ end
 
 --[[
 if has_sta then
+	-- lock the channel choice as the station will dicatate the freq
 	ch = s:taboption("advanced", DummyValue, "choice", translate("Channel"))
 	ch.value = translatef("Locked to channel %d used by %s",
 		has_sta:channel(), has_sta:shortname())
@@ -566,16 +574,27 @@ if hwtype == "broadcom" then
 	function mode.write(self, section, value)
 		if value == "sta" then
 			wdev:set("apsta", "1")
+			-- set autoconf for the ap interfaces on the same radio
+			for _, net in ipairs(wdev:get_wifinets()) do
+				if net:mode() == "ap" then
+					net:set("autoconf", "1")
+				end
+			end
 		else
 			wdev:set("apsta", "0")
 		end
 		self.map:set(section, "mode", value)
 	end
 
---	autoconf = s:taboption("general", Flag, "autoconf", translate("Auto-Configure"), translate("If a wireless Client interface on this router associates with a remote wireless AP via WPS," ..
---	" overwrite SSID and security settings of this interface with the credentials received from the associated AP"))
---	autoconf:depends({mode="ap"})
---	autoconf.rmempty = true
+	if has_apsta then
+		autoconf = s:taboption("general", Flag, "autoconf", translate("Auto-Configure"), translate("Overwrite SSID and security settings of this interface" ..
+		" with the credentials recieved from another wireless AP via WPS"))
+		autoconf:depends({mode="ap"})
+		autoconf.rmempty = true
+		if has_sta then
+			autoconf.default = "1"
+		end
+	end
 
 	hidden = s:taboption("general", Flag, "hidden", translate("Hide <abbr title=\"Extended Service Set Identifier\">ESSID</abbr>"))
 	hidden:depends({mode="ap"})
