@@ -124,7 +124,7 @@ o = s:option(Value, "name", "Name")
 o.optional = false
 
 o = s:option(DynamicList, "address", translate("Blocked host"), translate("Host will be blocked based on the MAC address."))
-luci.sys.net.mac_hints(function(mac, name)
+luci.sys.net.mac_clients(function(mac, name)
     o:value(mac, "%s (%s)" %{ mac, name })
     o.default = o.default or o
 end)
