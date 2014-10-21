@@ -20,7 +20,6 @@ require("luci.fs")
 require("luci.config")
 
 local m, s, o
-local guser = luci.dispatcher.context.path[1]
 local has_ntpd = luci.fs.access("/usr/sbin/ntpd")
 
 m = Map("system", translate("System"), translate("Here you can configure the basic aspects of your device like its hostname or the timezone."))
@@ -74,7 +73,7 @@ function o.write(self, section, value)
 	luci.fs.writefile("/etc/TZ", timezone .. "\n")
 end
 
-if guser ~= "user" then
+if TECUSER then
 	--
 	-- Logging
 	--

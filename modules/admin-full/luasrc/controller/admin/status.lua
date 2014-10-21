@@ -76,7 +76,6 @@ function action_packageinfo()
 end
 
 function action_iptables()
-	local guser = luci.dispatcher.context.path[1] 
 	if luci.http.formvalue("zero") then
 		if luci.http.formvalue("zero") == "6" then
 			luci.util.exec("ip6tables -Z")
@@ -84,12 +83,12 @@ function action_iptables()
 			luci.util.exec("iptables -Z")
 		end
 		luci.http.redirect(
-			luci.dispatcher.build_url(guser, "status", "iptables")
+			luci.dispatcher.build_url(GUSER, "status", "iptables")
 		)
 	elseif luci.http.formvalue("restart") == "1" then
 		luci.util.exec("/etc/init.d/firewall reload")
 		luci.http.redirect(
-			luci.dispatcher.build_url(guser, "status", "iptables")
+			luci.dispatcher.build_url(GUSER, "status", "iptables")
 		)
 	else
 		luci.template.render("admin_status/iptables")

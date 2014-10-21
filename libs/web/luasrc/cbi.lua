@@ -46,6 +46,12 @@ FORM_INVALID = -1
 FORM_CHANGED =  2
 FORM_SKIP    =  4
 
+GUSER = luci.dispatcher.context.path[1]
+ADMINST = (GUSER == "admin")
+SUPPORT = (GUSER == "support")
+ENDUSER = (GUSER == "user")
+TECUSER = (GUSER ~= "user")
+
 AUTO = true
 
 CREATE_PREFIX = "cbi.cts."

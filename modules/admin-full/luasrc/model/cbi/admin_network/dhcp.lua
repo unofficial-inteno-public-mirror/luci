@@ -13,7 +13,6 @@ $Id: dhcp.lua 9623 2013-01-18 14:08:37Z jow $
 ]]--
 
 local sys = require "luci.sys"
-local guser = luci.dispatcher.context.path[1]
 
 m = Map("dhcp", translate("DHCP and DNS"),
 	translate("Dnsmasq is a combined <abbr title=\"Dynamic Host Configuration Protocol" ..
@@ -26,10 +25,10 @@ s.anonymous = true
 s.addremove = false
 
 s:tab("general", translate("General Settings"))
-if guser ~= "user" then
+if TECUSER then
 s:tab("files", translate("Resolv and Hosts Files"))
 s:tab("advanced", translate("Advanced Settings"))
-end -- guser ~= user --
+end -- TECUSER --
 
 
 s:taboption("general", Value, "domain",
@@ -41,7 +40,7 @@ s:taboption("general", Flag, "logqueries",
 	translate("Write received DNS requests to syslog")).optional = true
 
 
-if guser ~= "user" then
+if TECUSER then
 s:taboption("advanced", Flag, "domainneeded",
 	translate("Domain required"),
 	translate("Don't forward <abbr title=\"Domain Name System\">DNS</abbr>-Requests without " ..
@@ -193,7 +192,7 @@ cq = s:taboption("advanced", Value, "dnsforwardmax",
 cq.optional = true
 cq.datatype = "uinteger"
 cq.placeholder = 150
-end -- guser ~= user --
+end -- TECUSER --
 
 
 m:section(SimpleSection).template = "admin_network/lease_status"

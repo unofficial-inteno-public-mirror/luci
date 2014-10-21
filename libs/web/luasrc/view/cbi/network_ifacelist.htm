@@ -4,7 +4,6 @@
 	local utl = require "luci.util"
 	local net = require "luci.model.network".init()
 	local cbeid = luci.cbi.FEXIST_PREFIX .. self.config .. "." .. section .. "." .. self.option
-	local guser = luci.dispatcher.context.path[1]
 
 	local iface
 	local ifaces = net:get_interfaces()
@@ -55,7 +54,7 @@
          if (not self.nobridges  or not iface:is_bridge()) and
 		    (not self.noinactive or iface:is_up()) and
 		    iface:name() ~= self.exclude and
-		    (guser ~= "user" or not (iface_is_type_wan(iface:name()) or iface_is_at_wan(iface:name())))
+		    (TECUSER or not (iface_is_type_wan(iface:name()) or iface_is_at_wan(iface:name())))
 		 then %>
 	<li>
 		<input class="cbi-input-<%=self.widget or "radio"%>" onclick="cbi_d_update(this.id)" onchange="cbi_d_update(this.id)"<%=
@@ -69,7 +68,7 @@
 			<img<%=attr("title", iface:get_i18n())%> style="width:16px; height:16px; vertical-align:middle" src="<%=resource%>/icons/<%=iface:type()%><%=iface:is_up() and "" or "_disabled"%>.png" />
 			<% if link then -%></a><% end -%>
 			<%=pcdata(iface:get_i18n())%>
-			<% if guser == "admin" then %>
+			<% if ADMINST then %>
 			<% local ns = iface:get_networks(); if #ns > 0 then %>(
 				<%- local i, n; for i, n in ipairs(ns) do -%>
 					<%-= (i>1) and ', ' -%>

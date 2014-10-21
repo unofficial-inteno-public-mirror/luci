@@ -12,7 +12,6 @@ You may obtain a copy of the License at
 
 local map, section, net = ...
 local ifc = net:get_interface()
-local guser = luci.dispatcher.context.path[1]
 
 local ipaddr, netmask, gateway, broadcast, dns, accept_ra, send_rs, ip6addr, ip6gw
 local mtu, metric
@@ -75,7 +74,7 @@ if luci.model.network:has_ipv6() then
 
 end
 
-if guser == "admin" then
+if ADMINST then
 	luci.tools.proto.opt_macaddr(section, ifc, translate("Override MAC address"))
 
 	mtu = section:taboption("advanced", Value, "mtu", translate("Override MTU"))

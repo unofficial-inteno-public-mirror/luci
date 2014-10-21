@@ -40,7 +40,6 @@
 
 		luci.sys.exec("rm -f /tmp/backup_target_mntdir")
 
-		local guser = luci.dispatcher.context.path[1]
 		local has_usbstorage = (luci.sys.exec("ls /mnt/") ~= "")
 
 		local field   = luci.http.formvalue('field')
@@ -55,7 +54,7 @@
 
 		local filepath = table.concat( path, '/' )
 		local filestat = nixio.fs.stat( filepath )
-		local baseurl  = luci.dispatcher.build_url(guser, 'mntbrowser')
+		local baseurl  = luci.dispatcher.build_url(GUSER, 'mntbrowser')
 
 		if filestat and filestat.type == "reg" then
 			table.remove( path, #path )

@@ -21,7 +21,6 @@ local fw = require "luci.model.firewall"
 
 arg[1] = arg[1] or ""
 
-local guser = luci.dispatcher.context.path[1]
 local has_dnsmasq  = fs.access("/etc/config/dhcp")
 local has_firewall = fs.access("/etc/config/firewall")
 
@@ -196,7 +195,7 @@ if net:proto() == "static" then
 end
 
 
-if guser == "admin" then
+if ADMINST then
 	p = s:taboption("general", ListValue, "proto", translate("Protocol"))
 	p.default = net:proto()
 
@@ -277,7 +276,7 @@ if guser == "admin" then
 end
 
 
-if guser == "admin" then
+if ADMINST then
 	auto = s:taboption("advanced", Flag, "auto", translate("Bring up on boot"))
 	auto.default = (net:proto() == "none") and auto.disabled or auto.enabled
 end
@@ -289,12 +288,12 @@ if not net:is_virtual() then
 	br:value("", "standalone interface")
 	br:value("bridge", "bridge over multiple interfaces")
 	br:value("alias", "bridge alias")
-	if guser == "admin" then
+	if ADMINST then
 		br:value("anywan", "any WAN")
 	end
 	br.rmempty = true
 
-	if guser == "admin" then
+	if ADMINST then
 		br:depends("proto", "static")
 		br:depends("proto", "dhcp")
 		br:depends("proto", "none")
@@ -472,7 +471,7 @@ if has_firewall then
 end
 
 if not net:is_semifloating() then
-if guser == "admin" then
+if ADMINST then
 	function p.write() end
 	function p.remove() end
 	function p.validate(self, value, section)
@@ -538,7 +537,7 @@ else
 	setfenv(form, getfenv(1))(m, s, net)
 end
 
-if guser == "admin" then
+if ADMINST then
 	local _, field
 	for _, field in ipairs(s.children) do
 		if field ~= st and field ~= p and field ~= p_install and field ~= p_switch then

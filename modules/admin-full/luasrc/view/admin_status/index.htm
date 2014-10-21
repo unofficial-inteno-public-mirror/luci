@@ -17,7 +17,6 @@ You may obtain a copy of the License at
 	require "luci.quest"
 
 	local advanced = (luci.http.formvalue("advanced") == "1")
-	local guser = luci.dispatcher.context.path[1]
 
 	local has_ipv6 = luci.fs.access("/proc/net/ipv6_route")
 	local has_dhcp = luci.fs.access("/etc/config/dhcp")
@@ -275,7 +274,7 @@ You may obtain a copy of the License at
 					}
 
 					ss.innerHTML = String.format('<small>%s</small>', s);
-					<% if guser == "admin" then %>
+					<% if ADMINST then %>
 						si.innerHTML += String.format(
 							'<br /><small><a href="%s">%s<br />%s</a></small>',
 								ifc.link, ifc.l2name, ifc.ifname
@@ -325,7 +324,7 @@ You may obtain a copy of the License at
 
 					ss6.innerHTML = String.format('<small>%s</small>', s);
 					si6.innerHTML = String.format('<img src="<%=resource%>/icons/ethernetwan.png" />');
-					<% if guser == "admin" then %>
+					<% if ADMINST then %>
 						si6.innerHTML += String.format(
 							'<br /><small><a href="%s">%s<br />%s</a></small>',
 								ifc.link, ifc.l2name, ifc.ifname

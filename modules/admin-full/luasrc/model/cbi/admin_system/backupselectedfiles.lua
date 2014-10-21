@@ -1,5 +1,4 @@
 local uci = require("luci.model.uci").cursor()
-local guser = luci.dispatcher.context.path[1]
 
 m = Map("backup", translate("Backup Settings"))
 m:append(Template("admin_system/backupfiles"))
@@ -15,7 +14,7 @@ uci:foreach("backup", "service",
 		desc = section["desc"]
 		detail = section["detail"]
 		user = section["user"]
-		if (user and user == "1") or guser ~= "user" then
+		if (user and user == "1") or TECUSER then
 			k = s:option(Flag, name, desc or name, detail or "")
 			k.rmempty = false
 		end

@@ -18,8 +18,6 @@ local uci = require("luci.model.uci")
 require("luci.sys")
 require("luci.ip")
 
-local guser = luci.dispatcher.context.path[1]
-
 function byte_format(byte)
 	local suff = {"B", "KB", "MB", "GB", "TB"}
 	for i=1, 5 do
@@ -111,7 +109,7 @@ function cbi_add_networks(field)
 			end
 		end
 	)
-	field.titleref = luci.dispatcher.build_url(guser, "network", "network")
+	field.titleref = luci.dispatcher.build_url(GUSER, "network", "network")
 end
 
 function cbi_add_wan_networks(field)

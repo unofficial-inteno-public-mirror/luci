@@ -2,8 +2,6 @@ local sys = require "luci.sys"
 
 local PORTS = { "eth0", "eth1", "eth2", "eth3", "eth4" }
 
-local guser = luci.dispatcher.context.path[1]
-
 m = Map("ports", translate("Port Management"))
 
 s = m:section(TypedSection, "ethports", "Ethernet Ports")
@@ -23,7 +21,7 @@ end
 
 for _, eport in ipairs(PORTS) do
 	if interfacename(eport) then
-		if guser == "admin" or not sys.exec("uci -q get ports.@ethports[0].%s" %eport):match("disabled") then
+		if ADMINST or not sys.exec("uci -q get ports.@ethports[0].%s" %eport):match("disabled") then
 			eth = s:option(ListValue, eport, "%s (%s)" %{eport, interfacename(eport)})
 			eth.rmempty = true
 			eth:value("auto", "Auto-negotiation")
@@ -33,7 +31,7 @@ for _, eport in ipairs(PORTS) do
 			eth:value("100HD", "100Mb, Half Duplex")
 			eth:value("10FD" , "10Mb,  Full Duplex")
 			eth:value("10HD" , "10Mb,  Half Duplex")
-			if guser == "admin" then
+			if ADMINST then
 				eth:value("disabled" , "Disabled")
 			end
 		end

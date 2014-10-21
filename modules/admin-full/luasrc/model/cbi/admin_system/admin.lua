@@ -15,8 +15,6 @@ $Id: admin.lua 8153 2012-01-06 16:42:02Z jow $
 
 local fs = require "nixio.fs"
 
-local guser = luci.dispatcher.context.path[1]
-
 m = Map("system", translate("Change Password"))
 
 s = m:section(TypedSection, "_dummy", "")
@@ -24,14 +22,14 @@ s.addremove = false
 s.anonymous = true
 
 who = s:option(ListValue, "who", translate(" "))
-if guser == "admin" then
+if ADMINST then
 	who:value("admin", "admin")
 	who:value("support", "support")
 	who:value("user", "user")
-elseif guser == "support" then
+elseif SUPPORT then
 	who:value("support", "support")
 	who:value("user", "user")
-elseif guser == "user" then
+elseif ENDUSER then
 	who:value("user", "user")
 end
 
@@ -66,7 +64,7 @@ end
 
 if fs.access("/etc/config/dropbear") then
 
-if guser == "admin" then
+if ADMINST then
 
 m2 = Map("dropbear", translate("SSH Access"),
 	translate("Dropbear offers <abbr title=\"Secure Shell\">SSH</abbr> network shell access and an integrated <abbr title=\"Secure Copy\">SCP</abbr> server"))

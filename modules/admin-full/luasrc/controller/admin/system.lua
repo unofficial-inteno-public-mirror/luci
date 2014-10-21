@@ -162,7 +162,6 @@ function action_flashops()
 		-- Assemble file list, generate backup from selected configs
 		--
 
-		local guser = luci.dispatcher.context.path[1]
 		local reader
 		if luci.http.formvalue("save_method") == "download" then
 			luci.sys.exec("rm -f /tmp/backup_target_mntdir")
@@ -173,7 +172,7 @@ function action_flashops()
 			luci.ltn12.pump.all(reader, luci.http.write)
 		else
 			luci.sys.exec(backup_selected_cmd)
-			luci.http.redirect(luci.dispatcher.build_url("%s/system/flashops" %guser))
+			luci.http.redirect(luci.dispatcher.build_url("%s/system/flashops" %GUSER))
 		end
 	elseif luci.http.formvalue("backup") then
 		--

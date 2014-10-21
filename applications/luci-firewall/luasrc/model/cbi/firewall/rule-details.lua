@@ -20,9 +20,6 @@ local ft = require "luci.tools.firewall"
 local nw = require "luci.model.network"
 local m, s, o, k, v
 
-local guser = luci.dispatcher.context.path[1]
-local enduser = (guser == "user")
-
 arg[1] = arg[1] or ""
 
 m = Map("firewall",
@@ -64,7 +61,7 @@ elseif rule_type == "redirect" then
 
 
 	ft.opt_enabled(s, Button)
-	if not enduser then
+	if TECUSER then
 		ft.opt_hidden(s, Button)
 	end
 	ft.opt_name(s, Value, translate("Name"))
@@ -185,7 +182,7 @@ else
 	s.addremove = false
 
 	ft.opt_enabled(s, Button)
-	if not enduser then
+	if TECUSER then
 		ft.opt_hidden(s, Button)
 	end
 	ft.opt_name(s, Value, translate("Name"))

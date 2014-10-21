@@ -15,21 +15,17 @@ $Id: flashops.htm 7798 2011-10-26 23:43:04Z jow $
 
 <%+header%>
 
-<%
-	local guser = luci.dispatcher.context.path[1]
-%>
-
 <script type="text/javascript">
 	function browse_mntdir() {
 	   var opts;
 
 	   opts = 'menubar=no,resizable=no,scrollbars=yes,titlebar=yes,toolbar=no,width=420,height=300';
 
-	   window.open('<%=luci.dispatcher.build_url("%s/mntbrowser/mnt" %guser)%>?field=/mnt', 'Browser', opts);
+	   window.open('<%=luci.dispatcher.build_url("%s/mntbrowser/mnt" %GUSER)%>?field=/mnt', 'Browser', opts);
 	}
 </script>
 
-<% if guser == "user" then %>
+<% if ENDUSER then %>
 <h2><a id="content" name="content"><%:Backup / Restore%></a></h2>
 <% else %>
 <h2><a id="content" name="content"><%:Flash Operations%></a></h2>

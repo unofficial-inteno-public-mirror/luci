@@ -1,7 +1,5 @@
 module("luci.controller.xdsl", package.seeall)
 
-local guser = luci.dispatcher.context.path[1]
-
 function index()
         local uci = require("luci.model.uci").cursor()
         local net = require "luci.model.xdsl".init(uci)
@@ -51,7 +49,7 @@ function xtm_reset() -- Call Reset xTM Statistics function
 	
 	local net = netmd:reset_tm()
 	if net then
-		luci.http.redirect(luci.dispatcher.build_url("%s/status/dslstats/xtm" %guser))
+		luci.http.redirect(luci.dispatcher.build_url("%s/status/dslstats/xtm" %GUSER))
 		return
 	end
 end
@@ -61,7 +59,7 @@ function xdsl_reset() -- Call Reset xDSL Statistics function
 		
 	local net = netmd:reset_dsl()
 	if net then
-		luci.http.redirect(luci.dispatcher.build_url("%s/status/dslstats/xdsl" %guser))
+		luci.http.redirect(luci.dispatcher.build_url("%s/status/dslstats/xdsl" %GUSER))
 		return
 	end
 end
@@ -71,7 +69,7 @@ function xdsl_berstart(time) -- Call Start BER Test function
 																
 	local net = netmd:berstart_dsl(time)
 	if net then
-		luci.http.redirect(luci.dispatcher.build_url("%s/status/bershowresults" %guser))
+		luci.http.redirect(luci.dispatcher.build_url("%s/status/bershowresults" %GUSER))
 		return
 	end
 end
@@ -81,7 +79,7 @@ function xdsl_berstop() -- Call Stop BER Test function
 
 	local net = netmd:berstop_dsl()
 	if net then
-		luci.http.redirect(luci.dispatcher.build_url("%s/status/bershowresults" %guser))
+		luci.http.redirect(luci.dispatcher.build_url("%s/status/bershowresults" %GUSER))
 		return
 	end
 end

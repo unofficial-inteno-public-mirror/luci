@@ -18,11 +18,6 @@ local ut = require "luci.util"
 local nt = require "luci.sys".net
 local fs = require "nixio.fs"
 
-local guser = luci.dispatcher.context.path[1]
-local adminst = (guser == "admin")
-local support = (guser == "support")
-local enduser = (guser == "user")
-
 arg[1] = arg[1] or ""
 
 m = Map("wireless", "",
@@ -87,10 +82,10 @@ s.addremove = false
 s:tab("general", translate("General Setup"))
 s:tab("macfilter", translate("MAC-Filter"))
 s:tab("advanced", translate("Advanced Settings"))
-if not enduser then
+if TECUSER then
 s:tab("antenna", translate("Antenna Selection"))
 end
-if adminst then
+if ADMINST then
 s:tab("anyfi", "Anyfi.net")
 end
 
@@ -234,7 +229,7 @@ if hwtype == "broadcom" then
 		ach.inputstyle = "apply"
 	end
 
-if not enduser then
+if TECUSER then
 	timer = s:taboption("advanced", Value, "scantimer", translate("Auto Channel Timer"), "min")
 	timer:depends("channel", "auto")
 	timer.default = 15
@@ -283,7 +278,7 @@ end
 	rxcps:value("0", "Disable")	
 	rxcps:value("1", "Enable")
 
-if not enduser then
+if TECUSER then
 	rxcpsqt = s:taboption("advanced", Value, "rxchainps_qt", translate("RX Chain Power Save Quite Time"))
 	rxcpsqt.default = 10
 	rxcpspps = s:taboption("advanced", Value, "rxchainps_pps", translate("RX Chain Power Save PPS"))
@@ -337,7 +332,7 @@ end
 	wa:value("1", "Enable")
 	wa:value("0", "Disable")
 
-if not enduser then
+if TECUSER then
 	if wdev:antenna().txant then
 		ant1 = s:taboption("antenna", ListValue, "txantenna", translate("Transmitter Antenna"))
 		ant1.widget = "radio"
@@ -371,7 +366,7 @@ end
 ------------------- Anyfi.net global configuration ------------------
 local anyfi_controller
 
-if adminst and (fs.access("/sbin/anyfid") or fs.access("/sbin/myfid")) then
+if ADMINST and (fs.access("/sbin/anyfid") or fs.access("/sbin/myfid")) then
 
 	anyfi_cntrl = s:taboption("anyfi", Value, "anyfi_controller", "Controller", translate("A Fully Qualified Domain Name or IP address (e.g. demo.anyfi.net)"))
 	anyfi_cntrl.rmempty = true
@@ -397,7 +392,7 @@ anyfi_controller = (not anyfi_controller) and m.uci:get("anyfi", "controller", "
 
 ------------------- Anyfi.net device configuration ------------------
 
-if adminst and os.execute("/sbin/anyfi-probe " .. hwtype .. " >/dev/null") == 0 and anyfi_controller and anyfi_controller ~= "" then
+if ADMINST and os.execute("/sbin/anyfi-probe " .. hwtype .. " >/dev/null") == 0 and anyfi_controller and anyfi_controller ~= "" then
 	anyfi_floor = s:taboption("anyfi", Value, "anyfi_floor", "Floor",
 				  translate("The percentage of available spectrum and backhaul that mobile users are allowed to consume even if there is competition with the primary user"))
 
@@ -469,7 +464,7 @@ mode:value("sta", translate("Client"))
 end
 
 
-local network_msg = (not enduser) and " or fill out the <em>create</em> field to define a new network." or "."
+local network_msg = (TECUSER) and " or fill out the <em>create</em> field to define a new network." or "."
 network = s:taboption("general", Value, "network", translate("Network"),
 	translate("Choose the network(s) you want to attach to this wireless interface%s" %network_msg))
 

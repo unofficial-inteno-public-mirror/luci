@@ -1,8 +1,6 @@
 
 module("luci.controller.bwtest", package.seeall)
 
-local guser = luci.dispatcher.context.path[1]
-
 function index()
 	local uci = require("luci.model.uci").cursor()
 	local net = require "luci.model.bwtest".init(uci)
@@ -30,7 +28,7 @@ function bwidth_spstart(opts) -- Call Start Speed Test function
 	
 	local net = netmd:startspt(opts)
 	if net then
-		luci.http.redirect(luci.dispatcher.build_url("%s/network/spshowresults" %guser))
+		luci.http.redirect(luci.dispatcher.build_url("%s/network/spshowresults" %GUSER))
 		return
 	end
 end
