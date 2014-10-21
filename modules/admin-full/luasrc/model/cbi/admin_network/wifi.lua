@@ -149,66 +149,9 @@ end
 if hwtype == "broadcom" then
 
 	country = s:taboption("general", ListValue, "country", translate("Country"))
-	--[[local code, cntry
-	for line in ut.execi("wlctl -i %s country list | grep -v countries" %wdev:name()) do
-		if line then
-			code = line:match("(%S+)%s+(%S*)")
-			cntry = line:sub(4)
-			if code and cntry and cntry ~= "" then
-				country:value(code, cntry)
-			end
-		end
-	end--]]
-	country:value("AL", "ALBANIA")
-	country:value("AU", "AUSTRALIA")
-	country:value("AT", "AUSTRIA")
-	country:value("AZ", "AZERBAIJAN")
-	country:value("BY", "BELARUS")
-	country:value("BE", "BELGIUM")
-	country:value("BA", "BOSNIA AND HERZEGOVINA")
-	country:value("BG", "BULGARIA")
-	country:value("HR", "CROATIA")
-	country:value("CY", "CYPRUS")
-	country:value("CZ", "CZECH REPUBLIC")
-	country:value("DK", "DENMARK")
-	country:value("EE", "ESTONIA")
-	country:value("FI", "FINLAND")
-	country:value("FR", "FRANCE")
-	country:value("DE", "GERMANY")
-	country:value("GR", "GREECE")
-	country:value("HU", "HUNGARY")
-	country:value("IS", "ICELAND")
-	country:value("IN", "INDIA")
-	country:value("IE", "IRELAND")
-	country:value("IL", "ISRAEL")
-	country:value("IT", "ITALY")
-	country:value("JP", "JAPAN")
-	country:value("LV", "LATVIA")
-	country:value("LI", "LIECHTENSTEIN")
-	country:value("LT", "LITHUANIA")
-	country:value("LU", "LUXEMBOURG")
-	country:value("MK", "MACEDONIA")
-	country:value("MT", "MALTA")
-	country:value("MD", "MOLDOVA")
-	country:value("MC", "MONACO")
-	country:value("ME", "MONTENEGRO")
-	country:value("NL", "NETHERLANDS")
-	country:value("NO", "NORWAY")
-	country:value("PL", "POLAND")
-	country:value("PT", "PORTUGAL")
-	country:value("RO", "ROMANIA")
-	country:value("RU", "RUSSIA")
-	country:value("RS", "SERBIA")
-	country:value("SK", "SLOVAKIA")
-	country:value("SI", "SLOVENIA")
-	country:value("ES", "SPAIN")
-	country:value("SE", "SWEDEN")
-	country:value("CH", "SWITZERLAND")
-	country:value("TR", "TURKEY")
-	country:value("UA", "UKRAINE")
-	country:value("GB", "UNITED KINGDOM")
-	country:value("US", "UNITED STATES")
-	country:value("EU/13", "EUROPEAN UNION")
+	for code, cntry in ut.vspairs(wdev:countries()) do
+		country:value(code, cntry)
+	end
 
 	maxassc = s:taboption("general", Value, "maxassoc", translate("Connection Limit"))
 	maxassc.default = "16"

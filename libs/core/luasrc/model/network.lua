@@ -1533,6 +1533,26 @@ function wifidev.is_ac(self)
 	return (tonumber(sys.exec("db -q get hw.%s.is_ac" %self:version())) == 1)
 end
 
+function wifidev.countries(self)
+	local countries = {}
+	local code, cntry
+	for line in utl.execi("wlctl -i %s country list | grep -v countries" %self.sid) do
+		if line then
+			code = line:match("(%S+)%s+%S*")
+			if code == "EU" then
+				code = "EU/13"
+				cntry = "EUROPEAN UNION"
+			else
+				cntry = line:sub(4)
+			end
+			if code and cntry and cntry ~= "" and code ~= cntry then
+				countries[code] = cntry
+			end
+		end
+	end
+	return countries
+end
+
 function wifidev.bands(self)
 	return sys.exec("db -q get hw.%s.bands" %self:version()) or sys.exec("wlctl -i %q bands" %self.sid)
 end
