@@ -1561,6 +1561,14 @@ function wifidev.band(self)
 	return sys.exec("wlctl -i %q band" %self.sid)
 end
 
+function wifidev.is_2g(self)
+	return self:bands():match("b")
+end
+
+function wifidev.is_5g(self)
+	return self:bands():match("a")
+end
+
 function wifidev.channels(self, country, band, bwidth)
 	local bnd = "2"
 	if band == "a" then
@@ -1574,12 +1582,12 @@ function wifidev.hwmodes(self)
 	local G = false
 	local N = false
 	local AC = false
-	if self:bands():match("b") then
+	if self:is_2g() then
 		B = true
 		G = true
 		N = true
 	end
-	if self:bands():match("a") then
+	if self:is_5g() then
 		N = true
 		AC = self:is_ac()
 	end

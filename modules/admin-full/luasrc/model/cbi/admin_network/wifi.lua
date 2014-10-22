@@ -160,10 +160,10 @@ if hwtype == "broadcom" then
 	end
 
 	band = s:taboption("advanced", ListValue, "band", translate("Band"))
-	if wdev:bands():match("b") then
+	if wdev:is_2g() then
 		band:value("b", translate("2.4GHz"))
 	end
-	if wdev:bands():match("a") then
+	if wdev:is_5g() then
 		band:value("a", translate("5GHz"))
 	end
 
@@ -173,7 +173,7 @@ if hwtype == "broadcom" then
 	if wdev:hwmodes().ac then
 		bw:value("80", "80MHz", {band="a", country="US"}, {band="a", country="EU/13"})
 	end
-	if wdev:bands():match("b") then
+	if wdev:is_2g() then
 		bw.default = "20"
 	else
 		bw.default = "40"
