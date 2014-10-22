@@ -33,7 +33,10 @@ elseif ENDUSER then
 	who:value("user", "user")
 end
 
-pw1 = s:option(Value, "pw1", translate("Password"))
+pw0 = s:option(Value, "pw0", translate("Current Password"))
+pw0.password = true
+
+pw1 = s:option(Value, "pw1", translate("New Password"))
 pw1.password = true
 
 pw2 = s:option(Value, "pw2", translate("Confirmation"))
@@ -45,26 +48,29 @@ end
 
 function m.on_commit(map)
 	local wh = who:formvalue("_pass")
+	local v0 = pw0:formvalue("_pass")
 	local v1 = pw1:formvalue("_pass")
 	local v2 = pw2:formvalue("_pass")
 
-	if v1 and v2 and #v1 > 0 and #v2 > 0 then
-		if v1 == v2 then
-			if luci.sys.user.setpasswd(wh, v1) == 0 then
-				m.message = translate("%s password successfully changed!" %wh)
+	if luci.sys.user.checkpasswd(wh, v0) then
+		if v1 and v2 and #v1 > 0 and #v2 > 0 then
+			if v1 == v2 then
+				if luci.sys.user.setpasswd(wh, v1) == 0 then
+					m.message = translate("%s password successfully changed!" %wh)
+				else
+					m.message = translate("Unknown Error, %s password not changed!" %wh)
+				end
 			else
-				m.message = translate("Unknown Error, %s password not changed!" %wh)
+				m.message = translate("Given %s password confirmation did not match, %s password not changed!" %{wh, wh})
 			end
-		else
-			m.message = translate("Given %s password confirmation did not match, %s password not changed!" %{wh, wh})
 		end
+	else
+		m.message = translate("Current password for %s is missing or incorrect!" %wh)
 	end
 end
 
 
-if fs.access("/etc/config/dropbear") then
-
-if ADMINST then
+if ADMINST and fs.access("/etc/config/dropbear") then
 
 m2 = Map("dropbear", translate("SSH Access"),
 	translate("Dropbear offers <abbr title=\"Secure Shell\">SSH</abbr> network shell access and an integrated <abbr title=\"Secure Copy\">SCP</abbr> server"))
@@ -137,8 +143,6 @@ function keys.write(self, section, value)
 	if value then
 		fs.writefile("/etc/dropbear/authorized_keys", value:gsub("\r\n", "\n"))
 	end
-end
-
 end
 
 end
