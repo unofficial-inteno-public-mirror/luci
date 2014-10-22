@@ -66,8 +66,6 @@ function m.parse(map)
 		return
 	elseif m:formvalue("cbid.wireless.%s.__autoch" % wdev:name()) then
 		luci.sys.exec("acs_cli -i %s autochannel >/dev/null 2>/dev/null" %wdev:name())
-
-		luci.http.redirect(luci.dispatcher.build_url("admin/network/wireless", arg[1]))
 		return
 	end
 	Map.parse(map)
