@@ -1570,11 +1570,12 @@ function wifidev.is_5g(self)
 end
 
 function wifidev.channels(self, country, band, bwidth)
+	local cntry = utl.split(country, "/")
 	local bnd = "2"
 	if band == "a" then
 		bnd = "5"
 	end
-	return utl.execi("wlctl -i %q chanspecs -c %s -b %s -w %s | awk '{print$1}'" %{self.sid, country, bnd, bwidth})
+	return utl.execi("wlctl -i %q chanspecs -c %s -b %s -w %s | awk '{print$1}'" %{self.sid, cntry[1], bnd, bwidth})
 end
 
 function wifidev.hwmodes(self)
