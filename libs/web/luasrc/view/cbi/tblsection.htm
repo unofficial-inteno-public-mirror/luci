@@ -1,5 +1,7 @@
 <%-
 local uci = require("luci.model.uci").cursor()
+local guser = luci.dispatcher.context.path[1]
+local enduser = (guser == "user")
 
 local rowcnt = 1
 function rowstyle()
@@ -72,7 +74,7 @@ end
 					hidden = uci:get("firewall", section, "hidden")
 					isempty = false
 					scope = { valueheader = "cbi/cell_valueheader", valuefooter = "cbi/cell_valuefooter" }
-					if not hidden or TECUSER then
+					if not hidden or not enduser then
 			-%>
 			<tr class="cbi-section-table-row<% if self.extedit or self.rowcolors then %> cbi-rowstyle-<%=rowstyle()%><% end %>" id="cbi-<%=self.config%>-<%=section%>">
 				<% if not self.anonymous then -%>
