@@ -1562,11 +1562,11 @@ function wifidev.band(self)
 end
 
 function wifidev.is_2g(self)
-	return self:bands():match("b")
+	return self:bands():match("b") or self:band():match("b")
 end
 
 function wifidev.is_5g(self)
-	return self:bands():match("a")
+	return self:bands():match("a") or self:band():match("a")
 end
 
 function wifidev.channels(self, country, band, bwidth)

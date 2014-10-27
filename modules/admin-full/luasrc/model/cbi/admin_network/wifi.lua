@@ -571,16 +571,22 @@ if hwtype == "broadcom" then
 	ml = s:taboption("macfilter", DynamicList, "maclist", translate("MAC-List"))
 	ml:depends({macfilter="2"})
 	ml:depends({macfilter="1"})
-	nt.mac_hints(function(mac, name) ml:value(mac, "%s (%s)" %{ mac, name }) end)
+	nt.mac_clients(function(mac, name) ml:value(mac, "%s (%s)" %{ mac, name }) end)
 end
 
 
 ------------------- WiFI-Encryption -------------------
 
 wps = s:taboption("encryption", Flag, "wps_pbc", translate("Enable WPS Push Button"))
+if wdev:is_5g() then
+wps:depends({encryption="none", mode="ap"})
+wps:depends({encryption="psk2", mode="ap"})
+wps:depends({encryption="pskmixedpsk2", mode="ap"})
+else
 wps:depends({encryption="none"})
 wps:depends({encryption="psk2"})
 wps:depends({encryption="pskmixedpsk2"})
+end
 
 function wps.write(self, section, value)
 	local val = tonumber(value)
