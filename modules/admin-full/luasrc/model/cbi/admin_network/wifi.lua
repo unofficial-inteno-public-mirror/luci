@@ -211,6 +211,7 @@ if hwtype == "broadcom" then
 		end
 	end
 
+	local gmode = tonumber(luci.sys.exec("wlctl -i %q gmode | awk '{print$NF}' | tr -d '()'" %wdev:name()))
 	local nmode = tonumber(luci.sys.exec("wlctl -i %q nmode" %wdev:name()))
 	local vhtmode = tonumber(luci.sys.exec("wlctl -i %q vhtmode" %wdev:name()))
 	luci.sys.exec("wlctl -i %q down" %wdev:name())
@@ -224,6 +225,7 @@ if hwtype == "broadcom" then
 		end
 	end
 	luci.sys.exec("wlctl -i %q nmode %d" %{wdev:name(), nmode})
+	if wdev:is_2g() then luci.sys.exec("wlctl -i %q gmode %d" %{wdev:name(), gmode}) end
 	if wdev:is_5g() then luci.sys.exec("wlctl -i %q vhtmode %d" %{wdev:name(), vhtmode}) end
 	if wdev:radio()	then luci.sys.exec("wlctl -i %q up" %wdev:name()) end
 
