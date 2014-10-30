@@ -74,10 +74,6 @@ e.parse = parse_enabled
 
 target = s:option(ListValue, "target", "Incoming calls to")
 target:value('direct', 'Direct')
-if vc.has_package("luci-app-voice-pbx") then
-	target:value('queue', 'Queue')
-	target:value('ivr', 'IVR')
-end
 target.default = 'direct'
 
 -- Create a set of checkboxes for lines to call
@@ -122,22 +118,44 @@ vc.foreach_user({'sip'},
         end
 )
 
+mailbox = s:option(ListValue, "mailbox", "Mailbox", "")
+m.uci:foreach("voice_client", "mailbox",
+	function(s1)
+		mailbox:value(s1[".name"], s1["name"])
+	end
+)	
+mailbox:value("-", "-")
+mailbox.default = "-"
+mailbox:depends('target', 'direct')
+
 if vc.has_package("luci-app-voice-pbx") then
 	queue = s:option(ListValue, "call_queue", "&nbsp;")
 	queue:depends('target', 'queue')
+
+	num = 0
 	m.uci:foreach("voice_client", "queue",
 		function(v)
 			queue:value(v['.name'], v['name'])
+			num = num + 1
 		end
 	)
+	if num ~= 0 then
+		target:value('queue', 'Queue')
+	end
 
 	ivr = s:option(ListValue, "call_ivr", "&nbsp;")
 	ivr:depends('target', 'ivr')
+
+	num = 0
 	m.uci:foreach("voice_client", "ivr",
 		function(v)
 			ivr:value(v['.name'], v['name'])
+			num = num + 1
 		end
 	)
+	if num ~= 0 then
+		target:value('ivr', 'IVR')
+	end
 
 	call_filter = s:option(ListValue, "call_filter", "Call filter")
 	call_filter:value("-", "-")

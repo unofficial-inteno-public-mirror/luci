@@ -60,14 +60,7 @@ function s1.remove(self, section)
 	TypedSection.remove(self, section)
 end
 
-account_name = s1:option(DummyValue, "user", "Belongs to")
-function account_name.cfgvalue(self, section)
-	local v = vc.user2name(Value.cfgvalue(self, section))
-	if not v or v:len() == 0 then
-		v = "-"
-	end
-	return v
-end
+name = s1:option(DummyValue, "name", "Name")
 
 s1:option(DummyValue, "boxnumber", "Boxnumber")
 

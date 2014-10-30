@@ -53,40 +53,7 @@ else
 end
 
 -- Create and populate dropdown with available users
-user = s:option(ListValue, "user", "User")
-current_user = nil
-if not create_new then
-	current_user = m.uci:get("voice_client", arg[1], "user")
-end
-user:value("-", "-")
-vc.foreach_user({'brcm', 'sip'},
-	function(v)
-		if not user_has_mailbox(v['.name']) or v['.name'] == current_user then
-			user:value(v['.name'], v['name'])
-		end
-	end
-)
-m.uci:foreach("voice_client", "sip_service_provider",
-	function(v)
-		if not user_has_mailbox(v['.name']) or v['.name'] == current_user then
-			user:value(v['.name'], v['name'])
-		end
-	end
-)
-function user.validate(self, value, section)
-	ok = true
-	m.uci:foreach("voice_client", "mailbox",
-		function(s1)
-			if s1['.name'] ~= section and s1['user'] ~= '-' and s1['user'] == value then
-				ok = false
-			end
-		end
-	)
-	if not ok then
-		return nil, "User already has a mailbox"
-	end
-	return value
-end
+name = s:option(Value, "name", "Name")
 
 boxnumber = s:option(Value, "boxnumber", "Boxnumber", "Used as login when accessing the mailbox")
 function boxnumber.parse(self, section)

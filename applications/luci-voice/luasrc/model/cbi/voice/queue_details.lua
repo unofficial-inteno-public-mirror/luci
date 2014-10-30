@@ -44,14 +44,6 @@ function name.parse(self, section)
 	end	
 end
 
-opening_hours = s:option(ListValue, "opening_hours_profile", "Opening Hours Profile")
-opening_hours:value("-", "-")
-m.uci:foreach("voice_client", "opening_hours_profile",
-	function(v)
-		opening_hours:value(v['.name'], v['name'])
-	end
-)
-
 -- Enabled checkbox
 e = s:option(Flag, "enabled", "Queue Enabled")
 e.default = 0

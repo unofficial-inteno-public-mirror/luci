@@ -45,12 +45,24 @@ function name.parse(self, section)
 end
 
 opening_hours = s:option(ListValue, "opening_hours_profile", "Opening Hours Profile")
-opening_hours:value("-", "-")
+
+mailbox = s:option(ListValue, "mailbox", "Mailbox", "Please note that voice mail is only used when the IVR is closed")
+m.uci:foreach("voice_client", "mailbox",
+	function(s1)
+		mailbox:value(s1[".name"], s1["name"])
+	end
+)	
+mailbox:value("-", "-")
+mailbox.default = "-"
+
 m.uci:foreach("voice_client", "opening_hours_profile",
 	function(v)
 		opening_hours:value(v['.name'], v['name'])
+		mailbox:depends("opening_hours_profile", v['.name'])
 	end
 )
+opening_hours:value("-", "-")
+opening_hours.default = "-"
 
 -- Extension, must be unique (useful to transfer a call to the queue)
 extension = s:option(Value, "extension", "Extension", "Extension to call this IVR")

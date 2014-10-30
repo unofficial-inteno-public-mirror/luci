@@ -572,6 +572,30 @@ restore_secret()
 	fi
 }
 
+
+mailbox_get_boxnumber()
+{
+	local boxnumber
+	local enabled
+
+	if [ "$#" -ne 1 ] ; then
+		return 
+	fi
+
+	config_get enabled $1 enabled	
+	if [ -n "$enabled" -a "x$enabled" != "x1" ] ; then
+		return 1
+	fi
+
+	config_get boxnumber $1 boxnumber
+	if [ -n "$boxnumber" ] ; then
+		echo "$boxnumber"
+		return 0
+	fi
+	
+	return 1
+}
+
 # Get PIN code for a mailbox from asterisk voicemail config file
 # $1 is the extension for the mailbox to get PIN for
 restore_pin()
@@ -769,23 +793,16 @@ configure_mailbox()
 	local pin
 	local boxnumber
 	local enabled
-	local user
 
 	config_get pin $1 pin
 	config_get boxnumber $1 boxnumber
 	config_get enabled $1 enabled
-	config_get user $1 user
-
-	# Check mailbox owner
-	if [ -z "$user" -o "x$user" == "x-" ] ; then
-		return
-	fi
 
 	if [ -z "$pin" ] ; then
 		pin=$(restore_pin $extension)
 	fi
 		
-	echo "Setting up Mailbox for User $user"
+	echo "Setting up mailbox $boxnumber"
 	cp "$TMPL_VOICEMAIL_MAILBOX" "$WORKDIR/mailbox.tmp"
 
 	# Construct a mailbox
@@ -801,31 +818,6 @@ configure_mailbox()
 
 	cat $WORKDIR/mailbox.tmp >> $WORKDIR/voicemail.tmp
 	rm -f $WORKDIR/mailbox.tmp
-}
-
-#
-# Lookup mailbox for the given user
-#
-mailbox_find()
-{
-	[ "$#" -ge 1 ] || return 0
-
-	local section cfgtype mailbox_user
-	[ -z "$CONFIG_SECTIONS" ] && return 0
-	for section in ${CONFIG_SECTIONS}; do
-		config_get cfgtype "$section" TYPE
-		[ -n "mailbox" -a "x$cfgtype" != "xmailbox" ] && continue
-		config_get mailbox_user $section user
-		if [ "$mailbox_user" = "$1" ] ; then
-			local enabled
-			config_get enabled $section enabled
-			if [ "x$enabled" == "x1" ] ; then
-				echo "$section"
-				return 0
-			fi
-		fi
-	done
-	return 1
 }
 
 #
@@ -854,7 +846,7 @@ configure_ivr()
 		opening_hours_profile_macro="Macro(check-$opening_hours_profile)"
 	fi
 	
-	echo "Configuring IVR $name"
+	echo "Configuring IVR $1"
 	echo "[macro-$1]" >> 				$WORKDIR/macros.tmp
 
 	echo "exten => $extension,1,Macro($1)" >>	$WORKDIR/extensions_local.tmp
@@ -892,7 +884,7 @@ configure_ivr()
 
 	echo "exten => s,1,Set(OPEN=1)" >>					$WORKDIR/macros.tmp
 	echo "exten => s,n,$opening_hours_profile_macro" >>			$WORKDIR/macros.tmp
-	echo "exten => s,n,GotoIf($[\"\${OPEN}\"=\"0\"]?done)" >>		$WORKDIR/macros.tmp
+	echo "exten => s,n,GotoIf($[\"\${OPEN}\"=\"0\"]?closed)" >>		$WORKDIR/macros.tmp
 	echo "exten => s,n,Answer()" >>						$WORKDIR/macros.tmp
 	if [ "$num_selections" -eq 0 ] ; then
 		if ! [ -z $sound_file -o "x$sound_file" == "x-" ] ; then	
@@ -907,7 +899,19 @@ configure_ivr()
 		cat $tmp >>							$WORKDIR/macros.tmp
 		echo "exten => s,n,Goto(intro)" >>				$WORKDIR/macros.tmp
 	fi
-	echo "exten => s,n(done),MacroExit()" >>				$WORKDIR/macros.tmp
+	echo "exten => s,n,MacroExit()" >>					$WORKDIR/macros.tmp
+	echo "exten => s,n(closed),NoOp()" >>					$WORKDIR/macros.tmp
+
+	# check for mailbox
+	config_get mailbox $1 mailbox
+	if [ -n "$mailbox" -a "$mailbox" != "-" ] ; then
+		boxnumber=$(mailbox_get_boxnumber $mailbox)
+		if [ "$?" -eq 0 ] ; then
+			echo "Enabling mailbox $boxnumber for IVR $1"
+			echo "exten => s,n,VoiceMail($boxnumber)" >>		$WORKDIR/macros.tmp
+		fi
+	fi
+
 	echo "" >>								$WORKDIR/macros.tmp
 	rm -f $tmp
 }
@@ -929,7 +933,7 @@ configure_queue()
 		continue
 	fi
 
-	echo "Configuring Call Queue $name"
+	echo "Configuring Call Queue $1"
 
 	echo "exten => $extension,1,Macro($1)" >>		$WORKDIR/extensions_local.tmp
 	echo "exten => $extension,n,Hangup()" >>		$WORKDIR/extensions_local.tmp
@@ -961,21 +965,10 @@ configure_queue()
 	rm -f							$WORKDIR/queue.tmp
 
 	echo "[macro-$1]" >>					$WORKDIR/macros.tmp
-	local opening_hours_profile
-	config_get opening_hours_profile $1 opening_hours_profile
-
-	opening_hours_profile_macro="NoOp()"
-	if [ -n "$opening_hours_profile" -a "x$opening_hours_profile" != "x-" ] ; then
-		opening_hours_profile_macro="Macro(check-$opening_hours_profile)"
-	fi
-
-	echo "exten => s,1,Set(OPEN=1)" >>					$WORKDIR/macros.tmp
-	echo "exten => s,n,$opening_hours_profile_macro" >>			$WORKDIR/macros.tmp
-	echo "exten => s,n,GotoIf($[\"\${OPEN}\"=\"0\"]?done)" >>		$WORKDIR/macros.tmp
-	echo "exten => s,n,Answer()" >>						$WORKDIR/macros.tmp
-	echo "exten => s,n,Queue($1,R)" >>					$WORKDIR/macros.tmp
-	echo "exten => s,n(done),MacroExit()" >>				$WORKDIR/macros.tmp
-	echo "" >>								$WORKDIR/macros.tmp
+	echo "exten => s,1,Answer()" >>				$WORKDIR/macros.tmp
+	echo "exten => s,n,Queue($1,R)" >>			$WORKDIR/macros.tmp
+	echo "exten => s,n,MacroExit()" >>			$WORKDIR/macros.tmp
+	echo "" >>						$WORKDIR/macros.tmp
 }
 
 #
@@ -1033,7 +1026,7 @@ configure_sip_user()
 		qualify=yes
 	fi
 
-	echo "Configuring SIP User $user"
+	echo "Configuring SIP User $1"
 	cp "$TMPL_SIPUSER" "$WORKDIR/sip_user.tmp"
 	
 	# Construct a sip peer entry for user
@@ -1305,6 +1298,7 @@ configure_extensions_provider()
 	local cbbs_enabled
 	local callreturn_enabled
 	local redial_enabled	
+	local mailbox
 
 	# load general settings
 	config_get callforward_enabled "features" callforward_enabled
@@ -1450,27 +1444,29 @@ configure_extensions_provider()
 	if ! [ -z "$call_lines" ] ; then
 		# read a list of lines that should be dialled on incoming calls
 		incoming_lines=$(read_lines $1)
-		echo "exten => $user,n,Dial($incoming_lines,$(get_voicemail_timeout),t)" >>					$tmp
+		echo "exten => $user,n,Dial($incoming_lines,$(get_voicemail_timeout),t)" >>		$tmp
 		echo "exten => $user,n,GotoIf($[\"\${DIALSTATUS}\"=\"ANSWER\"]?endcall)" >>		$tmp
 		echo "exten => $user,n,GotoIf($[\"\${DIALSTATUS}\"=\"BUSY\"]?noanswer)" >>		$tmp
 		echo "exten => $user,n,GotoIf($[\"\${DIALSTATUS}\"=\"NOANSWER\"]?noanswer:endcall)" >>	$tmp
 		echo "exten => $user,n(noanswer),Macro(callhandler-noanswer,\${CHANNEL(peername)})" >>	$tmp
-	fi
-	if ! [ -z "$call_queue" ] ; then
+		
+		# check for mailbox
+		config_get mailbox $1 mailbox
+		if [ -n "$mailbox" -a "$mailbox" != "-" ] ; then
+			boxnumber=$(mailbox_get_boxnumber $mailbox)
+			if [ "$?" -eq 0 ] ; then
+				echo "Enabling mailbox $boxnumber for SIP Provider $1"
+				echo "exten => $user,n,VoiceMail($boxnumber)" >>			$tmp
+			fi
+		fi
+
+	elif ! [ -z "$call_queue" ] ; then
 		echo "exten => $user,n,Macro($call_queue)" >>					$tmp
-	fi
-	if ! [ -z "$call_ivr" ] ; then
+	elif ! [ -z "$call_ivr" ] ; then
 		echo "exten => $user,n,Macro($call_ivr)" >>					$tmp
 	fi	
 	
-	# Check if voicemail is enabled
-	mailbox=$(mailbox_find $1)
-	if [ $? -eq 0 ] ; then
-		local boxnumber
-		config_get boxnumber $mailbox boxnumber
-		echo "exten => $user,n,VoiceMail($boxnumber)" >>				$tmp
-	fi
-
+	
 	echo "exten => $user,n(endcall),Hangup()" >>						$tmp
 	cat $tmp >>										$WORKDIR/extensions_incoming.tmp
 	rm -f											$tmp
@@ -1488,6 +1484,7 @@ configure_brcm_line_extension()
 	local cbbs_maxretry
 	local cbbs_retrytime
 	local cbbs_waittime
+	local mailbox
 	
 	line=${1:4}
 	config_get extension $1 extension
@@ -1524,16 +1521,18 @@ configure_brcm_line_extension()
 		sed -i "s/|WAITTIME|/$cbbs_waittime/"				$WORKDIR/extensions_local_line.tmp
 		sed -i "s/|CONGESTIONTONE|/$congestiontone/"			$WORKDIR/extensions_local_line.tmp
 
-		mailbox=$(mailbox_find $1)
-		if [ $? -eq 0 ] ; then
-			local boxnumber
-			config_get boxnumber $mailbox boxnumber
-			echo "Enabling Mailbox for BRCM line $1"
-			sed -i "s/|VOICEMAIL|/VoiceMail($boxnumber)/g"		$WORKDIR/extensions_local_line.tmp
-		else
-			sed -i "s/|VOICEMAIL|/NoOp()/g"				$WORKDIR/extensions_local_line.tmp
+		# check for mailbox
+		config_get mailbox $1 mailbox
+		voicemail="NoOp()"
+		if [ -n "$mailbox" -a "$mailbox" != "-" ] ; then
+			boxnumber=$(mailbox_get_boxnumber $mailbox)
+			if [ "$?" -eq 0 ] ; then
+				echo "Enabling mailbox $boxnumber for extension $extension"
+				voicemail="VoiceMail($boxnumber)"
+			fi
 		fi
-	
+		sed -i "s/|VOICEMAIL|/$voicemail/g"		$WORKDIR/extensions_local_line.tmp
+
 		cat $WORKDIR/extensions_local_line.tmp >>	$WORKDIR/extensions_local.tmp
 		rm -f 						$WORKDIR/extensions_local_line.tmp
 	fi
@@ -1547,7 +1546,6 @@ configure_sip_user_extension()
 	local enabled
 	local user
 	local extension
-	local mailbox_enabled
 
 	config_get enabled $1 enabled
 	config_get user $1 user
@@ -1565,16 +1563,20 @@ configure_sip_user_extension()
 		return
 	fi
 
-	echo "Configuring extension for SIP User $user"
+	echo "Configuring extension for SIP User $1"
 	echo "exten => $extension,1,Dial(SIP/$user,$(get_voicemail_timeout),t)" >>		$WORKDIR/extensions_local.tmp
 	echo "exten => $extension,n,GotoIf($[\"\${DIALSTATUS}\"=\"ANSWER\"]?endcall)" >>	$WORKDIR/extensions_local.tmp
-	mailbox=$(mailbox_find $1)
-	if [ $? -eq 0 ] ; then
-		local boxnumber
-		config_get boxnumber $mailbox boxnumber
-		echo "Enabling Mailbox for SIP User $user"
-		echo "exten => $extension,n,VoiceMail($boxnumber)" >>				$WORKDIR/extensions_local.tmp
+
+	# check for mailbox
+	config_get mailbox $1 mailbox
+	if [ -n "$mailbox" -a "$mailbox" != "-" ] ; then
+		boxnumber=$(mailbox_get_boxnumber $mailbox)
+		if [ "$?" -eq 0 ] ; then
+			echo "Enabling mailbox $boxnumber for SIP User $1"
+			echo "exten => $extension,n,VoiceMail($boxnumber)" >>			$WORKDIR/extensions_local.tmp
+		fi
 	fi
+
 	echo "exten => $extension,n(endcall),Hangup()" >>					$WORKDIR/extensions_local.tmp
 }
 

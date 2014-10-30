@@ -87,6 +87,15 @@ function autodial_timeout.validate(self, value, section)
     return nil, "Hotline delay must be a positive number of milliseconds"                                                                           
 end
 
+mailbox = s:option(ListValue, "mailbox", "Mailbox")
+m.uci:foreach("voice_client", "mailbox",
+	function(s1)
+		mailbox:value(s1[".name"], s1["name"])
+	end
+)	
+mailbox:value("-", "-")
+mailbox.default = "-"
+
 comment = m:section(SimpleSection, "", "* Automatically dial a predetermined number after a delay, if user has not pressed any button(s). Leave empty to disable.")
 comment.anonymous = true
 
