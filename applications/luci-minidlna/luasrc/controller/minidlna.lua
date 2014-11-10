@@ -26,7 +26,7 @@ function index()
 		page = entry({user, "services", "minidlna"}, cbi("minidlna"), _("miniDLNA"))
 		page.dependent = true
 		
-		entry({user, "services", "minidlna_status"}, call("minidlna_status"))
+		entry({user, "services", "minidlna", "minidlna_status"}, call("minidlna_status"))
 	end
 end
 
