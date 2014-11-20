@@ -64,7 +64,7 @@ function m.on_commit(map)
 				m.message = translate("Given %s password confirmation did not match, %s password not changed!" %{wh, wh})
 			end
 		end
-	else
+	elseif v0 or v1 or v2 then
 		m.message = translate("Current password for %s is missing or incorrect!" %wh)
 	end
 end
