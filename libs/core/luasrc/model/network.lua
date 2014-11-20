@@ -1129,8 +1129,10 @@ function protocol.get_interfaces(self)
 		local ifn
 		local nfs = { }
 		for ifn in utl.imatch(self:get("ifname")) do
-			ifn = ifn:match("^[^:/]+")
-			nfs[ifn] = interface(ifn, self)
+			if not ifn:match("^wl%d") then
+				ifn = ifn:match("^[^:/]+")
+				nfs[ifn] = interface(ifn, self)
+			end
 		end
 
 		for ifn in utl.kspairs(nfs) do
