@@ -306,11 +306,11 @@ if TECUSER then
 	bcn = s:taboption("advanced", Value, "beacon_int", translate("Beacon Interval"))
 	bcn.default = 100
 	
-	sm = s:taboption("advanced", ListValue, "doth", "802.11h Spectrum Management Mode")
-	sm:value("0", "Off")	
-	sm:value("1", "Loose interpretation of 11h spec")
-	sm:value("2", "Strict interpretation of 11h spec")
-	sm:value("3", "Disable 11h and enable 11d")
+--	sm = s:taboption("advanced", ListValue, "doth", "802.11h Spectrum Management Mode")
+--	sm:value("0", "Off")
+--	sm:value("1", "Loose interpretation of 11h spec")
+--	sm:value("2", "Strict interpretation of 11h spec")
+--	sm:value("3", "Disable 11h and enable 11d")
 end
 
 	pwr = s:taboption("advanced", ListValue, "txpower", translate("Transmit Power"))
