@@ -1829,13 +1829,13 @@ function wifinet.active_encryption(self)
 	elseif wpa == 128 then
 		return "WPA2-PSK"
 	elseif wpa == 132 then
-		return "WPA-PSK/WPA2-PSK Mixed Mode"
+		return "WPA/WPA2-PSK Mixed"
 	elseif wpa == 2 then
 		return "WPA-EAP"
 	elseif wpa == 64 then
 		return "WPA2-EAP"
 	elseif wpa == 66 then
-		return "WPA-EAP/WPA2-EAP Mixed Mode"
+		return "WPA/WPA2-EAP Mixed"
 	elseif wep == "1" and auth == "0" then
 		return "WEP Open System"
 	elseif wep == "1" and auth == "1" then

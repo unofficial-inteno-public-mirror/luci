@@ -591,11 +591,11 @@ wps = s:taboption("encryption", Flag, "wps_pbc", translate("Enable WPS Push Butt
 if wdev:is_5g() then
 wps:depends({encryption="none", mode="ap"})
 wps:depends({encryption="psk2", mode="ap"})
-wps:depends({encryption="pskmixedpsk2", mode="ap"})
+wps:depends({encryption="mixed-psk", mode="ap"})
 else
 wps:depends({encryption="none"})
 wps:depends({encryption="psk2"})
-wps:depends({encryption="pskmixedpsk2"})
+wps:depends({encryption="mixed-psk"})
 end
 
 function wps.write(self, section, value)
@@ -627,15 +627,19 @@ encr:value("wep-open",   translate("WEP Open System"), {mode="ap"}, {mode="sta"}
 encr:value("wep-shared", translate("WEP Shared Key"),  {mode="ap"}, {mode="sta"})
 encr:value("psk", "WPA-PSK", {mode="ap"}, {mode="sta"})
 encr:value("psk2", "WPA2-PSK", {mode="ap"}, {mode="sta"})
-encr:value("pskmixedpsk2", "WPA-PSK/WPA2-PSK Mixed Mode", {mode="ap"})
+encr:value("mixed-psk", "WPA/WPA2-PSK Mixed", {mode="ap"})
 encr:value("wpa", "WPA-EAP", {mode="ap"})
 encr:value("wpa2", "WPA2-EAP", {mode="ap"})
-encr:value("wpamixedwpa2", "WPA-EAP/WPA2-EAP Mixed Mode", {mode="ap"})
+encr:value("mixed-wpa", "WPA/WPA2-EAP Mixed", {mode="ap"})
 
 function encr.cfgvalue(self, section)
 	local v = tostring(ListValue.cfgvalue(self, section))
 	if v == "wep" then
 		return "wep-open"
+	elseif v == "pskmixedpsk2" then
+		return "mixed-psk"
+	elseif v == "wpamixedwpa2" then
+		return "mixed-wpa"
 	elseif v and v:match("%+") then
 		return (v:gsub("%+.+$", ""))
 	end
@@ -647,7 +651,7 @@ encr.write = function(self, section, value)
 		return nil
 	end
 	self.map.uci:set("wireless", section, "encryption", value)
-	if value:match("^none$") or value:match("^wpa") then
+	if value:match("none") or value:match("wpa") then
 		self.map.uci:delete("wireless", section, "key")
 	end
 	if not value:match("wep") then
@@ -661,7 +665,7 @@ end
 cipher = s:taboption("encryption", ListValue, "cipher", translate("Cipher"))
 cipher:depends({encryption="psk"})
 cipher:depends({encryption="psk2"})
-cipher:depends({encryption="pskmixedpsk2"})
+cipher:depends({encryption="mixed-psk"})
 cipher:value("auto", translate("auto"))
 cipher:value("ccmp", translate("Force CCMP (AES)"))
 cipher:value("tkip", translate("Force TKIP"))
@@ -670,14 +674,14 @@ cipher:value("tkip+ccmp", translate("Force TKIP and CCMP (AES)"))
 radius_server = s:taboption("encryption", Value, "radius_server", translate("Radius-Authentication-Server"))
 radius_server:depends({mode="ap", encryption="wpa"})
 radius_server:depends({mode="ap", encryption="wpa2"})
-radius_server:depends({mode="ap", encryption="wpamixedwpa2"})
+radius_server:depends({mode="ap", encryption="mixed-wpa"})
 radius_server.rmempty = true
 radius_server.datatype = "host"
 
 radius_port = s:taboption("encryption", Value, "radius_port", translate("Radius-Authentication-Port"))
 radius_port:depends({mode="ap", encryption="wpa"})
 radius_port:depends({mode="ap", encryption="wpa2"})
-radius_port:depends({mode="ap", encryption="wpamixedwpa2"})
+radius_port:depends({mode="ap", encryption="mixed-wpa"})
 radius_port.rmempty = true
 radius_port.datatype = "port"
 radius_port.default = 1812
@@ -685,7 +689,7 @@ radius_port.default = 1812
 radius_secret = s:taboption("encryption", Value, "radius_secret", translate("Radius-Authentication-Secret"))
 radius_secret:depends({mode="ap", encryption="wpa"})
 radius_secret:depends({mode="ap", encryption="wpa2"})
-radius_secret:depends({mode="ap", encryption="wpamixedwpa2"})
+radius_secret:depends({mode="ap", encryption="mixed-wpa"})
 radius_secret.rmempty = true
 radius_secret.password = true
 
@@ -704,8 +708,7 @@ end
 wpakey = s:taboption("encryption", Value, "_wpa_key", translate("Key"))
 wpakey:depends("encryption", "psk")
 wpakey:depends("encryption", "psk2")
-wpakey:depends("encryption", "pskmixedpsk2")
-wpakey:depends("encryption", "psk-mixed")
+wpakey:depends("encryption", "mixed-psk")
 wpakey.datatype = "wpakey"
 wpakey.rmempty = true
 wpakey.password = true
@@ -714,13 +717,13 @@ wpakey.default = default_wpa_key()
 net_reauth = s:taboption("encryption", Value, "net_reauth", translate("Network Re-auth Interval"))
 net_reauth:depends({encryption="wpa"})
 net_reauth:depends({encryption="wpa2"})
-net_reauth:depends({encryption="wpamixedwpa2"})
+net_reauth:depends({encryption="mixed-wpa"})
 net_reauth.default = 36000
 
 gtk = s:taboption("encryption", Value, "gtk_rekey", translate("WPA Group Rekey Interval"))
 gtk:depends({encryption="psk"})
 gtk:depends({encryption="psk2"})
-gtk:depends({encryption="pskmixedpsk2"})
+gtk:depends({encryption="mixed-psk"})
 gtk.default = 0
 
 wpakey.cfgvalue = function(self, section, value)
@@ -823,10 +826,10 @@ if fs.access("/sbin/myfid") and anyfi_controller and anyfi_controller ~= "" then
 	anyfi_status.rmempty = true
 	anyfi_status:depends({mode="ap", encryption="psk"})
 	anyfi_status:depends({mode="ap", encryption="psk2"})
-	anyfi_status:depends({mode="ap", encryption="pskmixedpsk2"})
+	anyfi_status:depends({mode="ap", encryption="mixed-psk"})
 	anyfi_status:depends({mode="ap", encryption="wpa"})
 	anyfi_status:depends({mode="ap", encryption="wpa2"})
-	anyfi_status:depends({mode="ap", encryption="wpamixedwpa2"})
+	anyfi_status:depends({mode="ap", encryption="mixed-wpa"})
 
 	function anyfi_status.remove(self, section)
 		wdev:set("anyfi_disabled", nil)
