@@ -1444,7 +1444,7 @@ configure_extensions_provider()
 	if ! [ -z "$call_lines" ] ; then
 		# read a list of lines that should be dialled on incoming calls
 		incoming_lines=$(read_lines $1)
-		echo "exten => $user,n,Dial($incoming_lines,$(get_voicemail_timeout),t)" >>		$tmp
+		echo "exten => $user,n,Dial($incoming_lines,$(get_voicemail_timeout),tF(hangup,h,2))" >>		$tmp
 		echo "exten => $user,n,GotoIf($[\"\${DIALSTATUS}\"=\"ANSWER\"]?endcall)" >>		$tmp
 		echo "exten => $user,n,GotoIf($[\"\${DIALSTATUS}\"=\"BUSY\"]?noanswer)" >>		$tmp
 		echo "exten => $user,n,GotoIf($[\"\${DIALSTATUS}\"=\"NOANSWER\"]?noanswer:endcall)" >>	$tmp
