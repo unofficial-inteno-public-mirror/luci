@@ -90,6 +90,7 @@ You may obtain a copy of the License at
 			eth3	= prt:status_eth("eth3", "link") or prt:status_eth("eth3", "up"),
 			eth4	= prt:status_eth("eth4", "link") or prt:status_eth("eth4", "up"),
 			eth5	= prt:status_eth("eth5", "link") or prt:status_eth("eth5", "up"),
+			eth6	= prt:status_eth("eth6", "link") or prt:status_eth("eth6", "up"),
 			dsl	= specs.hasadsl and prt:status_dsl() or "na",
 			usb     = prt:status_usb()
 		}
@@ -157,6 +158,7 @@ You may obtain a copy of the License at
 				var p3 = document.getElementById('port_eth3');
 				var p4 = document.getElementById('port_eth4');
 				var p5 = document.getElementById('port_eth5');
+				var p6 = document.getElementById('port_eth6');
 				var pd = document.getElementById('port_dsl');
 				var pu = document.getElementById('port_usb');
 
@@ -189,6 +191,11 @@ You may obtain a copy of the License at
 					p5.innerHTML = '<img src="<%=resource%>/icons/ethernet<%=prt:eth_type(5)%>.png"/><br />';
 				else if (iport.eth5 == "down")
 					p5.innerHTML = '<img src="<%=resource%>/icons/ethernet<%=prt:eth_type(5)%>_disabled.png"/><br />';
+
+				if (iport.eth6 == "up")
+					p6.innerHTML = '<img src="<%=resource%>/icons/ethernet<%=prt:eth_type(6)%>.png"/><br />';
+				else if (iport.eth6 == "down")
+					p6.innerHTML = '<img src="<%=resource%>/icons/ethernet<%=prt:eth_type(6)%>_disabled.png"/><br />';
 
 				if (iport.dsl == "adsl")
 					pd.innerHTML = '<img src="<%=resource%>/icons/adsl.png"/><br />';
