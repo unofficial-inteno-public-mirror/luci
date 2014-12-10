@@ -202,7 +202,7 @@ s:option(Value, "displayname", "Display Name", "Display name used in Caller Id")
 -- Create and populate dropdowns with available codec choices                            
 codecs = {}
 i = 0
-m.uci:foreach("voice_client", "supported_codec",
+m.uci:foreach("voice_codecs", "supported_codec",
 	function(s1)
 		codecs[s1['.name']] = s1.name;
 	end)
