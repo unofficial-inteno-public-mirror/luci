@@ -211,12 +211,6 @@ if hwtype == "broadcom" then
 		end
 	end
 
-	local gmode = tonumber(luci.sys.exec("wlctl -i %q gmode | awk '{print$NF}' | tr -d '()'" %wdev:name()))
-	local nmode = tonumber(luci.sys.exec("wlctl -i %q nmode" %wdev:name()))
-	local vhtmode = tonumber(luci.sys.exec("wlctl -i %q vhtmode" %wdev:name()))
-	luci.sys.exec("wlctl -i %q down" %wdev:name())
-	luci.sys.exec("wlctl -i %q nmode 1" %wdev:name())
-	if wdev:is_5g() then luci.sys.exec("wlctl -i %q vhtmode 1" %wdev:name()) end
 	for _, bwh in pairs({"20", "40", "80"}) do
 		for chn in wdev:channels(country:formvalue(wdev:name()) or wdev:get("country"), band:formvalue(wdev:name()) or wdev:get("band"), bwh) do
 			if chn ~= "" then
@@ -224,10 +218,6 @@ if hwtype == "broadcom" then
 			end
 		end
 	end
-	luci.sys.exec("wlctl -i %q nmode %d" %{wdev:name(), nmode})
-	if wdev:is_2g() then luci.sys.exec("wlctl -i %q gmode %d" %{wdev:name(), gmode}) end
-	if wdev:is_5g() then luci.sys.exec("wlctl -i %q vhtmode %d" %{wdev:name(), vhtmode}) end
-	if wdev:radio()	then luci.sys.exec("wlctl -i %q up" %wdev:name()) end
 
 	if wdev:get("channel") == "auto" then
 		ach = s:taboption("advanced", Button, "__autoch")

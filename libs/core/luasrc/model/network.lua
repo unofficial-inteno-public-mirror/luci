@@ -1572,6 +1572,9 @@ function wifidev.is_5g(self)
 end
 
 function wifidev.channels(self, country, band, bwidth)
+	if nfs.access("/tmp/wireless/%s_chanspecs" %self.sid) then
+		return utl.execi("cat /tmp/wireless/%s_chanspecs" %self.sid)
+	end
 	local cntry = utl.split(country, "/")
 	local bnd = "2"
 	if band == "a" then
