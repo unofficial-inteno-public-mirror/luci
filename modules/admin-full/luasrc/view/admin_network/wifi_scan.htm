@@ -6,17 +6,17 @@
 	local device = luci.http.formvalue("device")
 	local devices  = ntm:get_wifidevs()
 	
-	local wlband
+	local is5g
 	local dev
 	for _, dev in ipairs(devices) do
 		if device == dev:name() then
-			wlband = dev:band()
+			is5g = dev:is_5g()
 			break
 		end
 	end
 
 	local wlfreq, wlf
-	if wlband == "a" then
+	if is5g then
 		wlfreq = "5GHz"
 		wlf = "5"
 	else
