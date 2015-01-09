@@ -65,7 +65,10 @@ function m.parse(map)
 		luci.http.redirect(luci.dispatcher.build_url("admin/network/wireless", arg[1]))
 		return
 	elseif m:formvalue("cbid.wireless.%s.__autoch" % wdev:name()) then
+		local acs_mode = tonumber(luci.sys.exec("acs_cli -i %s mode | cut -d':' -f1" %wdev:name()))
+		luci.sys.exec("acs_cli -i %s mode 2 >/dev/null 2>/dev/null" %wdev:name())
 		luci.sys.exec("acs_cli -i %s autochannel >/dev/null 2>/dev/null" %wdev:name())
+		luci.sys.exec("acs_cli -i %s mode %d >/dev/null 2>/dev/null" %{wdev:name(), acs_mode})
 		return
 	end
 	Map.parse(map)
@@ -247,10 +250,11 @@ if TECUSER then
 	rifsad:value("0", "Off")	
 	rifsad:value("-1", "Auto")
 
---	obss = s:taboption("advanced", ListValue, "obss_coex", translate("OBSS Co-Existence"))
---	obss:depends("bandwidth", "40")
---	obss:depends("bandwidth", "80")
---	obss:value("1", "Enable")
+	obss = s:taboption("advanced", ListValue, "obss_coex", translate("OBSS Co-Existence"))
+	obss:depends("bandwidth", "40")
+	obss:depends("bandwidth", "80")
+	obss:value("1", "Enable")
+	obss:value("0", "Disable")
 end
 
 --	rate = s:taboption("advanced", ListValue, "rate", translate("Rate Limit"))
