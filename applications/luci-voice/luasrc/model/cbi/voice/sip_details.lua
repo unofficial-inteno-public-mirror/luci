@@ -231,7 +231,9 @@ ptimes = {
 	g729 = {min = 10, max = 230, default = 20, increment = 10},
 	g723 = {min = 30, max = 300, default = 30, increment = 30},
 	g726 = {min = 10, max = 300, default = 20, increment = 10},
-	g722 = {min = 10, max = 300, default = 20, increment = 10}
+	g722 = {min = 10, max = 300, default = 20, increment = 10},
+	gsm  = {min = 10, max = 300, default = 20, increment = 10},
+	ilbc = {min = 10, max = 300, default = 20, increment = 10}
 }
 
 for a, b in pairs(codecs) do
