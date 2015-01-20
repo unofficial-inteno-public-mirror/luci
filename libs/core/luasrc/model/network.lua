@@ -1848,16 +1848,6 @@ function wifinet.active_encryption(self)
 	end
 end
 
-function wifinet.assoclist(self)
-        assoctable = {}
-        for bssid in utl.execi("wlctl -i %q assoclist | awk '{print$2}'" %self:ifname()) do
-		assoctable[bssid] = {}
-		assoctable[bssid]['signal'] = sys.exec("wlctl -i %q rssi %s" %{self:ifname(), bssid})
-		assoctable[bssid]['noise'] = sys.exec("wlctl -i %q assoc | grep Mode: | awk '{print$10}'" %self:ifname())
-        end
-	return assoctable
-end
-
 function wifinet.frequency(self)
 --	freqs = {"2.412", "2.417", "2.422", "2.427", "2.432", "2.437", "2.442", "2.447", "2.452", "2.457", "2.462", "2.467", "2.472", "2.484"}
 --	return freqs[self:channel()]
@@ -1878,6 +1868,20 @@ end
 
 function wifinet.noise(self)
 	return sys.exec("wlctl -i %q noise" %self:ifname()) or sys.exec("wlctl -i %q assoc | grep Mode: | awk '{print$10}'" %self:ifname()) or 0
+end
+
+function wifinet.rssi(self, sta)
+	return sys.exec("wlctl -i %q rssi %s" %{self:ifname(), sta}) or 0
+end
+
+function wifinet.assoclist(self)
+        assoctable = {}
+        for bssid in utl.execi("wlctl -i %q assoclist | awk '{print$2}'" %self:ifname()) do
+		assoctable[bssid] = {}
+		assoctable[bssid]['signal'] = self:rssi(bssid)
+		assoctable[bssid]['noise'] = self:noise()
+        end
+	return assoctable
 end
 
 function wifinet.country(self)

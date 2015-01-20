@@ -16,14 +16,29 @@ module("luci.tools.status", package.seeall)
 local uci = require "luci.model.uci".cursor()
 local bus = require "ubus"
 
-function is_associated(mac)
+local function is_wlsta(mac)
+	local rv = {}
+	local ssid, net, ch, rssi, ns, sr
 	local devices = luci.sys.exec("cat /proc/net/dev")
 	for dev in devices:gmatch("(%S+):%s+%S*") do
 		if dev:match("^wl%d") then
 			local assoclist = luci.sys.exec("wlctl -i %q assoclist" %dev)
 			for assoc in assoclist:gmatch("assoclist%s+(%S+)") do
 				if assoc == mac:upper() then
-					return 1
+					ssid = luci.sys.exec("wlctl -i %q ssid" %dev):match("Current SSID: \"(%S+)\"") or ""
+					ch = tonumber(luci.sys.exec("wlctl -i %q channel | grep mac | awk '{print$4}'" %dev)) or 0
+					net = "%s <font size=\"1\"><b>@%sGHz</b></font>" %{ssid, (ch >= 36) and "5"  or "2.4"}
+					rssi = tonumber(luci.sys.exec("wlctl -i %q rssi %s" %{dev, assoc})) or 0
+					ns = tonumber(luci.sys.exec("wlctl -i %q noise" %dev)) or 0
+					sr = "%f" %((-1 * (ns - rssi)) / 5)
+					rv = {
+						channel = ch,
+						network = net,
+						signal = rssi,
+						noise = ns,
+						snr = sr
+					}
+					return rv
 				end
 			end
 		end
@@ -31,19 +46,39 @@ function is_associated(mac)
 	return nil
 end
 
-function is_connected(ip, field)
+function ipv4_clients()
 	local _ubus
 	local _ubuscache = { }
+	local rv = { }
+	local i = 1
+	local clntno = "client-%d" %i
 
-	_ubus = bus.connect()
-	_ubuscache[ip] = _ubus:call("router", "host", { ipaddr = ip })
-	_ubus:close()
+        _ubus = bus.connect()
+        _ubuscache["clients"] = _ubus:call("router", "clients", { })
+        _ubus:close()
 
-	if _ubuscache[ip] and field then
-		return _ubuscache[ip][field]
-	else
-		return 0
-	end
+        while _ubuscache["clients"][clntno] do
+                local ip = _ubuscache["clients"][clntno]["ipaddr"]
+                local mac = _ubuscache["clients"][clntno]["macaddr"]
+                local name = _ubuscache["clients"][clntno]["hostname"]
+		local net = _ubuscache["clients"][clntno]["network"]
+		local connected = _ubuscache["clients"][clntno]["connected"]
+		local wl = is_wlsta(mac)
+		if wl or connected then
+			rv[#rv+1] = {
+				macaddr  = mac:upper(),
+				ipaddr   = ip,
+				hostname = (name ~= "*") and name,
+				network	 = net:upper(),
+				status	 = connected and 1 or 0,
+				wlinfo	 = wl
+			}
+		end
+                i = i + 1
+		clntno = "client-%d" %i
+        end
+
+	return rv
 end
 
 local function dhcp_leases_common(family)
@@ -74,7 +109,6 @@ local function dhcp_leases_common(family)
 							macaddr  = mac,
 							ipaddr   = ip,
 							hostname = (name ~= "*") and name,
-							status   = is_associated(mac) or is_connected(ip, "connected")
 						}
 					elseif family == 6 and ip:match(":") then
 						rv[#rv+1] = {
@@ -82,7 +116,6 @@ local function dhcp_leases_common(family)
 							ip6addr  = ip,
 							duid     = (duid ~= "*") and duid,
 							hostname = (name ~= "*") and name,
-							status   = 1 --TODO
 						}
 					end
 				end

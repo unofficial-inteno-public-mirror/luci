@@ -61,7 +61,7 @@ You may obtain a copy of the License at
 			swapfree   = swapfree,
 			connmax    = conn_max,
 			conncount  = conn_count,
-			leases     = luci.tools.status.dhcp_leases(),
+			leases     = luci.tools.status.ipv4_clients(),
 			leases6    = luci.tools.status.dhcp6_leases(),
 			wifinets   = luci.tools.status.wifi_networks()
 		}
@@ -361,24 +361,38 @@ You may obtain a copy of the License at
 
 					for( var i = 0; i < info.leases.length; i++ )
 					{
-						var timestr;
-
-						if (info.leases[i].expires <= 0)
-							timestr = '<em><%:expired%></em>';
-						else
-							timestr = String.format('%t', info.leases[i].expires);
-
 						var tr = ls.rows[0].parentNode.insertRow(-1);
 							tr.className = 'cbi-section-table-row cbi-rowstyle-' + ((i % 2) + 1);
 
 						tr.insertCell(-1).innerHTML = info.leases[i].hostname ? info.leases[i].hostname : '?';
 						tr.insertCell(-1).innerHTML = info.leases[i].ipaddr;
 						tr.insertCell(-1).innerHTML = info.leases[i].macaddr;
-						tr.insertCell(-1).innerHTML = timestr;
-						if (info.leases[i].status == 1)
-							tr.insertCell(-1).innerHTML = '<img src="<%=resource%>/icons/check.png"/>';
-						else
-							tr.insertCell(-1).innerHTML = '<img src="<%=resource%>/icons/cross.png"/>';
+						var wlinfo = info.leases[i].wlinfo;
+						if (wlinfo) {
+							tr.insertCell(-1).innerHTML = wlinfo.network;
+
+							var icon;
+							var q = parseInt(wlinfo.snr);
+							if (q < 1)
+								icon = "<%=resource%>/icons/signal-0.png";
+							else if (q < 2)
+								icon = "<%=resource%>/icons/signal-0-25.png";
+							else if (q < 3)
+								icon = "<%=resource%>/icons/signal-25-50.png";
+							else if (q < 4)
+								icon = "<%=resource%>/icons/signal-50-75.png";
+							else
+								icon = "<%=resource%>/icons/signal-75-100.png";
+
+							tr.insertCell(-1).innerHTML = String.format(
+								'<img src="%s" height="27" width="38s" title="<%:Channel%>: %d | <%:Signal%>: %d dBm / <%:Noise%>: %d dBm" />',
+								icon, wlinfo.channel, wlinfo.signal, wlinfo.noise
+							);
+						}
+						else if (info.leases[i].status == 1){
+							tr.insertCell(-1).innerHTML = info.leases[i].network;
+							tr.insertCell(-1).innerHTML = '<img src="<%=resource%>/icons/ethernet.png" height="27" width="28"/>';
+						}
 					}
 
 					if( ls.rows.length == 1 )
@@ -747,17 +761,27 @@ You may obtain a copy of the License at
 	</table>
 </fieldset>
 
+<% if has_wifi then %>
+<fieldset class="cbi-section">
+	<legend><%:Wireless%></legend>
+
+	<table id="wifi_status_table" width="100%" cellspacing="10">
+		<tr><td><em><%:Collecting data...%></em></td></tr>
+	</table>
+</fieldset>
+<% end %>
+
 <% if has_dhcp then %>
 <fieldset class="cbi-section">
-	<legend><%:DHCP Clients%></legend>
+	<legend><%:IPv4 Clients%></legend>
 
 	<table class="cbi-section-table" id="lease_status_table">
 		<tr class="cbi-section-table-titles">
 			<th class="cbi-section-table-cell"><%:Hostname%></th>
 			<th class="cbi-section-table-cell"><%:IPv4-Address%></th>
 			<th class="cbi-section-table-cell"><%:MAC-Address%></th>
-			<th class="cbi-section-table-cell"><%:Leasetime remaining%></th>
-			<th class="cbi-section-table-cell"><%:Connected%></th>
+			<th class="cbi-section-table-cell"><%:Network%></th>
+			<th class="cbi-section-table-cell"><%: %></th>
 		</tr>
 		<tr class="cbi-section-table-row">
 			<td colspan="5"><em><br /><%:Collecting data...%></em></td>
@@ -766,7 +790,7 @@ You may obtain a copy of the License at
 </fieldset>
 
 <fieldset class="cbi-section" style="display:none">
-	<legend><%:DHCPv6 Leases%></legend>
+	<legend><%:IPv6 Clients%></legend>
 
 	<table class="cbi-section-table" id="lease6_status_table">
 		<tr class="cbi-section-table-titles">
@@ -782,15 +806,8 @@ You may obtain a copy of the License at
 </fieldset>
 <% end %>
 
+<!--
 <% if has_wifi then %>
-<fieldset class="cbi-section">
-	<legend><%:Wireless%></legend>
-
-	<table id="wifi_status_table" width="100%" cellspacing="10">
-		<tr><td><em><%:Collecting data...%></em></td></tr>
-	</table>
-</fieldset>
-
 <fieldset class="cbi-section">
 	<legend><%:Wireless Clients%></legend>
 
@@ -808,6 +825,7 @@ You may obtain a copy of the License at
 	</table>
 </fieldset>
 <% end %>
+-->
 <!--
 <%-
 	require "luci.util"
@@ -823,5 +841,5 @@ You may obtain a copy of the License at
 		end
 	end
 -%>
--->
+
 <%+footer%>
