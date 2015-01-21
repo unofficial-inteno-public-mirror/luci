@@ -21,6 +21,7 @@ You may obtain a copy of the License at
 
 	local has_ipv6 = luci.fs.access("/proc/net/ipv6_route")
 	local has_dhcp = luci.fs.access("/etc/config/dhcp")
+	local active_ipv6 = luci.fs.access("/var/hosts/6relayd")
 	local has_wifi = luci.fs.stat("/etc/config/wireless")
 	      has_wifi = has_wifi and has_wifi.size > 0
 	local has_swap
@@ -62,7 +63,7 @@ You may obtain a copy of the License at
 			connmax    = conn_max,
 			conncount  = conn_count,
 			leases     = luci.tools.status.ipv4_clients(),
-			leases6    = luci.tools.status.dhcp6_leases(),
+			leases6    = luci.tools.status.ipv6_clients(),
 			wifinets   = luci.tools.status.wifi_networks()
 		}
 
@@ -417,20 +418,38 @@ You may obtain a copy of the License at
 
 					for( var i = 0; i < info.leases6.length; i++ )
 					{
-						var timestr;
-
-						if (info.leases6[i].expires <= 0)
-							timestr = '<em><%:expired%></em>';
-						else
-							timestr = String.format('%t', info.leases6[i].expires);
-
 						var tr = ls6.rows[0].parentNode.insertRow(-1);
 							tr.className = 'cbi-section-table-row cbi-rowstyle-' + ((i % 2) + 1);
 
 						tr.insertCell(-1).innerHTML = info.leases6[i].hostname ? info.leases6[i].hostname : '?';
 						tr.insertCell(-1).innerHTML = info.leases6[i].ip6addr;
-						tr.insertCell(-1).innerHTML = info.leases6[i].duid;
-						tr.insertCell(-1).innerHTML = timestr;
+						tr.insertCell(-1).innerHTML = info.leases6[i].macaddr;
+						var wlinfo = info.leases6[i].wlinfo;
+						if (wlinfo) {
+							tr.insertCell(-1).innerHTML = wlinfo.network;
+
+							var icon;
+							var q = parseInt(wlinfo.snr);
+							if (q < 1)
+								icon = "<%=resource%>/icons/signal-0.png";
+							else if (q < 2)
+								icon = "<%=resource%>/icons/signal-0-25.png";
+							else if (q < 3)
+								icon = "<%=resource%>/icons/signal-25-50.png";
+							else if (q < 4)
+								icon = "<%=resource%>/icons/signal-50-75.png";
+							else
+								icon = "<%=resource%>/icons/signal-75-100.png";
+
+							tr.insertCell(-1).innerHTML = String.format(
+								'<img src="%s" height="27" width="38s" title="<%:Channel%>: %d | <%:Signal%>: %d dBm / <%:Noise%>: %d dBm" />',
+								icon, wlinfo.channel, wlinfo.signal, wlinfo.noise
+							);
+						}
+						else if (info.leases6[i].status == 1){
+							tr.insertCell(-1).innerHTML = info.leases6[i].network;
+							tr.insertCell(-1).innerHTML = '<img src="<%=resource%>/icons/ethernet.png" height="27" width="28"/>';
+						}
 					}
 
 					if( ls6.rows.length == 1 )
@@ -439,7 +458,7 @@ You may obtain a copy of the License at
 							tr.className = 'cbi-section-table-row';
 
 						var td = tr.insertCell(-1);
-							td.colSpan = 4;
+							td.colSpan = 5;
 							td.innerHTML = '<em><br /><%:There are no connected clients.%></em>';
 					}
 				}
@@ -773,34 +792,41 @@ You may obtain a copy of the License at
 
 <% if has_dhcp then %>
 <fieldset class="cbi-section">
+	<% if active_ipv6 then %>
 	<legend><%:IPv4 Clients%></legend>
+	<% else %>
+	<legend><%:Clients%></legend>
+	<% end %>
 
 	<table class="cbi-section-table" id="lease_status_table">
-		<tr class="cbi-section-table-titles">
-			<th class="cbi-section-table-cell"><%:Hostname%></th>
-			<th class="cbi-section-table-cell"><%:IPv4-Address%></th>
-			<th class="cbi-section-table-cell"><%:MAC-Address%></th>
-			<th class="cbi-section-table-cell"><%:Network%></th>
-			<th class="cbi-section-table-cell"><%: %></th>
+		<tr class="cbi-section-table-titles" >
+			<th class="cbi-section-table-cell" width="30%"><%:Hostname%></th>
+			<th class="cbi-section-table-cell" width="20%"><%:IPv4-Address%></th>
+			<th class="cbi-section-table-cell" width="20%"><%:MAC-Address%></th>
+			<th class="cbi-section-table-cell" width="20%"><%:Network%></th>
+			<th class="cbi-section-table-cell" width="10%"><%: %></th>
 		</tr>
 		<tr class="cbi-section-table-row">
 			<td colspan="5"><em><br /><%:Collecting data...%></em></td>
 		</tr>
 	</table>
 </fieldset>
+<% end %>
 
+<% if active_ipv6 then %>
 <fieldset class="cbi-section" style="display:none">
 	<legend><%:IPv6 Clients%></legend>
 
 	<table class="cbi-section-table" id="lease6_status_table">
 		<tr class="cbi-section-table-titles">
-			<th class="cbi-section-table-cell"><%:Hostname%></th>
-			<th class="cbi-section-table-cell"><%:IPv6-Address%></th>
-			<th class="cbi-section-table-cell"><%:DUID%></th>
-			<th class="cbi-section-table-cell"><%:Leasetime remaining%></th>
+			<th class="cbi-section-table-cell" width="30%"><%:Hostname%></th>
+			<th class="cbi-section-table-cell" width="20%"><%:IPv6-Address%></th>
+			<th class="cbi-section-table-cell" width="20%"><%:MAC-Address%></th>
+			<th class="cbi-section-table-cell" width="20%"><%:Network%></th>
+			<th class="cbi-section-table-cell" width="10%"><%: %></th>
 		</tr>
 		<tr class="cbi-section-table-row">
-			<td colspan="4"><em><br /><%:Collecting data...%></em></td>
+			<td colspan="5"><em><br /><%:Collecting data...%></em></td>
 		</tr>
 	</table>
 </fieldset>

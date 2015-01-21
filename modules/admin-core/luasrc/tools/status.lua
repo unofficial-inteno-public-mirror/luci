@@ -81,6 +81,47 @@ function ipv4_clients()
 	return rv
 end
 
+function ipv6_clients()
+	local _ubus
+	local _ubuscache = { }
+	local rv = { }
+	local i = 1
+	local clntno = "client-%d" %i
+
+        _ubus = bus.connect()
+        _ubuscache["clients6"] = _ubus:call("router", "clients6", { })
+        _ubus:close()
+
+        while _ubuscache["clients6"][clntno] do
+                local ip6 = _ubuscache["clients6"][clntno]["ip6addr"]
+		local mac = _ubuscache["clients6"][clntno]["macaddr"]
+                local du = _ubuscache["clients6"][clntno]["duid"]
+                local name = _ubuscache["clients6"][clntno]["hostname"]
+		local device = _ubuscache["clients6"][clntno]["device"]
+		local connected = true or _ubuscache["clients6"][clntno]["connected"]
+		local net = ""
+		if device:match("br-") then
+			net = device:sub(4)
+		end
+		local wl = is_wlsta(mac)
+		if wl or connected then
+			rv[#rv+1] = {
+				macaddr  = mac:upper(),
+				duid	 = (du ~= "*") and du,
+				ip6addr   = ip6,
+				hostname = (name ~= "*") and name,
+				network	 = net:upper(),
+				status	 = connected and 1 or 0,
+				wlinfo	 = wl
+			}
+		end
+                i = i + 1
+		clntno = "client-%d" %i
+        end
+
+	return rv
+end
+
 local function dhcp_leases_common(family)
 	local rv = { }
 	local nfs = require "nixio.fs"
