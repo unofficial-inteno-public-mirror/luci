@@ -184,6 +184,57 @@ function index()
 			page = entry({user, "network", "diag_traceroute6"}, call("diag_traceroute6"), nil)
 			page.leaf = true
 	--	end
+
+			if nixio.fs.access("/etc/config/netmode") then
+				page = entry({user, "network", "setup"}, call("change_net_setup"), nil)
+				page.leaf = true
+			end
+	end
+end
+
+function change_net_setup(mode)
+	local utl = require "luci.util"
+	local uci = require "luci.model.uci".cursor()
+	local guser = luci.dispatcher.context.path[1]
+	local curmode = uci:get("netmode", "setup", "current")
+	local dir = uci:get("netmode", "setup", "dir") or "/etc/netmodes"
+
+	if curmode == mode then
+		luci.http.redirect(luci.dispatcher.build_url("%s/network/network" %guser))
+	end
+
+	luci.sys.exec("cp %s/%s/* /etc/config/" %{dir, mode})
+	uci:set("netmode", "setup", "current", mode)
+	uci:commit("netmode")
+	luci.sys.exec("/etc/init.d/enviroment restart")
+
+	local configs = { }
+
+	for conf in utl.execi("ls %s/%s/" %{dir, mode}) do
+		if conf:match("layer2_") then
+			configs[#configs+1] = conf
+		end
+	end
+	configs[#configs+1] = "network"
+	configs[#configs+1] = "firewall"
+	configs[#configs+1] = "multiwan"
+
+	local command = uci:apply(configs, true)
+	if nixio.fork() == 0 then
+		local i = nixio.open("/dev/null", "r")
+		local o = nixio.open("/dev/null", "w")
+
+		nixio.dup(i, nixio.stdin)
+		nixio.dup(o, nixio.stdout)
+
+		i:close()
+		o:close()
+
+		nixio.exec("/bin/sh", unpack(command))
+	else
+		--luci.http.write("Please wait...")
+		luci.http.redirect(luci.dispatcher.build_url("%s/network/network" %guser))
+		os.exit(0)
 	end
 end
 
