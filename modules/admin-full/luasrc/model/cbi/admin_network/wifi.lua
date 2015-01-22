@@ -65,7 +65,7 @@ function m.parse(map)
 		luci.http.redirect(luci.dispatcher.build_url("admin/network/wireless", arg[1]))
 		return
 	elseif m:formvalue("cbid.wireless.%s.__autoch" % wdev:name()) then
-		local acs_mode = tonumber(luci.sys.exec("acs_cli -i %s mode | cut -d':' -f1" %wdev:name()))
+		local acs_mode = tonumber(luci.sys.exec("acs_cli -i %s mode | cut -d':' -f1" %wdev:name())) or 0
 		luci.sys.exec("acs_cli -i %s mode 2 >/dev/null 2>/dev/null" %wdev:name())
 		luci.sys.exec("acs_cli -i %s autochannel >/dev/null 2>/dev/null" %wdev:name())
 		luci.sys.exec("acs_cli -i %s mode %d >/dev/null 2>/dev/null" %{wdev:name(), acs_mode})
