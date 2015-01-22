@@ -40,7 +40,8 @@ You may obtain a copy of the License at
 			tplgs[#tplgs+1] = {
 				name = section[".name"],
 				desc = section["desc"],
-				conf = section["conf"]
+				conf = section["conf"],
+				exp = section["exp"]
 			}
 		end)
 	end
@@ -64,15 +65,28 @@ function change_net_setup() {
       		sidx = netstp.selectedIndex;
       		mode = netstp.options[sidx].value;
    	}
-
-	if (mode == "") {
-		alert("Please choose a network setup");
-		return "";	
-	}
-
 	loc = "<%=luci.dispatcher.build_url('admin/network/setup/')%>" +mode;
 
 	return loc;
+}
+
+function explain() {
+	var sidx, detail, mode, curmode;
+
+	with ( document.forms[0] ) {
+		sidx = netstp.selectedIndex;
+		detail = netstp.options[sidx].title;
+		mode = netstp.options[sidx].value;
+	}
+
+	curmode = "<%=curmode%>"
+
+	if (mode == curmode)
+		document.getElementById('change').disabled="disabled";
+	else
+		document.getElementById('change').disabled="";
+
+	document.getElementById('message').innerHTML = "<b>"+detail+"</b>";
 }
 
 </script>
@@ -311,13 +325,18 @@ function change_net_setup() {
 			<input type="button" class="cbi-button cbi-button-add" value="<%:Add new interface...%>" onclick="location.href='<%=luci.dispatcher.build_url("admin/network/iface_add")%>'" />
 		<% end %>
 		<% if has_netmode then %>
+		<br><br><br>
 		<div align="right">
-		<select name='netstp' size=1>
-			<% for _, t in ipairs(tplgs) do %>
-			<option value=<%=t.conf%> <%if curmode == t.conf then%>selected<%end%>><%=t.desc%></option>
-			<% end %>
-		</select>
-		<input type="button" onclick="if (confirm('<%:Really change network setup?%>'))  location.href=change_net_setup()" value="Change Setup" />
+			<%=uci:get("netmode", "setup", "detail")%>
+			<select name='netstp' size=1 onchange=explain()>
+				<% for _, t in ipairs(tplgs) do %>
+				<option value="<%=t.conf%>" title="<%=t.exp%>" <%if curmode == t.conf then%>selected<%end%>><%=t.desc%></option>
+				<% end %>
+			</select>
+			<input id="change" type="button" onclick="if (confirm('<%:Do you really want to change network setup?%>'))  location.href=change_net_setup()" value="Change Network Setup" 				disabled="disabled"/>
+			<br>
+			<br>
+			<p align="right" id='message' >
 		</div>
 		<% end %>
 	</fieldset>
