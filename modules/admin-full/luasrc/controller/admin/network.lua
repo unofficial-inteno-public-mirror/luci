@@ -196,21 +196,22 @@ function change_net_setup(mode)
 	local utl = require "luci.util"
 	local uci = require "luci.model.uci".cursor()
 	local guser = luci.dispatcher.context.path[1]
-	local curmode = uci:get("netmode", "setup", "current")
+	local curmode = uci:get("netmode", "setup", "curmode")
+	local conf = uci:get("netmode", mode, "conf")
 	local dir = uci:get("netmode", "setup", "dir") or "/etc/netmodes"
 
 	if curmode == mode then
 		luci.http.redirect(luci.dispatcher.build_url("%s/network/network" %guser))
 	end
 
-	luci.sys.exec("cp %s/%s/* /etc/config/" %{dir, mode})
-	uci:set("netmode", "setup", "current", mode)
+	luci.sys.exec("cp %s/%s/* /etc/config/" %{dir, conf})
+	uci:set("netmode", "setup", "curmode", mode)
 	uci:commit("netmode")
 	luci.sys.exec("/etc/init.d/enviroment restart")
 
 	local configs = { }
 
-	for conf in utl.execi("ls %s/%s/" %{dir, mode}) do
+	for conf in utl.execi("ls %s/%s/" %{dir, conf}) do
 		if conf:match("layer2_") then
 			configs[#configs+1] = conf
 		end

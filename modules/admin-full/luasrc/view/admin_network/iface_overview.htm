@@ -35,12 +35,12 @@ You may obtain a copy of the License at
 	local detail
 	local tplgs = { }
 	if has_netmode then
-	curmode = uci:get("netmode", "setup", "current")
+	curmode = uci:get("netmode", "setup", "curmode")
 	detail = uci:get("netmode", "setup", "detail")
 	uci:foreach("netmode", "netmode",
 		function (section)
 			tplgs[#tplgs+1] = {
-				name = section[".name"],
+				mode = section[".name"],
 				desc = section["desc"],
 				conf = section["conf"],
 				exp = section["exp"]
@@ -58,43 +58,44 @@ You may obtain a copy of the License at
 		end)
 -%>
 
-<script type="text/javascript">
-
-function change_net_setup() {
-	var sidx, mode, loc;
-
-   	with ( document.forms[0] ) {
-      		sidx = netstp.selectedIndex;
-      		mode = netstp.options[sidx].value;
-   	}
-	loc = "<%=luci.dispatcher.build_url('admin/network/setup/')%>" +mode;
-
-	return loc;
-}
-
-function explain() {
-	var sidx, detail, mode, curmode;
-
-	with ( document.forms[0] ) {
-		sidx = netstp.selectedIndex;
-		detail = netstp.options[sidx].title;
-		mode = netstp.options[sidx].value;
-	}
-
-	curmode = "<%=curmode%>"
-
-	if (mode == curmode)
-		document.getElementById('change').disabled="disabled";
-	else
-		document.getElementById('change').disabled="";
-
-	document.getElementById('message').innerHTML = "&nbsp&nbsp&nbsp<em>"+detail+"</em>";
-}
-
-</script>
-
 <script type="text/javascript" src="<%=resource%>/cbi.js"></script>
 <script type="text/javascript">//<![CDATA[
+
+	function increment() {
+		prg.value = prg.value + 1;
+	}
+
+	function change_net_setup() {
+		var sidx, mode, loc;
+
+		with ( document.forms[0] ) {
+			sidx = netstp.selectedIndex;
+			mode = netstp.options[sidx].value;
+		}
+		loc = "<%=luci.dispatcher.build_url('admin/network/setup/')%>" +mode;
+
+		return loc;
+	}
+
+	function explain() {
+		var sidx, detail, mode, curmode;
+
+		with ( document.forms[0] ) {
+			sidx = netstp.selectedIndex;
+			detail = netstp.options[sidx].title;
+			mode = netstp.options[sidx].value;
+		}
+
+		curmode = "<%=curmode%>"
+
+		if (mode == curmode)
+			document.getElementById('change').disabled="disabled";
+		else
+			document.getElementById('change').disabled="";
+
+		document.getElementById('message').innerHTML = "&nbsp&nbsp&nbsp<em>"+detail+"</em>";
+	}
+
 	function iface_shutdown(id, reconnect) {
 		if (!reconnect && !confirm(String.format('<%_Really shutdown interface "%s" ?\nYou might lose access to this device if you are connected via this interface.%>', id)))
 			return;
@@ -275,6 +276,19 @@ function explain() {
 	<span id="ifc-rc-status"><%:Waiting for changes to be applied...%></span>
 </fieldset>
 
+<% if nixio.fs.readfile("/var/run/luci-reload-status") then %>
+<div id="wait">
+	<img src="<%=resource%>/icons/loading.gif" alt="<%:Loading%>" style="vertical-align:middle" />&nbsp&nbsp
+	<em>Please wait while <b><%=curmode%></b> network mode is being configured...</em>
+</div>
+<% while nixio.fs.readfile("/var/run/luci-reload-status") do %>
+	<% wait = true end %>
+	<script>
+		var wt = document.getElementById('wait');
+		wt.parentNode.removeChild(wt);
+	</script>
+<% end %>
+
 <% if has_netmode then %>
 <br>
 <div align="left">
@@ -284,7 +298,7 @@ function explain() {
 	<b>Network Setup: </b>
 	<select class="cbi-input-select" name='netstp' size=1 onchange=explain()>
 		<% for _, t in ipairs(tplgs) do %>
-		<option value="<%=t.conf%>" title="<%=t.exp%>" <%if curmode == t.conf then%>selected<%end%>><%=t.desc%></option>
+		<option value="<%=t.mode%>" title="<%=t.exp%>" <%if curmode == t.mode then%>selected<%end%>><%=t.desc%></option>
 		<% end %>
 	</select>
 	<input id="change" type="button" class="cbi-button" onclick="if (confirm('<%:Do you really want to change network setup?%>')) location.href=change_net_setup()" value="Change" disabled="disabled"/>
