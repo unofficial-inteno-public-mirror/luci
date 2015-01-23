@@ -276,6 +276,7 @@ You may obtain a copy of the License at
 	<span id="ifc-rc-status"><%:Waiting for changes to be applied...%></span>
 </fieldset>
 
+<% if has_netmode then %>
 <% if nixio.fs.readfile("/var/run/luci-reload-status") then %>
 <div id="wait">
 	<img src="<%=resource%>/icons/loading.gif" alt="<%:Loading%>" style="vertical-align:middle" />&nbsp&nbsp
@@ -289,7 +290,6 @@ You may obtain a copy of the License at
 	</script>
 <% end %>
 
-<% if has_netmode then %>
 <br>
 <div align="left">
 	<% if detail then %>
