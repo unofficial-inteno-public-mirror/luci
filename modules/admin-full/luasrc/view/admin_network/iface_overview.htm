@@ -32,9 +32,11 @@ You may obtain a copy of the License at
 
 	local has_netmode = fs.access("/etc/config/netmode")
 	local curmode = ""
+	local detail
 	local tplgs = { }
 	if has_netmode then
 	curmode = uci:get("netmode", "setup", "current")
+	detail = uci:get("netmode", "setup", "detail")
 	uci:foreach("netmode", "netmode",
 		function (section)
 			tplgs[#tplgs+1] = {
@@ -86,7 +88,7 @@ function explain() {
 	else
 		document.getElementById('change').disabled="";
 
-	document.getElementById('message').innerHTML = "<b>"+detail+"</b>";
+	document.getElementById('message').innerHTML = "&nbsp&nbsp&nbsp<em>"+detail+"</em>";
 }
 
 </script>
@@ -273,6 +275,24 @@ function explain() {
 	<span id="ifc-rc-status"><%:Waiting for changes to be applied...%></span>
 </fieldset>
 
+<% if has_netmode then %>
+<br>
+<div align="left">
+	<% if detail then %>
+		<%=detail%><br><br>
+	<% end %>
+	<b>Network Setup: </b>
+	<select class="cbi-input-select" name='netstp' size=1 onchange=explain()>
+		<% for _, t in ipairs(tplgs) do %>
+		<option value="<%=t.conf%>" title="<%=t.exp%>" <%if curmode == t.conf then%>selected<%end%>><%=t.desc%></option>
+		<% end %>
+	</select>
+	<input id="change" type="button" class="cbi-button" onclick="if (confirm('<%:Do you really want to change network setup?%>')) location.href=change_net_setup()" value="Change" disabled="disabled"/>
+	<h id='message' >
+</div>
+<br><br>
+<% end %>
+
 <div class="cbi-map">
 	<fieldset class="cbi-section">
 		<legend><%:Interface Overview%></legend>
@@ -323,21 +343,6 @@ function explain() {
 
 		<% if guser == "admin" then %>
 			<input type="button" class="cbi-button cbi-button-add" value="<%:Add new interface...%>" onclick="location.href='<%=luci.dispatcher.build_url("admin/network/iface_add")%>'" />
-		<% end %>
-		<% if has_netmode then %>
-		<br><br><br>
-		<div align="right">
-			<%=uci:get("netmode", "setup", "detail")%>
-			<select name='netstp' size=1 onchange=explain()>
-				<% for _, t in ipairs(tplgs) do %>
-				<option value="<%=t.conf%>" title="<%=t.exp%>" <%if curmode == t.conf then%>selected<%end%>><%=t.desc%></option>
-				<% end %>
-			</select>
-			<input id="change" type="button" onclick="if (confirm('<%:Do you really want to change network setup?%>'))  location.href=change_net_setup()" value="Change Network Setup" 				disabled="disabled"/>
-			<br>
-			<br>
-			<p align="right" id='message' >
-		</div>
 		<% end %>
 	</fieldset>
 </div>
