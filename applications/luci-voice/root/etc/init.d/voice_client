@@ -55,6 +55,8 @@ TMPL_DNSMGR=$TEMPLATEDIR/dnsmgr.conf.TEMPLATE
 TMPL_VOICEMAIL=$TEMPLATEDIR/voicemail.conf.TEMPLATE
 TMPL_VOICEMAIL_MAILBOX=$TEMPLATEDIR/voicemail_mailbox.TEMPLATE
 
+TMPL_MEETME=$TEMPLATEDIR/meetme.conf.TEMPLATE
+
 TMPL_QUEUES=$TEMPLATEDIR/queues.conf.TEMPLATE
 TMPL_QUEUE=$TEMPLATEDIR/queue.TEMPLATE
 
@@ -164,6 +166,7 @@ assemble_and_copy_config()
 	mv $WORKDIR/res_stun_monitor.tmp	$WORKDIR/res_stun_monitor.conf
 	mv $WORKDIR/features.tmp		$WORKDIR/features.conf
 	mv $WORKDIR/voicemail.tmp		$WORKDIR/voicemail.conf
+	mv $WORKDIR/meetme.tmp			$WORKDIR/meetme.conf
         mv $WORKDIR/logger.tmp			$WORKDIR/logger.conf
 	mv $WORKDIR/queues.tmp			$WORKDIR/queues.conf
 	mv $WORKDIR/dnsmgr.tmp			$WORKDIR/dnsmgr.conf
@@ -1763,6 +1766,52 @@ get_voicemail_timeout()
 	fi
 }
 
+configure_conference()
+{
+	local extension moh
+	config_get extension conference extension
+	config_get moh conference moh
+	
+	if [ -z "$extension" -o "x$extension" == "x" ] ; then
+		return
+	fi
+	
+	options="Ip"
+	if [ "x$moh" == "x1" ] ; then
+		options="${options}M"
+	fi
+	
+	echo "Configuring conference"
+	echo "exten => $extension,1,Answer()"					>> $WORKDIR/extensions_local.tmp
+	echo "exten => $extension,n,Playback(conf-getconfno)"			>> $WORKDIR/extensions_local.tmp
+	echo "exten => $extension,n(enterno),Read(confno,,5)"			>> $WORKDIR/extensions_local.tmp
+	
+	for section in ${CONFIG_SECTIONS}; do
+                config_get cfgtype "$section" TYPE
+                [ "x$cfgtype" != "xconference_room" ] && continue
+
+		local name id enabled
+		config_get name $section name
+		config_get id $section id
+		config_get enabled $section enabled
+
+		[ -z "$enabled" -o "$enabled" != "1" ] && continue
+
+		echo "Enabling conference room $id"
+		echo "exten => $extension,n,GotoIf($[\"\${confno}\"=\"$id\"]?enterconf)"	>> $WORKDIR/extensions_local.tmp
+		echo "conf => $id"								>> $WORKDIR/meetme.tmp
+        done
+
+	echo "exten => $extension,n,Playback(conf-invalid)"			>> $WORKDIR/extensions_local.tmp
+	echo "exten => $extension,n,Goto(enterno)"				>> $WORKDIR/extensions_local.tmp
+	
+	# Enter the caller into a MeetMe conference.
+	# It is possible to use the ConfBridge 1.8 application instead.
+	# Just make sure to update the $options variable.
+	echo "exten => $extension,n(enterconf),MeetMe(\${confno},$options)"	>> $WORKDIR/extensions_local.tmp
+	echo "exten => $extension,n,Hangup()"					>> $WORKDIR/extensions_local.tmp
+}
+
 #Create an extension "hint" to allow dialtone to be set according to sip provider reg status
 create_extensions_dialtone()
 {
@@ -1879,6 +1928,7 @@ start() {
 	cp $TMPL_CODECS			$WORKDIR/codecs.tmp
 	cp $TMPL_VOICEMAIL		$WORKDIR/voicemail.tmp
 	cp $TMPL_DNSMGR			$WORKDIR/dnsmgr.tmp
+	cp $TMPL_MEETME			$WORKDIR/meetme.tmp
 	touch				$WORKDIR/sip_providers.tmp
 	touch				$WORKDIR/sip_registrations.tmp
 	touch				$WORKDIR/sip_users.tmp
@@ -1925,6 +1975,11 @@ start() {
 	###########################
 	configure_voicemail
 	config_foreach configure_mailbox mailbox
+
+	############
+	# Conference
+	############
+	configure_conference
 
 	######
 	# IVR 

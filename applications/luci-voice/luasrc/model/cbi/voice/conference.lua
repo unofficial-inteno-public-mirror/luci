@@ -67,4 +67,27 @@ function e.cfgvalue(self, section)
 	return enabled == "1" and "Yes" or "No"
 end
 
+-- Settings -------------------------------------------------------------------
+vc.add_section("conference")
+conf = m:section(TypedSection, "conference", "Settings")
+conf.anonymous = true
+function conf.filter(self, section)
+	if section ~= "conference" then
+		return nil
+	end
+	return section
+end
+
+extension = conf:option(Value, "extension", "Conference extension")
+extension.default = "8000"
+function extension.validate(self, value, section)
+	return vc.validate_extension(value)
+end
+
+moh = conf:option(Flag, "moh", "Music on hold", "Enable music on hold when a conference has a single caller")
+moh.default = "1"
+moh.disabled = "0"
+moh.enabled = "1"
+moh.rmempty = false
+
 return m
