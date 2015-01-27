@@ -94,7 +94,7 @@ end
 extension = voicemail:option(Value, "extension", "Voice mail extension")
 extension.default = "6500"
 function extension.validate(self, value, section)
-	return vc.validate_extension(value)
+	return vc.validate_extension(value, section)
 end
 
 return m

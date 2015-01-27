@@ -29,18 +29,31 @@ function common.validate_extension(extension, user)
 	retval = extension
 	errmsg = nil
 
-	common.foreach_user({'brcm', 'sip', 'queue', 'ivr'},
-		function(v)
-			if user and v['.name'] == user then
-				return
+	m = luci.cbi.Map("voice_client", nil)
+	
+	-- Section types that contain the 'extension' option
+	types = {'brcm_line', 'sip_user', 'queue', 'ivr', 'voicemail', 'conference'}
+	
+	for _,t in pairs(types) do
+		m.uci:foreach("voice_client", t,
+			function(v)
+				if user and v['.name'] == user then
+					return
+				end
+			
+				if v['extension'] == extension then
+					retval = nil
+					errmsg = "Extension " .. extension .. " is already in use"
+					return false
+				end
 			end
-
-			if v['extension'] == extension then
-				retval = nil
-				errmsg = "Extension " .. extension .. " is already in use"
-			end
+		)
+		
+		if retval == nil then
+			break
 		end
-	)
+	end
+			
 	return retval, errmsg
 end
 

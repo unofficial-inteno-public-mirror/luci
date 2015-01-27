@@ -81,7 +81,7 @@ end
 extension = conf:option(Value, "extension", "Conference extension")
 extension.default = "8000"
 function extension.validate(self, value, section)
-	return vc.validate_extension(value)
+	return vc.validate_extension(value, section)
 end
 
 moh = conf:option(Flag, "moh", "Music on hold", "Enable music on hold when a conference has a single caller")
