@@ -71,20 +71,11 @@ set_port_status() {
 }
 
 configure_ethports() {
-	config_get eth0 "$1" eth0
-	set_port_status eth0 $eth0
-	
-	config_get eth1 "$1" eth1
-	set_port_status eth1 $eth1
-	
-	config_get eth2 "$1" eth2
-	set_port_status eth2 $eth2
-	
-	config_get eth3 "$1" eth3
-	set_port_status eth3 $eth3
-	
-	config_get eth4 "$1" eth4
-	set_port_status eth4 $eth4
+	local port status
+	for port in $(db get hw.board.ethernetPortOrder); do
+		config_get status "$1" $port
+		set_port_status $port $status
+	done
 }
 
 start() {
