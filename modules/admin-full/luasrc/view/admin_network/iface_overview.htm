@@ -277,19 +277,6 @@ You may obtain a copy of the License at
 </fieldset>
 
 <% if has_netmode then %>
-<% if nixio.fs.readfile("/var/run/luci-reload-status") then %>
-<div id="wait">
-	<img src="<%=resource%>/icons/loading.gif" alt="<%:Loading%>" style="vertical-align:middle" />&nbsp&nbsp
-	<em>Please wait while <b><%=curmode%></b> network mode is being configured...</em>
-</div>
-<% while nixio.fs.readfile("/var/run/luci-reload-status") do %>
-	<% wait = true end %>
-	<script>
-		var wt = document.getElementById('wait');
-		wt.parentNode.removeChild(wt);
-	</script>
-<% end %>
-
 <br>
 <div align="left">
 	<% if detail then %>
@@ -301,7 +288,7 @@ You may obtain a copy of the License at
 		<option value="<%=t.mode%>" title="<%=t.exp%>" <%if curmode == t.mode then%>selected<%end%>><%=t.desc%></option>
 		<% end %>
 	</select>
-	<input id="change" type="button" class="cbi-button" onclick="if (confirm('<%:Do you really want to change network setup?%>')) location.href=change_net_setup()" value="Change" disabled="disabled"/>
+	<input id="change" type="button" class="cbi-button" onclick="if (confirm('<%:Do you really want to change network setup? This action requires system reboot.%>')) location.href=change_net_setup()" value="Change" disabled="disabled"/>
 	<h id='message' >
 </div>
 <br><br>

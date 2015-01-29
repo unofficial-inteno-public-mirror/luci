@@ -197,6 +197,7 @@ function change_net_setup(mode)
 	local uci = require "luci.model.uci".cursor()
 	local guser = luci.dispatcher.context.path[1]
 	local curmode = uci:get("netmode", "setup", "curmode")
+	local desc = uci:get("netmode", mode, "desc")
 	local conf = uci:get("netmode", mode, "conf")
 	local dir = uci:get("netmode", "setup", "dir") or "/etc/netmodes"
 
@@ -207,36 +208,15 @@ function change_net_setup(mode)
 	luci.sys.exec("cp %s/%s/* /etc/config/" %{dir, conf})
 	uci:set("netmode", "setup", "curmode", mode)
 	uci:commit("netmode")
-	luci.sys.exec("/etc/init.d/enviroment restart")
 
-	local configs = { }
-
-	for conf in utl.execi("ls %s/%s/" %{dir, conf}) do
-		if conf:match("layer2_") then
-			configs[#configs+1] = conf
-		end
-	end
-	configs[#configs+1] = "network"
-	configs[#configs+1] = "firewall"
-	configs[#configs+1] = "multiwan"
-
-	local command = uci:apply(configs, true)
-	if nixio.fork() == 0 then
-		local i = nixio.open("/dev/null", "r")
-		local o = nixio.open("/dev/null", "w")
-
-		nixio.dup(i, nixio.stdin)
-		nixio.dup(o, nixio.stdout)
-
-		i:close()
-		o:close()
-
-		nixio.exec("/bin/sh", unpack(command))
-	else
-		--luci.http.write("Please wait...")
-		luci.http.redirect(luci.dispatcher.build_url("%s/network/network" %guser))
-		os.exit(0)
-	end
+	local lanaddr = uci:get("network", "lan", "ipaddr") or "192.168.1.1"
+	luci.template.render("admin_system/applyreboot", {
+		title = luci.i18n.translate("Rebooting..."),
+		msg   = luci.i18n.translate("The system is rebooting in order to setup <em><b>%s</b></em> network mode.<br /> Wait a few minutes until you try to reconnect. It might be necessary to renew the address of your computer to reach the device again, depending on your settings." %desc),
+		addr  = lanaddr
+	})
+	luci.sys.exec("sync")
+	luci.sys.reboot()
 end
 
 function wifi_join()
