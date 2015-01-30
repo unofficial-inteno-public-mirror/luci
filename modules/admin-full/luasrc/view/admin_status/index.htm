@@ -96,6 +96,16 @@ You may obtain a copy of the License at
 			usb     = prt:status_usb()
 		}
 
+		rv.speed = {
+			eth0	= prt:port_speed("eth0"),
+			eth1	= prt:port_speed("eth1"),
+			eth2	= prt:port_speed("eth2"),
+			eth3	= prt:port_speed("eth3"),
+			eth4	= prt:port_speed("eth4"),
+			eth5	= prt:port_speed("eth5"),
+			eth6	= prt:port_speed("eth6")
+		}
+
 
 		if wan6 then
 			rv.wan6 = {
@@ -150,53 +160,22 @@ You may obtain a copy of the License at
 				var ss = document.getElementById('wan4_s');
 				var ifc = info.wan;
 				var iport = info.port;
+				var ispd = info.speed;
 
 				<!-- Port Status -->
 
-				var p0 = document.getElementById('port_eth0');
-				var p1 = document.getElementById('port_eth1');
-				var p2 = document.getElementById('port_eth2');
-				var p3 = document.getElementById('port_eth3');
-				var p4 = document.getElementById('port_eth4');
-				var p5 = document.getElementById('port_eth5');
-				var p6 = document.getElementById('port_eth6');
+				var pe
 				var pd = document.getElementById('port_dsl');
 				var pu = document.getElementById('port_usb');
 
-				if (iport.eth0 == "up")
-					p0.innerHTML = '<img src="<%=resource%>/icons/ethernet<%=prt:eth_type(0)%>.png"/><br />';
-				else if (iport.eth0 == "down")
-					p0.innerHTML = '<img src="<%=resource%>/icons/ethernet<%=prt:eth_type(0)%>_disabled.png"/><br />';
 
-				if (iport.eth1 == "up")
-					p1.innerHTML = '<img src="<%=resource%>/icons/ethernet<%=prt:eth_type(1)%>.png"/><br />';
-				else if (iport.eth1 == "down")
-					p1.innerHTML = '<img src="<%=resource%>/icons/ethernet<%=prt:eth_type(1)%>_disabled.png"/><br />';
-
-				if (iport.eth2 == "up")
-					p2.innerHTML = '<img src="<%=resource%>/icons/ethernet<%=prt:eth_type(2)%>.png"/><br />';
-				else if (iport.eth2 == "down")
-					p2.innerHTML = '<img src="<%=resource%>/icons/ethernet<%=prt:eth_type(2)%>_disabled.png"/><br />';
-
-				if (iport.eth3 == "up")
-					p3.innerHTML = '<img src="<%=resource%>/icons/ethernet<%=prt:eth_type(3)%>.png"/><br />';
-				else if (iport.eth3 == "down")
-					p3.innerHTML = '<img src="<%=resource%>/icons/ethernet<%=prt:eth_type(3)%>_disabled.png"/><br />';
-
-				if (iport.eth4 == "up")
-					p4.innerHTML = '<img src="<%=resource%>/icons/ethernet<%=prt:eth_type(4)%>.png"/><br />';
-				else if (iport.eth4 == "down")
-					p4.innerHTML = '<img src="<%=resource%>/icons/ethernet<%=prt:eth_type(4)%>_disabled.png"/><br />';
-
-				if (iport.eth5 == "up")
-					p5.innerHTML = '<img src="<%=resource%>/icons/ethernet<%=prt:eth_type(5)%>.png"/><br />';
-				else if (iport.eth5 == "down")
-					p5.innerHTML = '<img src="<%=resource%>/icons/ethernet<%=prt:eth_type(5)%>_disabled.png"/><br />';
-
-				if (iport.eth6 == "up")
-					p6.innerHTML = '<img src="<%=resource%>/icons/ethernet<%=prt:eth_type(6)%>.png"/><br />';
-				else if (iport.eth6 == "down")
-					p6.innerHTML = '<img src="<%=resource%>/icons/ethernet<%=prt:eth_type(6)%>_disabled.png"/><br />';
+			<%for _prt in luci.util.execi("db get hw.board.ethernetPortOrder | tr ' ' '\n'") do%>
+				pe = document.getElementById('port_<%=_prt%>');
+				if (iport.<%=_prt%> == "up")
+					pe.innerHTML = String.format('<img src="<%=resource%>/icons/ethernet<%=prt:eth_type(_prt)%>.png" title="%s" />', ispd.<%=_prt%>);
+				else if (iport.<%=_prt%> == "down")
+					pe.innerHTML = String.format('<img src="<%=resource%>/icons/ethernet<%=prt:eth_type(_prt)%>_disabled.png" title="%s" />', ispd.<%=_prt%>);
+			<% end %>
 
 				if (iport.dsl == "adsl")
 					pd.innerHTML = '<img src="<%=resource%>/icons/adsl.png"/><br />';

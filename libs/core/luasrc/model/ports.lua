@@ -61,9 +61,14 @@ function port_type(self, port)
 	return sys.exec(". /lib/network/config.sh && interfacename %s" %port)
 end
 
+function port_speed(self, port)
+	local speed = sys.exec("ethctl %s media-type 2>&1  | sed '$ d' | tr -d '\n'" %port)
+	return speed
+end
+
 function eth_type(self, port)
-	local wan = tonumber(sys.exec("uci get layer2_interface_ethernet.Wan.baseifname | awk -F'eth' '{print$2}'"))
-	if port == wan then
+	local wan = sys.exec("uci get layer2_interface_ethernet.Wan.baseifname")
+	if wan:match(port) then
 		return "wan"
 	else
 		return ""
