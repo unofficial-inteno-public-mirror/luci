@@ -11,12 +11,12 @@ function index()
 	for k, user in pairs(users) do
 
 		page = node(user, "services", "dect")
-		page.target = cbi("admin_status/dect")
+		page.target = template("dect_status")
 		page.title  = _("DECT")
 		page.subindex = true
 
-		entry({user, "services", "dect", "jonas"}, cbi("admin_status/dect"), "JONAS", 1)
-		entry({user, "services", "dect", "sukru"}, template("dect_status"), "SUKRU", 2)
+		entry({user, "services", "dect", "main"}, template("dect_status"), "Status", 1)
+		entry({user, "services", "dect", "config"}, cbi("admin_status/dect"), "Configuration", 2)
 
 		page = entry({user, "services", "dect", "status"}, call("status"))
 		page = entry({user, "services", "dect", "reg_start"}, call("reg_start"))

@@ -1,14 +1,14 @@
 local sys = require "luci.sys"
 local utl = require "luci.util"
 
-m = Map("dect", translate("DECT"))
+m = Map("dect", translate("DECT Configuration"))
 
-s = m:section(TypedSection, "dect", "DECT")
+s = m:section(TypedSection, "dect")
 s.anonymous = true
 
 
-dect = s:option(Flag, "disable", "Disable DECT Radio")
-dect.rmempty = true
+dect = s:option(Flag, "radio", "DECT Radio")
+dect.rmempty = false
 
 
 return m
