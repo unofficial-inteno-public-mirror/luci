@@ -9,8 +9,14 @@ function index()
 	local page
 
 	for k, user in pairs(users) do
-		page = entry({user, "services", "dect"}, template("dect_status"), _("DECT"))
-		page.dependent = true
+
+		page = node(user, "services", "dect")
+		page.target = cbi("admin_status/dect")
+		page.title  = _("DECT")
+		page.subindex = true
+
+		entry({user, "services", "dect", "jonas"}, cbi("admin_status/dect"), "JONAS", 1)
+		entry({user, "services", "dect", "sukru"}, template("dect_status"), "SUKRU", 2)
 
 		page = entry({user, "services", "dect", "status"}, call("status"))
 		page = entry({user, "services", "dect", "reg_start"}, call("reg_start"))
