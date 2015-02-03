@@ -1,0 +1,12 @@
+#!/bin/sh
+
+uci -q batch <<-EOF >/dev/null
+        delete ucitrack.@catv[-1]
+        add ucitrack catv
+        set ucitrack.@catv[-1].init=catv
+        commit ucitrack
+EOF
+
+rm -f /tmp/luci-indexcache
+exit 0
+

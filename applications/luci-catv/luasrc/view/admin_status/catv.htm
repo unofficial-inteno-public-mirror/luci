@@ -1,0 +1,33 @@
+<%-
+require "ubus"
+local conn = ubus.connect()
+if not conn then
+    error("Failed to connect to ubusd")
+end
+
+
+local status = conn:call("catv", "get-all",{ })
+if status == nil then
+   status={ "Could not connect to catv module is it connected correctly" }
+end
+conn:close()
+	
+-%>
+
+<%+header%>
+
+<meta http-equiv="refresh" content="20">
+<h2><a id="content" name="content"><%:Catv Status%></a></h2>
+<div class="cbi-map-descr"><%:Values read from the CATV Module%></div>
+<fieldset class="cbi-section">
+
+
+	<table width="100%" cellspacing="10">
+
+<% for ubuskey, ubusvalue in pairs(status) do%>
+		<tr><td width="33%"><%=ubuskey%></td><td><%=ubusvalue%></td></tr>
+		<%end%>
+	</table>
+</fieldset>
+
+<%+footer%>
