@@ -1880,6 +1880,7 @@ function wifinet.assoclist(self)
 		assoctable[bssid] = {}
 		assoctable[bssid]['signal'] = self:rssi(bssid)
 		assoctable[bssid]['noise'] = self:noise()
+		assoctable[bssid]['channel'] = self:channel()
         end
 	return assoctable
 end
