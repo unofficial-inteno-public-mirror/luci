@@ -16,34 +16,23 @@ module("luci.tools.status", package.seeall)
 local uci = require "luci.model.uci".cursor()
 local bus = require "ubus"
 
-local function is_wlsta(mac)
+local function wlinfo(dev, mac)
 	local rv = {}
 	local ssid, net, ch, rssi, ns, sr
-	local devices = luci.sys.exec("cat /proc/net/dev")
-	for dev in devices:gmatch("(%S+):%s+%S*") do
-		if dev:match("^wl%d") then
-			local assoclist = luci.sys.exec("wlctl -i %q assoclist" %dev)
-			for assoc in assoclist:gmatch("assoclist%s+(%S+)") do
-				if assoc == mac:upper() then
-					ssid = luci.sys.exec("wlctl -i %q ssid" %dev):match("Current SSID: \"(%S+)\"") or ""
-					ch = tonumber(luci.sys.exec("wlctl -i %q channel | grep mac | awk '{print$4}'" %dev)) or 0
-					net = "%s <font size=\"1\"><b>@%sGHz</b></font>" %{ssid, (ch >= 36) and "5"  or "2.4"}
-					rssi = tonumber(luci.sys.exec("wlctl -i %q rssi %s" %{dev, assoc})) or 0
-					ns = tonumber(luci.sys.exec("wlctl -i %q noise" %dev)) or 0
-					sr = "%f" %((-1 * (ns - rssi)) / 5)
-					rv = {
-						channel = ch,
-						network = net,
-						signal = rssi,
-						noise = ns,
-						snr = sr
-					}
-					return rv
-				end
-			end
-		end
-	end
-	return nil
+	ssid = luci.sys.exec("wlctl -i %q ssid" %dev):match("Current SSID: \"(%S+)\"") or ""
+	ch = tonumber(luci.sys.exec("wlctl -i %q channel | grep mac | awk '{print$4}'" %dev)) or 0
+	net = "%s <font size=\"1\"><b>@%sGHz</b></font>" %{ssid, (ch >= 36) and "5"  or "2.4"}
+	rssi = tonumber(luci.sys.exec("wlctl -i %q rssi %s" %{dev, mac})) or 0
+	ns = tonumber(luci.sys.exec("wlctl -i %q noise" %dev)) or 0
+	sr = "%f" %((-1 * (ns - rssi)) / 5)
+	rv = {
+		channel = ch,
+		network = net,
+		signal = rssi,
+		noise = ns,
+		snr = sr
+	}
+	return rv
 end
 
 function ipv4_clients()
@@ -54,7 +43,7 @@ function ipv4_clients()
 	local clntno = "client-%d" %i
 
         _ubus = bus.connect()
-        _ubuscache["clients"] = _ubus:call("router", "clients", { })
+        _ubuscache["clients"] = _ubus:call("router", "connected", { })
         _ubus:close()
 
         while _ubuscache["clients"][clntno] do
@@ -62,18 +51,16 @@ function ipv4_clients()
                 local mac = _ubuscache["clients"][clntno]["macaddr"]
                 local name = _ubuscache["clients"][clntno]["hostname"]
 		local net = _ubuscache["clients"][clntno]["network"]
-		local connected = _ubuscache["clients"][clntno]["connected"]
-		local wl = is_wlsta(mac)
-		if wl or connected then
-			rv[#rv+1] = {
-				macaddr  = mac:upper(),
-				ipaddr   = ip,
-				hostname = (name ~= "*") and name,
-				network	 = net:upper(),
-				status	 = connected and 1 or 0,
-				wlinfo	 = wl
-			}
-		end
+		local wireless = _ubuscache["clients"][clntno]["wireless"]
+		local wdev = wireless and _ubuscache["clients"][clntno]["wdev"] or nil
+		rv[#rv+1] = {
+			macaddr  = mac:upper(),
+			ipaddr   = ip,
+			hostname = (name ~= "*") and name,
+			network	 = net:upper(),
+			is_sta	 = wireless,
+			wlinfo	 = wireless and wlinfo(wdev, mac) or nil
+		}
                 i = i + 1
 		clntno = "client-%d" %i
         end
@@ -89,7 +76,7 @@ function ipv6_clients()
 	local clntno = "client-%d" %i
 
         _ubus = bus.connect()
-        _ubuscache["clients6"] = _ubus:call("router", "clients6", { })
+        _ubuscache["clients6"] = _ubus:call("router", "connected6", { })
         _ubus:close()
 
         while _ubuscache["clients6"][clntno] do
@@ -98,23 +85,18 @@ function ipv6_clients()
                 local du = _ubuscache["clients6"][clntno]["duid"]
                 local name = _ubuscache["clients6"][clntno]["hostname"]
 		local device = _ubuscache["clients6"][clntno]["device"]
-		local connected = true or _ubuscache["clients6"][clntno]["connected"]
-		local net = ""
-		if device:match("br-") then
-			net = device:sub(4)
-		end
-		local wl = is_wlsta(mac)
-		if wl or connected then
-			rv[#rv+1] = {
-				macaddr  = mac:upper(),
-				duid	 = (du ~= "*") and du,
-				ip6addr   = ip6,
-				hostname = (name ~= "*") and name,
-				network	 = net:upper(),
-				status	 = connected and 1 or 0,
-				wlinfo	 = wl
-			}
-		end
+		local net = device:match("br-") and device:sub(4) or ""
+		local wireless = _ubuscache["clients6"][clntno]["wireless"]
+		local wdev = wireless and _ubuscache["clients6"][clntno]["wdev"] or nil
+		rv[#rv+1] = {
+			macaddr  = mac:upper(),
+			duid	 = (du ~= "*") and du,
+			ip6addr	 = ip6,
+			hostname = (name ~= "*") and name,
+			network	 = net:upper(),
+			is_sta	 = wireless,
+			wlinfo	 = wireless and wlinfo(wdev, mac) or nil
+		}
                 i = i + 1
 		clntno = "client-%d" %i
         end

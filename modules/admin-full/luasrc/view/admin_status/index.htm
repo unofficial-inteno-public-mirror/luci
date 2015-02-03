@@ -62,8 +62,8 @@ You may obtain a copy of the License at
 			swapfree   = swapfree,
 			connmax    = conn_max,
 			conncount  = conn_count,
-			leases     = luci.tools.status.ipv4_clients(),
-			leases6    = luci.tools.status.ipv6_clients(),
+			clients	   = luci.tools.status.ipv4_clients(),
+			clients6   = luci.tools.status.ipv6_clients(),
 			wifinets   = luci.tools.status.wifi_networks()
 		}
 
@@ -332,23 +332,24 @@ You may obtain a copy of the License at
 				<% end %>
 
 				<% if has_dhcp then %>
-				var ls = document.getElementById('lease_status_table');
-				if (ls)
+				var clnt = document.getElementById('client_status_table');
+				if (clnt)
 				{
 					/* clear all rows */
-					while( ls.rows.length > 1 )
-						ls.rows[0].parentNode.deleteRow(1);
+					while( clnt.rows.length > 1 )
+						clnt.rows[0].parentNode.deleteRow(1);
 
-					for( var i = 0; i < info.leases.length; i++ )
+					for( var i = 0; i < info.clients.length; i++ )
 					{
-						var tr = ls.rows[0].parentNode.insertRow(-1);
+						var tr = clnt.rows[0].parentNode.insertRow(-1);
 							tr.className = 'cbi-section-table-row cbi-rowstyle-' + ((i % 2) + 1);
 
-						tr.insertCell(-1).innerHTML = info.leases[i].hostname ? info.leases[i].hostname : '?';
-						tr.insertCell(-1).innerHTML = info.leases[i].ipaddr;
-						tr.insertCell(-1).innerHTML = info.leases[i].macaddr;
-						var wlinfo = info.leases[i].wlinfo;
-						if (wlinfo) {
+						tr.insertCell(-1).innerHTML = info.clients[i].hostname ? info.clients[i].hostname : '?';
+						tr.insertCell(-1).innerHTML = info.clients[i].ipaddr;
+						tr.insertCell(-1).innerHTML = info.clients[i].macaddr;
+						var is_sta = info.clients[i].is_sta;
+						if (is_sta) {
+							var wlinfo = info.clients[i].wlinfo;
 							tr.insertCell(-1).innerHTML = wlinfo.network;
 
 							var icon;
@@ -369,15 +370,15 @@ You may obtain a copy of the License at
 								icon, wlinfo.channel, wlinfo.signal, wlinfo.noise
 							);
 						}
-						else if (info.leases[i].status == 1){
-							tr.insertCell(-1).innerHTML = info.leases[i].network;
+						else {
+							tr.insertCell(-1).innerHTML = info.clients[i].network;
 							tr.insertCell(-1).innerHTML = '<img src="<%=resource%>/icons/ethernet.png" height="27" width="28"/>';
 						}
 					}
 
-					if( ls.rows.length == 1 )
+					if( clnt.rows.length == 1 )
 					{
-						var tr = ls.rows[0].parentNode.insertRow(-1);
+						var tr = clnt.rows[0].parentNode.insertRow(-1);
 							tr.className = 'cbi-section-table-row';
 
 						var td = tr.insertCell(-1);
@@ -386,25 +387,26 @@ You may obtain a copy of the License at
 					}
 				}
 
-				var ls6 = document.getElementById('lease6_status_table');
-				if (ls6 && info.leases6)
+				var clnt6 = document.getElementById('client6_status_table');
+				if (clnt6 && info.clients6)
 				{
-					ls6.parentNode.style.display = 'block';
+					clnt6.parentNode.style.display = 'block';
 
 					/* clear all rows */
-					while( ls6.rows.length > 1 )
-						ls6.rows[0].parentNode.deleteRow(1);
+					while( clnt6.rows.length > 1 )
+						clnt6.rows[0].parentNode.deleteRow(1);
 
-					for( var i = 0; i < info.leases6.length; i++ )
+					for( var i = 0; i < info.clients6.length; i++ )
 					{
-						var tr = ls6.rows[0].parentNode.insertRow(-1);
+						var tr = clnt6.rows[0].parentNode.insertRow(-1);
 							tr.className = 'cbi-section-table-row cbi-rowstyle-' + ((i % 2) + 1);
 
-						tr.insertCell(-1).innerHTML = info.leases6[i].hostname ? info.leases6[i].hostname : '?';
-						tr.insertCell(-1).innerHTML = info.leases6[i].ip6addr;
-						tr.insertCell(-1).innerHTML = info.leases6[i].macaddr;
-						var wlinfo = info.leases6[i].wlinfo;
-						if (wlinfo) {
+						tr.insertCell(-1).innerHTML = info.clients6[i].hostname ? info.clients6[i].hostname : '?';
+						tr.insertCell(-1).innerHTML = info.clients6[i].ip6addr;
+						tr.insertCell(-1).innerHTML = info.clients6[i].macaddr;
+						var is_sta = info.clients6[i].is_sta;
+						if (is_sta) {
+							var wlinfo = info.clients6[i].wlinfo;
 							tr.insertCell(-1).innerHTML = wlinfo.network;
 
 							var icon;
@@ -425,15 +427,15 @@ You may obtain a copy of the License at
 								icon, wlinfo.channel, wlinfo.signal, wlinfo.noise
 							);
 						}
-						else if (info.leases6[i].status == 1){
-							tr.insertCell(-1).innerHTML = info.leases6[i].network;
+						else {
+							tr.insertCell(-1).innerHTML = info.clients6[i].network;
 							tr.insertCell(-1).innerHTML = '<img src="<%=resource%>/icons/ethernet.png" height="27" width="28"/>';
 						}
 					}
 
-					if( ls6.rows.length == 1 )
+					if( clnt6.rows.length == 1 )
 					{
-						var tr = ls6.rows[0].parentNode.insertRow(-1);
+						var tr = clnt6.rows[0].parentNode.insertRow(-1);
 							tr.className = 'cbi-section-table-row';
 
 						var td = tr.insertCell(-1);
@@ -777,7 +779,7 @@ You may obtain a copy of the License at
 	<legend><%:Clients%></legend>
 	<% end %>
 
-	<table class="cbi-section-table" id="lease_status_table">
+	<table class="cbi-section-table" id="client_status_table">
 		<tr class="cbi-section-table-titles" >
 			<th class="cbi-section-table-cell" width="30%"><%:Hostname%></th>
 			<th class="cbi-section-table-cell" width="20%"><%:IPv4-Address%></th>
@@ -796,7 +798,7 @@ You may obtain a copy of the License at
 <fieldset class="cbi-section" style="display:none">
 	<legend><%:IPv6 Clients%></legend>
 
-	<table class="cbi-section-table" id="lease6_status_table">
+	<table class="cbi-section-table" id="client6_status_table">
 		<tr class="cbi-section-table-titles">
 			<th class="cbi-section-table-cell" width="30%"><%:Hostname%></th>
 			<th class="cbi-section-table-cell" width="20%"><%:IPv6-Address%></th>
