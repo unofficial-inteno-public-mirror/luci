@@ -1,0 +1,44 @@
+<%-
+require "ubus"
+local conn = ubus.connect()
+if not conn then
+    error("Failed to connect to ubusd")
+end
+
+
+local romstatus = conn:call("sfp.rom", "get-all",{ })
+local ddmstatus = conn:call("sfp.ddm","get-all",{ })
+if romstatus == nil then
+   status={ "Could not connect to sfp module is it connected correctly" }
+end
+local ddmstatus = conn:call("sfp.ddm","get-all",{ })
+if ddmstatus == nil then
+   status={ "No ddm values found" }
+end
+conn:close()
+	
+-%>
+
+<%+header%>
+
+<meta http-equiv="refresh" content="20">
+<h2><a id="content" name="content"><%:SFP%></a></h2>
+<div class="cbi-map-descr"><%:Rom Is set values in the sfp and ddm values are dynamic values read from the sfp%></div>
+<fieldset class="cbi-section">
+
+	<table width="100%" cellspacing="10">
+<legend><%:ROM Values%></legend>
+<% for ubuskey, ubusvalue in pairs(romstatus) do%>
+		<tr><td width="33%"><%=ubuskey%></td><td><%=ubusvalue%></td></tr>
+		<%end%>
+	</table>
+
+	<table width="100%" cellspacing="10">
+<legend><%:DDM Values%></legend>
+<% for ubuskey, ubusvalue in pairs(ddmstatus) do%>
+		<tr><td width="33%"><%=ubuskey%></td><td><%=ubusvalue%></td></tr>
+		<%end%>
+	</table>
+</fieldset>
+
+<%+footer%>
