@@ -461,10 +461,11 @@ You may obtain a copy of the License at
 
 						var tr = wsbody.insertRow(-1);
 						var td;
+						var icon = "<%=resource%>/icons/wifi_big.png";
 
 						td = tr.insertCell(-1);
 						td.width     = "33%";
-						td.innerHTML = dev.name;
+						td.innerHTML = String.format('<img src="%s" title="%s" /><font size="6"><b>@%sGHz</b></font>', icon, dev.name, dev.networks[0].frequency);
 						td.style.verticalAlign = "top";
 
 						td = tr.insertCell(-1);
@@ -491,7 +492,7 @@ You may obtain a copy of the License at
 								'</td><td style="text-align:left; padding:3px"><small>' +
 									'<strong><%:SSID%>:</strong> <a href="%s">%h</a><br />' +
 									'<strong><%:Mode%>:</strong> %s<br />' +
-									'<strong><%:Channel%>:</strong> %d (%.2f GHz)<br />' +
+									'<strong><%:Channel%>:</strong> %d <br />' +
 									'<strong><%:Bitrate%>:</strong> %s Mb/s<br />',
 									icon,
 									net.link, net.ssid,
