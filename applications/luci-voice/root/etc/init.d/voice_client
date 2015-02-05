@@ -1620,7 +1620,7 @@ configure_brcm()
 
 	BRCM_FAC="$BRCM_FAC $fac"
 	# Convert whitespace to commas
-	BRCM_FAC=$(echo $BRCM_FAC | tr -s ' ' | tr ' ' ',')
+	BRCM_FAC=$(echo $BRCM_FAC | sed -e 's/^ *//' -e 's/ *$//' | tr -s ' ' | tr ' ' ',')
 
 	if [ -z "$dialoutmsec" ] ; then
 		dialoutmsec=4000
