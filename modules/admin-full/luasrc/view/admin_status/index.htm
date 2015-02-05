@@ -16,7 +16,6 @@ You may obtain a copy of the License at
 	require "luci.tools.status"
 	require "luci.quest"
 
-	local advanced = (luci.http.formvalue("advanced") == "1")
 	local guser = luci.dispatcher.context.path[1]
 
 	local has_ipv6 = luci.fs.access("/proc/net/ipv6_route")
@@ -131,6 +130,31 @@ You may obtain a copy of the License at
 
 <script type="text/javascript" src="<%=resource%>/cbi.js"></script>
 <script type="text/javascript">//<![CDATA[
+
+	function system_table(table) {
+		var aradio = document.getElementById("aradio");
+		var bradio = document.getElementById("bradio");
+		var advanced = document.getElementById("system_table_advanced");
+		var memory = document.getElementById("memory");
+		var swap = document.getElementById("swap");
+		var basic = document.getElementById("system_table_basic");
+		if (table == "basic") {
+			aradio.checked = false;
+			bradio.checked = true;
+			advanced.style.display = "none";
+			basic.style.display = "table";
+			memory.style.display = "none";
+			swap.style.display = "none";
+		} else if (table == "advanced") {
+			bradio.checked = false;
+			aradio.checked = true;
+			advanced.style.display = "table";
+			basic.style.display = "none";
+			memory.style.display = "block";
+			swap.style.display = "block";
+		}
+	}
+
 	function progressbar(v, m)
 	{
 		var vn = parseInt(v) || 0;
@@ -497,7 +521,7 @@ You may obtain a copy of the License at
 									icon,
 									net.link, net.ssid,
 									net.mode,
-									net.channel, net.frequency,
+									net.channel,
 									net.bitrate || '?'
 							);
 
@@ -601,15 +625,18 @@ You may obtain a copy of the License at
 
 				if (e = document.getElementById('localtime'))
 					e.innerHTML = info.localtime;
+				if (e = document.getElementById('alocaltime'))
+					e.innerHTML = info.localtime;
 
 				if (e = document.getElementById('uptime'))
 					e.innerHTML = String.format('%t', info.uptime);
+				if (e = document.getElementById('auptime'))
+					e.innerHTML = String.format('%t', info.uptime);
 
 				if (e = document.getElementById('cpu'))
-					e.innerHTML =progressbar(
-						info.cpu,
-						100
-					);
+					e.innerHTML =progressbar(info.cpu, 100);
+				if (e = document.getElementById('acpu'))
+					e.innerHTML =progressbar(info.cpu, 100);
 
 				if (e = document.getElementById('memtotal'))
 					e.innerHTML = progressbar(
@@ -645,49 +672,45 @@ You may obtain a copy of the License at
 
 <h2><a id="content" name="content"><%:Status%></a></h2>
 
-<% if advanced then %>
-	<p align="center"><input type="radio" name="view_type" value="basic" onclick=location.href="<%=REQUEST_URI%>?advanced=0"> <b>Basic View<b/> &nbsp;&nbsp;&nbsp;&nbsp;
-	<input type="radio" name="view_type" value="advanced" checked onclick=location.href="<%=REQUEST_URI%>?advanced=1"> <b>Advanced View<b/>
-<% else %>
-	<p align="center"><input type="radio" name="view_type" value="basic" checked onclick=location.href="<%=REQUEST_URI%>?advanced=0"> <b>Basic View<b/> &nbsp;&nbsp;&nbsp;&nbsp;
-	<input type="radio" name="view_type" value="advanced" onclick=location.href="<%=REQUEST_URI%>?advanced=1"> <b>Advanced View<b/>
-<% end %>
-<br/><br/>
+<p align="center"><input type="radio" id="bradio" onclick="system_table('basic')" checked> <b>Basic View<b/> &nbsp;&nbsp;&nbsp;&nbsp;
+<input type="radio" id="aradio" onclick="system_table('advanced')"> <b>Advanced View<b/><br/><br/>
 
 <fieldset class="cbi-section">
 	<legend><%:System%></legend>
 
-	<table width="100%" cellspacing="10">
+	<table id="system_table_basic" width="100%" cellspacing="10" style="display:table">
 		<tr><td width="33%"><%:Router Name%></td><td><%=luci.sys.hostname() or "?"%></td></tr>
-		<% if advanced then %>
-			<tr><td width="33%"><%:Router Model%></td><td><%=pcdata(router.model)%></td></tr>
-		<% end %>
 		<tr><td width="33%"><%:Router MAC Address%></td><td><%=pcdata(router.basemac) %></td></tr>
 		<tr><td width="33%"><%:Router S/N%></td><td><%=pcdata(router.serialno) %></td></tr>
 		<tr><td width="33%"><%:iopsys Version%></td><td><%=pcdata(router.iopversion) %></td></tr>
-		<% if advanced then %>
-			<tr><td width="33%"><%:Brcm Version%></td><td><%=pcdata(router.brcmversion) %></td></tr>
-			<tr><td width="33%"><%:CFE Version%></td><td>
-				<%=pcdata(router.cfeversion)%> /
-				<%=pcdata(router.socmodel)%> /
-				<%=pcdata(router.socrevision)%>
-			</td></tr>
-			<tr><td width="33%"><%:OpenWrt Version%></td><td>
-				<%=pcdata(luci.version.distname)%> <%=pcdata(luci.version.distversion)%> /
-				<%=pcdata(luci.version.luciname)%> <%=pcdata(luci.version.luciversion)%>
-			</td></tr>
-			<tr><td width="33%"><%:Kernel Version%></td><td><%=pcdata(router.kernel)%></td></tr>
-		<% end %>
 		<tr><td width="33%"><%:Local Time%></td><td id="localtime">-</td></tr>
 		<tr><td width="33%"><%:Uptime%></td><td id="uptime">-</td></tr>
-		<% if advanced then %>
-			<tr><td width="33%"><%:CPU%></td><td id="cpu">-</td></tr>
-		<% end %>
+	</table>
+
+	<table id="system_table_advanced" width="100%" cellspacing="10" style="display:none">
+		<tr><td width="33%"><%:Router Name%></td><td><%=luci.sys.hostname() or "?"%></td></tr>
+		<tr><td width="33%"><%:Router Model%></td><td><%=pcdata(router.model)%></td></tr>
+		<tr><td width="33%"><%:Router MAC Address%></td><td><%=pcdata(router.basemac) %></td></tr>
+		<tr><td width="33%"><%:Router S/N%></td><td><%=pcdata(router.serialno) %></td></tr>
+		<tr><td width="33%"><%:iopsys Version%></td><td><%=pcdata(router.iopversion) %></td></tr>
+		<tr><td width="33%"><%:BRCM Version%></td><td><%=pcdata(router.brcmversion) %></td></tr>
+		<tr><td width="33%"><%:CFE Version%></td><td>
+			<%=pcdata(router.cfeversion)%> /
+			<%=pcdata(router.socmodel)%> /
+			<%=pcdata(router.socrevision)%>
+		</td></tr>
+		<tr><td width="33%"><%:OpenWrt Version%></td><td>
+			<%=pcdata(luci.version.distname)%> <%=pcdata(luci.version.distversion)%> /
+			<%=pcdata(luci.version.luciname)%> <%=pcdata(luci.version.luciversion)%>
+		</td></tr>
+		<tr><td width="33%"><%:Kernel Version%></td><td><%=pcdata(router.kernel)%></td></tr>
+		<tr><td width="33%"><%:Local Time%></td><td id="alocaltime">-</td></tr>
+		<tr><td width="33%"><%:Uptime%></td><td id="auptime">-</td></tr>
+		<tr><td width="33%"><%:CPU%></td><td id="acpu">-</td></tr>
 	</table>
 </fieldset>
 
-<% if advanced then %>
-<fieldset class="cbi-section">
+<fieldset id="memory" class="cbi-section" style="display:none">
 	<legend><%:Memory%></legend>
 
 	<table width="100%" cellspacing="10">
@@ -699,7 +722,7 @@ You may obtain a copy of the License at
 </fieldset>
 
 <% if has_swap then %>
-<fieldset class="cbi-section">
+<fieldset id="swap" class="cbi-section" style="display:none">
 	<legend><%:Swap%></legend>
 
 	<table width="100%" cellspacing="10">
@@ -708,7 +731,6 @@ You may obtain a copy of the License at
 		<tr><td width="33%"><%:Cached%></td><td id="swapcache">-</td></tr>
 	</table>
 </fieldset>
-<% end %>
 <% end %>
 
 <!-- Port Status -->

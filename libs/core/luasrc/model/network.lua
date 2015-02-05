@@ -1571,6 +1571,10 @@ function wifidev.is_5g(self)
 	return self:bands():match("a") or self:band():match("a")
 end
 
+function wifidev.frequency(self)
+	return self:bands():match("a") and "5GHz" or "2.4GHz"
+end
+
 function wifidev.channels(self, country, band, bwidth)
 	if nfs.access("/tmp/wireless/%s_chanspecs" %self.sid) then
 		return utl.execi("cat /tmp/wireless/%s_chanspecs" %self.sid)

@@ -233,10 +233,9 @@ You may obtain a copy of the License at
 					{
 						if (is_assoc)
 							dev.innerHTML = String.format(
-								'<strong><%:Channel%>:</strong> %s (%s <%:GHz%>) | ' +
+								'<strong><%:Channel%>:</strong> %s | ' +
 								'<strong><%:Bitrate%>:</strong> %s <%:Mbit/s%>',
 									iw.channel ? iw.channel : '?',
-									iw.frequency ? iw.frequency : '?',
 									iw.bitrate ? iw.bitrate : '?'
 							);
 						else
@@ -331,8 +330,9 @@ You may obtain a copy of the License at
 			<tr>
 				<td style="width:34px"><img src="<%=resource%>/icons/wifi_big_disabled.png" style="float:left; margin-right:10px" id="<%=dev:name()%>-iw-upstate" /></td>
 				<td colspan="2" style="text-align:left">
-					<big><strong><%=guess_wifi_hw(dev)%> (<%=dev:name()%>)</strong></big><br />
-					<span id="<%=dev:name()%>-iw-devinfo"></span>
+					<font size="5"><b>@<%=dev:frequency()%></b></font><br /><br />
+					<strong><%=guess_wifi_hw(dev)%> (<%=dev:name()%>)</strong><br />
+					<span id="<%=dev:name()%>-iw-devinfo"></span><br /><br />
 				</td>
 				<td style="width:310px;text-align:right">
 					<input type="button" class="cbi-button cbi-button-reload" style="width:100px" onclick="location.href='<%=luci.dispatcher.build_url("admin/network/wireless_onoff/%s" %dev:name())%>'" title="<%:Turn off wireless radio%>" <%if dev:radio() then%> value="<%:Turn Off%>"  <%else%> value="<%:Turn On%>" <%end%> />
