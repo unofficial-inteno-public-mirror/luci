@@ -304,8 +304,12 @@ You may obtain a copy of the License at
 				for (var dev in devup)
 				{
 					var img = document.getElementById(dev + '-iw-upstate');
-					if (img)
+					var freq = document.getElementById(dev + '-freq');
+					if (img) {
 						img.src = '<%=resource%>/icons/wifi_big' + (devup[dev] ? '' : '_disabled') + '.png';
+						if (devup[dev])
+							freq.style.display = "block";
+					}
 				}
 			}
 		}
@@ -328,11 +332,11 @@ You may obtain a copy of the License at
 		<table class="cbi-section-table" style="margin:10px; empty-cells:hide">
 			<!-- physical device -->
 			<tr>
-				<td style="width:34px"><img src="<%=resource%>/icons/wifi_big_disabled.png" style="float:left; margin-right:10px" id="<%=dev:name()%>-iw-upstate" /></td>
+				<td style="width:34px"><img src="<%=resource%>/icons/wifi_big_disabled.png" style="float:left; margin-right:10px" id="<%=dev:name()%>-iw-upstate" />
+				<br/><font size="6" id="<%=dev:name()%>-freq" style="display:none"><b><%=dev:frequency()%></b></font></td>
 				<td colspan="2" style="text-align:left">
-					<font size="5"><b>@<%=dev:frequency()%></b></font><br /><br />
-					<strong><%=guess_wifi_hw(dev)%> (<%=dev:name()%>)</strong><br />
-					<span id="<%=dev:name()%>-iw-devinfo"></span><br /><br />
+					<big><strong><%=guess_wifi_hw(dev)%> (<%=dev:name()%>)</strong></big><br />
+					<span id="<%=dev:name()%>-iw-devinfo"></span>
 				</td>
 				<td style="width:310px;text-align:right">
 					<input type="button" class="cbi-button cbi-button-reload" style="width:100px" onclick="location.href='<%=luci.dispatcher.build_url("admin/network/wireless_onoff/%s" %dev:name())%>'" title="<%:Turn off wireless radio%>" <%if dev:radio() then%> value="<%:Turn Off%>"  <%else%> value="<%:Turn On%>" <%end%> />

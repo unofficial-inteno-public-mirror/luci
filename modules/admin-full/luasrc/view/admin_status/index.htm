@@ -488,9 +488,15 @@ You may obtain a copy of the License at
 						var icon = "<%=resource%>/icons/wifi_big.png";
 
 						td = tr.insertCell(-1);
-						td.width     = "33%";
-						td.innerHTML = String.format('<img src="%s" title="%s" /><font size="6"><b>@%sGHz</b></font>', icon, dev.name, dev.networks[0].frequency);
+						td.width     = "15%";
+						td.innerHTML = String.format('<img src="%s" /><br><font size="6"><b>%s</b></font>', icon, dev.frequency);
 						td.style.verticalAlign = "top";
+						td = tr.insertCell(-1);
+						td.width     = "12%";
+						td.innerHTML = String.format('<font size="3"><b>%s</b></font>', dev.name);
+						td = tr.insertCell(-1);
+						td.width     = "6%";
+						td.innerHTML = "";
 
 						td = tr.insertCell(-1);
 

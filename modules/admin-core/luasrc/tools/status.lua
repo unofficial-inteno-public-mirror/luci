@@ -21,7 +21,7 @@ local function wlinfo(dev, mac)
 	local ssid, net, ch, rssi, ns, sr
 	ssid = luci.sys.exec("wlctl -i %q ssid" %dev):match("Current SSID: \"(%S+)\"") or ""
 	ch = tonumber(luci.sys.exec("wlctl -i %q channel | grep mac | awk '{print$4}'" %dev)) or 0
-	net = "%s <font size=\"1\"><b>@%sGHz</b></font>" %{ssid, (ch >= 36) and "5"  or "2.4"}
+	net = "%s <font size=\"1\"><b>%sGHz</b></font>" %{ssid, (ch >= 36) and "5"  or "2.4"}
 	rssi = tonumber(luci.sys.exec("wlctl -i %q rssi %s" %{dev, mac})) or 0
 	ns = tonumber(luci.sys.exec("wlctl -i %q noise" %dev)) or 0
 	sr = "%f" %((-1 * (ns - rssi)) / 5)
@@ -196,6 +196,7 @@ function wifi_networks()
 			up       = dev:is_up(),
 			device   = dev:name(),
 			name     = dev:get_i18n(),
+			frequency= dev:frequency(),
 			networks = { }
 		}
 
