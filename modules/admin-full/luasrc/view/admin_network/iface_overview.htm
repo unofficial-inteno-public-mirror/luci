@@ -36,6 +36,7 @@ You may obtain a copy of the License at
 	local tplgs = { }
 	if has_netmode then
 	curmode = uci:get("netmode", "setup", "curmode")
+	credmodes = uci:get("netmode", "setup", "credmodes")
 	detail = uci:get("netmode", "setup", "detail")
 	uci:foreach("netmode", "netmode",
 		function (section)
@@ -66,19 +67,25 @@ You may obtain a copy of the License at
 	}
 
 	function change_net_setup() {
-		var sidx, mode, loc;
+		var sidx, mode, loc, ssid, key;
 
 		with ( document.forms[0] ) {
 			sidx = netstp.selectedIndex;
 			mode = netstp.options[sidx].value;
 		}
-		loc = "<%=luci.dispatcher.build_url('admin/network/setup/')%>" +mode;
+
+		if (mode.indexOf("repeater") > -1) {
+			ssid = document.getElementById('ssid').value;
+			key = document.getElementById('key').value;
+			loc = "<%=luci.dispatcher.build_url('admin/network/setup')%>"+"?mode="+mode+"&ssid="+ssid+"&key="+key;
+		} else
+			loc = "<%=luci.dispatcher.build_url('admin/network/setup')%>"+"?mode="+mode;
 
 		return loc;
 	}
 
 	function explain() {
-		var sidx, detail, mode, curmode;
+		var sidx, detail, mode, curmode, cred;
 
 		with ( document.forms[0] ) {
 			sidx = netstp.selectedIndex;
@@ -87,11 +94,17 @@ You may obtain a copy of the License at
 		}
 
 		curmode = "<%=curmode%>"
+		cred = "<%=credmodes%>"
 
 		if (mode == curmode)
 			document.getElementById('change').disabled="disabled";
 		else
 			document.getElementById('change').disabled="";
+
+		if (cred.indexOf(mode) > -1 && mode != curmode)
+			document.getElementById('repeater').style.display="block";
+		else
+			document.getElementById('repeater').style.display="none";
 
 		document.getElementById('message').innerHTML = "&nbsp&nbsp&nbsp<em>"+detail+"</em>";
 	}
@@ -290,6 +303,12 @@ You may obtain a copy of the License at
 	</select>
 	<input id="change" type="button" class="cbi-button" onclick="if (confirm('<%:Do you really want to change network setup? This action requires system reboot.%>')) location.href=change_net_setup()" value="Change" disabled="disabled"/>
 	<h id='message' >
+</div>
+<div id="repeater" align="right" style="display:none">
+	<br>
+	<b>AP to connect as Repeater&nbsp&nbsp</b><br>
+	<input id="ssid" type="text" placeholder="Access Point Name"/><br>
+	<input id="key" type="text"placeholder="Security Key"/>
 </div>
 <br><br>
 <% end %>

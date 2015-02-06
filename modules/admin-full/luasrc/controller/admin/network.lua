@@ -192,14 +192,18 @@ function index()
 	end
 end
 
-function change_net_setup(mode)
+function change_net_setup()
 	local utl = require "luci.util"
 	local uci = require "luci.model.uci".cursor()
+	local mode = luci.http.formvalue("mode")
+	local ssid = luci.http.formvalue("ssid")
+	local key = luci.http.formvalue("key")
 	local guser = luci.dispatcher.context.path[1]
 	local curmode = uci:get("netmode", "setup", "curmode")
 	local desc = uci:get("netmode", mode, "desc")
 	local conf = uci:get("netmode", mode, "conf")
 	local dir = uci:get("netmode", "setup", "dir") or "/etc/netmodes"
+	local dualwifi = (luci.sys.exec("wlctl -i wl1 cap 2>/dev/null"):len() > 2)
 
 	if curmode == mode then
 		luci.http.redirect(luci.dispatcher.build_url("%s/network/network" %guser))
@@ -208,6 +212,31 @@ function change_net_setup(mode)
 	luci.sys.exec("cp %s/%s/* /etc/config/" %{dir, conf})
 	uci:set("netmode", "setup", "curmode", mode)
 	uci:commit("netmode")
+
+	if not dualwifi then
+		uci:delete("wireless", "wl1")
+		uci:foreach("wireless", "wifi-iface",
+			function(s)
+				uci:set("wireless", s['.name'], "device", "wl0")
+			end)
+		uci:commit("wireless")
+	end
+
+	if ssid and ssid:len() > 2 then
+		uci:foreach("wireless", "wifi-iface",
+			function(s)
+				uci:set("wireless", s['.name'], "ssid", ssid)
+				if key:len() < 2 then
+					uci:delete("wireless", s['.name'], "encryption")
+					uci:delete("wireless", s['.name'], "cipher")
+					uci:delete("wireless", s['.name'], "key")
+				else
+					uci:set("wireless", s['.name'], "encryption", "psk2")
+					uci:set("wireless", s['.name'], "key", key)
+				end
+			end)
+		uci:commit("wireless")
+	end
 
 	local lanaddr = uci:get("network", "lan", "ipaddr") or "192.168.1.1"
 	luci.template.render("admin_system/applyreboot", {
