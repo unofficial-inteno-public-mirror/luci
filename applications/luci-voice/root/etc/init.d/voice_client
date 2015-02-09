@@ -1270,6 +1270,8 @@ configure_extensions()
 	if [ -n "$clir" -a "$clir" != "" ] ; then
 		sed -i "s/|CLIR_FAC_SET|//"		$WORKDIR/extensions.tmp
 		sed -i "s/|CLIR|/$clir/"		$WORKDIR/extensions.tmp
+		sed -i "s/|CLIR_FAC_LEN|/${#clir}/"     $WORKDIR/extensions.tmp
+		BRCM_FAC="$BRCM_FAC $clir."
 	else
 		sed -i "s/|CLIR_FAC_SET|/;/"		$WORKDIR/extensions.tmp
 	fi
