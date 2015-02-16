@@ -68,7 +68,11 @@ start() {
 			;;
 		esac
         done
+	if [ $igmp_proxy_enable  -eq 1 ]; then
         sed  -i "s/igmp-proxy-interfaces.*/igmp-proxy-interfaces $proxdevs/"  /tmp/mcpd.conf
+        else 
+        sed  -i "s/igmp-proxy-interfaces.*/igmp-proxy-interfaces /"  /tmp/mcpd.conf
+        fi
         echo "igmp-mcast-interfaces $proxdevs" >> /tmp/mcpd.conf
 
         sed  -i "s/igmp-snooping-interfaces.*/igmp-snooping-interfaces $igmp_snooping_interfaces/"  /tmp/mcpd.conf
