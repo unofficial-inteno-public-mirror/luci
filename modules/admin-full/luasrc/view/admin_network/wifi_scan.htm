@@ -6,11 +6,14 @@
 	local device = luci.http.formvalue("device")
 	local devices  = ntm:get_wifidevs()
 	
+	local changed = false
 	local is5g
 	local dev
+	local ch
 	for _, dev in ipairs(devices) do
 		if device == dev:name() then
 			is5g = dev:is_5g()
+			ch = dev:channel()
 			break
 		end
 	end
@@ -23,7 +26,18 @@
 		wlfreq = "2.4GHz"
 		wlf = "2"
 	end
+	if is5g and ch >= 52 then
+		changed = true
+		sys.exec("wlctl -i %s down" %device)
+		sys.exec("wlctl -i %s spect 0" %device)
+		sys.exec("wlctl -i %s up" %device)
+	end
 	sys.exec("wlctl -i %s scan && sleep 5" %device)
+	if changed then
+		sys.exec("wlctl -i %s down" %device)
+		sys.exec("wlctl -i %s spect 1" %device)
+		sys.exec("wlctl -i %s up" %device)
+	end
 -%>
 
 <%+header%>

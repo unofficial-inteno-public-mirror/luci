@@ -1575,6 +1575,10 @@ function wifidev.frequency(self)
 	return self:bands():match("a") and "5GHz" or "2.4GHz"
 end
 
+function wifidev.channel(self)
+	return tonumber(sys.exec("wlctl -i %q channel | grep mac | awk '{print$4}'" %self.sid)) or 1
+end
+
 function wifidev.channels(self, country, band, bwidth)
 	if nfs.access("/tmp/wireless/%s_chanspecs" %self.sid) then
 		return utl.execi("cat /tmp/wireless/%s_chanspecs" %self.sid)
