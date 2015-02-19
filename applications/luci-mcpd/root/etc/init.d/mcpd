@@ -24,6 +24,7 @@ start() {
 	local igmp_snooping_enable
         local igmp_snooping_interfaces
         local igmp_proxy_interfaces
+        local igmp_proxy_enable
         local device
         local proxdevs=""
 	local proxbridge=""
@@ -35,7 +36,7 @@ start() {
         config_get igmp_snooping_enable mcpd igmp_snooping_enable
         config_get igmp_snooping_interfaces mcpd igmp_snooping_interfaces
         config_get igmp_proxy_interfaces mcpd igmp_proxy_interfaces
-
+	config_get igmp_proxy_enable mcpd igmp_proxy_enable
 	# disable port snooping on all bridges
 	for br in $(brctl show | grep 'br-' | awk '{print$1}' | tr '\n' ' '); do
 		brctl enableportsnooping $br 0
@@ -68,7 +69,7 @@ start() {
 			;;
 		esac
         done
-	if [ $igmp_proxy_enable  -eq 1 ]; then
+	if [ $igmp_proxy_enable -eq 1 ]; then
         sed  -i "s/igmp-proxy-interfaces.*/igmp-proxy-interfaces $proxdevs/"  /tmp/mcpd.conf
         else 
         sed  -i "s/igmp-proxy-interfaces.*/igmp-proxy-interfaces /"  /tmp/mcpd.conf
