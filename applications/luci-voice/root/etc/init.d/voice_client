@@ -972,6 +972,10 @@ configure_queue()
 
 	echo "[macro-$1]" >>					$WORKDIR/macros.tmp
 	echo "exten => s,1,Answer()" >>				$WORKDIR/macros.tmp
+
+        # Workaround to fix no ringback issue for incoming SIP calls
+	echo "exten => s,n,Playback(silence/1)" >>		$WORKDIR/macros.tmp
+
 	echo "exten => s,n,Queue($1,R)" >>			$WORKDIR/macros.tmp
 	echo "exten => s,n,MacroExit()" >>			$WORKDIR/macros.tmp
 	echo "" >>						$WORKDIR/macros.tmp
