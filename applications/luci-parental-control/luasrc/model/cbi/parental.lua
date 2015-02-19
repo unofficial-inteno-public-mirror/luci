@@ -120,16 +120,31 @@ s.template = "cbi/tsection"
 s.addremove = true
 s.anonymous = true
 
-o = s:option(Value, "name", "Name")
-o.optional = false
+n = s:option(Value, "name", "Name")
+n.rmempty = false
+n.optional = false
+n.validate = function(self, value)
+    if value and value:len() > 0 then
+        return value
+    else
+        return nil
+    end
+end
 
-o = s:option(DynamicList, "address", translate("Blocked host"), translate("Host will be blocked based on the MAC address."))
+ad = s:option(DynamicList, "address", translate("Blocked host"), translate("Host will be blocked based on the MAC address."))
 luci.sys.net.mac_clients(function(mac, name)
-    o:value(mac, "%s (%s)" %{ mac, name })
-    o.default = o.default or o
+    ad:value(mac, "%s (%s)" %{ mac, name })
+    ad.default = ad.default or ad
 end)
-o.rmempty = false
-o.optional = false
+ad.rmempty = false
+ad.optional = false
+ad.validate = function(self, value)
+    if datatypes.macaddr(value[1]) then
+        return value
+    else
+        return nil
+    end
+end
 
 -- weekdays
 o = s:option(Flag,  "enable_mon", "Monday")
@@ -221,6 +236,8 @@ end
 
 function handle_schedule(s)
     local converted   = convert_schedule(s)
+    if not converted.address then return end
+
     local transformed = transform(converted)
     local complete    = addaddr(transformed, converted.address)
     for k,v in ipairs(complete) do
