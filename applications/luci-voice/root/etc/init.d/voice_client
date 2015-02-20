@@ -560,7 +560,17 @@ restore_secret()
 {
 	local section_found
 	local secret
+	local config_file
+	# Provide backwards compatibility
 	if [ -f "$ASTERISKDIR/sip_providers.conf" ] ; then
+		config_file=$ASTERISKDIR/sip_providers.conf
+	elif [ -f "$ASTERISKDIR/sip_peers.conf" ] ; then
+		config_file=$ASTERISKDIR/sip_peers.conf
+	else
+		return
+	fi
+
+	if [ -f $config_file ] ; then
 		while read line
 		do
 			if [ -n "$section_found" ] ; then
@@ -574,7 +584,7 @@ restore_secret()
 				#we found the correct section
 				section_found=1
 			fi
-		done < $ASTERISKDIR/sip_providers.conf
+		done < $config_file
 	fi
 }
 
