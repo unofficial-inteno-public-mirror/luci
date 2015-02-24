@@ -169,10 +169,10 @@ if hwtype == "broadcom" then
 	end
 
 	bw = s:taboption("advanced", ListValue, "bandwidth", translate("Bandwidth"), translate("will be ignored if channel is set to auto."))
-	bw:value("20", "20MHz")
-	bw:value("40", "40MHz")
+	bw:value("20", "20MHz Only")
+	bw:value("40", "20/40MHz")
 	if wdev:hwmodes().ac then
-		bw:value("80", "80MHz", {band="a", country="US"}, {band="a", country="EU/13"})
+		bw:value("80", "20/40/80MHz", {band="a", country="US"}, {band="a", country="EU/13"})
 	end
 	if wdev:is_2g() then
 		bw.default = "20"
@@ -222,6 +222,12 @@ if hwtype == "broadcom" then
 		end
 	end
 
+	if wdev:is_5g() then
+		dfsc = s:taboption("advanced", Flag, "dfsc", translate("DFS Channel Selection"), translate("Note: Some wireless devices do not support DFS/TPC channels"))
+		dfsc:depends("channel", "auto")
+		dfsc.rmempty = true
+	end
+
 	if wdev:get("channel") == "auto" then
 		ach = s:taboption("advanced", Button, "__autoch")
 		ach:depends("channel", "auto")
@@ -234,7 +240,7 @@ if TECUSER then
 	timer = s:taboption("advanced", Value, "scantimer", translate("Auto Channel Timer"), "min")
 	timer:depends("channel", "auto")
 	timer.default = 15
-	timer.rmempty = true;
+	timer.rmempty = true
 
 	rifs = s:taboption("advanced", ListValue, "rifs", translate("RIFS"))
 	rifs:depends("hwmode", "auto")
