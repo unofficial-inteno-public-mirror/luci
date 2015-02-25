@@ -1576,7 +1576,7 @@ function wifidev.frequency(self)
 end
 
 function wifidev.channel(self)
-	return tonumber(sys.exec("wlctl -i %q channel | grep mac | awk '{print$4}'" %self.sid)) or 1
+	return tonumber(sys.exec("wlctl -i %q status | grep Primary | awk '{print$NF}'" %self.sid)) or 1
 end
 
 function wifidev.channels(self, country, band, bwidth)
@@ -1867,7 +1867,7 @@ function wifinet.bitrate(self)
 end
 
 function wifinet.channel(self)
-	return tonumber(sys.exec("wlctl -i %q channel | grep mac | awk '{print$4}'" %self:ifname())) or 1
+	return tonumber(sys.exec("wlctl -i %q status | grep Primary | awk '{print$NF}'" %self:ifname())) or 1
 end
 
 function wifinet.signal(self)
