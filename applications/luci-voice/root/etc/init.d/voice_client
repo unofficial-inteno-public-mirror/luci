@@ -1460,6 +1460,12 @@ configure_extensions_provider()
 
 	local call_lines call_ivr call_queue extension
 	echo "exten => $user,n,Set(__TRANSFER_CONTEXT=\${CHANNEL(peername)}-transfer)" >>	$tmp
+
+        # replace prefix '+' with '00'
+	echo "exten => $user,n,GotoIf($[\"\${CALLERID(NUM):0:1}\" = \"+\"]?rewrite:norewrite)" >>	$tmp
+	echo "exten => $user,n(rewrite),Set(CALLERID(num)=\"00\${CALLERID(num):1}\"))" >>		$tmp
+	echo "exten => $user,n(norewrite),NoOp()">>							$tmp
+
 	config_get call_lines $1 call_lines
 	config_get call_queue $1 call_queue
 	config_get call_ivr $1 call_ivr
