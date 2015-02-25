@@ -10,6 +10,11 @@ include => |PROVIDER|-outgoing
 
 [|PROVIDER|-transfer]
 ; Context used for call transfer for this Provider
+include => local_extensions
+include => |PROVIDER|-transfer-remote
+
+[|PROVIDER|-transfer-remote]
+; Context used for call transfer to remote extension for this Provider
 exten => _X.,1,		Transfer(SIP/${EXTEN}@|PROVIDER|,,)
 
 [|PROVIDER|-outgoing]
