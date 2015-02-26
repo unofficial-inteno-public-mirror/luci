@@ -26,6 +26,6 @@ function index()
 		entry({user, "system", "snmp", "view"}, cbi("snmp/view"), "View", 6)
 		entry({user, "system", "snmp", "access"}, cbi("snmp/access"), "Access", 7)
 		entry({user, "system", "snmp", "pass"}, cbi("snmp/pass"), "Pass", 8)
-		entry({user, "system", "snmp", "exec"}, cbi("snmp/exec"), "Exec", 9)
+		--entry({user, "system", "snmp", "exec"}, cbi("snmp/exec"), "Exec", 9)
 	end
 end
