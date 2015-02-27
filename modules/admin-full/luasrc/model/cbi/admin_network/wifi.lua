@@ -66,9 +66,17 @@ function m.parse(map)
 		return
 	elseif m:formvalue("cbid.wireless.%s.__autoch" % wdev:name()) then
 		local acs_mode = tonumber(luci.sys.exec("acs_cli -i %s mode | cut -d':' -f1" %wdev:name())) or 0
+		local chan = tonumber(luci.sys.exec("wlctl -i %q status | grep Primary | awk '{print$NF}'" %wdev:name())) or 1
 		luci.sys.exec("acs_cli -i %s mode 2 >/dev/null 2>/dev/null" %wdev:name())
+		if chan >= 52 then
+			-- switch to a non-dfs channel before running autochannel
+			luci.sys.exec("wlctl -i %q down 2>/dev/null" %wdev:name())
+			luci.sys.exec("wlctl -i %q channel 44/80 2>/dev/null" %wdev:name())
+			luci.sys.exec("wlctl -i %q up 2>/dev/null" %wdev:name())
+		end
 		luci.sys.exec("acs_cli -i %s autochannel >/dev/null 2>/dev/null" %wdev:name())
 		luci.sys.exec("acs_cli -i %s mode %d >/dev/null 2>/dev/null" %{wdev:name(), acs_mode})
+		luci.http.redirect(luci.dispatcher.build_url("admin/network/wireless", arg[1]))
 		return
 	end
 	Map.parse(map)
