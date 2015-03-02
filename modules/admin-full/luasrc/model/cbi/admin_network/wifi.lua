@@ -253,14 +253,12 @@ if TECUSER then
 	rifs = s:taboption("advanced", ListValue, "rifs", translate("RIFS"))
 	rifs:depends("hwmode", "auto")
 	rifs:depends("hwmode", "11n")
-	rifs:depends("hwmode", "11ac")
 	rifs:value("0", "Off")	
 	rifs:value("1", "On")
 
 	rifsad = s:taboption("advanced", ListValue, "rifs_advert", translate("RIFS Advertisement"))
 	rifsad:depends("hwmode", "auto")
 	rifsad:depends("hwmode", "11n")
-	rifsad:depends("hwmode", "11ac")
 	rifsad:value("0", "Off")	
 	rifsad:value("-1", "Auto")
 
