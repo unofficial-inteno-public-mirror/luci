@@ -1,0 +1,11 @@
+#!/bin/sh
+
+uci -q batch <<-EOF >/dev/null
+	delete ucitrack.@btle_alarm[-1]
+	set ucitrack.btle_alarm="btle_alarm"
+	set ucitrack.btle_alarm.init='btle_alarm'
+	commit ucitrack
+EOF
+
+rm -f /tmp/luci-indexcache
+exit 0
