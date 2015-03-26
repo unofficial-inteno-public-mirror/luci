@@ -19,4 +19,5 @@ autoframing	= |AUTOFRAMING|
 encryption	= |ENCRYPTION|
 disallow	= all
 |ALLOW|
+|TLS|
 

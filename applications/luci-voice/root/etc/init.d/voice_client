@@ -711,6 +711,13 @@ configure_sip_provider()
 	sed -i "s/|HOST|/$host/"			$WORKDIR/sip_provider.tmp
 	sed -i "s/|FROMDOMAIN|/$domain/"		$WORKDIR/sip_provider.tmp
 	sed -i "s/|TRANSPORT|/$transport/"		$WORKDIR/sip_provider.tmp
+	
+	if [ "x$transport" == "xtls" ] ; then
+		if [ -f "/etc/asterisk/ssl/$1.crt.pem" -a -f "/etc/asterisk/ssl/$1.key.pem" ] ; then
+			tls="tlscertfile = \/etc\/asterisk\/ssl\/$1.crt.pem\\ntlsprivatekey = \/etc\/asterisk\/ssl\/$1.key.pem"
+			sed -i "s/|TLS|/$tls/"		$WORKDIR/sip_provider.tmp
+		fi
+	fi
 
 	# Set or remove port
 	if [ -z "$port" ] ; then

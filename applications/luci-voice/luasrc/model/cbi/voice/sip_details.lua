@@ -264,6 +264,34 @@ for k, v in pairs(transports) do
 	transport:value(k, v)
 end
 
+tlscertfile = s:option(Value, 'tlscertfile', "Client certificate", "Used only when mutual authentication is required (*.pem format only)")
+tlscertfile.template = "cbi/tvalue"
+tlscertfile.rows = 4
+tlscertfile:depends('transport', 'tls')
+
+function tlscertfile.cfgvalue(self, section)
+	return nixio.fs.readfile("/etc/asterisk/ssl/" .. section .. ".crt.pem")
+end
+
+function tlscertfile.write(self, section, value)
+	value = value:gsub("\r\n?", "\n")
+	nixio.fs.writefile("/etc/asterisk/ssl/" .. section .. ".crt.pem", value)
+end
+
+tlsprivatekey = s:option(Value, 'tlsprivatekey', "Client private key", "Used only when mutual authentication is required (*.pem format only)")
+tlsprivatekey.template = "cbi/tvalue"
+tlsprivatekey.rows = 4
+tlsprivatekey:depends('transport', 'tls')
+
+function tlsprivatekey.cfgvalue(self, section)
+	return nixio.fs.readfile("/etc/asterisk/ssl/" .. section .. ".key.pem")
+end
+
+function tlsprivatekey.write(self, section, value)
+	value = value:gsub("\r\n?", "\n")
+	nixio.fs.writefile("/etc/asterisk/ssl/" .. section .. ".key.pem", value)
+end
+
 fax = s:option(Flag, "is_fax", "Use as Fax", "Indicate that this SIP account will be used for a fax machine. This will force some settings to enable inband fax.")
 fax.default = 0
 
