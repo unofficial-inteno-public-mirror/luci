@@ -1831,29 +1831,50 @@ function wifinet.active_bssid(self)
 end
 
 function wifinet.active_encryption(self)
-	local wep = "%d" %sys.exec("wlctl -i %q wepstatus" %self:ifname())
-	local wpa = tonumber(sys.exec("wlctl -i %q wpa_auth | awk -F' ' '{print$1}'" %self:ifname()))
-	local auth = "%d" %sys.exec("wlctl -i %q auth" %self:ifname())
-
-	if wpa == 4 then
+	local enc = _uci_state:get("wireless", self.sid, "encryption") or "none"
+	if enc == "psk" then
 		return "WPA-PSK"
-	elseif wpa == 128 then
+	elseif enc == "psk2" then
 		return "WPA2-PSK"
-	elseif wpa == 132 then
+	elseif enc == "mixed-psk" or enc == "pskmixedpsk2" then
 		return "WPA/WPA2-PSK Mixed"
-	elseif wpa == 2 then
+	elseif enc == "wpa" then
 		return "WPA-EAP"
-	elseif wpa == 64 then
+	elseif enc == "wpa2" then
 		return "WPA2-EAP"
-	elseif wpa == 66 then
+	elseif enc == "mixed-wpa" or enc == "wpamixedwpa2" then
 		return "WPA/WPA2-EAP Mixed"
-	elseif wep == "1" and auth == "0" then
+	elseif enc == "wep-open" then
 		return "WEP Open System"
-	elseif wep == "1" and auth == "1" then
+	elseif enc == "wep-shared" then
 		return "WEP Shared Key"
 	else
 		return "No Encryption"
 	end
+
+--	local wep = "%d" %sys.exec("wlctl -i %q wepstatus" %self:ifname())
+--	local wpa = tonumber(sys.exec("wlctl -i %q wpa_auth | awk -F' ' '{print$1}'" %self:ifname()))
+--	local auth = "%d" %sys.exec("wlctl -i %q auth" %self:ifname())
+
+--	if wpa == 4 then
+--		return "WPA-PSK"
+--	elseif wpa == 128 then
+--		return "WPA2-PSK"
+--	elseif wpa == 132 then
+--		return "WPA/WPA2-PSK Mixed"
+--	elseif wpa == 2 then
+--		return "WPA-EAP"
+--	elseif wpa == 64 then
+--		return "WPA2-EAP"
+--	elseif wpa == 66 then
+--		return "WPA/WPA2-EAP Mixed"
+--	elseif wep == "1" and auth == "0" then
+--		return "WEP Open System"
+--	elseif wep == "1" and auth == "1" then
+--		return "WEP Shared Key"
+--	else
+--		return "No Encryption"
+--	end
 end
 
 function wifinet.frequency(self)
