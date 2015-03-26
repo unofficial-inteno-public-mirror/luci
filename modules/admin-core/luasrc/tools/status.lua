@@ -23,7 +23,7 @@ local function wlinfo(dev, mac)
 	ch = tonumber(luci.sys.exec("wlctl -i %q channel | grep mac | awk '{print$4}'" %dev)) or 0
 	net = "%s <font size=\"1\"><b>%sGHz</b></font>" %{ssid, (ch >= 36) and "5"  or "2.4"}
 	rssi = tonumber(luci.sys.exec("wlctl -i %q rssi %s" %{dev, mac})) or 0
-	ns = tonumber(luci.sys.exec("wlctl -i %q noise" %dev)) or 0
+	ns = tonumber(luci.sys.exec("wlctl -i %q noise" %dev)) or tonumber(luci.sys.exec("wlctl -i %q assoc | grep Mode: | awk '{print$10}'" %dev)) or 0
 	sr = "%f" %((-1 * (ns - rssi)) / 5)
 	rv = {
 		channel = ch,

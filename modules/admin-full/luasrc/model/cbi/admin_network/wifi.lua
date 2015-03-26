@@ -312,7 +312,7 @@ if TECUSER then
 	bcn = s:taboption("advanced", Value, "beacon_int", translate("Beacon Interval"))
 	bcn.default = 100
 	
---	sm = s:taboption("advanced", ListValue, "doth", "802.11h Spectrum Management Mode")
+--	sm = s:taboption("advanced", ListValue, "doth", "Regulatory Mode")
 --	sm:value("0", "Off")
 --	sm:value("1", "Loose interpretation of 11h spec")
 --	sm:value("2", "Strict interpretation of 11h spec")
@@ -750,7 +750,7 @@ end
 
 wpakey.remove = function(self, section, value)
 	local enc = self.map.uci:get("wireless", section, "encryption")
-	if enc:match("^psk") then
+	if enc and enc:match("psk") then
 		local oldkey = self.map.uci:get("wireless", section, "key")
 		if oldkey and #oldkey >= 8 then
 			self.map.uci:set("wireless", section, "key", oldkey)
