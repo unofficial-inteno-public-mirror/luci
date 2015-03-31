@@ -189,16 +189,17 @@ if hwtype == "broadcom" then
 	end
 
 	mode = s:taboption("advanced", ListValue, "hwmode", translate("Mode"))
-	mode:value("auto", "Auto")
+	mode:value("auto", "Auto", {bandwidth="20"}, {bandwidth="40"})
 	mode:value("11a", "802.11a", {band="a", bandwidth="20"})
 	mode:value("11b", "802.11b", {band="b", bandwidth="20"})
 	mode:value("11bg", "802.11b+g", {band="b", bandwidth="20"})
 	mode:value("11g", "802.11g", {band="b", bandwidth="20"})
 	mode:value("11gst", "802.11g + Turbo", {band="b", bandwidth="20"})
 	mode:value("11lrs", "802.11 LRS", {band="b", bandwidth="20"})
-	mode:value("11n", "802.11n", {band="b", bandwidth="20"}, {band="b", bandwidth="40"}, {band="a", bandwidth="20"}, {band="a", bandwidth="40"})
 	if wdev:hwmodes().ac then 		
-		mode:value("11ac", "802.11ac", {band="a", bandwidth="20"}, {band="a", bandwidth="40"}, {band="a", bandwidth="80"})
+		mode:value("11ac", "802.11n/ac", {band="a", bandwidth="20"}, {band="a", bandwidth="40"}, {band="a", bandwidth="80"})
+	else
+		mode:value("11n", "802.11n", {band="b", bandwidth="20"}, {band="b", bandwidth="40"}, {band="a", bandwidth="20"}, {band="a", bandwidth="40"})
 	end
 
 	ch = s:taboption("advanced", ListValue, "channel", translate("Channel"))
