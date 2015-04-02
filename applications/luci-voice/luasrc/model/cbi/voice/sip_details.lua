@@ -267,6 +267,7 @@ end
 encryption = s:option(Flag, 'encryption', "Encryption", "Use Secure Real-time Transport Protocol (SRTP)")
 encryption.default = 0
 encryption.rmempty = false
+encryption:depends('transport', 'tls')
 
 fax = s:option(Flag, "is_fax", "Use as Fax", "Indicate that this SIP account will be used for a fax machine. This will force some settings to enable inband fax.")
 fax.default = 0
