@@ -734,10 +734,10 @@ configure_sip_provider()
 	fi
 
 	# Set or remove encryption
-	if [ -z "$encryption" ] ; then
+	if [ -z "$encryption" -o "$encryption" == "0" ] ; then
 		sed -i "/|ENCRYPTION|/d"		$WORKDIR/sip_provider.tmp
 	else
-		sed -i "s/|ENCRYPTION|/$encryption/g"		$WORKDIR/sip_provider.tmp
+		sed -i "s/|ENCRYPTION|/yes/g"		$WORKDIR/sip_provider.tmp
 	fi
 
 	# Force ulaw/alaw if fax, otherwise read selected codecs
