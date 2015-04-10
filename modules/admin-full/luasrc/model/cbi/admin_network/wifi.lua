@@ -594,7 +594,7 @@ end
 
 ------------------- WiFI-Encryption -------------------
 
-wps = s:taboption("encryption", Flag, "wps_pbc", translate("Enable WPS Push Button"))
+wps = s:taboption("encryption", Flag, "wps_pbc", translate("WPS Available"))
 if wdev:is_5g() then
 wps:depends({encryption="none", mode="ap"})
 wps:depends({encryption="psk2", mode="ap"})

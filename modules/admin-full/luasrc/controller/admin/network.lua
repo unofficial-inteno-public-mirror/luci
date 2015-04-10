@@ -79,6 +79,9 @@ function index()
 				page = entry({user, "network", "wireless_scan"}, template("admin_network/wifi_scan"), nil)
 				page.leaf = true
 
+				page = entry({user, "network", "wps"}, call("wps_setup"), nil)
+				page.leaf = true
+
 				page = entry({user, "network", "wireless"}, arcombine(template("admin_network/wifi_overview"), cbi("admin_network/wifi")), _("Wireless"), 15)
 				page.leaf = true
 				page.subindex = true
@@ -328,6 +331,20 @@ function wifi_delete(network)
 	end
 
 	luci.http.redirect(luci.dispatcher.build_url("admin/network/wireless"))
+end
+
+function wps_setup()
+	local method = luci.http.formvalue("method")
+	local stapin = luci.http.formvalue("pin")
+	local guser = luci.dispatcher.context.path[1]
+
+	if method == "stapin" and stapin then
+		luci.sys.exec("wps_cmd addenrollee wl0 sta_pin=%s" %stapin)
+	elseif method == "pbc" then
+		luci.sys.exec("wps_cmd addenrollee wl0 pbc")
+	end
+
+	luci.http.redirect(luci.dispatcher.build_url("%s/network/wireless" %guser))
 end
 
 function iface_status(ifaces)

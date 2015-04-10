@@ -94,12 +94,55 @@ You may obtain a copy of the License at
 			netdevs[net:id()] = dev:name()
 		end
 	end
+
+	local wps_pid = sys.exec("pidof wps_monitor"):len() > 0
+	local wps_enabled = false
+	uci:foreach("wireless", "wifi-iface",
+		function(s)
+			if s.wps_pbc and s.wps_pbc == "1" then
+				wps_enabled = true
+			end
+		end)
 -%>
 
 <%+header%>
 
 <script type="text/javascript" src="<%=resource%>/cbi.js"></script>
 <script type="text/javascript">//<![CDATA[
+
+	function wpsSetup(type) {
+		var appin, stapin, pbc, method;
+		var loc = "";
+
+		if (type == 0) {
+			var disp = document.getElementById("wpsDiv").style.display;
+			if (disp == "none")
+				document.getElementById("wpsDiv").style.display="inherit";
+			else
+				document.getElementById("wpsDiv").style.display="none";
+			return;
+		} else if (type == 1) {
+			appin = <%=sys.exec("nvram get wps_device_pin")%>;
+			alert("Enter AP PIN below to the wireless device that wants to join the network\n\n" +appin);
+			return;
+		} else if (type == 2) {
+			method = "stapin"
+			stapin = prompt("Enter STA PIN of the wireless device that wants to join the network");
+			if (stapin && stapin.length == 8)
+				loc = "<%=luci.dispatcher.build_url('admin/network/wps')%>"+"?method="+method+"&pin="+stapin;
+			else
+				return;
+		} else if (type == 3) {
+			method = "pbc"
+			pbc = confirm("Do you really want to activate WPS Push Button functionality?");
+			if (pbc)
+				loc = "<%=luci.dispatcher.build_url('admin/network/wps')%>"+"?method="+method+"&pin=0";
+			else
+				return;
+		}
+		return location.href=loc;
+	}
+
 	var wifidevs = <%=luci.http.write_json(netdevs)%>;
 	var arptable = <%=luci.http.write_json(arpcache)%>;
 
@@ -315,6 +358,17 @@ You may obtain a copy of the License at
 		}
 	);
 //]]></script>
+
+<% if wps_enabled and wps_pid then %>
+<div align="right">
+	<input id="wpsBtn" type="button" class="cbi-button" onClick="wpsSetup(0)" value="Wi-Fi Protected Setup" style="font-weight:bold; height:30px; width:216px"/>
+</div>
+<div align="right" id="wpsDiv" style="display:none">
+	<input id="apPin" type="button" class="cbi-button" onClick="wpsSetup(1)" value="AP PIN" style="height:30px; width:70px"/>
+	<input id="staPin" type="button" class="cbi-button" onClick="wpsSetup(2)" value="STA PIN" style="height:30px; width:80px"/>
+	<input id="pbc" type="button" class="cbi-button" onClick="wpsSetup(3)" value="PBC" style="height:30px; width:60px"/>
+</div>
+<% end %>
 
 <h2><a id="content" name="content"><%:Wireless Overview%></a></h2>
 
