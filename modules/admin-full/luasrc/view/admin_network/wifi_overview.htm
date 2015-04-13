@@ -120,25 +120,25 @@ You may obtain a copy of the License at
 				document.getElementById("wpsDiv").style.display="inherit";
 			else
 				document.getElementById("wpsDiv").style.display="none";
-			return;
 		} else if (type == 1) {
 			appin = <%=sys.exec("nvram get wps_device_pin")%>;
 			alert("Enter AP PIN below to the wireless device that wants to join the network\n\n" +appin);
-			return;
 		} else if (type == 2) {
 			method = "stapin"
 			stapin = prompt("Enter STA PIN of the wireless device that wants to join the network");
 			if (stapin && stapin.length == 8)
 				loc = "<%=luci.dispatcher.build_url('admin/network/wps')%>"+"?method="+method+"&pin="+stapin;
-			else
-				return;
 		} else if (type == 3) {
 			method = "pbc"
 			pbc = confirm("Do you really want to activate WPS Push Button functionality?");
 			if (pbc)
 				loc = "<%=luci.dispatcher.build_url('admin/network/wps')%>"+"?method="+method+"&pin=0";
-			else
-				return;
+		}
+		if (loc == "") {
+			document.getElementById("apPin").checked = false;
+			document.getElementById("staPin").checked = false;
+			document.getElementById("pbc").checked = false;
+			return;
 		}
 		return location.href=loc;
 	}
@@ -361,12 +361,12 @@ You may obtain a copy of the License at
 
 <% if wps_enabled and wps_pid then %>
 <div align="right">
-	<input id="wpsBtn" type="button" class="cbi-button" onClick="wpsSetup(0)" value="Wi-Fi Protected Setup" style="font-weight:bold; height:30px; width:216px"/>
+	<input id="wpsBtn" type="button" class="cbi-button" onClick="wpsSetup(0)" value="Wi-Fi Protected Setup" style="font-weight:bold; width:200px"/>
 </div>
 <div align="right" id="wpsDiv" style="display:none">
-	<input id="apPin" type="button" class="cbi-button" onClick="wpsSetup(1)" value="AP PIN" style="height:30px; width:70px"/>
-	<input id="staPin" type="button" class="cbi-button" onClick="wpsSetup(2)" value="STA PIN" style="height:30px; width:80px"/>
-	<input id="pbc" type="button" class="cbi-button" onClick="wpsSetup(3)" value="PBC" style="height:30px; width:60px"/>
+	<b>AP PIN </b><input id="apPin" type="radio" onClick="wpsSetup(1)">
+	<b>| STA PIN </b><input id="staPin" type="radio" onClick="wpsSetup(2)">
+	<b>| PBC </b><input id="pbc" type="radio" onClick="wpsSetup(3)">
 </div>
 <% end %>
 
