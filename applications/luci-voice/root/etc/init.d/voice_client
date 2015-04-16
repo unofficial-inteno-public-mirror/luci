@@ -1397,6 +1397,7 @@ configure_extensions_provider()
 	
 	#common settings
 	sed -i "s/|PROVIDER|/$1/g"			$WORKDIR/extensions_provider.tmp
+	sed -i "s/|USERNAME|/$user_without_suffix/g"	$WORKDIR/extensions_provider.tmp
 	sed -i "s/|CUSTOM_OUTGOING|/$custom_outgoing/"	$WORKDIR/extensions_provider.tmp
 	sed -i "s/|CALL_FILTER|/$call_filter_macro/"	$WORKDIR/extensions_provider.tmp
 	sed -i "s/|DISPLAYNAME|/$(escape_sed_substitution $displayname)/"		$WORKDIR/extensions_provider.tmp

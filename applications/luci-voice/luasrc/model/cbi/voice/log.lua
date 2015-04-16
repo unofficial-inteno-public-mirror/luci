@@ -15,15 +15,16 @@ function get_call_log()
 	lines = string.split(file, "\n")
 	for i,line in ipairs(lines) do
 		values = string.split(line, ";")
-		if (table.getn(values) >= 3) then
+		if (table.getn(values) >= 4) then
 			calls[i] = {
 				time = values[1],
 				direction = values[2],
-				number = values[3],
+				from = values[3],
+				to = values[4],
 				note = ""
 			}
-			if (table.getn(values) >= 4) then
-				calls[i].note = values[4]
+			if (table.getn(values) >= 5) then
+				calls[i].note = values[5]
 			end
 		end
 	end
@@ -32,14 +33,14 @@ end
 
 -- Create a asterisk call file in temporary directory, then reload page
 function create_call_file(self, section)
-	number = self.map:get(section, "number")
+	to = self.map:get(section, "to")
 	value = "Channel: BRCM/" .. self.line .. "\n"
-	value = value .. "CallerID: \"\"<" .. number .. ">\n"
+	value = value .. "CallerID: \"\"<" .. to .. ">\n"
 	value = value .. "Context: " .. self.context .. "\n"
-	value = value .. "Extension: " .. number .. "\n"
+	value = value .. "Extension: " .. to .. "\n"
 	value = value .. "Priority: 1\n"
         nixio.fs.writefile("/tmp/clicktodial.tmp", value)
-	luci.http.redirect(luci.dispatcher.build_url("admin/services/voice/log", number))
+	luci.http.redirect(luci.dispatcher.build_url("admin/services/voice/log", to))
 end
 
 -- Return user to the call log
@@ -87,7 +88,8 @@ else
 	s.template = "voice/rtblsection"
 	s:option(DummyValue, "time", "Time")
 	s:option(DummyValue, "direction", "Direction")
-	s:option(DummyValue, "number", "Number")
+	s:option(DummyValue, "from", "From")
+	s:option(DummyValue, "to", "To")
 	s:option(DummyValue, "note", "Note")
 
 	-- Add a Call button for each local line
