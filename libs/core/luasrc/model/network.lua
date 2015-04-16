@@ -1572,7 +1572,7 @@ function wifidev.is_5g(self)
 end
 
 function wifidev.frequency(self)
-	return self:bands():match("a") and "5GHz" or "2.4GHz"
+	return self:is_5g() and "5GHz" or "2.4GHz"
 end
 
 function wifidev.channel(self)
