@@ -1132,6 +1132,12 @@ configure_call_filter()
 #
 configure_call_filter_helper()
 {
+	local block_foreign
+	local block_special_rate
+
+	config_get block_foreign $1 block_foreign
+	config_get block_special_rate $1 block_special_rate
+
 	[ "$#" -ge 2 ] || return 0
 	
 	direction=$2
@@ -1142,8 +1148,7 @@ configure_call_filter_helper()
 	echo "[macro-$1-$direction]" >>				$WORKDIR/macros.tmp
 	echo "exten => s,1,NoOp()" >>				$WORKDIR/macros.tmp
 
-	if [ "x$direction" == "xoutgoing" ] ; then
-		config_get block_foreign $1 block_foreign
+	if [ "x$direction" == "xoutgoing" -a "x$block_foreign" == "x1" ] ; then
 		echo "exten => s,n,Macro(check-foreign,\${DIAL_EXTEN})" >>	$WORKDIR/macros.tmp
 		echo "exten => s,n,GotoIf($[\${FOREIGN}==1]?block)" >>		$WORKDIR/macros.tmp
 	fi
