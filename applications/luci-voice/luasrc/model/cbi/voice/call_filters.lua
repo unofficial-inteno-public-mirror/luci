@@ -41,7 +41,7 @@ end
 -- proceed to detailed editor.
 function s.create(self, section)
 	section_nr = get_new_section_number()
-	data = { name = "Untitled Call Filter", enabled = 0, incoming = "blacklist", outgoing = "blacklist" }
+	data = { name = "Untitled Call Filter" }
 	newQueue = m.uci:section("voice_client", "call_filter", "call_filter" .. section_nr, data)
 	luci.http.redirect(s.extedit % newQueue)
 end
@@ -49,10 +49,18 @@ end
 -- Called when a call filter is being deleted
 function s.remove(self, section)
 	-- Remove all rules belonging to this call filter
-	m.uci:foreach("voice_client", "call_filter_rule",
+	m.uci:foreach("voice_client", "call_filter_rule_outgoing",
 		function(s1)
 			if s1["owner"] == section then
-				m.uci:delete("voice", s1[".name"])
+				m.uci:delete("voice_client", s1[".name"])
+			end
+		end
+	)
+
+	m.uci:foreach("voice_client", "call_filter_rule_incoming",
+		function(s1)
+			if s1["owner"] == section then
+				m.uci:delete("voice_client", s1[".name"])
 			end
 		end
 	)
@@ -60,10 +68,5 @@ function s.remove(self, section)
 end
 
 s:option(DummyValue, "name", "Name")
-e = s:option(DummyValue, "enabled", "Enabled")
-function e.cfgvalue(self, section)
-	enabled = Value.cfgvalue(self, section)
-	return enabled == "1" and "Yes" or "No"
-end
 
 return m

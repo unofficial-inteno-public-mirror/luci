@@ -155,16 +155,16 @@ if vc.has_package("luci-app-voice-pbx") then
 	)
 	if num ~= 0 then
 		target:value('ivr', 'IVR')
-	end
-
-	call_filter = s:option(ListValue, "call_filter", "Call filter")
-	call_filter:value("-", "-")
-	m.uci:foreach("voice_client", "call_filter",
-		function(s1)
-			call_filter:value(s1[".name"], s1["name"])
-		end
-	)
+	end	
 end
+
+call_filter = s:option(ListValue, "call_filter", "Call Filter")
+call_filter:value("-", "-")
+m.uci:foreach("voice_client", "call_filter",
+	function(s1)
+		call_filter:value(s1[".name"], s1["name"])
+	end
+)
 
 domain = s:option(Value, 'domain', 'SIP domain name')
 function domain.validate(self, value, section)

@@ -1065,6 +1065,58 @@ configure_sip_user()
 }
 
 #
+# Install common macros used by call filters
+#
+configure_call_filters()
+{
+	local country
+	config_get country BRCM country
+	# Read the International Dialing Code and the Country Code from config
+
+	echo "Looking up IDC and CC for country $country"
+	while read line
+	do
+		i=0
+		for v in $(echo $line | tr ";" "\n")
+		do
+			if [ "$i" -eq "0" -a "$v" != "$country" ] ; then
+				continue 2
+			fi
+			if [ "$i" -eq "1" ] ; then
+				idc=$v
+			fi
+			if [ "$i" -eq "2" ] ; then
+				cc=$v
+			fi
+			i=$((i+1))
+		done
+
+		if [ -n "$idc" -a -n "$cc" ] ; then
+			# IDC and CC found
+			break
+		fi
+	done < "/etc/idc_cc.cfg"
+	
+	echo "Found IDCs: $idc"
+	echo "Found CCs: $cc"
+
+	echo "[macro-check-foreign]" >>				$WORKDIR/macros.tmp
+	echo "exten => s,1,NoOp()" >>				$WORKDIR/macros.tmp
+
+	# Create regex patterns
+	# All x characters are replaced with [0-9] to match a single digit
+	idc="($(echo $idc | tr -s "" | tr "," "|" | sed 's/x/[0-9]/g'))"
+	cc="($(echo $cc | tr -s "" | tr "," "|"))"
+
+	echo "exten => s,n,GotoIf($[\"\${ARG1}\":\"($idc[0-9]+)\">0]?international:not-foreign)" >> $WORKDIR/macros.tmp
+	echo "exten => s,n(international),GotoIf($[\"\${ARG1}\":\"(${idc}${cc}[0-9]+)\">0]?not-foreign)" >> $WORKDIR/macros.tmp
+	echo "exten => s,n,Set(FOREIGN=1)" >>			$WORKDIR/macros.tmp
+	echo "exten => s,n,MacroExit()" >>			$WORKDIR/macros.tmp
+	echo "exten => s,n(not-foreign),Set(FOREIGN=0)" >>	$WORKDIR/macros.tmp
+	echo "" >>						$WORKDIR/macros.tmp
+}
+
+#
 # Install call filter macros
 #
 configure_call_filter()
@@ -1080,7 +1132,6 @@ configure_call_filter()
 #
 configure_call_filter_helper()
 {
-	local sip_provider filter_mode goto_label
 	[ "$#" -ge 2 ] || return 0
 	
 	direction=$2
@@ -1088,69 +1139,50 @@ configure_call_filter_helper()
 		return
 	fi
 
-	echo "[macro-$1-$direction-call-filter]" >>		$WORKDIR/macros.tmp
+	echo "[macro-$1-$direction]" >>				$WORKDIR/macros.tmp
 	echo "exten => s,1,NoOp()" >>				$WORKDIR/macros.tmp
 
-	config_get filter_mode $1 $direction
-	if [ "x$filter_mode" == "xblacklist" ] ; then
-		goto_label="block"
-	fi
-	if [ "x$filter_mode" == "xwhitelist" ] ; then
-		goto_label="pass"
+	if [ "x$direction" == "xoutgoing" ] ; then
+		config_get block_foreign $1 block_foreign
+		echo "exten => s,n,Macro(check-foreign,\${DIAL_EXTEN})" >>	$WORKDIR/macros.tmp
+		echo "exten => s,n,GotoIf($[\${FOREIGN}==1]?block)" >>		$WORKDIR/macros.tmp
 	fi
 
-	if [ -z "$goto_label" ] ; then
-		return
-	fi
-
-	local section cfgtype owner tmp
+	local section cfgtype owner
 	for section in ${CONFIG_SECTIONS}; do
 		config_get cfgtype "$section" TYPE
-		[ "x$cfgtype" != "xcall_filter_rule" ] && continue
+		[ "x$cfgtype" != "xcall_filter_rule_$direction" ] && continue
 		config_get owner $section owner
 		if [ "x$owner" == "x$1" ] ; then
-			local rule_direction rule_user rule_extension rule_enabled
-			config_get rule_direction $section direction
-			config_get rule_user $section user
+			local rule_extension rule_enabled
 			config_get rule_extension $section extension
 			config_get rule_enabled $section enabled
-
-			[ "x$rule_direction" != "x$direction" ] && continue
 
 			[ -z "$rule_enabled" -o "$rule_enabled" = "0" ] && continue
 
 			# Regular expression for matching calling or called number
-			regexp="$rule_extension[0-9]*"
+			regexp=$(echo $rule_extension | sed 's/#.*/\[0-9\]*/')
 		
-			if [ "x$rule_direction" == "xoutgoing" ] ; then
-				if [ "x$rule_user" == "x*" ] ; then
-					tmp="exten => s,n,GotoIf($[\"\${DIAL_EXTEN}\":\"$regexp\">0]?$goto_label)"
-					echo $tmp >>		$WORKDIR/macros.tmp
-				else
-					tmp="exten => s,n,GotoIf($[$[\"\${DIAL_EXTEN}\":\"$regexp\">0] &"
-					tmp="$tmp $[\"\${CHANNEL}\":\"$rule_user/[0-9]+|$rule_user-[0-9]+\">0]]?$goto_label)"
-					echo $tmp >>		$WORKDIR/macros.tmp
-				fi
+			if [ "x$direction" == "xoutgoing" ] ; then
+				cmd="GotoIf($[\"\${DIAL_EXTEN}\":\"$regexp\">0]?block)"
+				echo "exten => s,n,$cmd" >>	$WORKDIR/macros.tmp
 			fi
 			
-			if [ "x$rule_direction" == "xincoming" ] ; then
-				tmp="exten => s,n,GotoIf($[\"\${CALLERID(num)}\":\"$regexp\">0]?$goto_label)"
-				echo $tmp >>			$WORKDIR/macros.tmp
+			if [ "x$direction" == "xincoming" ] ; then
+				cmd="GotoIf($[\"\${CALLERID(num)}\":\"$regexp\">0]?block)"
+				echo "exten => s,n,$cmd" >>	$WORKDIR/macros.tmp
 			fi
 		fi
 	done
 	
-	if [ "x$filter_mode" == "xblacklist" ] ; then
-		echo "exten => s,n,Goto(pass)" >>		$WORKDIR/macros.tmp
-	fi
+	echo "exten => s,n,MacroExit()" >>			$WORKDIR/macros.tmp
 	if [ "x$direction" == "xincoming" ] ; then
-		tmp="exten => s,n(block),Macro(callhandler-incoming-blocked,\${CALLERID(num)})"
-		echo $tmp >>					$WORKDIR/macros.tmp
+		cmd="Macro(callhandler-incoming-blocked,\${CALLERID(num)})"
+		echo "exten => s,n(block),$cmd" >>		$WORKDIR/macros.tmp
 	else
-		tmp="exten => s,n(block),Macro(callhandler-outgoing-blocked,\${DIAL_EXTEN})"
-		echo $tmp >>					$WORKDIR/macros.tmp
+		cmd="Macro(callhandler-outgoing-blocked,\${DIAL_EXTEN})"
+		echo "exten => s,n(block),$cmd" >>		$WORKDIR/macros.tmp
 	fi
-	echo "exten => s,n(pass),NoOp()" >>			$WORKDIR/macros.tmp
 }
 
 get_call_filter()
@@ -1166,11 +1198,7 @@ get_call_filter()
 	local call_filter enabled
 	config_get call_filter $provider call_filter
 	if ! [ -z "$call_filter" ] ; then
-		# check if call filter is enabled
-		config_get enabled $call_filter enabled
-		if [ "x$enabled" = "x1" ] ; then
-			macro="Macro($call_filter-$direction-call-filter)"
-		fi	
+		macro="Macro($call_filter-$direction)"
 	fi
 	echo $macro
 }
@@ -1972,6 +2000,7 @@ start() {
 	###########################
 	# Call Filter configuration
 	###########################
+	configure_call_filters
 	config_foreach configure_call_filter call_filter
 
 	#########################

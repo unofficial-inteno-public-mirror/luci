@@ -22,16 +22,13 @@ s = m:section(NamedSection, arg[1], "call_filter")
 s.anonymous = true
 s.addremove = false
 
-function num_call_filters(sip_provider)
-	count = 0
-	m.uci.foreach("voice_client", "call_filter",
-		function(s1)
-			if s1['sip_provider'] == sip_provider then
-				count = count + 1
-			end
-		end
-	)
-	return count
+-- Find the lowest free section number
+function get_new_section_number(direction)
+        local section_nr = 0
+        while m.uci:get("voice_client", "call_filter_rule_" .. direction .. section_nr) do
+                section_nr = section_nr + 1
+        end
+        return section_nr
 end
 
 -- Set page title, or redirect if we have nothing to edit
@@ -40,7 +37,7 @@ if m.uci:get("voice_client", arg[1]) ~= "call_filter" then
 	luci.http.redirect(m.redirect)
 	return
 else
-	local name = m:get(arg[1], "sip_provider")
+	local name = m:get(arg[1], "name")
 	create_new = not name or #name == 0
 	if create_new then
 		m.title = "New Call Filter"
@@ -58,102 +55,95 @@ function name.parse(self, section)
 	end	
 end
 
-s:option(Flag, "enabled", "Enabled")
-
-incoming = s:option(ListValue, "incoming", "Incoming Filter Mode", "Mode used when defining rules for filtering incoming calls")
-incoming:value("blacklist", "Blacklist")
-incoming:value("whitelist", "Whitelist")
-incoming.default = "blacklist"
-
-outgoing = s:option(ListValue, "outgoing", "Outgoing Filter Mode", "Mode used when defining rules for filtering outgoing calls")
-outgoing:value("blacklist", "Blacklist")
-outgoing:value("whitelist", "Whitelist")
-outgoing.default = "blacklist"
-
-s = m:section(TypedSection, "call_filter_rule", "Rules", "Specify rules for incoming or outgoing calls. If a rule is created for number 123 it will match all numbers starting with 123.")
-function s.filter(self, section)
+outgoing = m:section(TypedSection, "call_filter_rule_outgoing", "Outgoing Calls", "Specify rules for outgoing calls. Use # to match a range of numbers. 123# will block calls to all numbers starting with 123.")
+function outgoing.filter(self, section)
         owner = m.uci:get("voice_client", section, 'owner')
 	if owner == arg[1] then
 		return true
 	end
         return false
 end
-s.template = "cbi/tblsection"
-s.anonymous = true
-s.addremove = true
-
--- Find the lowest free section number
-function get_new_section_number()
-        local section_nr = 0
-        while m.uci:get("voice_client", "call_filter_rule" .. section_nr) do
-                section_nr = section_nr + 1
-        end
-        return section_nr
-end
+outgoing.template = "cbi/tblsection"
+outgoing.anonymous = true
+outgoing.addremove = true
 
 -- This function is called when a new call filter rule should be configured i.e. when
 -- user presses the "Add" button.
-function s.create(self, section)
+function outgoing.create(self, section)
 	if m.save == false then
 		return
 	end
-	section_number = get_new_section_number()
-	data = { owner = arg[1], enabled = 0 }
-	newSelection = m.uci:section("voice_client", "call_filter_rule", "call_filter_rule" .. section_number , data)
+	section_number = get_new_section_number("outgoing")
+	data = { owner = arg[1], enabled = 1 }
+	newSelection = m.uci:section("voice_client", "call_filter_rule_outgoing", "call_filter_rule_outgoing" .. section_number , data)
 end
 
--- Called when a call filter rule is being deleted
-function s.remove(self, section)
-        TypedSection.remove(self, section)
-end
-
-direction = s:option(ListValue, "direction", "Direction")
-direction:value("outgoing", "Outgoing")
-direction:value("incoming", "Incoming")
-direction.default = "outgoing"
-
-user = s:option(ListValue, "user", "Origin")
-user:value("*", "Any")
-line_nr = 0
--- DECT
-for i = 1, dectCount do
-	user:value("BRCM/" .. line_nr, "DECT " .. i)
-	line_nr = line_nr + 1
-end
--- FXS
-for i = 1, fxsCount do
-	user:value("BRCM/" .. line_nr, "Tel " .. i)
-	line_nr = line_nr + 1
-end
--- SIP users
-vc.foreach_user({'sip'},
-        function(v)
-		if v['user'] and v['name'] then
-	                user:value("SIP/" .. v['user'], v['name'])
-		end
-        end
-)
-user.default = "*"
-user.custom = false
-user:depends("direction", "outgoing")
-user.rmempty = true
-
-exten = s:option(Value, "extension", "Called/Calling Number")
+exten = outgoing:option(Value, "extension", "Called Number")
 function exten.validate(self, value, section)
-	if not datatypes.phonedigit(value) then
-		return nil, value .. " is not a valid extension"
-	end
+	if not value:match("^[0-9]+#?$") then
+		return nil, value .. " is not a valid pattern"
+        end
 	return value
 end
 function exten.parse(self, section)
 	Value.parse(self, section)
 	local value = self:formvalue(section)
 	if not value or #value == 0 then
-		self.add_error(self, section, "missing", "Extension is mandatory")
+		self.add_error(self, section, "missing", "Called number is mandatory")
 	end	
 end
 
-enabled = s:option(Flag, "enabled", "Enabled")
+enabled = outgoing:option(Flag, "enabled", "Enabled")
+enabled.default = 1
+
+s = m:section(NamedSection, arg[1], "call_filter")
+s.anonymous = true
+
+block_foreign = s:option(Flag, "block_foreign", "Block Foreign", "Block all outgoing calls to foreign numbers")
+block_foreign.default = 0
+
+block_special_rate = s:option(Flag, "block_special_rate", "Block Special Rate", "Block all outgoing calls to special rate numbers")
+block_special_rate = 0
+
+incoming = m:section(TypedSection, "call_filter_rule_incoming", "Incoming Calls", "Specify rules for incoming calls. Use # to match a range of numbers. 123# will block calls from all numbers starting with 123.")
+function incoming.filter(self, section)
+        owner = m.uci:get("voice_client", section, 'owner')
+	if owner == arg[1] then
+		return true
+	end
+        return false
+end
+incoming.template = "cbi/tblsection"
+incoming.anonymous = true
+incoming.addremove = true
+
+-- This function is called when a new call filter rule should be configured i.e. when
+-- user presses the "Add" button.
+function incoming.create(self, section)
+	if m.save == false then
+		return
+	end
+	section_number = get_new_section_number("incoming")
+	data = { owner = arg[1], enabled = 1 }
+	newSelection = m.uci:section("voice_client", "call_filter_rule_incoming", "call_filter_rule_incoming" .. section_number , data)
+end
+
+exten = incoming:option(Value, "extension", "Calling Number")
+function exten.validate(self, value, section)
+	if not value:match("^[0-9]+#?$") then
+		return nil, value .. " is not a valid pattern"
+        end
+	return value
+end
+function exten.parse(self, section)
+	Value.parse(self, section)
+	local value = self:formvalue(section)
+	if not value or #value == 0 then
+		self.add_error(self, section, "missing", "Calling number is mandatory")
+	end	
+end
+
+enabled = incoming:option(Flag, "enabled", "Enabled")
 enabled.default = 1
 
 return m
