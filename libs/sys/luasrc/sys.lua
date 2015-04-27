@@ -1055,3 +1055,9 @@ function _parse_mixed_record(cnt, delimiter)
 
 	return data, flags
 end
+
+-- Firmware Upgrade Check
+
+function upgrade_check(typ)
+	return luci.util.exec("sysupgrade --%s" %typ)
+end

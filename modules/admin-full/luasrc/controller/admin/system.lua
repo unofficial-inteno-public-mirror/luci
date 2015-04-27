@@ -40,6 +40,7 @@ function index()
 			entry({user, "system", "flashops"}, call("action_flashops"), _("Backup / Flash Firmware"), 70)
 			entry({user, "system", "flashops", "backupfiles"}, cbi("admin_system/backupselectedfiles"))
 		elseif reset_avail then
+			entry({user, "system", "flashops"}, call("action_flashops"))
 			entry({user, "system", "reset"}, call("action_reset"), _("Factory Reset"), 89)
 			
 		end
@@ -202,8 +203,13 @@ function action_flashops()
 		--
 		local url = luci.http.formvalue("url")
 
-		if url and (url:match("http://") or url:match("ftp://")) then
-			luci.sys.exec("wget -O %s %s" %{image_tmp, url})
+		if url then
+			if (url:match("http://") or url:match("ftp://")) then
+				luci.sys.exec("wget -O %s %s" %{image_tmp, url})
+			elseif url == "online" then
+				local fwpath = luci.sys.exec("cat /tmp/fw_online_url")
+				luci.sys.exec("wget -O %s %s" %{image_tmp, fwpath})
+			end
 		end
 
 		--
