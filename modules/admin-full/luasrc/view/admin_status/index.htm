@@ -146,9 +146,9 @@ You may obtain a copy of the License at
 				document.getElementById("keepDiv").style.display="none";
 			}
 		} else if (type == 1) {
-			loc = "<%=luci.dispatcher.build_url('admin/system/flashops')%>"+"?url=online&keep=1&step=1";
+			loc = "<%=luci.dispatcher.build_url('admin/system/flashops')%>"+"?url=online&keep=1&step=2";
 		} else if (type == 2) {
-			loc = "<%=luci.dispatcher.build_url('admin/system/flashops')%>"+"?url=online&step=1";
+			loc = "<%=luci.dispatcher.build_url('admin/system/flashops')%>"+"?url=online&step=2";
 		} else if (type == 3) {
 			document.getElementById("upgrade").innerHTML="A newer version of your gateway firmware is available! Click <b>here</b> to proceed with upgrade.";
 			document.getElementById("keepDiv").style.display="none";
@@ -713,15 +713,15 @@ You may obtain a copy of the License at
 
 <% if onlinefw ~= "" then %>
 <div align="right" id="upDiv">
-	<button id="upgrade" style="background:white; color:#e4302c" onclick="fwUpgrade(0)">A newer version of your gateway firmware is available! Click <b>here</b> to proceed with upgrade.</button>
+	<img id="upgrade" src="<%=resource%>/icons/notification.png" height="40" width="40" onclick="fwUpgrade(0)" title="New firmware is available! Click on the icon to proceed with upgrade."/>
 </div>
 <div align="right" id="keepDiv" style="display:none">
+	<font style="color:#e4302c"> A newer firmware is available from your ISP!</font><br>
 	Upgrade and <em><b>retain</b></em> current configuration <input id="keep" type="radio" onClick="fwUpgrade(1)"><br>
 	Upgrade and <em><b>delete</b></em> current configuration <input id="nokeep" type="radio" onClick="fwUpgrade(2)"><br>
 	Do not upgrade <input id="cancel" type="radio" onClick="fwUpgrade(3)"><br>
 	<p id='message' >
 </div>
-<br>
 <br>
 <% end %>
 
