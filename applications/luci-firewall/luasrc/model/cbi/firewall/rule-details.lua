@@ -298,15 +298,15 @@ else
 	o.datatype = "neg(ipaddr)"
 	o.placeholder = translate("any")
 
---	luci.sys.net.ipv4_hints(function(ip, name)
---		o:value(ip, "%s (%s)" %{ ip, name })
---	end)
---
---	if nw:has_ipv6() then
---		luci.sys.net.ipv6_hints(function(ip, name)
---			o:value(ip, "%s (%s)" %{ ip, name })
---		end)
---	end
+	luci.sys.net.ipv4_hints(function(ip, name)
+		o:value(ip, "%s (%s)" %{ ip, name })
+	end)
+
+	if nw:has_ipv6() then
+		luci.sys.net.ipv6_hints(function(ip, name)
+			o:value(ip, "%s (%s)" %{ ip, name })
+		end)
+	end
 
 
 	o = s:option(Value, "dest_port", translate("Destination port"))
