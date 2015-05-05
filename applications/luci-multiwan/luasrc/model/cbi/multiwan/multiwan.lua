@@ -38,6 +38,10 @@ weight.default = "10"
 weight.optional = false
 weight.rmempty = false
 
+method = s:option(ListValue, "health_method", translate("Health Monitor Method"))
+method:value("ping", "Ping")
+method:value("stats", "Statistics")
+
 interval = s:option(ListValue, "health_interval", translate("Health Monitor Interval"))
 interval:value("disable", translate("Disable"))
 interval:value("5", "5 sec.")
@@ -51,14 +55,16 @@ interval.optional = false
 interval.rmempty = false
 
 icmp_hosts = s:option(Value, "icmp_hosts", translate("Health Monitor ICMP Host(s)"))
+icmp_hosts:depends("health_method", "ping")
 icmp_hosts:value("disable", translate("Disable"))
 icmp_hosts:value("dns", "DNS Server(s)")
 icmp_hosts:value("gateway", "WAN Gateway")
 icmp_hosts.default = "dns"
 icmp_hosts.optional = false
-icmp_hosts.rmempty = false
+icmp_hosts.rmempty = true
 
 timeout = s:option(ListValue, "timeout", translate("Health Monitor ICMP Timeout"))
+timeout:depends("health_method", "ping")
 timeout:value("1", "1 sec.")
 timeout:value("2", "2 sec.")
 timeout:value("3", "3 sec.")
@@ -67,7 +73,7 @@ timeout:value("5", "5 sec.")
 timeout:value("10", "10 sec.")
 timeout.default = "3"
 timeout.optional = false
-timeout.rmempty = false
+timeout.rmempty = true
 
 fail = s:option(ListValue, "health_fail_retries", translate("Attempts Before WAN Failover"))
 fail:value("1", "1")
@@ -101,6 +107,7 @@ failover_to.optional = false
 failover_to.rmempty = false
 
 dns = s:option(Value, "dns", translate("DNS Server(s)"))
+dns:depends("health_method", "ping")
 dns:value("auto", translate("Auto"))
 dns.default = "auto"
 dns.optional = false
