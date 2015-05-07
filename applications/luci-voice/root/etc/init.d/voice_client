@@ -1202,7 +1202,7 @@ get_call_filter()
 
 	local call_filter enabled
 	config_get call_filter $provider call_filter
-	if ! [ -z "$call_filter" ] ; then
+	if ! [ -z "$call_filter" -o "$call_filter" == "-" ] ; then
 		macro="Macro($call_filter-$direction)"
 	fi
 	echo $macro
