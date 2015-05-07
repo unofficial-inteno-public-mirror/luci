@@ -1376,6 +1376,20 @@ configure_extensions_provider()
 	fi
 
 	echo "Configuring dialplan for SIP Provider $1"
+	
+	# add speed dial options
+	speed_dial=""
+	[ -z "$CONFIG_SECTIONS" ] && return 0
+        for section in ${CONFIG_SECTIONS}; do
+        	config_get cfgtype "$section" TYPE
+        	[ "x$cfgtype" != "xspeed_dial" ] && continue
+        	local tone
+        	local number
+        	config_get tone $section tone
+        	config_get number $section number
+        	speed_dial="${speed_dial}exten => ${tone},1,Goto($number, 1)\n"
+        	speed_dial="${speed_dial}exten => ${tone}#,1,Goto($number, 1)\n"
+        done
 
 	config_get displayname $1 displayname
 	[ -z "$displayname" ] && displayname=$user
@@ -1432,6 +1446,7 @@ configure_extensions_provider()
 	sed -i "s/|PROVIDER|/$1/g"			$WORKDIR/extensions_provider.tmp
 	sed -i "s/|USERNAME|/$user_without_suffix/g"	$WORKDIR/extensions_provider.tmp
 	sed -i "s/|CUSTOM_OUTGOING|/$custom_outgoing/"	$WORKDIR/extensions_provider.tmp
+	sed -i "s/|SPEED_DIAL|/$speed_dial/"		$WORKDIR/extensions_provider.tmp
 	sed -i "s/|CALL_FILTER|/$call_filter_macro/"	$WORKDIR/extensions_provider.tmp
 	sed -i "s/|DISPLAYNAME|/$(escape_sed_substitution $displayname)/"		$WORKDIR/extensions_provider.tmp
 
