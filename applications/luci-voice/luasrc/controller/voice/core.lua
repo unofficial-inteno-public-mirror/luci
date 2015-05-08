@@ -31,6 +31,11 @@ function index()
 		else
 			entry({user, "services", "voice"},			cbi("voice/country"),	"Voice",		1)
 			entry({user, "services", "voice", "log"},		cbi("voice/log"),	"Call Log",		80).leaf = true
+			
+			entry({user, "services", "voice", "ringing_schedule"},
+				arcombine(cbi("voice/ringing_schedule"), cbi("voice/ringing_schedule_details")),
+				_("Ringing Schedule"),	79).leaf = true
+				
 			entry({user, "services", "voice", "sip"},
 				arcombine(cbi("voice/sip"), cbi("voice/sip_details")),
 				_("SIP Providers"), 10).leaf = true
