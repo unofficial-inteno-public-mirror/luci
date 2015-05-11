@@ -288,7 +288,7 @@ function opt_hidden(s, t, ...)
 		return o
 	else
 		local o = s:option(t, "hidden", ...)
-		o.default = "0"
+		o.default = "1"
 		return o
 	end
 end

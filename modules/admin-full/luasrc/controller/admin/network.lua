@@ -18,6 +18,7 @@ function index()
 	local uci = require("luci.model.uci").cursor()
 	local users = { "admin", "support", "user" }
 	local page
+	local guser = luci.dispatcher.context.path[1]
 
 	for k, user in pairs(users) do
 		page = node(user, "network")
@@ -162,10 +163,12 @@ function index()
 				end
 			end
 
-			page  = node(user, "network", "routes")
-			page.target = cbi("admin_network/routes")
-			page.title  = _("Static Routes")
-			page.order  = 50
+			if (guser ~= "user") then
+			   page  = node(user, "network", "routes")
+			   page.target = cbi("admin_network/routes")
+			   page.title  = _("Static Routes")
+			   page.order  = 50
+			end
 
 			page = node(user, "network", "diagnostics")
 			page.target = template("admin_network/diagnostics")

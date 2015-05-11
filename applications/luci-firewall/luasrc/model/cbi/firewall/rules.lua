@@ -188,6 +188,9 @@ end
 -- SNAT
 --
 
+user = luci.dispatcher.context.path[1]
+if user ~= "user" then
+
 s = m:section(TypedSection, "redirect",
 	translate("Source NAT"),
 	translate("Source NAT is a specific form of masquerading which allows \
@@ -199,6 +202,8 @@ s.anonymous = true
 s.sortable  = true
 s.extedit   = ds.build_url("admin/network/firewall/rules/%s")
 s.template_addremove = "firewall/cbi_addsnat"
+
+end
 
 function s.create(self, section)
 	created = TypedSection.create(self, section)

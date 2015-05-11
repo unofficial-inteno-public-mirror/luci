@@ -17,6 +17,7 @@ module("luci.controller.admin.status", package.seeall)
 
 function index()
 	local users = { "admin", "support", "user" }
+	local guser = luci.dispatcher.context.path[1]
 
 	for k, user in pairs(users) do
 
@@ -25,13 +26,15 @@ function index()
 		entry({user, "status", "iptables"}, call("action_iptables"), _("Firewall"), 2).leaf = true
 		entry({user, "status", "routes"}, template("admin_status/routes"), _("Routes"), 3)
 
-		entry({user, "status", "logs"}, call("action_syslog"), _("Logs and Info"), 4).subindex = true
-		entry({user, "status", "logs", "syslog"}, call("action_syslog"), _("System Log"), 4)
-		entry({user, "status", "logs", "dmesg"}, call("action_dmesg"), _("Kernel Log"), 5)
-		entry({user, "status", "logs", "tr069log"}, call("action_tr069log"), _("TR-069 Log"), 10)
-		entry({user, "status", "logs", "packageinfo"}, call("action_packageinfo"), _("Package Info"), 20)
+		if (guser ~= "user") then
+		   entry({user, "status", "logs"}, call("action_syslog"), _("Logs and Info"), 4).subindex = true
+		   entry({user, "status", "logs", "syslog"}, call("action_syslog"), _("System Log"), 4)
+		   entry({user, "status", "logs", "dmesg"}, call("action_dmesg"), _("Kernel Log"), 5)
+		   entry({user, "status", "logs", "tr069log"}, call("action_tr069log"), _("TR-069 Log"), 10)
+		   entry({user, "status", "logs", "packageinfo"}, call("action_packageinfo"), _("Package Info"), 20)
 
-		entry({user, "status", "processes"}, cbi("admin_status/processes"), _("Processes"), 20)
+		   entry({user, "status", "processes"}, cbi("admin_status/processes"), _("Processes"), 20)
+		end
 
 		entry({user, "status", "realtime"}, alias(user, "status", "realtime", "load"), _("Realtime Graphs"), 30)
 
@@ -52,7 +55,9 @@ function index()
 end
 
 function action_syslog()
-	local syslog = luci.sys.syslog()
+	local syslog;
+
+	syslog = luci.sys.syslog();
 	luci.template.render("admin_status/syslog", {syslog=syslog})
 end
 

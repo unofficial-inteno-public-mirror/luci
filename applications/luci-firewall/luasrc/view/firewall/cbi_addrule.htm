@@ -7,6 +7,10 @@
 <div class="cbi-section-create cbi-tblsection-create">
 	<% if wz and lz then %>
 		<br />
+
+		<% user = luci.dispatcher.context.path[1] %>
+		<% if user ~= "user" then %>
+
 		<table class="cbi-section-table" style="margin-left:5px">
 			<tr class="cbi-section-table-titles">
 				<th class="cbi-section-table-cell left" colspan="4"><%:Open ports on router%>:</th>
@@ -37,6 +41,8 @@
 				</td>
 			</tr>
 		</table>
+
+		<% end %>
 
 		<table class="cbi-section-table" style="margin-left:5px">
 			<tr class="cbi-section-table-titles">
