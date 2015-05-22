@@ -5,27 +5,73 @@
 
 local vc = require "luci.model.cbi.voice.common"
 
+-- This function is copied from http://lua-users.org/wiki/LuaCsv 2015-05-22
+function ParseCSVLine (line,sep) 
+	local res = {}
+	local pos = 1
+	sep = sep or ','
+	while true do 
+		local c = string.sub(line,pos,pos)
+		if (c == "") then break end
+		if (c == '"') then
+			-- quoted value (ignore separator within)
+			local txt = ""
+			repeat
+				local startp,endp = string.find(line,'^%b""',pos)
+				txt = txt..string.sub(line,startp+1,endp-1)
+				pos = endp + 1
+				c = string.sub(line,pos,pos) 
+				if (c == '"') then txt = txt..'"' end 
+				-- check first char AFTER quoted string, if it is another
+				-- quoted string without separator, then append it
+				-- this is the way to "escape" the quote char in a quote. example:
+				--   value1,"blub""blip""boing",value3  will result in blub"blip"boing  for the middle
+			until (c ~= '"')
+			table.insert(res,txt)
+			assert(c == sep or c == "")
+			pos = pos + 1
+		else	
+			-- no quotes used, just look for the first separator
+			local startp,endp = string.find(line,sep,pos)
+			if (startp) then 
+				table.insert(res,string.sub(line,pos,startp-1))
+				pos = endp + 1
+			else
+				-- no separator found -> use rest of string and terminate
+				table.insert(res,string.sub(line,pos))
+				break
+			end 
+		end
+	end
+	return res
+end
+
 -- Function that reads call log into a table
 function get_call_log()
 	local calls = {}
-	file = nixio.fs.readfile("/var/call_log")
+	file = nixio.fs.readfile("/var/log/asterisk/cdr-csv/Master.csv")
 	if not file then
 		return calls
 	end
 	lines = string.split(file, "\n")
 	for i,line in ipairs(lines) do
-		values = string.split(line, ";")
+		values = ParseCSVLine(line, ",")
 		if (table.getn(values) >= 4) then
-			calls[i] = {
-				time = values[1],
-				direction = values[2],
-				from = values[3],
-				to = values[4],
-				note = ""
-			}
-			if (table.getn(values) >= 5) then
-				calls[i].note = values[5]
+			local direction
+			-- If context name starts with sip it must be an outgoing call
+			if string.sub(values[4], 0, 3) == "sip" then
+				direction = "Outgoing"
+			else
+				direction = "Incoming"
 			end
+			calls[i] = {
+				time = values[10],
+				direction = direction,
+				from = values[2],
+				to = values[3],
+				duration = values[14],
+				uniqueid = values[17]
+			}
 		end
 	end
 	return calls
@@ -41,6 +87,12 @@ function create_call_file(self, section)
 	value = value .. "Priority: 1\n"
         nixio.fs.writefile("/tmp/clicktodial.tmp", value)
 	luci.http.redirect(luci.dispatcher.build_url("admin/services/voice/log", to))
+end
+
+function remove_cdr(self, section)
+	unique_id = self.map:get(section, "uniqueid")
+	os.execute('asterisk -rx "cdr_csv remove cdr ' .. unique_id .. '"')
+	luci.http.redirect(luci.dispatcher.build_url("admin/services/voice/log"))
 end
 
 -- Return user to the call log
@@ -79,7 +131,7 @@ if nixio.fs.stat("/tmp/clicktodial.tmp") then
 	return m
 -- Show call log table
 else
-	m = SimpleForm("_log", "Call Log", "Last 100 incoming/outgoing calls")
+	m = SimpleForm("_log", "Call Log", "Incoming and outgoing calls")
 	m.reset = false
 	m.submit = false
 
@@ -87,10 +139,14 @@ else
 	s = m:section(Table, get_call_log(), "")
 	s.template = "voice/rtblsection"
 	s:option(DummyValue, "time", "Time")
+	s:option(DummyValue, "duration", "Duration")
 	s:option(DummyValue, "direction", "Direction")
 	s:option(DummyValue, "from", "From")
 	s:option(DummyValue, "to", "To")
-	s:option(DummyValue, "note", "Note")
+
+	-- Add delete button
+	btn = s:option(Button, "uniqueid", "Remove")
+	btn.write = remove_cdr
 
 	-- Add a Call button for each local line
 	line_nr = 0
