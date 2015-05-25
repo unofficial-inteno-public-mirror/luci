@@ -1066,6 +1066,12 @@ configure_sip_user()
 	rm -f $WORKDIR/sip_user.tmp
 }
 
+configure_cdr()
+{
+	mkdir -p /var/log/asterisk/cdr-csv
+	touch /var/log/asterisk/cdr-csv/Master.csv
+}
+
 #
 # Install common macros used by call filters
 #
@@ -2003,6 +2009,11 @@ start() {
 	touch				$WORKDIR/features.tmp
 	touch				$WORKDIR/macros.tmp
 	touch 				$WORKDIR/queues.tmp
+
+	####################
+	# Call Detail Record 
+	####################
+	configure_cdr
 
 	###########################
 	# Call Filter configuration
