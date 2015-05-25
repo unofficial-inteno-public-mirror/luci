@@ -7,9 +7,11 @@ s = m:section(TypedSection, "dect")
 s.anonymous = true
 
 
-dect = s:option(Flag, "radio", "DECT Radio")
+dect = s:option(ListValue, "radio", "DECT Radio")
 dect.rmempty = false
-
+dect:value("auto", "auto")
+dect:value("on", "on")
+dect:value("off", "off")
 
 return m
 
