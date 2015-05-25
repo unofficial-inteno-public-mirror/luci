@@ -5,7 +5,7 @@
 
 local vc = require "luci.model.cbi.voice.common"
 
--- This function is copied from http://lua-users.org/wiki/LuaCsv 2015-05-22
+-- This function was copied from http://lua-users.org/wiki/LuaCsv 2015-05-22
 function ParseCSVLine (line,sep) 
 	local res = {}
 	local pos = 1
@@ -64,13 +64,22 @@ function get_call_log()
 			else
 				direction = "Incoming"
 			end
+			d = tonumber(values[14])                                      
+			duration = string.format("%02.0f:%02.0f:%02.0f", d / (60 * 60), (d / 60) % 60, d % 60)
+			to = values[3]                                                                        
+			-- Strip any suffixes                                                                 
+			k1, k2 = string.find(to, "_")                                                         
+			if k1 ~= nil then                                                                     
+			        to = string.sub(to, 1, k1 - 1)                                                
+			end
 			calls[i] = {
 				time = values[10],
 				direction = direction,
 				from = values[2],
-				to = values[3],
-				duration = values[14],
-				uniqueid = values[17]
+				to = to,
+				duration = duration,
+				uniqueid = values[17],
+				disposition = values[15]
 			}
 		end
 	end
@@ -139,10 +148,11 @@ else
 	s = m:section(Table, get_call_log(), "")
 	s.template = "voice/rtblsection"
 	s:option(DummyValue, "time", "Time")
-	s:option(DummyValue, "duration", "Duration")
 	s:option(DummyValue, "direction", "Direction")
 	s:option(DummyValue, "from", "From")
 	s:option(DummyValue, "to", "To")
+	s:option(DummyValue, "disposition", "Disposition")
+	s:option(DummyValue, "duration", "Duration")
 
 	-- Add delete button
 	btn = s:option(Button, "uniqueid", "Remove")
