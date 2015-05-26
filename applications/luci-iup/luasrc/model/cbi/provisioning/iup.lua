@@ -41,13 +41,13 @@ s2.anonymous=true
 enaser = s2:option(Flag, "enabled", translate("Enabled"))
 enaser.enabled = "on"
 enaser.disabled = "off"
-enaser.rmempt = false
+enaser.rmempty = false
 
 reboot = s2:option(Flag, "reboot", translate("Reboot"),translate("Reboot after settings config usualy needed for network settings to work properly"))
 reboot.default="on"
 reboot.enabled = "on"
 reboot.disabled = "off"
-reboot.rmempt = false
+reboot.rmempty = false
 
 url = s2:option(Value, "url", translate("URL"))
 --function url:validate(value)
@@ -66,7 +66,7 @@ s4 = m:section(NamedSection,"iup","server",translate ("DHCP Discover Provisionin
 enaiup = s4:option(Flag, "enabled", translate("Enabled"))
 enaiup.enabled = "on"
 enaiup.disabled = "off"
-enaiup.rmempt = false
+enaiup.rmempty = false
 
 
 software = m:section(NamedSection,"uppgradeserver","software",translate ("Software Update Config"))
@@ -94,7 +94,7 @@ s3:option(Value, "packagecontrol", translate("Package Control"))
 ena = s3:option(Flag, "enabled", translate("Enabled"))
 ena.enabled = "on"
 ena.disabled = "off"
-ena.rmempt = false
+ena.rmempty = false
   
         
 
