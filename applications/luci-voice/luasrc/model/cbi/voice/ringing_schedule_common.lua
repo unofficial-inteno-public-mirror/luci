@@ -8,7 +8,7 @@ function ringing_schedule_common.validate_time(time)
 	local pattern = "(%d%d):(%d%d) (%d%d):(%d%d)"
 	from_hour, from_minute, to_hour, to_minute = time:match(pattern)
 	if from_hour == nil or from_minute == nil or to_hour == nil or to_minute == nil then
-		return nil, "Invalid time, expected 'HH::MM HH:MM'"
+		return nil, "Invalid time, expected 'HH:MM HH:MM'"
 	end
 	
 	if tonumber(from_hour) > 23 or
@@ -16,7 +16,7 @@ function ringing_schedule_common.validate_time(time)
 		tonumber(to_hour) > 23 or
 		tonumber(to_minute) > 59
 	then
-		return nil, "Invalid time, expected 'HH::MM HH:MM'"
+		return nil, "Invalid time, expected 'HH:MM HH:MM'"
 	end
 
 	if from_hour > to_hour or from_hour <= to_hour and from_minute > to_minute then

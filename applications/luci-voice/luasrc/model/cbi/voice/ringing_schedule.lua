@@ -118,15 +118,16 @@ end
 
 sip_service_provider = s:option(DummyValue, "sip_service_provider", "SIP Account")
 function sip_service_provider.cfgvalue(self, section)
-	local provider = m.uci:get("voice_client", section, "sip_service_provider")
 	sip_service_provider = {}
 	local provider = m.uci:get("voice_client", section, "sip_service_provider")
-	for k,v in pairs(luci.util.split(provider, " ")) do
-		provider = m.uci:get("voice_client", v, "name")
-		if provider then
-			table.insert(sip_service_provider, provider)
-		else
-			table.insert(sip_service_provider, 'Unknown')
+	if provider ~= nil then
+		for k,v in pairs(luci.util.split(provider, " ")) do
+			provider = m.uci:get("voice_client", v, "name")
+			if provider then
+				table.insert(sip_service_provider, provider)
+			else
+				table.insert(sip_service_provider, 'Unknown')
+			end
 		end
 	end
 	return table.concat(sip_service_provider, ", ")
