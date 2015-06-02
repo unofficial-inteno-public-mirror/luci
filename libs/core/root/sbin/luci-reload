@@ -35,11 +35,19 @@ reload_init() {
 
 lock "/var/run/luci-reload"
 
-config_load ucitrack
+local version=$(db get hw.board.iopVersion | awk -F '[_,-]' '{print$3}' | tr -d '[A-Z]' | cut -d'.' -f 2)
 
-for i in $*; do
-	config_foreach apply_config $i $i
-done
+if [ $version -gt 2 ]; then
+	for i in $*; do
+		ubus call uci commit "{\"config\":\"$i\"}"
+	done
+else
+	config_load ucitrack
+
+	for i in $*; do
+		config_foreach apply_config $i $i
+	done
+fi
 
 rm -f "/var/run/luci-reload-status"
 lock -u "/var/run/luci-reload"
