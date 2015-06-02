@@ -68,13 +68,8 @@ local Cursor = getmetatable(inst)
 -- @param configlist		List of UCI configurations
 -- @param command			Don't apply only return the command
 function Cursor.apply(self, configlist, command)
-	configlist = self:_affected(configlist)
-	if command then
-		return { "/sbin/luci-reload", unpack(configlist) }
-	else
-		return os.execute("/sbin/luci-reload %s >/dev/null 2>&1"
-			% table.concat(configlist, " "))
-	end
+	return os.execute("/sbin/luci-reload %s >/dev/null 2>&1"
+	% table.concat(configlist, " "))
 end
 
 
