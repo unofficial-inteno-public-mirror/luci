@@ -3,13 +3,14 @@
 # Copyright (C) 2015 inteno.org
 #
 
-. /lib/functions.sh
 START=71
+USE_PROCD=1
 
-start() {
+. /lib/functions.sh
+
+start_service() {
 	local enable=0
         local filter=0
-        
 
         config_load catv
         config_get enable catv enable
@@ -18,3 +19,8 @@ start() {
 	ubus call catv set-filter "{\"filter\":\"$filter\"}"
 
 }
+
+service_triggers() {
+        procd_add_reload_trigger catv
+}
+

@@ -1,6 +1,7 @@
 #!/bin/sh /etc/rc.common
 
 START=15
+USE_PROCD=1
 
 . /lib/functions.sh
 
@@ -78,12 +79,12 @@ configure_ethports() {
 	done
 }
 
-start() {
+start_service() {
 	config_load ports
 	config_foreach configure_ethports ethports
 }
 
-restart() {
-        start
+service_triggers() {
+        procd_add_reload_trigger ports
 }
 
