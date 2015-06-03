@@ -19,7 +19,7 @@ function router_static_sysinfo()
 		hostname = _ubuscache["system"]["name"],
 		hardware = _ubuscache["system"]["hardware"],
 		model = _ubuscache["system"]["model"],
-		nvramver = _ubuscache["system"]["nvramver"],
+		boardid = _ubuscache["system"]["boardid"],
 		iopversion = _ubuscache["system"]["firmware"],
 		brcmversion = _ubuscache["system"]["brcmver"],
 		socmodel = _ubuscache["system"]["socmod"],

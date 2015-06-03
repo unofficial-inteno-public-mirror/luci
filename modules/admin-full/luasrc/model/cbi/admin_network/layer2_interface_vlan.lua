@@ -21,7 +21,7 @@ local ifcs = net:get_layer2interfacesbase()
 		if ifcs then
 			local _, ifn
 			for _, ifn in ipairs(ifcs) do
-				iface:value(ifn:name(), translate(ifn:layer2name()))
+				iface:value(ifn:name(), ifn:layer2name())
 			end
 		end	
 

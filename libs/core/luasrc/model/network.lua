@@ -1326,7 +1326,7 @@ function interface.get_i18n(self)
 		}
 	elseif self:name():match("^eth%d$") then
 		return "%s: %s" %{ self:get_type_i18n(), self:portname().."->"..self:name() }
-	elseif self:type()=="vlan" or  self:type()=="adsl" or self:type()=="vdsl2" or self:type()=="ethernetwan"    then
+	elseif (self:type()=="vlan" or  self:type()=="adsl" or self:type()=="vdsl2" or self:type()=="ethernetwan") and (self:get_linklayername() and self:name()) then
 		return "%s: %s" %{ self:get_type_i18n(), self:get_linklayername().."->"..self:name() }
 	else
 		return "%s: %q" %{ self:get_type_i18n(), self:name() }

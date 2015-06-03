@@ -86,13 +86,13 @@ You may obtain a copy of the License at
 		end
 
 		rv.port = {
-			eth0	= prt:status_eth("eth0", "link") or prt:status_eth("eth0", "up"),
-			eth1	= prt:status_eth("eth1", "link") or prt:status_eth("eth1", "up"),
-			eth2	= prt:status_eth("eth2", "link") or prt:status_eth("eth2", "up"),
-			eth3	= prt:status_eth("eth3", "link") or prt:status_eth("eth3", "up"),
-			eth4	= prt:status_eth("eth4", "link") or prt:status_eth("eth4", "up"),
-			eth5	= prt:status_eth("eth5", "link") or prt:status_eth("eth5", "up"),
-			eth6	= prt:status_eth("eth6", "link") or prt:status_eth("eth6", "up"),
+			eth0	= prt:status_eth("eth0", "carrier"),
+			eth1	= prt:status_eth("eth1", "carrier"),
+			eth2	= prt:status_eth("eth2", "carrier"),
+			eth3	= prt:status_eth("eth3", "carrier"),
+			eth4	= prt:status_eth("eth4", "carrier"),
+			eth5	= prt:status_eth("eth5", "carrier"),
+			eth6	= prt:status_eth("eth6", "carrier"),
 			dsl	= specs.hasadsl and prt:status_dsl() or "na",
 			usb     = prt:status_usb()
 		}
@@ -733,7 +733,7 @@ You may obtain a copy of the License at
 
 	<table id="system_table_basic" width="100%" cellspacing="10" style="display:table">
 		<tr><td width="33%"><%:Router Name%></td><td><%=luci.sys.hostname() or "?"%></td></tr>
-		<tr><td width="33%"><%:Router Model%></td><td><%=pcdata(router.nvramver) or "?" %></td></tr>
+		<tr><td width="33%"><%:Router Model%></td><td><%=pcdata(router.boardid) or "?" %></td></tr>
 		<tr><td width="33%"><%:Router MAC Address%></td><td><%=pcdata(router.basemac) %></td></tr>
 		<tr><td width="33%"><%:Router S/N%></td><td><%=pcdata(router.serialno) %></td></tr>
 		<tr><td width="33%"><%:iopsys Version%></td><td><%=pcdata(router.iopversion) %></td></tr>
