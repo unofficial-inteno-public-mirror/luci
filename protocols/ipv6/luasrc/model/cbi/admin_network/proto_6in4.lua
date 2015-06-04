@@ -1,14 +1,5 @@
---[[
-LuCI - Lua Configuration Interface
-
-Copyright 2011 Jo-Philipp Wich <xm@subsignal.org>
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-	http://www.apache.org/licenses/LICENSE-2.0
-]]--
+-- Copyright 2011 Jo-Philipp Wich <jow@openwrt.org>
+-- Licensed to the public under the Apache License 2.0.
 
 local map, section, net = ...
 
@@ -66,13 +57,22 @@ tunnelid:depends("_update", update.enabled)
 
 
 username = section:taboption("general", Value, "username",
-	translate("HE.net user ID"),
-	translate("This is the 32 byte hex encoded user ID, not the login name"))
+	translate("HE.net username"),
+	translate("This is the plain username for logging into the account"))
 
 username:depends("_update", update.enabled)
+username.validate = function(self, val, sid)
+	if type(val) == "string" and #val == 32 and val:match("^[a-fA-F0-9]+$") then
+		return nil, translate("The HE.net endpoint update configuration changed, you must now use the plain username instead of the user ID!")
+	end
+	return val
+end
 
 
-password = section:taboption("general", Value, "password", translate("HE.net password"))
+password = section:taboption("general", Value, "password",
+	translate("HE.net password"),
+	translate("This is either the \"Update Key\" configured for the tunnel or the account password if no update key has been configured"))
+
 password.password = true
 password:depends("_update", update.enabled)
 
