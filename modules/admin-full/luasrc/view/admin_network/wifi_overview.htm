@@ -121,7 +121,7 @@ You may obtain a copy of the License at
 			else
 				document.getElementById("wpsDiv").style.display="none";
 		} else if (type == 1) {
-			appin = <%=sys.exec("nvram get wps_device_pin")%>;
+			appin = <%=(sys.exec("nvram get wps_device_pin"))%> + "";
 			alert("Enter AP PIN below to the wireless device that wants to join the network\n\n" +appin);
 		} else if (type == 2) {
 			method = "stapin"
