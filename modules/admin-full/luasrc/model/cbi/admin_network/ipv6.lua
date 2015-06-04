@@ -13,7 +13,7 @@ You may obtain a copy of the License at
 
 local m, s, o
 
-m = Map("odhcpd", translate("IPv6 RA and DHCPv6"),
+m = Map("6relayd", translate("IPv6 RA and DHCPv6"),
 	translate("odhcpd is a daemon for serving and relaying IPv6 management protocols to "..
 	"configure clients and downstream routers. "..
 	"It provides server services for RA, stateless and stateful DHCPv6, "..
