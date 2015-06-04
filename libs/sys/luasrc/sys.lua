@@ -317,6 +317,15 @@ local function _nethints(what, callback)
 		end
 	end
 
+	if fs.access("/var/hosts/odhcpd") then
+		for e in io.lines("/var/hosts/odhcpd") do
+			local iface, duid, iaid, hostname, ts, id, length, ip6 = e:match("^# (%S+) (%S+) (%S+) (%S+) (%d+) (%S+) (%S+) (.*)")
+			if duid and ip6 then
+				_add(what, duid:upper(), nil, ip6, hostname ~= "-" and hostname)
+			end
+		end
+	end
+
 	cur:foreach("dhcp", "host",
 		function(s)
 			for mac in luci.util.imatch(s.mac) do
@@ -324,24 +333,24 @@ local function _nethints(what, callback)
 			end
 		end)
 
-	for _, e in ipairs(nixio.getifaddrs()) do
-		if e.name ~= "lo" then
-			ifn[e.name] = ifn[e.name] or { }
-			if e.family == "packet" and e.addr and #e.addr == 17 then
-				ifn[e.name][1] = e.addr:upper()
-			elseif e.family == "inet" then
-				ifn[e.name][2] = e.addr
-			elseif e.family == "inet6" then
-				ifn[e.name][3] = e.addr
-			end
-		end
-	end
+--	for _, e in ipairs(nixio.getifaddrs()) do
+--		if e.name ~= "lo" then
+--			ifn[e.name] = ifn[e.name] or { }
+--			if e.family == "packet" and e.addr and #e.addr == 17 then
+--				ifn[e.name][1] = e.addr:upper()
+--			elseif e.family == "inet" then
+--				ifn[e.name][2] = e.addr
+--			elseif e.family == "inet6" then
+--				ifn[e.name][3] = e.addr
+--			end
+--		end
+--	end
 
-	for _, e in pairs(ifn) do
-		if e[what] and (e[2] or e[3]) then
-			_add(what, e[1], e[2], e[3], e[4])
-		end
-	end
+--	for _, e in pairs(ifn) do
+--		if e[what] and (e[2] or e[3]) then
+--			_add(what, e[1], e[2], e[3], e[4])
+--		end
+--	end
 
 	for _, e in luci.util.kspairs(hosts) do
 		callback(e[1], e[2], e[3], e[4])
