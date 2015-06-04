@@ -155,7 +155,7 @@ function index()
 			end
 
 			if user ~= "user" then
-				if nixio.fs.access("/etc/config/odhcpd") then
+				if nixio.fs.access("/etc/config/6relayd") then
 					page = node(user, "network", "ipv6")
 					page.target = cbi("admin_network/ipv6")
 					page.title  = _("IPv6 RA and DHCPv6")
