@@ -20,7 +20,7 @@ You may obtain a copy of the License at
 
 	local has_ipv6 = luci.fs.access("/proc/net/ipv6_route")
 	local has_dhcp = luci.fs.access("/etc/config/dhcp")
-	local active_ipv6 = luci.fs.access("/var/hosts/6relayd")
+	local active_ipv6 = luci.fs.access("/var/hosts/odhcpd")
 	local has_wifi = luci.fs.stat("/etc/config/wireless")
 	      has_wifi = has_wifi and has_wifi.size > 0
 	local has_swap

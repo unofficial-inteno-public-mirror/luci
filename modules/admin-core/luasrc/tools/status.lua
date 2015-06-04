@@ -156,7 +156,7 @@ end
 
 function dhcp6_leases()
 	local nfs = require "nixio.fs"
-	local leasefile = "/tmp/hosts/6relayd"
+	local leasefile = "/tmp/hosts/odhcpd"
 	local rv = {}
 
 	if nfs.access(leasefile, "r") then

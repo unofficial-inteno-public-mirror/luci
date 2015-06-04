@@ -308,8 +308,8 @@ local function _nethints(what, callback)
 		end
 	end
 	
-	if fs.access("/var/hosts/6relayd") then
-		for e in io.lines("/var/hosts/6relayd") do
+	if fs.access("/var/hosts/odhcpd") then
+		for e in io.lines("/var/hosts/odhcpd") do
 			local iface, duid, iaid, hostname, ts, id, length, ip6 = e:match("^# (%S+) (%S+) (%S+) (%S+) (%d+) (%S+) (%S+) (.*)")
 			if duid and ip6 then
 				_add(what, duid:upper(), nil, ip6, hostname ~= "-" and hostname)
