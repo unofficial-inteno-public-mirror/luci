@@ -733,7 +733,7 @@ You may obtain a copy of the License at
 
 	<table id="system_table_basic" width="100%" cellspacing="10" style="display:table">
 		<tr><td width="33%"><%:Router Name%></td><td><%=luci.sys.hostname() or "?"%></td></tr>
-		<tr><td width="33%"><%:Router Model%></td><td><%=pcdata(router.nvramver) or "?" %></td></tr>
+		<tr><td width="33%"><%:Router Model%></td><td><%=pcdata(router.boardid) or "?" %></td></tr>
 		<tr><td width="33%"><%:Router MAC Address%></td><td><%=pcdata(router.basemac) %></td></tr>
 		<tr><td width="33%"><%:Router S/N%></td><td><%=pcdata(router.serialno) %></td></tr>
 		<tr><td width="33%"><%:iopsys Version%></td><td><%=pcdata(router.iopversion) %></td></tr>
