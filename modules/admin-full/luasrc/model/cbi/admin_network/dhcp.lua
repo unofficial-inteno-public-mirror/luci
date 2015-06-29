@@ -198,27 +198,38 @@ end -- TECUSER --
 m:section(SimpleSection).template = "admin_network/lease_status"
 
 s = m:section(TypedSection, "host", translate("Static Leases"),
-	translate("Static leases are used to assign fixed IP addresses and symbolic hostnames to " ..
+	translate("Static IPv4 leases are used to assign fixed IP addresses and symbolic hostnames to " ..
 		"DHCP clients. They are also required for non-dynamic interface configurations where " ..
 		"only hosts with a corresponding lease are served.") .. "<br />" ..
 	translate("Use the <em>Add</em> Button to add a new lease entry. The <em>MAC-Address</em> " ..
 		"indentifies the host, the <em>IPv4-Address</em> specifies to the fixed address to " ..
-		"use and the <em>Hostname</em> is assigned as symbolic name to the requesting host."))
+		"use and the <em>Hostname</em> is assigned as symbolic name to the requesting host.") .. "<br />" ..
+        translate("Static IPv6 leases are used to assign fixed IPv6 Interface-IDs to clients. Interface-IDs are appended to available prefixes to form IPv6-addresses. " ..
+            " (e.g. a prefix of 2001:db80::/64 combined with Interface-ID 123456 will form the address 2001:db80::12:3456)") .. "<br />" ..
+        translate("Use the <em>Add</em> Button to add a new lease entry. The <em>DUID</em> " ..
+            "indentifies the host, the <em>Interface-ID</em> specifies the ID to use in addresses."))
 
 s.addremove = true
 s.anonymous = true
 s.template = "cbi/tblsection"
 
+family = s:option(ListValue, "family", translate("Family"))
+family:value("ipv4", "IPv4")
+family:value("ipv6", "IPv6")
+
 name = s:option(Value, "name", translate("Hostname"))
 name.datatype = "hostname"
 name.rmempty  = true
+name:depends("family", "ipv4")
 
 mac = s:option(Value, "mac", translate("<abbr title=\"Media Access Control\">MAC</abbr>-Address"))
 mac.datatype = "list(macaddr)"
 mac.rmempty  = true
+mac:depends("family", "ipv4")
 
 ip = s:option(Value, "ip", translate("<abbr title=\"Internet Protocol Version 4\">IPv4</abbr>-Address"))
 ip.datatype = "ip4addr"
+ip:depends("family", "ipv4")
 
 sys.net.arptable(function(entry)
 	ip:value(entry["IP address"])
@@ -237,5 +248,12 @@ function ip.validate(self, value, section)
 	return Value.validate(self, value, section)
 end
 
+duid = s:option(Value, "duid", translate("DUID"))
+duid.optional = false
+duid:depends("family", "ipv6")
+
+id = s:option(Value, "hostid", translate("Interface-ID"))
+id.optional = false
+id:depends("family", "ipv6")
 
 return m
