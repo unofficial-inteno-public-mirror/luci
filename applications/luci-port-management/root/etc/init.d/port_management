@@ -56,10 +56,14 @@ set_port_status() {
 							1000HD) ethswctl -c phymode -p $portno -y 1000 -z 0 ;;
 						esac
 					;;
+					10*AUTO)
+						ethctl $port media-type advertise $status
+					;;
 					10*)
 						ethctl $port media-type $status
 					;;
 					*)
+					        ethctl $port media-type advertise 1000FDAUTO
 						ethctl $port media-type auto
 					;;
 				esac
