@@ -1660,6 +1660,16 @@ function wifidev.radio(self)
 	return up
 end
 
+function wifidev.enabled(self)
+	local enabled = true
+
+	if self:get("disabled") == "1" then
+		enabled = false
+	end
+
+	return enabled
+end
+
 function wifidev.get_wifinet(self, net)
 	if _uci_real:get("wireless", net) == "wifi-iface" then
 		return wifinet(net)
