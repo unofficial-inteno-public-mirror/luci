@@ -22,6 +22,7 @@ function router_static_sysinfo()
 		boardid = _ubuscache["system"]["boardid"],
 		iopversion = _ubuscache["system"]["firmware"],
 		brcmversion = _ubuscache["system"]["brcmver"],
+		filesystem = _ubuscache["system"]["filesystem"],
 		socmodel = _ubuscache["system"]["socmod"],
 		socrevision = _ubuscache["system"]["socrev"],
 		cfeversion = _ubuscache["system"]["cfever"],
