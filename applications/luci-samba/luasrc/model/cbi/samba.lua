@@ -113,9 +113,9 @@ function compath.validate(self, value, section)
     end
 end
 
-if nixio.fs.access("/etc/config/fstab") then
-        pth.titleref = luci.dispatcher.build_url("admin", "system", "fstab")
-end
+--if nixio.fs.access("/etc/config/fstab") then
+--        pth.titleref = luci.dispatcher.build_url("admin", "system", "fstab")
+--end
 
 s:option(Value, "users", translate("Allowed users")).rmempty = true
 
