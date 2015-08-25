@@ -72,6 +72,7 @@ You may obtain a copy of the License at
 			rv.wan = {
 				ipaddr  = wan:ipaddr(),
 				gwaddr  = wan:gwaddr(),
+				macaddr = wan:mac(),
 				netmask = wan:netmask(),
 				dns     = wan:dnsaddrs(),
 				expires = wan:expires(),
@@ -111,6 +112,7 @@ You may obtain a copy of the License at
 		if wan6 then
 			rv.wan6 = {
 				ip6addr = wan6:ip6addr(),
+				ip6mac	= wan6:mac(),
 				gw6addr = wan6:gw6addr(),
 				dns     = wan6:dns6addrs(),
 				uptime  = wan6:uptime(),
@@ -253,10 +255,12 @@ You may obtain a copy of the License at
 					var s = String.format(
 						'<strong><%:Type%>: </strong>%s<br />' +
 						'<strong><%:Address%>: </strong>%s<br />' +
+						'<strong><%:MAC%>: </strong>%s<br />' +
 						'<strong><%:Netmask%>: </strong>%s<br />' +
 						'<strong><%:Gateway%>: </strong>%s<br />',
 							ifc.proto,
 							(ifc.ipaddr) ? ifc.ipaddr : '0.0.0.0',
+							(ifc.macaddr) ? ifc.macaddr : '00:00:00:00:00:00',
 							(ifc.netmask != ifc.ipaddr) ? ifc.netmask : '255.255.255.255',
 							(ifc.gwaddr) ? ifc.gwaddr : '0.0.0.0'
 					);
@@ -346,8 +350,10 @@ You may obtain a copy of the License at
 				{
 					var s = String.format(
 						'<strong><%:Address%>: </strong>%s<br />' +
+						'<strong><%:MAC%>: </strong>%s<br />' +
 						'<strong><%:Gateway%>: </strong>%s<br />',
 							(ifc6.ip6addr) ? ifc6.ip6addr : '::',
+							(ifc6.ip6mac) ? ifc6.ip6mac : '::',
 							(ifc6.gw6addr) ? ifc6.gw6addr : '::'
 					);
 

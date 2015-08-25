@@ -932,6 +932,10 @@ function protocol.ipaddr(self)
 	return addrs and #addrs > 0 and addrs[1].address
 end
 
+function protocol.mac(self)
+	return (_ubus:call("network.device", "status", {name = self:ifname()})["macaddr"] or "00:00:00:00:00:00"):upper()
+end
+
 function protocol.netmask(self)
 	local addrs = self:_ubus("ipv4-address")
 	return addrs and #addrs > 0 and
