@@ -65,6 +65,16 @@ function parse_enabled(self, section)
 			self.add_error(self, section, "missing", "Please enter a password")
 		end
 	end
+	
+	if fvalue and section == "sip0" then
+		vc.foreach_user({'brcm', 'sip'},
+			function(v)
+				if v['sip_account'] == "-" then
+					m.uci:set("voice_client", v['.name'], "sip_account", section)
+				end
+			end
+		)
+	end
 end
 
 -- Enabled checkbox
