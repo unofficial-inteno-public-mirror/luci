@@ -207,11 +207,21 @@ stun = sip:option(Value, 'stun_server', "STUN server", "Leave empty to disable t
 stun.optional = true
 
 -- Fixed length numbers
+-- Can be configured globally or per SIP Provider
+-- Global numbers are used ONLY if NO numbers have been configured for a
+-- particular SIP provider
 s = m:section(TypedSection, "sip_service_provider", "Fixed length number series")
 s.template  = "cbi/tblsection"
 s.anonymous = true
 s:option(DummyValue, 'name', "SIP Account")
 s:option(DynamicList, "direct_dial", "Define number series with a prefix and a total length. Example: 0520XXXXXX (a 10 digit number starting with 0520)")
+
+function s.cfgsections(self)
+	sections = {}
+	table.insert(sections, "direct_dial")
+	for k,v in pairs(TypedSection.cfgsections(self)) do table.insert(sections, v) end
+	return sections
+end
 
 -- Call Return and Redial
 callreturn_enabled = m.uci.get("voice_client", "features", "callreturn_enabled") == "1"
