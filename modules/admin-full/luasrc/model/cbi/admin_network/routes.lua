@@ -28,7 +28,7 @@ s.anonymous = true
 s.template  = "cbi/tblsection"
 
 iface = s:option(ListValue, "interface", translate("Interface"))
-luci.tools.webadmin.cbi_add_networks(iface)
+--luci.tools.webadmin.cbi_add_networks(iface)
 
 t = s:option(Value, "target", translate("Target"), translate("Host-<abbr title=\"Internet Protocol Address\">IP</abbr> or Network"))
 t.datatype = "ip4addr"
@@ -61,7 +61,7 @@ if routes6 then
 	s.template  = "cbi/tblsection"
 
 	iface = s:option(ListValue, "interface", translate("Interface"))
-	luci.tools.webadmin.cbi_add_networks(iface)
+	--luci.tools.webadmin.cbi_add_networks(iface)
 
 	t = s:option(Value, "target", translate("Target"), translate("<abbr title=\"Internet Protocol Version 6\">IPv6</abbr>-Address or Network (CIDR)"))
 	t.datatype = "ip6addr"
