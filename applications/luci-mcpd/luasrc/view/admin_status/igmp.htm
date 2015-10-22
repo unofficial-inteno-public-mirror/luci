@@ -44,8 +44,8 @@
 
 				<% if router.brcmversion == "4.16L.04" then %>
 					<% for line in luci.util.execi("cat /proc/net/igmp_snooping | grep 'br-' | grep -v 'snooping' | grep -v 'reporter'") do %>
-						<% local bridge, device, srcdev, tags, lantci, wantci, group, mode, source, timeout, reporter, index
-						= line:match("(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)") %>
+						<% local bridge, device, srcdev, tags, lantci, wantci, group, mode, dnat, source, timeout, reporter, index
+						= line:match("(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)") %>
 
 						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
 								<td class="cbi-value-field"><%=bridge%></td>
