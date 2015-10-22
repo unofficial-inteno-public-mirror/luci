@@ -35,16 +35,14 @@
 					<th class="cbi-section-table-cell"><%:WAN-TCI%></th>
 					<th class="cbi-section-table-cell"><%:Group%></th>
 					<th class="cbi-section-table-cell"><%:Mode%></th>
-					<% if router.kernel ~= "2.6.30" then %>
-						<th class="cbi-section-table-cell"><%:DNAT Group%></th>
-					<%end%>
+					<th class="cbi-section-table-cell"><%:DNAT Group%></th>
 					<th class="cbi-section-table-cell"><%:Source%></th>
 					<th class="cbi-section-table-cell"><%:Reporter%></th>
 					<th class="cbi-section-table-cell"><%:Timeout%></th>
 					<th class="cbi-section-table-cell"><%:Index%></th>
 				</tr>
 
-				<% if router.kernel == "2.6.30" then %>
+				<% if router.brcmversion == "4.16L.04" then %>
 					<% for line in luci.util.execi("cat /proc/net/igmp_snooping | grep 'br-' | grep -v 'snooping' | grep -v 'reporter'") do %>
 						<% local bridge, device, srcdev, tags, lantci, wantci, group, mode, source, timeout, reporter, index
 						= line:match("(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)") %>
@@ -58,6 +56,7 @@
 								<td class="cbi-value-field"><%=hextodec(wantci)%></td>
 								<td class="cbi-value-field"><%=group%></td>
 								<td class="cbi-value-field"><%=mode%></td>
+								<td class="cbi-value-field"><%=dnat%></td>
 								<td class="cbi-value-field"><%=source%></td>
 								<td class="cbi-value-field"><%=reporter%></td>
 								<td class="cbi-value-field"><%=timeout%></td>
@@ -76,11 +75,11 @@
 								<td class="cbi-value-field"><%=tags%></td>
 								<td class="cbi-value-field"><%=hextodec(lantci)%></td>
 								<td class="cbi-value-field"><%=hextodec(wantci)%></td>
-								<td class="cbi-value-field"><%=group%></td>
+								<td class="cbi-value-field"><%=hextoip(group)%></td>
 								<td class="cbi-value-field"><%=mode%></td>
-								<td class="cbi-value-field"><%=dnat%></td>
-								<td class="cbi-value-field"><%=source%></td>
-								<td class="cbi-value-field"><%=reporter%></td>
+								<td class="cbi-value-field"><%=hextoip(dnat)%></td>
+								<td class="cbi-value-field"><%=hextoip(source)%></td>
+								<td class="cbi-value-field"><%=hextoip(reporter)%></td>
 								<td class="cbi-value-field"><%=timeout%></td>
 								<td class="cbi-value-field"><%=hextodec(index)%></td>
 						</tr>
