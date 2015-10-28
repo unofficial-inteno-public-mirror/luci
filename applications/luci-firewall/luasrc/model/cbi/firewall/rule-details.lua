@@ -12,6 +12,7 @@ You may obtain a copy of the License at
 
 ]]--
 
+local io  = require "io"
 local sys = require "luci.sys"
 local dsp = require "luci.dispatcher"
 local nxo = require "nixio"
@@ -294,18 +295,37 @@ else
 	o.template = "cbi/firewall_zonelist"
 
 
-	o = s:option(DynamicList, "dest_ip", translate("Destination address"))
-	o.datatype = "neg(ipaddr)"
-	o.placeholder = translate("any")
+	da = s:option(DynamicList, "dest_ip", translate("Destination address"))
+	da.datatype = "neg(ipaddr)"
+	da.placeholder = translate("any")
 
 	luci.sys.net.ipv4_hints(function(ip, name)
-		o:value(ip, "%s (%s)" %{ ip, name })
+		da:value(ip, "%s (%s)" %{ ip, name })
 	end)
 
 	if nw:has_ipv6() then
 		luci.sys.net.ipv6_hints(function(ip, name)
-			o:value(ip, "%s (%s)" %{ ip, name })
+			da:value(ip, "%s (%s)" %{ ip, name })
 		end)
+	end
+
+	da.write = function(self, section, value)
+                if "" == value[#value] then                                     
+                        self.map.uci:delete("firewall", section, "dest_ip")
+                        return nil                                         
+                end     
+		local line
+		self.map.uci:set("firewall", section, "dest_ip", value)
+		if nxo.fs.access("/var/hosts/odhcpd") then
+			for line in io.lines("/var/hosts/odhcpd") do
+				local iface, duid, iaid, hostname, ts, id, length, ip6 = line:match("^# (%S+) (%S+) (%S+) (%S+) (%d+) (%S+) (%S+) (.*)")
+				if duid and ip6 then
+					if ip6:match(value[#value]) then
+						self.map.uci:set("firewall", section, "duid", duid)
+					end
+				end
+			end
+		end
 	end
 
 
