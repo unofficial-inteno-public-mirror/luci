@@ -253,7 +253,7 @@ if TECUSER then
 
 	if wdev:is_5g() then
 		bf = s:taboption("advanced", Flag, "beamforming", translate("Beamforming"))
-		bf.default = "1"
+		bf.default = "0"
 		bf.rmempty = true
 	end
 
