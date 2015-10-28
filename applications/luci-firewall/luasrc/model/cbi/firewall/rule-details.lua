@@ -310,7 +310,8 @@ else
 	end
 
 	da.write = function(self, section, value)
-		if not value then
+		if value[#value] == "" then
+			self.map.uci:delete("firewall", section, "dest_ip")
 			return nil
 		end
 		local line
