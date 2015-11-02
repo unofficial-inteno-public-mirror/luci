@@ -234,6 +234,7 @@ if hwtype == "broadcom" then
 	if wdev:is_5g() then
 		dfsc = s:taboption("advanced", Flag, "dfsc", translate("DFS Channel Selection"), translate("Note: Some wireless devices do not support DFS/TPC channels"))
 		dfsc:depends("channel", "auto")
+		dfsc.default = "1"
 		dfsc.rmempty = true
 	end
 
@@ -269,11 +270,13 @@ if TECUSER then
 	rifsad:value("0", "Off")	
 	rifsad:value("-1", "Auto")
 
-	obss = s:taboption("advanced", ListValue, "obss_coex", translate("OBSS Co-Existence"))
-	obss:depends("bandwidth", "40")
-	obss:depends("bandwidth", "80")
-	obss:value("1", "Enable")
-	obss:value("0", "Disable")
+	if not wdev:is_5g() then
+		obss = s:taboption("advanced", ListValue, "obss_coex", translate("OBSS Co-Existence"))
+		obss:depends("bandwidth", "40")
+		obss:depends("bandwidth", "80")
+		obss:value("1", "Enable")
+		obss:value("0", "Disable")
+	end
 end
 
 --	rate = s:taboption("advanced", ListValue, "rate", translate("Rate Limit"))
@@ -326,17 +329,17 @@ if TECUSER then
 --	sm:value("3", "Disable 11h and enable 11d")
 end
 
-	pwr = s:taboption("advanced", ListValue, "txpower", translate("Transmit Power"))
-	pwr:value("10", "10%")
-	pwr:value("20", "20%")
-	pwr:value("30", "30%")
-	pwr:value("40", "40%")
-	pwr:value("50", "50%")
-	pwr:value("60", "60%")
-	pwr:value("70", "70%")
-	pwr:value("80", "80%")
-	pwr:value("90", "90%")
-	pwr:value("100", "100%")
+--	pwr = s:taboption("advanced", ListValue, "txpower", translate("Transmit Power"))
+--	pwr:value("10", "10%")
+--	pwr:value("20", "20%")
+--	pwr:value("30", "30%")
+--	pwr:value("40", "40%")
+--	pwr:value("50", "50%")
+--	pwr:value("60", "60%")
+--	pwr:value("70", "70%")
+--	pwr:value("80", "80%")
+--	pwr:value("90", "90%")
+--	pwr:value("100", "100%")
 
 	wm = s:taboption("advanced", ListValue, "wmm", translate("WMM Mode"))
 	wm:value("-1", "Auto")	
