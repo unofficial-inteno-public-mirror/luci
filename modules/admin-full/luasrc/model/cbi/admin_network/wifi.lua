@@ -483,9 +483,9 @@ ssid = s:taboption("general", Value, "ssid", translate("<abbr title=\"Extended S
 mode = s:taboption("general", ListValue, "mode", translate("Mode"))
 mode.override_values = true
 mode:value("ap", translate("Access Point"))
-if wdev:is_sta_capable() then
-mode:value("sta", translate("Client"))
-end
+--if wdev:is_sta_capable() then
+--mode:value("sta", translate("Client"))
+--end
 
 
 local network_msg = (TECUSER) and " or fill out the <em>create</em> field to define a new network." or "."
