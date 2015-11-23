@@ -106,13 +106,7 @@ $Id: bandwidth.htm 9014 2012-08-14 13:08:18Z jow $
 	/* wait for SVG */
 	window.setTimeout(
 		function() {
-			var svg;
-			try {
-				svg = document.getElementById('bwsvg')
-			}
-			catch() {
-				window.setTimeout(arguments.callee, 1000);
-			}
+			var svg = document.getElementById('bwsvg');
 
 			try {
 				G = svg.getSVGDocument
@@ -124,7 +118,7 @@ $Id: bandwidth.htm 9014 2012-08-14 13:08:18Z jow $
 
 			if (!G)
 			{
-				window.setTimeout(arguments.callee, 1000);
+				window.setTimeout(arguments.callee, 3000);
 			}
 			else
 			{
@@ -282,7 +276,7 @@ $Id: bandwidth.htm 9014 2012-08-14 13:08:18Z jow $
 					}
 				);
 			}
-		}, 1000
+		}, 3000
 	);
 //]]></script>
 
