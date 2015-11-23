@@ -106,7 +106,13 @@ $Id: bandwidth.htm 9014 2012-08-14 13:08:18Z jow $
 	/* wait for SVG */
 	window.setTimeout(
 		function() {
-			var svg = document.getElementById('bwsvg');
+			var svg;
+			try {
+				svg = document.getElementById('bwsvg')
+			}
+			catch() {
+				window.setTimeout(arguments.callee, 1000);
+			}
 
 			try {
 				G = svg.getSVGDocument
