@@ -16,17 +16,66 @@ conn:close()
 
 <%+header%>
 
+<script type="text/javascript" src="<%=resource%>/cbi.js"></script>
+<script type="text/javascript">
+
+	function catv_table(table) {
+		var aradio = document.getElementById("aradio");
+		var bradio = document.getElementById("bradio");
+		var advanced = document.getElementById("catv_table_advanced");
+		var basic = document.getElementById("catv_table_basic");
+		if (table == "basic") {
+			aradio.checked = false;
+			bradio.checked = true;
+			advanced.style.display = "none";
+			basic.style.display = "table";
+		} else if (table == "advanced") {
+			bradio.checked = false;
+			aradio.checked = true;
+			advanced.style.display = "table";
+			basic.style.display = "none";
+		}
+	}
+
+</script>
+
 <meta http-equiv="refresh" content="20">
-<h2><a id="content" name="content"><%:Catv Status%></a></h2>
+<h2><a id="content" name="content"><%:CATV Status%></a></h2>
+
+<p align="center"><input type="radio" id="bradio" onclick="catv_table('basic')" checked> <b>Basic View<b/> &nbsp;&nbsp;&nbsp;&nbsp;
+<input type="radio" id="aradio" onclick="catv_table('advanced')"> <b>Advanced View<b/><br/>
+
 <div class="cbi-map-descr"><%:Values read from the CATV Module%></div>
 <fieldset class="cbi-section">
 
 
-	<table width="100%" cellspacing="10">
+	<table id="catv_table_basic" width="100%" cellspacing="10" style="display:table">
 
-<% for ubuskey, ubusvalue in pairs(status) do%>
-		<tr><td width="33%"><%=ubuskey%></td><td><%=ubusvalue%></td></tr>
-		<%end%>
+	<% for ubuskey, ubusvalue in pairs(status) do
+		if ubuskey == "RF" then%>
+			<tr><td width="33%"><%=ubuskey%></td><td><%=ubusvalue+60%> dBµV</td></tr>
+		<%elseif ubuskey == "VPD" then%>
+			<tr><td width="33%"><%=ubuskey%></td><td><%=ubusvalue%> dBm</td></tr>
+		<%elseif ubuskey == "RF enable" or
+		   	  ubuskey == "47MHz ~ 1000MHz" or
+			  ubuskey == "47MHz ~ 591MHz" or
+		   	  ubuskey == "47MHz ~ 431MHz" then%>
+			<tr><td width="33%"><%=ubuskey%></td><td><%=ubusvalue%></td></tr>
+			<%end
+	end%>
+	</table>
+
+	<table id="catv_table_advanced" width="100%" cellspacing="10" style="display:none">
+
+	<% for ubuskey, ubusvalue in pairs(status) do
+		if ubuskey == "RF" then%>
+			<tr><td width="33%"><%=ubuskey%></td><td><%=ubusvalue+60%> dBµV</td></tr>
+		<%elseif ubuskey == "VPD" then%>
+			<tr><td width="33%"><%=ubuskey%></td><td><%=ubusvalue%> dBm</td></tr>
+		<%elseif ubuskey ~= "Temperature" then%>
+			<tr><td width="33%"><%=ubuskey%></td><td><%=ubusvalue%></td></tr>
+		<%end
+	end%>
 	</table>
 </fieldset>
 
