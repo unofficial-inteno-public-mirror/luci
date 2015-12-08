@@ -28,7 +28,7 @@ You may obtain a copy of the License at
 	local prt = require "luci.model.ports".init()
 	local router = luci.quest.router_static_sysinfo()
 
-	local onlinefw = luci.sys.upgrade_check("online") or ""
+	--local onlinefw = luci.sys.upgrade_check("online") or ""
 
 	if luci.http.formvalue("status") == "1" then
 		local ntm = require "luci.model.network".init()
@@ -717,19 +717,19 @@ You may obtain a copy of the License at
 
 <h2><a id="content" name="content"><%:Status%></a></h2>
 
-<% if onlinefw ~= "" then %>
-<div align="right" id="upDiv">
-	<img id="upgrade" src="<%=resource%>/icons/notification.png" height="40" width="40" onclick="fwUpgrade(0)" title="New firmware is available! Click on the icon to proceed with upgrade."/>
-</div>
-<div align="right" id="keepDiv" style="display:none">
-	<font style="color:#e4302c"> A newer firmware is available from your ISP!</font><br>
-	Upgrade and <em><b>retain</b></em> current configuration <input id="keep" type="radio" onClick="fwUpgrade(1)"><br>
-	Upgrade and <em><b>delete</b></em> current configuration <input id="nokeep" type="radio" onClick="fwUpgrade(2)"><br>
-	Do not upgrade <input id="cancel" type="radio" onClick="fwUpgrade(3)"><br>
-	<p id='message' >
-</div>
-<br>
-<% end %>
+<!--<% if onlinefw ~= "" then %>-->
+<!--<div align="right" id="upDiv">-->
+<!--	<img id="upgrade" src="<%=resource%>/icons/notification.png" height="40" width="40" onclick="fwUpgrade(0)" title="New firmware is available! Click on the icon to proceed with upgrade."/>-->
+<!--</div>-->
+<!--<div align="right" id="keepDiv" style="display:none">-->
+<!--	<font style="color:#e4302c"> A newer firmware is available from your ISP!</font><br>-->
+<!--	Upgrade and <em><b>retain</b></em> current configuration <input id="keep" type="radio" onClick="fwUpgrade(1)"><br>-->
+<!--	Upgrade and <em><b>delete</b></em> current configuration <input id="nokeep" type="radio" onClick="fwUpgrade(2)"><br>-->
+<!--	Do not upgrade <input id="cancel" type="radio" onClick="fwUpgrade(3)"><br>-->
+<!--	<p id='message' >-->
+<!--</div>-->
+<!--<br>-->
+<!--<% end %>-->
 
 <p align="center"><input type="radio" id="bradio" onclick="system_table('basic')" checked> <b>Basic View<b/> &nbsp;&nbsp;&nbsp;&nbsp;
 <input type="radio" id="aradio" onclick="system_table('advanced')"> <b>Advanced View<b/><br/>
