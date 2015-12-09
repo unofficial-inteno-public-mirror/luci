@@ -112,13 +112,13 @@ line_nr = 0
 -- DECT
 for i = 1, dectCount do
 	linenum = "brcm%d" %line_nr
-	lines:value("BRCM/" .. line_nr, m.uci:get("voice_client", linenum, "name"))
+	lines:value("BRCM/" .. line_nr, m.uci:get("voice_client", linenum, "name") or linenum:upper())
 	line_nr = line_nr + 1
 end
 -- FXS
 for i = 1, fxsCount do
 	linenum = "brcm%d" %line_nr
-	lines:value("BRCM/" .. line_nr, m.uci:get("voice_client", linenum, "name"))
+	lines:value("BRCM/" .. line_nr, m.uci:get("voice_client", linenum, "name") or linenum:upper())
 	line_nr = line_nr + 1
 end
 -- SIP users

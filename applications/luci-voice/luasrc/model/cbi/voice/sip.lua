@@ -130,7 +130,7 @@ function l.cfgvalue(self, section)
 				else
 					lineId = tonumber(l:match("%d+"))
 					lineNum = "brcm%d" %lineId
-					table.insert(lines, m.uci:get("voice_client", lineNum, "name"))
+					table.insert(lines, m.uci:get("voice_client", lineNum, "name") or lineNum:upper())
 				end
 			end
 			return table.concat(lines, ", ")
