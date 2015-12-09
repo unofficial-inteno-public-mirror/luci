@@ -932,8 +932,26 @@ function protocol.ipaddr(self)
 	return addrs and #addrs > 0 and addrs[1].address
 end
 
+function ifstatus(network, field)
+	if not _ubusnetcache[network] then
+		_ubusnetcache[network] = _ubus:call("network.interface.%s" %network,
+		                                     "status", { })
+	end
+	if _ubusnetcache[network] and field then
+		return _ubusnetcache[network][field]
+	end
+	return _ubusnetcache[network]
+end
+
 function protocol.mac(self)
-	return (_ubus:call("network.device", "status", {name = self:ifname()})["macaddr"] or "00:00:00:00:00:00"):upper()
+	local device = nil
+	local wan = self:ifname():match("^ppp%S+-(%S+)")
+	if wan then device = ifstatus(wan, "device") end
+	if device then
+		return (_ubus:call("network.device", "status", {name = device})["macaddr"] or "00:00:00:00:00:00"):upper()
+	else
+		return (_ubus:call("network.device", "status", {name = self:ifname()})["macaddr"] or "00:00:00:00:00:00"):upper()
+	end
 end
 
 function protocol.netmask(self)
