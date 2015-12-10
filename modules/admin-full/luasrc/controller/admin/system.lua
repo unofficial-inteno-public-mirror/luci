@@ -46,6 +46,7 @@ function index()
 		end
 
 		entry({user, "system", "reboot"}, call("action_reboot"), _("Reboot"), 90)
+		entry({user, "system", "boardpanel"}, cbi("admin_system/boardpanel"), _("Board Panel"), 95)
 	end
 end
 
