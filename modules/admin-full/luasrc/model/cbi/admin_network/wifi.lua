@@ -487,7 +487,7 @@ mode:value("ap", translate("Access Point"))
 --mode:value("sta", translate("Client"))
 --end
 
-
+if TECUSER then
 local network_msg = (TECUSER) and " or fill out the <em>create</em> field to define a new network." or "."
 network = s:taboption("general", Value, "network", translate("Network"),
 	translate("Choose the network(s) you want to attach to this wireless interface%s" %network_msg))
@@ -528,7 +528,7 @@ function network.write(self, section, value)
 		end
 	end
 end
-
+end -- TECUSER
 
 -------------------- Broadcom Interface ----------------------
 
