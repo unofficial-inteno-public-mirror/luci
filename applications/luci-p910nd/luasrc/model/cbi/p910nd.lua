@@ -16,8 +16,7 @@ local uci = luci.model.uci.cursor_state()
 local net = require "luci.model.network"
 local m, s, p, b
 
-m = Map("p910nd", translate("p910nd - Printer server"),
-        translatef("First you have to install the packages to get support for USB (kmod-usb-printer) or parallel port (kmod-lp)."))
+m = Map("p910nd", translate("p910nd - Printer server"))
 
 net = net.init(m.uci)
 
