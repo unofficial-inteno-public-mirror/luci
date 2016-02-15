@@ -949,6 +949,8 @@ function protocol.mac(self)
 	if wan then device = ifstatus(wan, "device") end
 	if device then
 		return (_ubus:call("network.device", "status", {name = device})["macaddr"] or "00:00:00:00:00:00"):upper()
+	elseif self:ifname():match("^br-") then
+		return sys.exec("ifconfig %s | grep HWaddr | awk '{print$NF}'" %self:ifname()) or "00:00:00:00:00:00"
 	else
 		return (_ubus:call("network.device", "status", {name = self:ifname()})["macaddr"] or "00:00:00:00:00:00"):upper()
 	end
@@ -1254,7 +1256,11 @@ function interface.name(self)
 end
 
 function interface.mac(self)
-	return (self:_ubus("macaddr") or "00:00:00:00:00:00"):upper()
+	if self.ifname:match("^br-") then
+		return sys.exec("ifconfig %s | grep HWaddr | awk '{print$NF}'" %self.ifname) or "00:00:00:00:00:00"
+	else
+		return (self:_ubus("macaddr") or "00:00:00:00:00:00"):upper()
+	end
 end
 
 function interface.ipaddrs(self)
