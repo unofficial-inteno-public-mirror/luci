@@ -22,7 +22,13 @@ local vc = require "luci.model.cbi.voice.common"
 
 default_extension = 0
 
-m = Map("voice_client", "FXS and DECT Settings")
+local hasdect = " "
+if tonumber(luci.sys.exec("db -q get hw.board.hasDect")) == 1 then
+        hasdect = " and DECT "
+end
+local title = "FXS" .. hasdect .. "Settings"
+
+m = Map("voice_client", title)
 s = m:section(TypedSection, "brcm_line")
 s.template  = "cbi/tblsection"
 s.anonymous = true
