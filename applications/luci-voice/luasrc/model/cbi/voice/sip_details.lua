@@ -269,6 +269,14 @@ end
 
 autoframing = s:option(Flag, "autoframing", "Autoframing", "Negotiate packetization at call establishment")
 
+nat = s:option(ListValue, "nat", "NAT", "Reply to the sender's IP address and port")
+-- nat:value('', '-')
+nat:value('yes', 'Yes')
+nat:value('no', 'No')
+-- nat:value('comedia', 'Comedia')
+nat.default = 'yes'
+-- nat.rmempty = true
+
 transports = {udp = "UDP", tcp = "TCP", tls = "TLS"}
 transport = s:option(ListValue, 'transport', "SIP Transport")
 transport.default = "udp"
