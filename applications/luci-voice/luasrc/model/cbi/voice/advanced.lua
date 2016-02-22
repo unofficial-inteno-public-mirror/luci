@@ -142,6 +142,16 @@ if advanced_register_settings then
 		end
 		return nil, "Register Back-off Timeout must be at least 1 second"
 	end
+
+	rtpkeepalive = sip:option(Value, 'rtpkeepalive', "RTP Keepalive", "Number of seconds, when a RTP Keepalive packet will be sent if no other RTP traffic on that connection. Set to 0 for no RTP Keepalive");
+	rtpkeepalive.default = 30
+	rtpkeepalive.optional = true
+	function rtpkeepalive.validate(self, value, section)
+		if datatypes.min(value,0) then
+			return value
+		end
+		return nil, "RTP Keepalive must be at least 0 seconds"
+	end
 end
 
 remotehold = sip:option(Flag, 'remotehold', "Remote Hold", "Send hold events to proxy (Let network handle music on hold)")
