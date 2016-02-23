@@ -89,6 +89,16 @@ dtmfmode:value("info", "SIP INFO")
 dtmfmode:value("inband", "Inband")
 dtmfmode.default = "compatibility"
 
+minexpiry = sip:option(Value, 'minexpiry', "Register Interval (minimum)", "Minimum time in seconds between registration attempts");
+minexpiry.default = 60
+minexpiry.optional = true
+function minexpiry.validate(self, value, section)
+	if datatypes.min(value,1) then
+		return value
+	end
+	return nil, "Register Interval (minimum) must be at least 1 second"
+end
+
 defaultexpiry = sip:option(Value, 'defaultexpiry', "Register Interval (default)", "Default time in seconds between registration attempts");
 defaultexpiry.default = 300
 function defaultexpiry.validate(self, value, section)
