@@ -108,6 +108,16 @@ function defaultexpiry.validate(self, value, section)
 	return nil, "Register Interval (default) must be at least 1 second"
 end
 
+maxexpiry = sip:option(Value, 'maxexpiry', "Register Interval (maximum)", "Maximum time in seconds between registration attempts");
+maxexpiry.default = 600
+maxexpiry.optional = true
+function maxexpiry.validate(self, value, section)
+	if datatypes.min(value,1) then
+		return value
+	end
+	return nil, "Register Interval (maximum) must be at least 1 second"
+end
+
 realm = sip:option(Value, 'realm', "Realm", "Realm for digest authentication, set this to your host name or domain name");
 localnet = sip:option(DynamicList, 'localnet', "Localnet", "Network addresses that are considered inside of the NATted network");
 
