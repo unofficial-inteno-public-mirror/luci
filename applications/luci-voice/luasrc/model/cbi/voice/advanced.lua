@@ -89,13 +89,13 @@ dtmfmode:value("info", "SIP INFO")
 dtmfmode:value("inband", "Inband")
 dtmfmode.default = "compatibility"
 
-defaultexpiry = sip:option(Value, 'defaultexpiry', "Register Interval", "Time in seconds between registration attempts");
+defaultexpiry = sip:option(Value, 'defaultexpiry', "Register Interval (default)", "Default time in seconds between registration attempts");
 defaultexpiry.default = 300
 function defaultexpiry.validate(self, value, section)
 	if datatypes.min(value,1) then
 		return value
 	end
-	return nil, "Register Interval must be at least 1 second"
+	return nil, "Register Interval (default) must be at least 1 second"
 end
 
 realm = sip:option(Value, 'realm', "Realm", "Realm for digest authentication, set this to your host name or domain name");
