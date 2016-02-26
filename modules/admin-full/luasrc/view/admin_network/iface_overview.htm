@@ -36,7 +36,13 @@ You may obtain a copy of the License at
 	local tplgs = { }
 	if has_netmode then
 	curmode = uci:get("netmode", "setup", "curmode")
-	credmodes = uci:get("netmode", "setup", "credmodes")
+	credmodes=""
+	uci:foreach("netmode", "netmode",
+		function (section)
+			if section.askcred == "1" then
+				credmodes = credmodes .. " " .. section[".name"]
+			end
+		end)
 	detail = uci:get("netmode", "setup", "detail")
 	uci:foreach("netmode", "netmode",
 		function (section)
@@ -85,7 +91,7 @@ You may obtain a copy of the License at
 	}
 
 	function explain() {
-		var sidx, detail, mode, curmode, cred;
+		var sidx, detail, mode, curmode, credmodes, cred;
 
 		with ( document.forms[0] ) {
 			sidx = netstp.selectedIndex;
@@ -94,7 +100,8 @@ You may obtain a copy of the License at
 		}
 
 		curmode = "<%=curmode%>"
-		cred = "<%=credmodes%>"
+		credmodes = "<%=credmodes%>"
+		cred = credmodes.split(" ");
 
 		if (mode == curmode)
 			document.getElementById('change').disabled="disabled";

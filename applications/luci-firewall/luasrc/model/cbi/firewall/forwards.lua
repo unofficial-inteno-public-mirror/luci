@@ -83,40 +83,6 @@ function has_option(config, section, option, value)
 	return res
 end
 
--- Redirect WebGUI to a free port if user forwards port 80.
-function redirect_web()
-	-- select a free port
-	local dport = nil
-	local http_ports = { 8080, 8081, 8008, 8888 }
-	for _,p in ipairs(http_ports) do
-		p = tostring(p)
-		if not has_option("firewall", "redirect", "src_dport", p) then
-			dport = p
-			break
-		end
-	end
-
-	if dport then cursor:section("firewall", "redirect", nil, {
-		name      = "Redirect WebGUI",
-		src       = "wan",
-		dest      = "lan",
-		dest_ip   = cursor:get("network", "lan", "ipaddr") or "192.168.1.1",
-		src_dport = dport,
-		dest_port = "80",
-		proto     = "tcp",
-		target    = "DNAT",
-	}) end
-end
-
-function m.on_init(self)
-	if not has_option("firewall", "redirect", "name", "Redirect WebGUI") and
-		has_option("firewall", "redirect", "src_dport", "80") then
-		redirect_web()
-		cursor:save("firewall")
-		cursor:commit("firewall")
-	end
-end
-
 function s.filter(self, sid)
 	return (self.map:get(sid, "target") ~= "SNAT")
 end

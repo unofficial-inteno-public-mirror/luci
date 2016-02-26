@@ -36,7 +36,7 @@ s:option(Value, "name", translate("Hostname"))
 s:option(Value, "description", translate("Description"))
 s:option(Value, "workgroup", translate("Workgroup"))
 
-intf = s:option(MultiValue, "interfaces", translate("Interfaces"), translate("the interface(s) samba will listen on; samba will not start if no interface is selected"))
+intf = s:option(MultiValue, "interface", translate("Interfaces"), translate("the interface(s) samba will listen on; samba will not start if no interface is selected"))
 intf.rmempty = true
 uci:foreach("network", "interface",
 	function (section)
@@ -113,9 +113,9 @@ function compath.validate(self, value, section)
     end
 end
 
-if nixio.fs.access("/etc/config/fstab") then
-        pth.titleref = luci.dispatcher.build_url("admin", "system", "fstab")
-end
+--if nixio.fs.access("/etc/config/fstab") then
+--        pth.titleref = luci.dispatcher.build_url("admin", "system", "fstab")
+--end
 
 s:option(Value, "users", translate("Allowed users")).rmempty = true
 

@@ -203,7 +203,6 @@ s.sortable  = true
 s.extedit   = ds.build_url("admin/network/firewall/rules/%s")
 s.template_addremove = "firewall/cbi_addsnat"
 
-end
 
 function s.create(self, section)
 	created = TypedSection.create(self, section)
@@ -274,5 +273,7 @@ ft.opt_enabled(s, Flag, translate("Enable")).width = "1%"
 if TECUSER then
 	ft.opt_hidden(s, Flag, translate("Hide")).width = "1%"
 end
+
+end --user ~= "user"
 
 return m

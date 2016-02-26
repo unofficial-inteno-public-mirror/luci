@@ -932,6 +932,30 @@ function protocol.ipaddr(self)
 	return addrs and #addrs > 0 and addrs[1].address
 end
 
+function ifstatus(network, field)
+	if not _ubusnetcache[network] then
+		_ubusnetcache[network] = _ubus:call("network.interface.%s" %network,
+		                                     "status", { })
+	end
+	if _ubusnetcache[network] and field then
+		return _ubusnetcache[network][field]
+	end
+	return _ubusnetcache[network]
+end
+
+function protocol.mac(self)
+	local device = nil
+	local wan = self:ifname():match("^ppp%S+-(%S+)")
+	if wan then device = ifstatus(wan, "device") end
+	if device then
+		return (_ubus:call("network.device", "status", {name = device})["macaddr"] or "00:00:00:00:00:00"):upper()
+	elseif self:ifname():match("^br-") then
+		return sys.exec("ifconfig %s | grep HWaddr | awk '{print$NF}'" %self:ifname()) or "00:00:00:00:00:00"
+	else
+		return (_ubus:call("network.device", "status", {name = self:ifname()})["macaddr"] or "00:00:00:00:00:00"):upper()
+	end
+end
+
 function protocol.netmask(self)
 	local addrs = self:_ubus("ipv4-address")
 	return addrs and #addrs > 0 and
@@ -1232,7 +1256,11 @@ function interface.name(self)
 end
 
 function interface.mac(self)
-	return (self:_ubus("macaddr") or "00:00:00:00:00:00"):upper()
+	if self.ifname:match("^br-") then
+		return sys.exec("ifconfig %s | grep HWaddr | awk '{print$NF}'" %self.ifname) or "00:00:00:00:00:00"
+	else
+		return (self:_ubus("macaddr") or "00:00:00:00:00:00"):upper()
+	end
 end
 
 function interface.ipaddrs(self)
@@ -1326,7 +1354,7 @@ function interface.get_i18n(self)
 		}
 	elseif self:name():match("^eth%d$") then
 		return "%s: %s" %{ self:get_type_i18n(), self:portname().."->"..self:name() }
-	elseif self:type()=="vlan" or  self:type()=="adsl" or self:type()=="vdsl2" or self:type()=="ethernetwan"    then
+	elseif (self:type()=="vlan" or  self:type()=="adsl" or self:type()=="vdsl2" or self:type()=="ethernetwan") and (self:get_linklayername() and self:name()) then
 		return "%s: %s" %{ self:get_type_i18n(), self:get_linklayername().."->"..self:name() }
 	else
 		return "%s: %q" %{ self:get_type_i18n(), self:name() }
@@ -1660,6 +1688,16 @@ function wifidev.radio(self)
 	return up
 end
 
+function wifidev.enabled(self)
+	local enabled = true
+
+	if self:get("disabled") == "1" then
+		enabled = false
+	end
+
+	return enabled
+end
+
 function wifidev.get_wifinet(self, net)
 	if _uci_real:get("wireless", net) == "wifi-iface" then
 		return wifinet(net)
@@ -1807,6 +1845,7 @@ function wifinet.active_mode(self)
 
 	if     m == "ap"      then m = "Master"
 	elseif m == "sta"     then m = "Client"
+	elseif m == "wet"     then m = "WET"
 	elseif m == "adhoc"   then m = "Ad-Hoc"
 	elseif m == "mesh"    then m = "Mesh"
 	elseif m == "monitor" then m = "Monitor"

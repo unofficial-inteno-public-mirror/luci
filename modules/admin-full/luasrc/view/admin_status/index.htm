@@ -20,7 +20,7 @@ You may obtain a copy of the License at
 
 	local has_ipv6 = luci.fs.access("/proc/net/ipv6_route")
 	local has_dhcp = luci.fs.access("/etc/config/dhcp")
-	local active_ipv6 = luci.fs.access("/var/hosts/6relayd")
+	local active_ipv6 = luci.fs.access("/var/hosts/odhcpd")
 	local has_wifi = luci.fs.stat("/etc/config/wireless")
 	      has_wifi = has_wifi and has_wifi.size > 0
 	local has_swap
@@ -28,7 +28,7 @@ You may obtain a copy of the License at
 	local prt = require "luci.model.ports".init()
 	local router = luci.quest.router_static_sysinfo()
 
-	local onlinefw = luci.sys.upgrade_check("online") or ""
+	--local onlinefw = luci.sys.upgrade_check("online") or ""
 
 	if luci.http.formvalue("status") == "1" then
 		local ntm = require "luci.model.network".init()
@@ -72,6 +72,7 @@ You may obtain a copy of the License at
 			rv.wan = {
 				ipaddr  = wan:ipaddr(),
 				gwaddr  = wan:gwaddr(),
+				macaddr = wan:mac(),
 				netmask = wan:netmask(),
 				dns     = wan:dnsaddrs(),
 				expires = wan:expires(),
@@ -86,13 +87,13 @@ You may obtain a copy of the License at
 		end
 
 		rv.port = {
-			eth0	= prt:status_eth("eth0", "link") or prt:status_eth("eth0", "up"),
-			eth1	= prt:status_eth("eth1", "link") or prt:status_eth("eth1", "up"),
-			eth2	= prt:status_eth("eth2", "link") or prt:status_eth("eth2", "up"),
-			eth3	= prt:status_eth("eth3", "link") or prt:status_eth("eth3", "up"),
-			eth4	= prt:status_eth("eth4", "link") or prt:status_eth("eth4", "up"),
-			eth5	= prt:status_eth("eth5", "link") or prt:status_eth("eth5", "up"),
-			eth6	= prt:status_eth("eth6", "link") or prt:status_eth("eth6", "up"),
+			eth0	= prt:status_eth("eth0", "carrier"),
+			eth1	= prt:status_eth("eth1", "carrier"),
+			eth2	= prt:status_eth("eth2", "carrier"),
+			eth3	= prt:status_eth("eth3", "carrier"),
+			eth4	= prt:status_eth("eth4", "carrier"),
+			eth5	= prt:status_eth("eth5", "carrier"),
+			eth6	= prt:status_eth("eth6", "carrier"),
 			dsl	= specs.hasadsl and prt:status_dsl() or "na",
 			usb     = prt:status_usb()
 		}
@@ -111,6 +112,7 @@ You may obtain a copy of the License at
 		if wan6 then
 			rv.wan6 = {
 				ip6addr = wan6:ip6addr(),
+				ip6mac	= wan6:mac(),
 				gw6addr = wan6:gw6addr(),
 				dns     = wan6:dns6addrs(),
 				uptime  = wan6:uptime(),
@@ -253,10 +255,12 @@ You may obtain a copy of the License at
 					var s = String.format(
 						'<strong><%:Type%>: </strong>%s<br />' +
 						'<strong><%:Address%>: </strong>%s<br />' +
+						'<strong><%:MAC%>: </strong>%s<br />' +
 						'<strong><%:Netmask%>: </strong>%s<br />' +
 						'<strong><%:Gateway%>: </strong>%s<br />',
 							ifc.proto,
 							(ifc.ipaddr) ? ifc.ipaddr : '0.0.0.0',
+							(ifc.macaddr) ? ifc.macaddr : '00:00:00:00:00:00',
 							(ifc.netmask != ifc.ipaddr) ? ifc.netmask : '255.255.255.255',
 							(ifc.gwaddr) ? ifc.gwaddr : '0.0.0.0'
 					);
@@ -346,8 +350,10 @@ You may obtain a copy of the License at
 				{
 					var s = String.format(
 						'<strong><%:Address%>: </strong>%s<br />' +
+						'<strong><%:MAC%>: </strong>%s<br />' +
 						'<strong><%:Gateway%>: </strong>%s<br />',
 							(ifc6.ip6addr) ? ifc6.ip6addr : '::',
+							(ifc6.ip6mac) ? ifc6.ip6mac : '::',
 							(ifc6.gw6addr) ? ifc6.gw6addr : '::'
 					);
 
@@ -711,19 +717,19 @@ You may obtain a copy of the License at
 
 <h2><a id="content" name="content"><%:Status%></a></h2>
 
-<% if onlinefw ~= "" then %>
-<div align="right" id="upDiv">
-	<img id="upgrade" src="<%=resource%>/icons/notification.png" height="40" width="40" onclick="fwUpgrade(0)" title="New firmware is available! Click on the icon to proceed with upgrade."/>
-</div>
-<div align="right" id="keepDiv" style="display:none">
-	<font style="color:#e4302c"> A newer firmware is available from your ISP!</font><br>
-	Upgrade and <em><b>retain</b></em> current configuration <input id="keep" type="radio" onClick="fwUpgrade(1)"><br>
-	Upgrade and <em><b>delete</b></em> current configuration <input id="nokeep" type="radio" onClick="fwUpgrade(2)"><br>
-	Do not upgrade <input id="cancel" type="radio" onClick="fwUpgrade(3)"><br>
-	<p id='message' >
-</div>
-<br>
-<% end %>
+<!--<% if onlinefw ~= "" then %>-->
+<!--<div align="right" id="upDiv">-->
+<!--	<img id="upgrade" src="<%=resource%>/icons/notification.png" height="40" width="40" onclick="fwUpgrade(0)" title="New firmware is available! Click on the icon to proceed with upgrade."/>-->
+<!--</div>-->
+<!--<div align="right" id="keepDiv" style="display:none">-->
+<!--	<font style="color:#e4302c"> A newer firmware is available from your ISP!</font><br>-->
+<!--	Upgrade and <em><b>retain</b></em> current configuration <input id="keep" type="radio" onClick="fwUpgrade(1)"><br>-->
+<!--	Upgrade and <em><b>delete</b></em> current configuration <input id="nokeep" type="radio" onClick="fwUpgrade(2)"><br>-->
+<!--	Do not upgrade <input id="cancel" type="radio" onClick="fwUpgrade(3)"><br>-->
+<!--	<p id='message' >-->
+<!--</div>-->
+<!--<br>-->
+<!--<% end %>-->
 
 <p align="center"><input type="radio" id="bradio" onclick="system_table('basic')" checked> <b>Basic View<b/> &nbsp;&nbsp;&nbsp;&nbsp;
 <input type="radio" id="aradio" onclick="system_table('advanced')"> <b>Advanced View<b/><br/>
@@ -758,6 +764,7 @@ You may obtain a copy of the License at
 			<%=pcdata(luci.version.luciname)%> <%=pcdata(luci.version.luciversion)%>
 		</td></tr>
 		<tr><td width="33%"><%:Kernel Version%></td><td><%=pcdata(router.kernel)%></td></tr>
+		<tr><td width="33%"><%:File System%></td><td><%=pcdata(router.filesystem)%></td></tr>
 		<tr><td width="33%"><%:Local Time%></td><td id="alocaltime">-</td></tr>
 		<tr><td width="33%"><%:Uptime%></td><td id="auptime">-</td></tr>
 		<tr><td width="33%"><%:CPU%></td><td id="acpu">-</td></tr>

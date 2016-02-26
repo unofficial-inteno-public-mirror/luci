@@ -234,6 +234,7 @@ if hwtype == "broadcom" then
 	if wdev:is_5g() then
 		dfsc = s:taboption("advanced", Flag, "dfsc", translate("DFS Channel Selection"), translate("Note: Some wireless devices do not support DFS/TPC channels"))
 		dfsc:depends("channel", "auto")
+		dfsc.default = "1"
 		dfsc.rmempty = true
 	end
 
@@ -251,6 +252,12 @@ if TECUSER then
 	timer.default = 15
 	timer.rmempty = true
 
+	if wdev:is_5g() then
+		bf = s:taboption("advanced", Flag, "beamforming", translate("Beamforming"))
+		bf.default = "1"
+		bf.rmempty = true
+	end
+
 	rifs = s:taboption("advanced", ListValue, "rifs", translate("RIFS"))
 	rifs:depends("hwmode", "auto")
 	rifs:depends("hwmode", "11n")
@@ -263,11 +270,13 @@ if TECUSER then
 	rifsad:value("0", "Off")	
 	rifsad:value("-1", "Auto")
 
-	obss = s:taboption("advanced", ListValue, "obss_coex", translate("OBSS Co-Existence"))
-	obss:depends("bandwidth", "40")
-	obss:depends("bandwidth", "80")
-	obss:value("1", "Enable")
-	obss:value("0", "Disable")
+	if not wdev:is_5g() then
+		obss = s:taboption("advanced", ListValue, "obss_coex", translate("OBSS Co-Existence"))
+		obss:depends("bandwidth", "40")
+		obss:depends("bandwidth", "80")
+		obss:value("1", "Enable")
+		obss:value("0", "Disable")
+	end
 end
 
 --	rate = s:taboption("advanced", ListValue, "rate", translate("Rate Limit"))
@@ -320,17 +329,17 @@ if TECUSER then
 --	sm:value("3", "Disable 11h and enable 11d")
 end
 
-	pwr = s:taboption("advanced", ListValue, "txpower", translate("Transmit Power"))
-	pwr:value("10", "10%")
-	pwr:value("20", "20%")
-	pwr:value("30", "30%")
-	pwr:value("40", "40%")
-	pwr:value("50", "50%")
-	pwr:value("60", "60%")
-	pwr:value("70", "70%")
-	pwr:value("80", "80%")
-	pwr:value("90", "90%")
-	pwr:value("100", "100%")
+--	pwr = s:taboption("advanced", ListValue, "txpower", translate("Transmit Power"))
+--	pwr:value("10", "10%")
+--	pwr:value("20", "20%")
+--	pwr:value("30", "30%")
+--	pwr:value("40", "40%")
+--	pwr:value("50", "50%")
+--	pwr:value("60", "60%")
+--	pwr:value("70", "70%")
+--	pwr:value("80", "80%")
+--	pwr:value("90", "90%")
+--	pwr:value("100", "100%")
 
 	wm = s:taboption("advanced", ListValue, "wmm", translate("WMM Mode"))
 	wm:value("-1", "Auto")	
@@ -474,11 +483,11 @@ ssid = s:taboption("general", Value, "ssid", translate("<abbr title=\"Extended S
 mode = s:taboption("general", ListValue, "mode", translate("Mode"))
 mode.override_values = true
 mode:value("ap", translate("Access Point"))
-if wdev:is_sta_capable() then
-mode:value("sta", translate("Client"))
-end
+--if wdev:is_sta_capable() then
+--mode:value("sta", translate("Client"))
+--end
 
-
+if TECUSER then
 local network_msg = (TECUSER) and " or fill out the <em>create</em> field to define a new network." or "."
 network = s:taboption("general", Value, "network", translate("Network"),
 	translate("Choose the network(s) you want to attach to this wireless interface%s" %network_msg))
@@ -519,7 +528,7 @@ function network.write(self, section, value)
 		end
 	end
 end
-
+end -- TECUSER
 
 -------------------- Broadcom Interface ----------------------
 

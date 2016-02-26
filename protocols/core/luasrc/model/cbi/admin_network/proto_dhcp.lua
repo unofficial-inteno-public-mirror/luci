@@ -68,6 +68,10 @@ vendorclass = section:taboption("advanced", Value, "vendorid",
 	translate("Vendor Class to send when requesting DHCP"))
 
 
+reqopts = section:taboption("advanced", Value, "reqopts",
+	translate("Additional DHCP options to request from the server"))
+
+
 luci.tools.proto.opt_macaddr(section, ifc, translate("Override MAC address"))
 
 

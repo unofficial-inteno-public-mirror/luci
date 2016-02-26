@@ -109,7 +109,6 @@ function cbi_add_networks(field)
 			end
 		end
 	)
-	field.titleref = luci.dispatcher.build_url(GUSER, "network", "network")
 end
 
 function cbi_add_wan_networks(field)

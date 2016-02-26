@@ -28,7 +28,7 @@ backup=s:option(Button, "getprov", translate("Export file"),translate("Dump runn
 backup.write = function(self, section)
 local backup_cmd  = "sysupgrade --create-backup-uci - 2>/dev/null"
 local reader = ltn12_popen(backup_cmd)
-		luci.http.header('Content-Disposition', 'attachment; filename="backup-%s-%s.tar.gz"' % {
+		luci.http.header('Content-Disposition', 'attachment; filename="provisioning-%s-%s.tar.gz"' % {
 			luci.sys.hostname(), os.date("%Y-%m-%d")})
 		luci.http.prepare_content("application/x-targz")
 		luci.ltn12.pump.all(reader, luci.http.write)	

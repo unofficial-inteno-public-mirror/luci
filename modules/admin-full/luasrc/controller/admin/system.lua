@@ -46,6 +46,10 @@ function index()
 		end
 
 		entry({user, "system", "reboot"}, call("action_reboot"), _("Reboot"), 90)
+
+		entry({user, "system", "boardpanel"}, cbi("admin_system/inteno_buttons"), _("Board Panel"), 95)
+		entry({user, "system", "boardpanel", "buttons"}, cbi("admin_system/inteno_buttons"), "Buttons", 1)
+		entry({user, "system", "boardpanel", "leds"}, cbi("admin_system/inteno_leds"), "LEDs", 2)
 	end
 end
 

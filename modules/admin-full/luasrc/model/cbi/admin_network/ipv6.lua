@@ -14,7 +14,7 @@ You may obtain a copy of the License at
 local m, s, o
 
 m = Map("6relayd", translate("IPv6 RA and DHCPv6"),
-	translate("6relayd is a daemon for serving and relaying IPv6 management protocols to "..
+	translate("odhcpd is a daemon for serving and relaying IPv6 management protocols to "..
 	"configure clients and downstream routers. "..
 	"It provides server services for RA, stateless and stateful DHCPv6, "..
 	"prefix delegation and can be used to relay RA, DHCPv6 and NDP between routed "..

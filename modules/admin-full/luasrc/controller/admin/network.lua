@@ -289,7 +289,7 @@ function wifi_join()
 end
 
 function wifi_onoff(dev)
-	luci.sys.exec("pidof ecobutton || /sbin/ecobutton %s" %dev)
+	luci.sys.exec("pidof wifi || /sbin/wifi toggle %s" %dev)
 	luci.http.redirect(luci.dispatcher.build_url("admin/network/wireless"))
 end
 

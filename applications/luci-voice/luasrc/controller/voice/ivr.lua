@@ -25,7 +25,7 @@ function index()
 	local users = { "admin", "support", "user" }
 
 	for k, user in pairs(users) do
-		if user ~= "user"  then
+		if user == "admin"  then
 			entry({user, "services", "voice", "ivr"},
 				arcombine(cbi("voice/ivr"), cbi("voice/ivr_details")),
 				_("IVR"), 21).leaf = true

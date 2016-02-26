@@ -65,6 +65,16 @@ function parse_enabled(self, section)
 			self.add_error(self, section, "missing", "Please enter a password")
 		end
 	end
+	
+	if fvalue and section == "sip0" then
+		vc.foreach_user({'brcm', 'sip'},
+			function(v)
+				if v['sip_account'] == "-" then
+					m.uci:set("voice_client", v['.name'], "sip_account", section)
+				end
+			end
+		)
+	end
 end
 
 -- Enabled checkbox
@@ -101,12 +111,14 @@ lines:depends('target', 'direct')
 line_nr = 0
 -- DECT
 for i = 1, dectCount do
-	lines:value("BRCM/" .. line_nr, "DECT " .. i)
+	linenum = "brcm%d" %line_nr
+	lines:value("BRCM/" .. line_nr, m.uci:get("voice_client", linenum, "name") or linenum:upper())
 	line_nr = line_nr + 1
 end
 -- FXS
 for i = 1, fxsCount do
-	lines:value("BRCM/" .. line_nr, "Tel " .. i)
+	linenum = "brcm%d" %line_nr
+	lines:value("BRCM/" .. line_nr, m.uci:get("voice_client", linenum, "name") or linenum:upper())
 	line_nr = line_nr + 1
 end
 -- SIP users
@@ -201,11 +213,18 @@ s:option(Value, "displayname", "Display Name", "Display name used in Caller Id")
 
 -- Create and populate dropdowns with available codec choices                            
 codecs = {}
+ptimes = {}
 i = 0
 m.uci:foreach("voice_codecs", "supported_codec",
 	function(s1)
 		codecs[s1['.name']] = s1.name;
+		pmin = tonumber(s1.ptime_min) or 10
+		pmax = tonumber(s1.ptime_max) or 300
+		pdef = tonumber(s1.ptime_default) or 20
+		pinc = tonumber(s1.ptime_increment) or 10
+		ptimes[s1['.name']] = { min = pmin, max = pmax, default = pdef, increment = pinc }
 	end)
+
 for a, b in pairs(codecs) do
 	if i == 0 then
 		codec = s:option(ListValue, "codec"..i, "Preferred codecs")
@@ -224,17 +243,6 @@ for a, b in pairs(codecs) do
 
 	i = i + 1
 end
-
-ptimes = {
-	ulaw = {min = 10, max = 150, default = 20, increment = 10},
-	alaw = {min = 10, max = 150, default = 20, increment = 10},
-	g729 = {min = 10, max = 230, default = 20, increment = 10},
-	g723 = {min = 30, max = 300, default = 30, increment = 30},
-	g726 = {min = 10, max = 300, default = 20, increment = 10},
-	g722 = {min = 10, max = 300, default = 20, increment = 10},
-	gsm  = {min = 10, max = 300, default = 20, increment = 10},
-	ilbc = {min = 10, max = 300, default = 20, increment = 10}
-}
 
 for a, b in pairs(codecs) do
 	ptime = s:option(ListValue, "ptime_"..a, b.." packetization")

@@ -60,7 +60,7 @@ n = s:option(Value, "igmp_robustness_value",translate("Robustness value") )
 
 n = s:option(Flag, "igmp_lan_to_lan_multicast",translate("LAN to LAN multicast"),
 ("Check box to enable LAN to LAN multicast"))
-n.enabled="1"                                                                                
+n.enabled="1"
 n.disabled="0"
 
 n = s:option(Value, "igmp_max_groups",translate("Max groups") )
@@ -69,7 +69,7 @@ n = s:option(Value, "igmp_max_members",translate("Max members") )
 
 n = s:option(Flag, "igmp_fast_leave",translate("Fast leave"),
 ("Check box to enable fast leave"))
-n.enabled="1"                                             
+n.enabled="1"
 n.disabled="0"
 
 n = s:option(Flag, "igmp_join_immediate",translate("Join immediate"),
@@ -81,7 +81,12 @@ n = s:option(Flag, "igmp_proxy_enable",translate("Proxy enable"),
 ("Check box to enable IGMP proxy"))
 n.enabled="1"
 n.disabled="0"
-                                                                     
+
+n = s:option(Flag, "igmp_ssm_range_ignore", translate("Ignore SSM Range"),
+translate("Check box to ignore SSM RFC to enable regular multicast on SSM-Range"))
+n.enabled="1"
+n.disabled="0"
+
 n = s:option(ListValue, "igmp_snooping_enable",translate("IGMP snooping mode"),
 ("Choose snooping mode"))
 n:value("0", "Disabled")

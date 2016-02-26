@@ -129,12 +129,8 @@ function l.cfgvalue(self, section)
 					)
 				else
 					lineId = tonumber(l:match("%d+"))
-				
-					if (lineId < dectCount) then
-						table.insert(lines, "DECT " .. lineId + 1)
-					else
-						table.insert(lines, "Tel " .. lineId - dectCount + 1)
-					end
+					lineNum = "brcm%d" %lineId
+					table.insert(lines, m.uci:get("voice_client", lineNum, "name") or lineNum:upper())
 				end
 			end
 			return table.concat(lines, ", ")

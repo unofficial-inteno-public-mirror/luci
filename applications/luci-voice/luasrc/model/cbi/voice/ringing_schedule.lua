@@ -27,14 +27,14 @@ m = Map("voice_client", "Ringing Schedule", "Define schedules when your phones s
 s = m:section(TypedSection, "ringing_status")
 s.anonymous = true
 
-status = s:option(ListValue, 'status', "Enable ringing schedules")
+status = s:option(ListValue, 'enabled', "Enable ringing scheduling")
 status.default = "0"
 status.rmempty = true
 status:value("1", "Enabled")
 status:value("0", "Disabled")
 
-enabled = s:option(ListValue, 'enabled', "During the times given below, ringing should be")
-enabled.default = "1"
+enabled = s:option(ListValue, 'status', "During the times given below, ringing should be")
+enabled.default = "0"
 enabled.rmempty = true
 enabled:value("1", "Enabled")
 enabled:value("0", "Disabled")

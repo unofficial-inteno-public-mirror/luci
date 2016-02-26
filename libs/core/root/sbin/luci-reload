@@ -35,10 +35,8 @@ reload_init() {
 
 lock "/var/run/luci-reload"
 
-config_load ucitrack
-
 for i in $*; do
-	config_foreach apply_config $i $i
+	ubus call uci commit "{\"config\":\"$i\"}"
 done
 
 rm -f "/var/run/luci-reload-status"

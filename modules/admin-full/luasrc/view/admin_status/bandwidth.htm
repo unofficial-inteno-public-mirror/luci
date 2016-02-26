@@ -118,7 +118,7 @@ $Id: bandwidth.htm 9014 2012-08-14 13:08:18Z jow $
 
 			if (!G)
 			{
-				window.setTimeout(arguments.callee, 1000);
+				window.setTimeout(arguments.callee, 3000);
 			}
 			else
 			{
@@ -276,7 +276,7 @@ $Id: bandwidth.htm 9014 2012-08-14 13:08:18Z jow $
 					}
 				);
 			}
-		}, 1000
+		}, 3000
 	);
 //]]></script>
 
@@ -288,7 +288,7 @@ $Id: bandwidth.htm 9014 2012-08-14 13:08:18Z jow $
                         <li class="cbi-tab<%= dev == curdev and "" or "-disabled" %>"><a href="<%=pcdata(dev)%>"><%=pcdata(prt:l2name(dev))%></a></li>
                 <% elseif dev:match("^eth%d$") then %>
                         <li class="cbi-tab<%= dev == curdev and "" or "-disabled" %>"><a href="<%=pcdata(dev)%>"><%=pcdata(prt:port_type(dev))%></a></li>
-                <% elseif dev:match("wl%d") and not pcdata(luci.sys.exec("wlctl -i %s ssid | cut -d' ' -f 3" %dev)):match("\x00") then %>
+                <% elseif dev:match("wl%d") and pcdata(luci.sys.exec("nvram get %s_bss_enabled" %dev)):match("1") then %>
 			<% local ssid = luci.sys.exec("wlctl -i %s ssid | cut -d' ' -f 3" %dev):gsub('"', '')
 			local freq = luci.sys.exec("wlctl -i %s band" %dev):match("a") and "@5GHz" or "@2.4GHz" %>
                         <li class="cbi-tab<%= dev == curdev and "" or "-disabled" %>"><a href="<%=pcdata(dev)%>"><%=pcdata(ssid..freq)%></a></li>
