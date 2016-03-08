@@ -269,6 +269,13 @@ end
 
 autoframing = s:option(Flag, "autoframing", "Autoframing", "Negotiate packetization at call establishment")
 
+qualify = s:option(ListValue, "qualify", "Qualify", "Regularly check that the SIP provider is still online")
+qualify:value('', '-')
+qualify:value('yes', 'Yes')
+qualify:value('no', 'No')
+qualify.default = ""
+qualify.rmempty = true
+
 transports = {udp = "UDP", tcp = "TCP", tls = "TLS"}
 transport = s:option(ListValue, 'transport', "SIP Transport")
 transport.default = "udp"

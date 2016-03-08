@@ -98,6 +98,16 @@ function defaultexpiry.validate(self, value, section)
 	return nil, "Register Interval must be at least 1 second"
 end
 
+qualifyfreq = sip:option(Value, 'qualifyfreq', "Qualify Frequency", "The frequency in seconds between checks for an offline SIP provider");
+qualifyfreq.default = 55
+qualifyfreq.optional = true
+function qualifyfreq.validate(self, value, section)
+	if datatypes.min(value,1) then
+		return value
+	end
+	return nil, "Qualify Frequency must be at least 1 second"
+end
+
 realm = sip:option(Value, 'realm', "Realm", "Realm for digest authentication, set this to your host name or domain name");
 localnet = sip:option(DynamicList, 'localnet', "Localnet", "Network addresses that are considered inside of the NATted network");
 
