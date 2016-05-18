@@ -70,7 +70,11 @@ function get_call_log()
 				direction = "Incoming"
 			end
 			d = tonumber(values[14])
-			duration = string.format("%02.0f:%02.0f:%02.0f", d / (60 * 60), (d / 60) % 60, d % 60)
+			if d ~= nil then
+				duration = string.format("%02.0f:%02.0f:%02.0f", d / (60 * 60), (d / 60) % 60, d % 60)
+			else
+				duration = nil
+			end
 			to = values[3]
 			-- Strip any suffixes
 			k1, k2 = string.find(to, "_")
