@@ -100,7 +100,9 @@ end
 
 function remove_cdr(self, section)
 	unique_id = self.map:get(section, "uniqueid")
-	os.execute('asterisk -rx "cdr_csv remove cdr ' .. unique_id .. '"')
+	if unique_id then
+		os.execute('asterisk -rx "cdr_csv remove cdr ' .. unique_id .. '"')
+	end
 	luci.http.redirect(luci.dispatcher.build_url("admin/services/voice/log"))
 end
 
