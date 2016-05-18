@@ -89,12 +89,14 @@ end
 -- Create a asterisk call file in temporary directory, then reload page
 function create_call_file(self, section)
 	to = self.map:get(section, "to")
-	value = "Channel: BRCM/" .. self.line .. "\n"
-	value = value .. "CallerID: \"\"<" .. to .. ">\n"
-	value = value .. "Context: " .. self.context .. "\n"
-	value = value .. "Extension: " .. to .. "\n"
-	value = value .. "Priority: 1\n"
-	nixio.fs.writefile("/tmp/clicktodial.tmp", value)
+	if to then
+		value = "Channel: BRCM/" .. self.line .. "\n"
+		value = value .. "CallerID: \"\"<" .. to .. ">\n"
+		value = value .. "Context: " .. self.context .. "\n"
+		value = value .. "Extension: " .. to .. "\n"
+		value = value .. "Priority: 1\n"
+		nixio.fs.writefile("/tmp/clicktodial.tmp", value)
+	end
 	luci.http.redirect(luci.dispatcher.build_url("admin/services/voice/log", to))
 end
 
