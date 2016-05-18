@@ -18,6 +18,9 @@ function ParseCSVLine (line,sep)
 			local txt = ""
 			repeat
 				local startp,endp = string.find(line,'^%b""',pos)
+				if startp == nil then
+					break
+				end
 				txt = txt..string.sub(line,startp+1,endp-1)
 				pos = endp + 1
 				c = string.sub(line,pos,pos)
@@ -27,8 +30,10 @@ function ParseCSVLine (line,sep)
 				-- this is the way to "escape" the quote char in a quote. example:
 				--	value1,"blub""blip""boing",value3	will result in blub"blip"boing	for the middle
 			until (c ~= '"')
+			if (c ~= sep) and (c ~= "") then
+				break
+			end
 			table.insert(res,txt)
-			assert(c == sep or c == "")
 			pos = pos + 1
 		else
 			-- no quotes used, just look for the first separator
