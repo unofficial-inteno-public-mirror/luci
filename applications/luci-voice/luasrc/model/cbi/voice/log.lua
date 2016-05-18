@@ -6,11 +6,11 @@
 local vc = require "luci.model.cbi.voice.common"
 
 -- This function was copied from http://lua-users.org/wiki/LuaCsv 2015-05-22
-function ParseCSVLine (line,sep) 
+function ParseCSVLine (line,sep)
 	local res = {}
 	local pos = 1
 	sep = sep or ','
-	while true do 
+	while true do
 		local c = string.sub(line,pos,pos)
 		if (c == "") then break end
 		if (c == '"') then
@@ -20,27 +20,27 @@ function ParseCSVLine (line,sep)
 				local startp,endp = string.find(line,'^%b""',pos)
 				txt = txt..string.sub(line,startp+1,endp-1)
 				pos = endp + 1
-				c = string.sub(line,pos,pos) 
-				if (c == '"') then txt = txt..'"' end 
+				c = string.sub(line,pos,pos)
+				if (c == '"') then txt = txt..'"' end
 				-- check first char AFTER quoted string, if it is another
 				-- quoted string without separator, then append it
 				-- this is the way to "escape" the quote char in a quote. example:
-				--   value1,"blub""blip""boing",value3  will result in blub"blip"boing  for the middle
+				--	value1,"blub""blip""boing",value3	will result in blub"blip"boing	for the middle
 			until (c ~= '"')
 			table.insert(res,txt)
 			assert(c == sep or c == "")
 			pos = pos + 1
-		else	
+		else
 			-- no quotes used, just look for the first separator
 			local startp,endp = string.find(line,sep,pos)
-			if (startp) then 
+			if (startp) then
 				table.insert(res,string.sub(line,pos,startp-1))
 				pos = endp + 1
 			else
 				-- no separator found -> use rest of string and terminate
 				table.insert(res,string.sub(line,pos))
 				break
-			end 
+			end
 		end
 	end
 	return res
@@ -64,13 +64,13 @@ function get_call_log()
 			else
 				direction = "Incoming"
 			end
-			d = tonumber(values[14])                                      
+			d = tonumber(values[14])
 			duration = string.format("%02.0f:%02.0f:%02.0f", d / (60 * 60), (d / 60) % 60, d % 60)
-			to = values[3]                                                                        
-			-- Strip any suffixes                                                                 
-			k1, k2 = string.find(to, "_")                                                         
-			if k1 ~= nil then                                                                     
-			        to = string.sub(to, 1, k1 - 1)                                                
+			to = values[3]
+			-- Strip any suffixes
+			k1, k2 = string.find(to, "_")
+			if k1 ~= nil then
+				to = string.sub(to, 1, k1 - 1)
 			end
 			calls[i] = {
 				time = values[10],
@@ -94,7 +94,7 @@ function create_call_file(self, section)
 	value = value .. "Context: " .. self.context .. "\n"
 	value = value .. "Extension: " .. to .. "\n"
 	value = value .. "Priority: 1\n"
-        nixio.fs.writefile("/tmp/clicktodial.tmp", value)
+	nixio.fs.writefile("/tmp/clicktodial.tmp", value)
 	luci.http.redirect(luci.dispatcher.build_url("admin/services/voice/log", to))
 end
 
@@ -130,13 +130,13 @@ if nixio.fs.stat("/tmp/clicktodial.tmp") then
 	else
 		title = "Calling"
 	end
-	
+
 	m = SimpleForm("_log", title)
 	m.reset = false
 	m.submit = false
 	s = m:section(SimpleSection)
-        b = s:option(Button, "back", "Back to Log")
-        b.write = back_to_log
+	b = s:option(Button, "back", "Back to Log")
+	b.write = back_to_log
 	return m
 -- Show call log table
 else
