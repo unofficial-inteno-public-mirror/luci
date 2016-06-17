@@ -1,7 +1,7 @@
 module("luci.controller.dect", package.seeall)
 
 function index()
-	if not nixio.fs.access("/usr/bin/dectmngr") then
+	if not nixio.fs.access("/usr/sbin/dectmngr2") then
 		return
 	end
 
@@ -22,26 +22,26 @@ function index()
 		page = entry({user, "services", "dect", "reg_start"}, call("reg_start"))
 		page = entry({user, "services", "dect", "delete_hset"}, call("delete_hset"))
 		page = entry({user, "services", "dect", "ping_hset"}, call("ping_hset"))
-		page = entry({user, "services", "dect", "switch_plug"}, call("switch_plug"))
+		--page = entry({user, "services", "dect", "switch_plug"}, call("switch_plug"))
 	end
 end
 
 function reg_start()
-	luci.sys.exec("/usr/bin/dect -r > /dev/null &")
+	luci.sys.exec("ubus -t 1 call dect state \"{'registration':'on'}\"")
 	status()
 end
 
 function delete_hset(opts)
-	 local handset = luci.http.formvalue("handset")
-	 local rv = luci.sys.exec("/usr/bin/dect -d " .. handset)
+	 local handset = tonumber(luci.http.formvalue("handset"))
+	 local rv = luci.sys.exec("ubus -t 1 call dect call \"{'terminal':%d, 'release':%d}\"" % {handset, handset-1})
 	 
 	 luci.http.write(rv)
 end
 
 
 function ping_hset(opts)
-	 local handset = luci.http.formvalue("handset")
-	 local rv = luci.sys.exec("/usr/bin/dect -p " .. handset)
+	 local handset = tonumber(luci.http.formvalue("handset"))
+	 local rv = luci.sys.exec("ubus -t 1 call dect call \"{'terminal':%d, 'add':%d}\"" % {handset, handset-1})
 	 
 	 luci.http.write(rv)
 end
@@ -56,11 +56,8 @@ end
 
 
 function status()
-
-	local rv = luci.sys.exec("/usr/bin/dect -j")
+	local rv = luci.sys.exec("ubus -t 1 call dect status | tr '}' ',' > /tmp/dect_status; ubus -t 1 call dect handset \"{'list':''}\" | tail -n +2 >> /tmp/dect_status; cat /tmp/dect_status")
 
 	luci.http.prepare_content("application/json")
 	luci.http.write(rv)
 end
-
-

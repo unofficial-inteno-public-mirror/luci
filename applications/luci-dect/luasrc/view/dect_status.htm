@@ -2,6 +2,11 @@
 
 <script type="text/javascript">//<![CDATA[
 
+  function toHexString(byteArray){
+	return byteArray.map(function(byte) {
+		return ('0' + byte).slice(-2);
+	}).join('')
+  }
 
   function clear_table(table) {
       var rows = table.rows;
@@ -16,7 +21,7 @@
   function handsets_has_hst(handsets, hst) {
       
       for (var i = 0; i < handsets.length; i++) {
-      	  if (hst == handsets[i].handset)
+      	  if (hst == handsets[i].id)
       	      return true;
       }
       return false;
@@ -38,7 +43,7 @@
   function table_has_handset(table, h) {
       for (var i = 0; i < table.rows.length; i++) {
       	  var hst=table.rows[i].cells[0].innerHTML;
-      	  if (hst == h.handset)
+      	  if (hst == h.id)
       	      return true;
       }
       return false;
@@ -58,11 +63,11 @@
 
       for (var i = 0; i < handsets.length; i++) {
 
-	  var row = handset_get_row(table, handsets[i].handset);
+	  var row = handset_get_row(table, handsets[i].id);
 	  
-	  if (handsets[i].present == true) {
+	  if (handsets[i].id) {
 
-	      if (handsets[i].pinging == true) {
+	      if (handsets[i].pinging) {
 		  row.cells[2].innerHTML = "pinging";
 	      } else {
 		  if (row.cells[2].innerHTML != "ping start")
@@ -72,15 +77,6 @@
 	  } else {
 	      row.cells[2].innerHTML = "not present";
 	  } 
-
-	  // if (row.cells[3].innerHTML == "enab") {
-	  //     // enabling state
-	  //     if (handsets[i].pinging == true)
-	  // 	  row.cells[3].innerHTML = true;
-	  // } else {
-	  //     // all other states
-	  //     row.cells[3].innerHTML = handsets[i].pinging;
-	  // }
       }
   }
 
@@ -92,7 +88,7 @@
       for (i = 1; i < table.rows.length; i++) {
 	  var hst=table.rows[i].cells[0].innerHTML;
 	  
-	  if (hst > h.handset)
+	  if (hst > h.id)
 	      break;
       }
 
@@ -103,20 +99,20 @@
       var cell4=row.insertCell(-1);
       var cell5=row.insertCell(-1);
       
-      cell1.innerHTML=h.handset;
-      cell2.innerHTML=h.rfpi;
-      cell3.innerHTML=h.present;
+      cell1.innerHTML=h.id;
+      cell2.innerHTML=toHexString(h.ipui);
+      cell3.innerHTML=h.codecs;
       
       var buttonnode= document.createElement('input');
       buttonnode.setAttribute('type','button');
-      buttonnode.setAttribute('name', h.handset);
+      buttonnode.setAttribute('name', h.id);
       buttonnode.setAttribute('value', 'ping');
       buttonnode.onclick=function(){ping_hset(this.name)};
       cell4.appendChild(buttonnode);
       
       var deletenode= document.createElement('input');
       deletenode.setAttribute('type','button');
-      deletenode.setAttribute('name', h.handset);
+      deletenode.setAttribute('name', h.id);
       deletenode.setAttribute('value','delete');
       deletenode.onclick=function(){delete_hset(this.name)};
       cell5.appendChild(deletenode);
@@ -131,7 +127,7 @@
       for (i = 1; i < table.rows.length; i++) {
 	  var hst=table.rows[i].cells[0].innerHTML;
 	  
-	  if (hst > h.handset)
+	  if (hst > h.id)
 	      break;
       }
 
@@ -142,20 +138,20 @@
       var cell4=row.insertCell(-1);
       var cell5=row.insertCell(-1);
       
-      cell1.innerHTML=h.handset;
+      cell1.innerHTML=h.id;
       cell2.innerHTML=h.rfpi;
-      cell3.innerHTML=h.present;
+      cell3.innerHTML=h.id;
       
       var buttonnode= document.createElement('input');
       buttonnode.setAttribute('type','button');
-      buttonnode.setAttribute('name', h.handset);
+      buttonnode.setAttribute('name', h.id);
       buttonnode.setAttribute('value', 'switch');
       buttonnode.onclick=function(){switch_plug(this.name)};
       cell4.appendChild(buttonnode);
       
       var deletenode= document.createElement('input');
       deletenode.setAttribute('type','button');
-      deletenode.setAttribute('name', h.handset);
+      deletenode.setAttribute('name', h.id);
       deletenode.setAttribute('value','delete');
       deletenode.onclick=function(){delete_hset(this.name)};
       cell5.appendChild(deletenode);
@@ -168,7 +164,7 @@
       for (var i = 0; i < handsets.length; i++) {
 	  if(table_has_handset(table, handsets[i]) == false) {
 
-	      if (handsets[i].handset < 7)  {
+	      if (handsets[i].id < 7)  {
 		  table_add_handset(table, handsets[i]);
 	      } else {
 		  table_add_ule(table, handsets[i]);
@@ -310,9 +306,9 @@
 	   function(x, st) {
 
 	       var rm=document.getElementById("registration_mode");
-	       if (st.reg_active == true) {
-		   rm.innerHTML = "Enabled";
-	       } else if (rm.innerHTML != "Enabling...") {
+	       if (st.registration == "active") {
+                   rm.innerHTML = "Enabled";
+ 	       } else if (rm.innerHTML != "Enabling...") {
 		   rm.innerHTML = "Disabled";
 	       }
 
@@ -323,19 +319,7 @@
 	       
 	       add_new_rows(phones, st.handsets);
 
-	       update_state(phones, st.handsets);
-
-
-	       // Update ULE
-	       var ule=document.getElementById("ule_status_table");
-
-	       delete_missing_rows(ule, st.ule);
-	       
-	       add_new_rows(ule, st.ule);
-
-	       update_state(ule, st.ule);
-
-	       
+	       //update_state(phones, st.handsets);
 
 	   }
 	  );
@@ -367,35 +351,15 @@
 </fieldset>
 
 <fieldset class="cbi-section">
-	<legend>DECT Telephones</legend>
+	<legend>DECT Handsets</legend>
 	<table class="cbi-section-table" style="fixed" id="dect_status_table">
 	  <tr class="cbi-section-table-titles">
 	    <th class="cbi-section-table-cell" style="width:120px">Handset</th>
-	    <th class="cbi-section-table-cell" style="width:120px">RFPI</th>
-	    <th class="cbi-section-table-cell" style="width:120px">State</th>
+	    <th class="cbi-section-table-cell" style="width:120px">IPUI</th>
+	    <th class="cbi-section-table-cell" style="width:120px">Codecs</th>
 	    <th class="cbi-section-table-cell" style="width:120px">Ping</th>
 	    <th class="cbi-section-table-cell" style="width:120px">Delete</th>
 	  </tr>
-	  <!-- <tr class="cbi-section-table-row"> -->
-	  <!--   <td colspan="5" id="hset1"><em><br />Collecting data...</em></td> -->
-	  <!-- </tr> -->
-	</table>
-</fieldset>
-
-
-<fieldset class="cbi-section">
-	<legend>ULE Smartplugs</legend>
-	<table class="cbi-section-table" style="fixed" id="ule_status_table">
-	  <tr class="cbi-section-table-titles">
-	    <th class="cbi-section-table-cell" style="width:120px">Device</th>
-	    <th class="cbi-section-table-cell" style="width:120px">RFPI</th>
-	    <th class="cbi-section-table-cell" style="width:120px">State</th>
-	    <th class="cbi-section-table-cell" style="width:120px">Switch</th>
-	    <th class="cbi-section-table-cell" style="width:120px">Delete</th>
-	  </tr>
-	  <!-- <tr class="cbi-section-table-row"> -->
-	  <!--   <td colspan="5" id="hset1"><em><br />Collecting data...</em></td> -->
-	  <!-- </tr> -->
 	</table>
 </fieldset>
 
