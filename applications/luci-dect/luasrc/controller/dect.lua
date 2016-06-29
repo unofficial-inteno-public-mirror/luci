@@ -27,13 +27,13 @@ function index()
 end
 
 function reg_start()
-	luci.sys.exec("ubus -t 1 call dect state \"{'registration':'on'}\"")
+	luci.sys.exec("ubus -t 2 call dect state \"{'registration':'on'}\"")
 	status()
 end
 
 function delete_hset(opts)
 	 local handset = tonumber(luci.http.formvalue("handset"))
-	 local rv = luci.sys.exec("ubus -t 1 call dect call \"{'terminal':%d, 'release':%d}\"" % {handset, handset-1})
+	 local rv = luci.sys.exec("ubus -t 2 call dect handset \"{'delete':%d}\"" %handset)
 	 
 	 luci.http.write(rv)
 end
@@ -41,7 +41,7 @@ end
 
 function ping_hset(opts)
 	 local handset = tonumber(luci.http.formvalue("handset"))
-	 local rv = luci.sys.exec("ubus -t 1 call dect call \"{'terminal':%d, 'add':%d}\"" % {handset, handset-1})
+	 local rv = luci.sys.exec("ubus -t 2 call dect call \"{'terminal':%d, 'add':%d}\"" % {handset, handset-1})
 	 
 	 luci.http.write(rv)
 end
@@ -56,7 +56,7 @@ end
 
 
 function status()
-	local rv = luci.sys.exec("ubus -t 1 call dect status | tr '}' ',' > /tmp/dect_status; ubus -t 1 call dect handset \"{'list':''}\" | tail -n +2 >> /tmp/dect_status; cat /tmp/dect_status")
+	local rv = luci.sys.exec("ubus -t 2 call dect status | tr '}' ',' > /tmp/dect_status; ubus -t 2 call dect handset \"{'list':''}\" | tail -n +2 >> /tmp/dect_status; cat /tmp/dect_status")
 
 	luci.http.prepare_content("application/json")
 	luci.http.write(rv)
