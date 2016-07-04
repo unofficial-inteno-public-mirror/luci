@@ -200,7 +200,7 @@ end
 --- Retrieves the output of the "logread" command.
 -- @return	String containing the current log buffer
 function syslog()
-	if fs.access("/proc/net/arp") then
+	if fs.access("/log/messages") then
 		return luci.util.exec("tail -n 200 /log/messages")
 	else
 		return luci.util.exec("logread")
