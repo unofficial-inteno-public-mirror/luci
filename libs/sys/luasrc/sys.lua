@@ -200,7 +200,11 @@ end
 --- Retrieves the output of the "logread" command.
 -- @return	String containing the current log buffer
 function syslog()
-	return luci.util.exec("logread")
+	if fs.access("/proc/net/arp") then
+		return luci.util.exec("tail -n 200 /log/messages")
+	else
+		return luci.util.exec("logread")
+	end
 end
 
 --- Retrieves the output of the "dmesg" command.
