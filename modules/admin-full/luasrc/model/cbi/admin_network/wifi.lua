@@ -589,7 +589,11 @@ if hwtype == "broadcom" then
 	s:taboption("advanced", Flag, "wmm_bss_disable", translate("Disable WMM Advertise"))
 
 	mf = s:taboption("macfilter", ListValue, "macfilter", translate("MAC-Address Filter"))
-	mf:depends("mode", "ap")
+	mf:depends({mode="ap", encryption="none"})
+	mf:depends({mode="ap", encryption="psk2"})
+	mf:depends({mode="ap", encryption="mixed-psk"})
+	mf:depends({mode="ap", encryption="wpa2"})
+	mf:depends({mode="ap", encryption="mixed-wpa"})
 	mf:value("0", translate("Disable"))
 	mf:value("2", translate("Allow listed only"))
 	mf:value("1", translate("Allow all except listed"))
