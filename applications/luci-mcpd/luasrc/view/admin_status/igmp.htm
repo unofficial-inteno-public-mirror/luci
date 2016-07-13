@@ -41,49 +41,25 @@
 					<th class="cbi-section-table-cell"><%:Timeout%></th>
 					<th class="cbi-section-table-cell"><%:Index%></th>
 				</tr>
+				<% for line in luci.util.execi("cat /proc/net/igmp_snooping | grep 'br-' | grep -v 'snooping' | grep -v 'reporter'") do %>
+					<% local bridge, device, srcdev, tags, lantci, wantci, group, mode, dnat, source, timeout, reporter, index
+					= line:match("(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)") %>
 
-				<% if router.brcmversion == "4.16L.04" then %>
-					<% for line in luci.util.execi("cat /proc/net/igmp_snooping | grep 'br-' | grep -v 'snooping' | grep -v 'reporter'") do %>
-						<% local bridge, device, srcdev, tags, lantci, wantci, group, mode, dnat, source, timeout, reporter, index
-						= line:match("(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)") %>
-
-						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
-								<td class="cbi-value-field"><%=bridge%></td>
-								<td class="cbi-value-field"><%=device%></td>
-								<td class="cbi-value-field"><%=srcdev%></td>
-								<td class="cbi-value-field"><%=tags%></td>
-								<td class="cbi-value-field"><%=hextodec(lantci)%></td>
-								<td class="cbi-value-field"><%=hextodec(wantci)%></td>
-								<td class="cbi-value-field"><%=group%></td>
-								<td class="cbi-value-field"><%=mode%></td>
-								<td class="cbi-value-field"><%=dnat%></td>
-								<td class="cbi-value-field"><%=source%></td>
-								<td class="cbi-value-field"><%=reporter%></td>
-								<td class="cbi-value-field"><%=timeout%></td>
-								<td class="cbi-value-field"><%=hextodec(index)%></td>
-						</tr>
-					<%end%>
-				<%else%>
-					<% for line in luci.util.execi("cat /proc/net/igmp_snooping | grep 'br-' | grep -v 'snooping' | grep -v 'reporter'") do %>
-						<% local bridge, device, srcdev, tags, lantci, wantci, group, mode, dnat, source, reporter, timeout, index
-						= line:match("(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)") %>
-
-						<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
-								<td class="cbi-value-field"><%=bridge%></td>
-								<td class="cbi-value-field"><%=device%></td>
-								<td class="cbi-value-field"><%=srcdev%></td>
-								<td class="cbi-value-field"><%=tags%></td>
-								<td class="cbi-value-field"><%=hextodec(lantci)%></td>
-								<td class="cbi-value-field"><%=hextodec(wantci)%></td>
-								<td class="cbi-value-field"><%=hextoip(group)%></td>
-								<td class="cbi-value-field"><%=mode%></td>
-								<td class="cbi-value-field"><%=hextoip(dnat)%></td>
-								<td class="cbi-value-field"><%=hextoip(source)%></td>
-								<td class="cbi-value-field"><%=hextoip(reporter)%></td>
-								<td class="cbi-value-field"><%=timeout%></td>
-								<td class="cbi-value-field"><%=hextodec(index)%></td>
-						</tr>
-					<%end%>
+					<tr class="cbi-section-table-row cbi-rowstyle-<%=(style and 1 or 2)%>">
+							<td class="cbi-value-field"><%=bridge%></td>
+							<td class="cbi-value-field"><%=device%></td>
+							<td class="cbi-value-field"><%=srcdev%></td>
+							<td class="cbi-value-field"><%=tags%></td>
+							<td class="cbi-value-field"><%=hextodec(lantci)%></td>
+							<td class="cbi-value-field"><%=hextodec(wantci)%></td>
+							<td class="cbi-value-field"><%=group%></td>
+							<td class="cbi-value-field"><%=mode%></td>
+							<td class="cbi-value-field"><%=dnat%></td>
+							<td class="cbi-value-field"><%=source%></td>
+							<td class="cbi-value-field"><%=reporter%></td>
+							<td class="cbi-value-field"><%=timeout%></td>
+							<td class="cbi-value-field"><%=hextodec(index)%></td>
+					</tr>
 				<%end%>
 			</table>
 		</div>
