@@ -98,7 +98,7 @@ end
 compath = s:option(Value, "dirpath", translate("Directory"))
 
 function dirpath_is_valid(value)
-	if value:match("%.%.") then
+	if value:match("%.%.") or not sys.exec("readlink -f %s" %value):match("^/mnt") then
 		return false
 	else
 		return true
